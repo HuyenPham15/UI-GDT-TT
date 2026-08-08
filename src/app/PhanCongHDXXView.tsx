@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { RotateCcw, MoreVertical, ChevronDown, ChevronUp, X, Eye, Users, FileText, ChevronLeft, ChevronRight } from "lucide-react";
+import { RotateCcw, MoreVertical, ChevronDown, ChevronUp, X, Eye, Users, FileText, ChevronLeft, ChevronRight, Search, Calendar, Check } from "lucide-react";
 import { F, RED, BORDER, TEXT, MUTED, BG, TH_STYLE, TD_STYLE, Badge } from "./shared";
 import { formatSoBA } from "./AppHelpers";
 
@@ -246,7 +246,7 @@ const FULL_CAL_ROWS = (() => {
   return rows;
 })();
 
-function LichXetXuModal({ onClose }: { onClose: () => void }) {
+export function LichXetXuModal({ onClose, onSelectDate }: { onClose: () => void; onSelectDate?: (dateStr: string) => void }) {
   const [calView, setCalView] = useState<"thang" | "tuan" | "ngay">("thang");
   const [events, setEvents] = useState<Record<string, CalEvent[]>>(INIT_EVENTS);
   const [selectedDay, setSelectedDay] = useState<number | null>(null);
@@ -278,7 +278,7 @@ function LichXetXuModal({ onClose }: { onClose: () => void }) {
     if (!ev || !selectedDay) return;
     const key = dateKey(selectedDay);
     setEvents(prev => ({ ...prev, [key]: [...(prev[key] || []), ev] }));
-    // reset form but keep popup open for another entry
+    // reset form nhưng giữ popup mở
     setFTitle(""); setFSoDS(""); setFHinhThuc(""); setFNguoiNhan(""); setFGioFrom("00:00"); setFGioTo("01:00");
   };
 
@@ -288,6 +288,9 @@ function LichXetXuModal({ onClose }: { onClose: () => void }) {
     const key = dateKey(selectedDay);
     setEvents(prev => ({ ...prev, [key]: [...(prev[key] || []), ev] }));
     setSuccessDay(selectedDay);
+    if (onSelectDate) {
+      onSelectDate(`${String(selectedDay).padStart(2, "0")}/04/2026`);
+    }
     setSelectedDay(null);
     setFTitle(""); setFSoDS(""); setFHinhThuc(""); setFNguoiNhan("");
   };
@@ -297,19 +300,18 @@ function LichXetXuModal({ onClose }: { onClose: () => void }) {
     const key = dateKey(d);
     const dayEvs = d ? (events[key] || []) : [];
     const isToday = d === today;
-    const isEmpty = dayEvs.length === 0;
     const isSuccess = d === successDay;
     const isSun = ci === 6;
     return (
       <td key={`${ci}-${d ?? "x"}`}
-        onClick={() => { if (d && isEmpty) { setSelectedDay(d); setSuccessDay(null); } }}
+        onClick={() => { if (d) { setSelectedDay(d); setSuccessDay(null); } }}
         style={{
           padding: "6px 8px",
           borderRight: ci < 6 ? `1px solid ${BORDER}` : "none",
           borderBottom: `1px solid ${BORDER}`,
           verticalAlign: "top" as const,
           background: dimmed ? "#f9fafb" : isSuccess ? "#f0fdf4" : isSun && d ? "#fef9f9" : d ? "#fff" : "#f9fafb",
-          cursor: d && isEmpty ? "pointer" : "default",
+          cursor: d ? "pointer" : "default",
           minHeight: 90,
         }}>
         {d && (
@@ -517,25 +519,7 @@ function LichXetXuModal({ onClose }: { onClose: () => void }) {
                 </label>
               </div>
 
-              {/* Section header */}
-              <div style={{ fontSize: 12, fontWeight: 700, color: MUTED, marginTop: 2 }}>Thông tin vụ án</div>
-
-              {/* Số DS + Ngày tạo */}
-              <div style={{ display: "flex", gap: 12 }}>
-                <div style={{ flex: 1 }}>
-                  <label style={lbl}>Số danh sách{req}</label>
-                  <input value={fSoDS} onChange={e => setFSoDS(e.target.value)}
-                    placeholder="Số danh sách (Số tạo danh sách vụ xét xử GĐT)"
-                    style={inp} />
-                </div>
-                <div style={{ flex: "0 0 160px" }}>
-                  <label style={lbl}>Ngày tạo danh sách{req}</label>
-                  <input value={fNgayTao} onChange={e => setFNgayTao(e.target.value)}
-                    style={inp} />
-                </div>
-              </div>
-
-              {/* Hình thức + Người nhận */}
+              {/* Hình thức + Người nhận thông báo */}
               <div style={{ display: "flex", gap: 12 }}>
                 <div style={{ flex: 1 }}>
                   <label style={lbl}>Hình thức xét xử{req}</label>
@@ -554,10 +538,15 @@ function LichXetXuModal({ onClose }: { onClose: () => void }) {
                   <select value={fNguoiNhan} onChange={e => setFNguoiNhan(e.target.value)}
                     style={{ ...inp, appearance: "none", cursor: "pointer" }}>
                     <option value="">Chọn người nhận</option>
-                    <option>Nguyễn Văn Minh</option>
-                    <option>Trần Thị Lan</option>
-                    <option>Lê Hoàng Nam</option>
-                    <option>Toàn bộ HĐXX</option>
+                    <option value="Toàn bộ HĐXX">👥 Toàn bộ Hội đồng xét xử</option>
+                    <option value="Lê Thị Thu Hiển">Lê Thị Thu Hiển (Chủ tọa)</option>
+                    <option value="Trịnh Thị Minh Trang">Trịnh Thị Minh Trang (Thẩm phán thành viên)</option>
+                    <option value="Nguyễn Như Thắng">Nguyễn Như Thắng (Thẩm phán thành viên)</option>
+                    <option value="Phạm Thị Bích Ngọc">Phạm Thị Bích Ngọc (Thẩm phán thành viên)</option>
+                    <option value="Võ Thị Thùy Giang">Võ Thị Thùy Giang (Thẩm phán thành viên)</option>
+                    <option value="Nguyễn Văn Minh">Nguyễn Văn Minh (Chủ tọa)</option>
+                    <option value="Vũ Đình Tuấn">Vũ Đình Tuấn (Chủ tọa)</option>
+                    <option value="Hoàng Văn Toàn">Hoàng Văn Toàn (Thư ký phiên tòa)</option>
                   </select>
                 </div>
               </div>
@@ -951,43 +940,58 @@ function FilterPanel({ open, onToggle }: { open: boolean; onToggle: () => void }
   );
 
   return (
-    <div style={{ background: "#fff", border: `1px solid ${BORDER}`, borderRadius: 8, padding: open ? "16px 20px" : "0 20px", marginBottom: 16, overflow: "hidden" }}>
-      {open && (
-        <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(6, 1fr)", gap: 12 }}>
-            {col("Tòa ra BA/QĐ", <select style={inSt}><option value="">Chọn tòa án</option><option>TAND Tối cao</option><option>TAND Cấp cao HN</option><option>TAND Cấp cao TP.HCM</option></select>)}
-            {col("Số BA/QĐ", <input placeholder="Nhập số BA/QĐ" style={inSt} />)}
-            {rangeRow("Ngày BA/QĐ")}
-            {col("Loại án", <select style={inSt}><option value="">Chọn loại án</option><option>Hình sự</option><option>Dân sự</option><option>Kinh tế</option></select>)}
-            {col("Thuộc án", <select style={inSt}><option value="">Chọn loại</option><option>GĐT</option><option>TT</option></select>)}
-            {col("NKN/Người khiếu nại", <input placeholder="NKN" style={inSt} />)}
-          </div>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(6, 1fr)", gap: 12 }}>
-            {col("Bị cao/Bị cáo", <input placeholder="Bị cáo" style={inSt} />)}
-            {col("Số thụ lý xx", <input placeholder="Số thụ lý" style={inSt} />)}
-            {rangeRow("Thụ lý XX")}
-            {rangeRow("Xét xử")}
-            {col("Trạng thái xét xử", <select style={inSt}><option value="">– Tất cả –</option><option>Chưa xét xử</option><option>Đã xét xử</option><option>Chưa phân công HĐXX</option></select>)}
-            {col("Thẩm tra viên/Thư ký", <select style={inSt}><option value="">– Tất cả –</option><option>Nguyễn Thu Hằng</option><option>Lý Văn An</option></select>)}
-          </div>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 12 }}>
-            {col("Lãnh đạo phụ trách", <select style={inSt}><option value="">Vui lòng chọn</option><option>Nguyễn Văn Minh</option><option>Vũ Đình Tuấn</option></select>)}
-            {col("Thẩm phán", <select style={inSt}><option value="">Vui lòng chọn</option><option>Trần Thị Lan</option><option>Lê Hoàng Nam</option></select>)}
-            {col("Quá hạn xét xử", <select style={inSt}><option value="">– Tất cả –</option><option>Có</option><option>Không</option></select>)}
-            {col("Hoàn thi hành án", <select style={inSt}><option value="">– Tất cả –</option><option>Có</option><option>Không</option></select>)}
-          </div>
+    <div style={{ background: "#fff", border: `1px solid ${BORDER}`, borderRadius: 8, padding: "16px 20px", marginBottom: 16 }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+        {/* Hàng 1 (luôn hiển thị) */}
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(6, 1fr)", gap: 12 }}>
+          {col("Tòa ra BA/QĐ", <select style={inSt}><option value="">Chọn tòa án</option><option>TAND Tối cao</option><option>TAND Cấp cao HN</option><option>TAND Cấp cao TP.HCM</option></select>)}
+          {col("Số BA/QĐ", <input placeholder="Nhập số BA/QĐ" style={inSt} />)}
+          {rangeRow("Ngày BA/QĐ")}
+          {col("Loại án", <select style={inSt}><option value="">Chọn loại án</option><option>Hình sự</option><option>Dân sự</option><option>Kinh tế</option></select>)}
+          {col("Thuộc án", <select style={inSt}><option value="">Chọn loại</option><option>GĐT</option><option>TT</option></select>)}
+          {col("NKN/Người khiếu nại", <input placeholder="NKN" style={inSt} />)}
         </div>
-      )}
-      <div style={{ display: "flex", justifyContent: "flex-end", gap: 8, paddingTop: open ? 14 : 12, paddingBottom: open ? 0 : 12 }}>
-        <button onClick={onToggle} style={{ display: "flex", alignItems: "center", gap: 5, padding: "6px 14px", background: "none", border: `1px solid ${BORDER}`, borderRadius: 4, cursor: "pointer", fontSize: 12, fontFamily: F, color: TEXT }}>
-          {open ? <ChevronUp size={13} /> : <ChevronDown size={13} />}{open ? "Thu gọn" : "Mở rộng"}
+
+        {/* Hàng 2 & 3 (chỉ hiển thị khi mở rộng) */}
+        {open && (
+          <>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(6, 1fr)", gap: 12 }}>
+              {col("Bị cáo/Đương sự", <input placeholder="Bị cáo/Đương sự" style={inSt} />)}
+              {col("Số thụ lý XX", <input placeholder="Số thụ lý" style={inSt} />)}
+              {rangeRow("Thụ lý XX")}
+              {rangeRow("Xét xử")}
+              {col("Trạng thái xét xử", <select style={inSt}><option value="">– Tất cả –</option><option>Chưa xét xử</option><option>Đã xét xử</option><option>Chưa phân công HĐXX</option></select>)}
+              {col("Thẩm tra viên/Thư ký", <select style={inSt}><option value="">– Tất cả –</option><option>Nguyễn Thu Hằng</option><option>Lý Văn An</option></select>)}
+            </div>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 12 }}>
+              {col("Lãnh đạo phụ trách", <select style={inSt}><option value="">Vui lòng chọn</option><option>Nguyễn Văn Minh</option><option>Vũ Đình Tuấn</option></select>)}
+              {col("Thẩm phán", <select style={inSt}><option value="">Vui lòng chọn</option><option>Trần Thị Lan</option><option>Lê Hoàng Nam</option></select>)}
+              {col("Quá hạn xét xử", <select style={inSt}><option value="">– Tất cả –</option><option>Có</option><option>Không</option></select>)}
+              {col("Hoàn thi hành án", <select style={inSt}><option value="">– Tất cả –</option><option>Có</option><option>Không</option></select>)}
+            </div>
+          </>
+        )}
+      </div>
+
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: 14 }}>
+        <button
+          onClick={onToggle}
+          style={{
+            display: "flex", alignItems: "center", gap: 4, background: "none", border: "none",
+            cursor: "pointer", fontSize: 12, color: "#2563eb", fontFamily: F, padding: 0, fontWeight: 500,
+          }}>
+          {open ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+          {open ? "Thu gọn" : "Mở rộng"}
         </button>
-        <button style={{ display: "flex", alignItems: "center", gap: 5, padding: "6px 16px", background: RED, color: "#fff", border: "none", borderRadius: 4, cursor: "pointer", fontSize: 12, fontWeight: 700, fontFamily: F }}>
-          🔍 Tìm kiếm
-        </button>
-        <button style={{ display: "flex", alignItems: "center", gap: 5, padding: "6px 14px", background: "none", border: `1px solid ${BORDER}`, borderRadius: 4, cursor: "pointer", fontSize: 12, fontFamily: F, color: TEXT }}>
-          ✕ Xóa bộ lọc
-        </button>
+
+        <div style={{ display: "flex", gap: 8 }}>
+          <button style={{ display: "flex", alignItems: "center", gap: 6, padding: "7px 18px", background: "#7f1d1d", color: "#fff", border: "none", borderRadius: 4, cursor: "pointer", fontSize: 12, fontWeight: 700, fontFamily: F }}>
+            <Search size={13} /> Tìm kiếm
+          </button>
+          <button style={{ padding: "7px 16px", background: "#fff", color: TEXT, border: `1px solid ${BORDER}`, borderRadius: 4, cursor: "pointer", fontSize: 12, fontFamily: F }}>
+            Xóa bộ lọc
+          </button>
+        </div>
       </div>
     </div>
   );
@@ -999,7 +1003,7 @@ type PCTab = "tat-ca" | "chua-phan-cong";
 
 export default function PhanCongHDXXView() {
   const [tab, setTab]           = useState<PCTab>("tat-ca");
-  const [filterOpen, setFilterOpen] = useState(true);
+  const [filterOpen, setFilterOpen] = useState(false);
   const [checked, setChecked]   = useState<Set<number>>(new Set());
   const [detail, setDetail]     = useState<HDXXRow | null>(null);
   const [soVuModal, setSoVuModal] = useState<HDXXRow | null>(null);

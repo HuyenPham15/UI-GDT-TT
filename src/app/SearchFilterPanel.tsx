@@ -137,32 +137,10 @@ export function SearchFilterPanel({
     </div>
   );
 
-  const visibleRows = expanded ? SEARCH_ROWS : SEARCH_ROWS.slice(0, 2);
+  const visibleRows = expanded ? SEARCH_ROWS : SEARCH_ROWS.slice(0, 1);
 
   return (
-    <div style={{ background: "#fff", borderBottom: `1px solid ${BORDER}`, padding: "12px 20px" }}>
-      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
-        <span style={{ fontSize: 13, fontWeight: 700, color: TEXT, fontFamily: F }}>Tìm kiếm</span>
-        <button
-          onClick={onToggle}
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 4,
-            background: "none",
-            border: "none",
-            cursor: "pointer",
-            fontSize: 12,
-            color: "#2563eb",
-            fontFamily: F,
-            padding: 0,
-          }}
-        >
-          {expanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
-          {expanded ? "Thu gọn" : "Mở rộng"}
-        </button>
-      </div>
-
+    <div style={{ background: "#fff", borderBottom: `1px solid ${BORDER}`, padding: "14px 20px" }}>
       <div
         style={{
           display: "grid",
@@ -181,44 +159,66 @@ export function SearchFilterPanel({
         )}
       </div>
 
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", gap: 8 }}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: 10 }}>
         <button
+          onClick={onToggle}
           style={{
             display: "flex",
             alignItems: "center",
-            gap: 6,
-            padding: "6px 16px",
-            background: RED,
-            color: "#fff",
+            gap: 4,
+            background: "none",
             border: "none",
-            borderRadius: 4,
             cursor: "pointer",
             fontSize: 12,
-            fontWeight: 600,
+            color: "#2563eb",
             fontFamily: F,
+            padding: 0,
+            fontWeight: 500,
           }}
         >
-          <Search size={13} />
-          Tìm kiếm
+          {expanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+          {expanded ? "Thu gọn" : "Mở rộng"}
         </button>
-        <button
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 6,
-            padding: "6px 14px",
-            background: "#fff",
-            color: "#374151",
-            border: `1px solid ${BORDER}`,
-            borderRadius: 4,
-            cursor: "pointer",
-            fontSize: 12,
-            fontFamily: F,
-          }}
-        >
-          <RotateCcw size={13} />
-          Làm mới
-        </button>
+
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <button
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 6,
+              padding: "7px 18px",
+              background: "#7f1d1d",
+              color: "#fff",
+              border: "none",
+              borderRadius: 4,
+              cursor: "pointer",
+              fontSize: 12,
+              fontWeight: 700,
+              fontFamily: F,
+            }}
+          >
+            <Search size={13} />
+            Tìm kiếm
+          </button>
+          <button
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 6,
+              padding: "7px 16px",
+              background: "#fff",
+              color: TEXT,
+              border: `1px solid ${BORDER}`,
+              borderRadius: 4,
+              cursor: "pointer",
+              fontSize: 12,
+              fontFamily: F,
+            }}
+          >
+            <RotateCcw size={13} />
+            Xóa bộ lọc
+          </button>
+        </div>
       </div>
     </div>
   );

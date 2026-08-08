@@ -208,6 +208,7 @@ export default function Sidebar({ currentView, onNavigate }: SidebarProps) {
       <div style={{ flex: 1, overflowY: "auto", overflowX: "hidden", paddingTop: 6, paddingBottom: 16 }}>
         {/* Trang chủ */}
         <button
+          onClick={() => onNavigate("don-cho-phe-duyet")}
           style={{
             display: "flex", alignItems: "center", gap: 10,
             width: "100%", padding: "10px 20px",
@@ -228,9 +229,9 @@ export default function Sidebar({ currentView, onNavigate }: SidebarProps) {
           open={qldOpen}
           onToggle={() => setQldOpen((v) => !v)}
         >
-          <NavLink label="Tiếp nhận đơn" sub />
-          <NavLink label="Danh sách đơn" sub />
-          <NavLink label="Phân công thẩm phán" sub />
+          <NavLink label="Tiếp nhận đơn" onClick={() => onNavigate("don-cho-phe-duyet")} sub />
+          <NavLink label="Danh sách đơn" onClick={() => onNavigate("don-cho-phe-duyet")} sub />
+          <NavLink label="Phân công thẩm phán" onClick={() => onNavigate("phan-cong-ttv")} sub />
         </NavGroup>
 
         {/* Quản lý án GĐT/TT */}
@@ -282,9 +283,9 @@ export default function Sidebar({ currentView, onNavigate }: SidebarProps) {
             onClick={() => onNavigate("quan-ly-khieu-nai")}
             sub
           />
-          <NavLink label="Danh sách vụ án phân côn..." sub />
-          <NavLink label="Án quốc hội" sub />
-          <NavLink label="Án thời hiệu" sub />
+          <NavLink label="Danh sách vụ án phân côn..." onClick={() => onNavigate("quan-ly-vu-an")} sub />
+          <NavLink label="Án quốc hội" onClick={() => onNavigate("quan-ly-vu-an")} sub />
+          <NavLink label="Án thời hiệu" onClick={() => onNavigate("quan-ly-vu-an")} sub />
           <NavLink
             label="Công văn trao đổi"
             active={currentView === "cong-van-trao-doi"}
@@ -306,7 +307,7 @@ export default function Sidebar({ currentView, onNavigate }: SidebarProps) {
           open={ctldOpen}
           onToggle={() => setCtldOpen((v) => !v)}
         >
-          <NavLink label="Phân công vụ án" sub />
+          <NavLink label="Phân công vụ án" onClick={() => onNavigate("phan-cong-ttv")} sub />
           <NavLink label="Phê duyệt đề xuất" active={currentView === "phe-duyet-de-xuat"} onClick={() => onNavigate("phe-duyet-de-xuat")} sub />
         </NavGroup>
       </div>

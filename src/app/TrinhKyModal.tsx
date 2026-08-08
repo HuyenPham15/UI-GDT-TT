@@ -15,7 +15,7 @@ export function HoSoToTrinhModal({ onClose }: { onClose: () => void }) {
   ];
 
   return (
-    <div style={{ position: "fixed", inset: 0, background: "#fff", zIndex: 1100, display: "flex", flexDirection: "column" }}>
+    <div style={{ position: "fixed", inset: 0, background: "#fff", zIndex: 1600, display: "flex", flexDirection: "column" }}>
       {/* Header */}
       <div style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 20px", borderBottom: `1px solid ${BORDER}`, flexShrink: 0 }}>
         <button onClick={onClose} style={{ background: "none", border: "none", cursor: "pointer", display: "flex", alignItems: "center", gap: 4, fontSize: 13, color: TEXT, fontFamily: F }}>
@@ -355,7 +355,7 @@ export function TrinhKyModal({ onClose }: { onClose: () => void }) {
   };
 
   return (
-    <div style={{ position: "fixed", inset: 0, zIndex: 1100, display: "flex", flexDirection: "column" }}>
+    <div style={{ position: "fixed", inset: 0, zIndex: 1600, display: "flex", flexDirection: "column" }}>
       {/* Dark red header */}
       <div style={{ background: "#7f1d1d", padding: "12px 20px", flexShrink: 0 }}>
         <span style={{ fontSize: 15, fontWeight: 700, color: "#fff", fontFamily: F }}>Trình ký</span>
