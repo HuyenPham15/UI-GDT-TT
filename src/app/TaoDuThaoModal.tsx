@@ -327,6 +327,100 @@ export function TaoDuThaoModal({
   const [donLienQuan, setDonLienQuan] = useState("2 đơn/người được chọn");
   const [ketQuaGQ, setKetQuaGQ] = useState<"tra-loi" | "khang-nghi">("tra-loi");
 
+  // Multi-select & Thêm người đứng đơn
+  const [donDataList, setDonDataList] = useState([
+    {
+      id: "don-1",
+      label: "1. Đơn 09D732899 - Phạm Minh Tuấn",
+      nguoi: ["Phạm Minh Tuấn", "Phạm Văn Nam"],
+    },
+    {
+      id: "don-2",
+      label: "2. Đơn 10D732900 - Trần Văn Hùng",
+      nguoi: ["Trần Văn Hùng"],
+    },
+  ]);
+  const [donCheckedList, setDonCheckedList] = useState<Record<string, boolean>>({
+    "don-1": true,
+    "don-1::Phạm Minh Tuấn": true,
+    "don-2": true,
+    "don-2::Trần Văn Hùng": true,
+  });
+  const [donExpanded, setDonExpanded] = useState<Record<string, boolean>>({});
+  const [donOpen, setDonOpen] = useState(false);
+  const [showAddNguoiModal, setShowAddNguoiModal] = useState(false);
+  const [newNguoiTen, setNewNguoiTen] = useState("");
+  const [newNguoiDonId, setNewNguoiDonId] = useState("don-1");
+
+  const toggleDonCheck = (donId: string) => {
+    setDonCheckedList(prev => {
+      const next = { ...prev };
+      const donObj = donDataList.find(d => d.id === donId);
+      const currVal = !prev[donId];
+      next[donId] = currVal;
+      if (donObj) {
+        donObj.nguoi.forEach(n => {
+          next[`${donId}::${n}`] = currVal;
+        });
+      }
+      return next;
+    });
+  };
+
+  const toggleNguoiCheck = (donId: string, nguoiTen: string) => {
+    setDonCheckedList(prev => {
+      const next = { ...prev };
+      const key = `${donId}::${nguoiTen}`;
+      next[key] = !prev[key];
+      const donObj = donDataList.find(d => d.id === donId);
+      if (donObj) {
+        const allChecked = donObj.nguoi.every(n => next[`${donId}::${n}`]);
+        next[donId] = allChecked;
+      }
+      return next;
+    });
+  };
+
+  const getSelectedDonSummary = () => {
+    let countDon = 0;
+    let countNguoi = 0;
+    const selectedItems: string[] = [];
+
+    donDataList.forEach(d => {
+      const checkedNguoi = d.nguoi.filter(n => donCheckedList[`${d.id}::${n}`]);
+      if (donCheckedList[d.id] || checkedNguoi.length > 0) {
+        countDon++;
+        checkedNguoi.forEach(n => {
+          countNguoi++;
+          selectedItems.push(`${n} (${d.label.split(" - ")[0]})`);
+        });
+      }
+    });
+
+    if (countDon === 0 && countNguoi === 0) return "Chọn đơn / người đứng đơn liên quan...";
+    return `${countDon} đơn / ${countNguoi} người đứng đơn được chọn (${selectedItems.join(", ")})`;
+  };
+
+  const handleAddNewNguoiDungDon = () => {
+    if (!newNguoiTen.trim()) {
+      alert("Vui lòng nhập tên người đứng đơn!");
+      return;
+    }
+    const name = newNguoiTen.trim();
+    setDonDataList(prev => prev.map(d => {
+      if (d.id === newNguoiDonId) {
+        return { ...d, nguoi: [...d.nguoi, name] };
+      }
+      return d;
+    }));
+    setDonCheckedList(prev => ({
+      ...prev,
+      [`${newNguoiDonId}::${name}`]: true,
+    }));
+    setNewNguoiTen("");
+    setShowAddNguoiModal(false);
+  };
+
   // Section 2: Thông tin quyết định
   const [ngayQuyetDinh, setNgayQuyetDinh] = useState("09/08/2026");
   const [soQuyetDinh, setSoQuyetDinh] = useState("");
@@ -605,24 +699,148 @@ export function TaoDuThaoModal({
 
           {/* Section 1: Thông tin đơn */}
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-            <div style={{ fontSize: 13, fontWeight: 700, color: "#800000", fontFamily: F, display: "flex", alignItems: "center", gap: 6 }}>
-              <span>■ Thông tin đơn</span>
-            </div>
+            {!isKhieuNai && (
+              <div>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 5 }}>
+                  <label style={lblSt}>
+                    <span style={{ color: "#dc2626", marginRight: 3 }}>*</span>Đơn liên quan / Người đứng đơn
+                  </label>
+                  <button
+                    type="button"
+                    onClick={() => setShowAddNguoiModal(true)}
+                    style={{
+                      background: "none",
+                      border: "none",
+                      color: "#800000",
+                      fontSize: 12,
+                      fontWeight: 700,
+                      cursor: "pointer",
+                      fontFamily: F,
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 4,
+                    }}
+                  >
+                    + Thêm người đứng đơn
+                  </button>
+                </div>
 
-            <div>
-              <label style={lblSt}>
-                <span style={{ color: "#dc2626", marginRight: 3 }}>*</span>Đơn liên quan
-              </label>
-              <select
-                value={donLienQuan}
-                onChange={e => setDonLienQuan(e.target.value)}
-                style={{ ...inSt, cursor: "pointer" }}
-              >
-                <option value="2 đơn/người được chọn">2 đơn/người được chọn</option>
-                <option value="1. Đơn 09D732899 - Phạm Minh Tuấn">1. Đơn 09D732899 - Phạm Minh Tuấn</option>
-                <option value="2. Đơn 10D732900 - Trần Văn Hùng">2. Đơn 10D732900 - Trần Văn Hùng</option>
-              </select>
-            </div>
+                <div style={{ position: "relative" }}>
+                  <div
+                    onClick={() => setDonOpen(o => !o)}
+                    style={{
+                      ...inSt,
+                      cursor: "pointer",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      userSelect: "none",
+                      minHeight: 34,
+                      background: "#fff",
+                    }}
+                  >
+                    <span style={{ flex: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", color: "#111827", fontWeight: 500 }}>
+                      {getSelectedDonSummary()}
+                    </span>
+                    <span style={{ fontSize: 10, color: "#6b7280", marginLeft: 6 }}>{donOpen ? "▲" : "▼"}</span>
+                  </div>
+
+                  {donOpen && (
+                    <div
+                      style={{
+                        position: "absolute",
+                        top: "100%",
+                        left: 0,
+                        right: 0,
+                        zIndex: 300,
+                        background: "#fff",
+                        border: "1px solid #d1d5db",
+                        borderRadius: 4,
+                        boxShadow: "0 6px 20px rgba(0,0,0,0.15)",
+                        maxHeight: 280,
+                        overflowY: "auto",
+                        marginTop: 4,
+                      }}
+                    >
+                      {donDataList.map(don => {
+                        const isWholeDonChecked = !!donCheckedList[don.id];
+                        const isExpanded = !!donExpanded[don.id];
+                        const anyNguoiChecked = don.nguoi.some(n => donCheckedList[`${don.id}::${n}`]);
+                        return (
+                          <div key={don.id}>
+                            <div
+                              style={{
+                                display: "flex",
+                                alignItems: "center",
+                                gap: 8,
+                                padding: "8px 12px",
+                                borderBottom: "1px solid #e5e7eb",
+                                background: isWholeDonChecked || anyNguoiChecked ? "#fef2f2" : "#fff",
+                              }}
+                            >
+                              <input
+                                type="checkbox"
+                                checked={isWholeDonChecked}
+                                ref={el => { if (el) el.indeterminate = !isWholeDonChecked && anyNguoiChecked; }}
+                                onChange={() => toggleDonCheck(don.id)}
+                                style={{ accentColor: "#800000", cursor: "pointer", flexShrink: 0 }}
+                              />
+                              <span style={{ flex: 1, fontSize: 12, fontWeight: 600, color: "#111827" }}>
+                                {don.label}
+                              </span>
+                              <button
+                                type="button"
+                                onClick={e => { e.stopPropagation(); setDonExpanded(p => ({ ...p, [don.id]: !p[don.id] })); }}
+                                style={{ background: "none", border: "none", cursor: "pointer", fontSize: 11, color: "#2563eb", padding: "2px 4px" }}
+                              >
+                                {isExpanded ? "▲ Thu gọn người đứng đơn" : `▼ Xem ${don.nguoi.length} người đứng đơn`}
+                              </button>
+                            </div>
+                            {isExpanded && don.nguoi.map(nguoi => (
+                              <div
+                                key={nguoi}
+                                style={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                  gap: 8,
+                                  padding: "6px 12px 6px 32px",
+                                  borderBottom: "1px solid #f3f4f6",
+                                  background: donCheckedList[`${don.id}::${nguoi}`] ? "#fff5f5" : "#fafafa",
+                                }}
+                              >
+                                <input
+                                  type="checkbox"
+                                  checked={!!donCheckedList[`${don.id}::${nguoi}`] || isWholeDonChecked}
+                                  onChange={() => toggleNguoiCheck(don.id, nguoi)}
+                                  style={{ accentColor: "#800000", cursor: "pointer", flexShrink: 0 }}
+                                />
+                                <span style={{ fontSize: 12, color: "#111827" }}>👤 {nguoi}</span>
+                              </div>
+                            ))}
+                          </div>
+                        );
+                      })}
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 12px", borderTop: "1px solid #e5e7eb", background: "#f9fafb" }}>
+                        <button
+                          type="button"
+                          onClick={() => { setShowAddNguoiModal(true); setDonOpen(false); }}
+                          style={{ fontSize: 11, color: "#800000", fontWeight: 700, background: "none", border: "none", cursor: "pointer" }}
+                        >
+                          + Thêm mới người đứng đơn
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setDonOpen(false)}
+                          style={{ padding: "5px 16px", background: "#800000", color: "#fff", border: "none", borderRadius: 4, cursor: "pointer", fontSize: 12, fontWeight: 600 }}
+                        >
+                          Xác nhận
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
 
             <div>
               <label style={lblSt}>
@@ -1090,6 +1308,54 @@ export function TaoDuThaoModal({
           </button>
         </div>
       </div>
+
+      {showAddNguoiModal && (
+        <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)", zIndex: 1500, display: "flex", alignItems: "center", justifyContent: "center", padding: 16 }}>
+          <div style={{ background: "#fff", borderRadius: 8, width: 420, padding: 20, boxShadow: "0 10px 30px rgba(0,0,0,0.3)", fontFamily: F }}>
+            <div style={{ fontSize: 15, fontWeight: 700, color: "#800000", marginBottom: 14 }}>Thêm người đứng đơn mới</div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+              <div>
+                <label style={lblSt}>Đơn liên quan</label>
+                <select
+                  value={newNguoiDonId}
+                  onChange={e => setNewNguoiDonId(e.target.value)}
+                  style={inSt}
+                >
+                  {donDataList.map(d => (
+                    <option key={d.id} value={d.id}>{d.label}</option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label style={lblSt}><span style={{ color: "#dc2626" }}>*</span> Tên người đứng đơn</label>
+                <input
+                  type="text"
+                  placeholder="Nhập họ và tên người đứng đơn..."
+                  value={newNguoiTen}
+                  onChange={e => setNewNguoiTen(e.target.value)}
+                  style={inSt}
+                />
+              </div>
+            </div>
+            <div style={{ display: "flex", justifyContent: "flex-end", gap: 10, marginTop: 18 }}>
+              <button
+                type="button"
+                onClick={() => setShowAddNguoiModal(false)}
+                style={{ padding: "6px 16px", background: "#fff", border: "1px solid #d1d5db", borderRadius: 4, cursor: "pointer", fontSize: 12, fontFamily: F }}
+              >
+                Hủy
+              </button>
+              <button
+                type="button"
+                onClick={handleAddNewNguoiDungDon}
+                style={{ padding: "6px 16px", background: "#800000", color: "#fff", border: "none", borderRadius: 4, cursor: "pointer", fontSize: 12, fontWeight: 600, fontFamily: F }}
+              >
+                Thêm người đứng đơn
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

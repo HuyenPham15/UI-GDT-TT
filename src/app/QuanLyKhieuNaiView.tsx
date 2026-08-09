@@ -58,9 +58,9 @@ export function QuanLyKhieuNaiView({
       <span style={{ fontSize: 11, color: MUTED, fontFamily: F, marginBottom: 3 }}>{lbl}</span>
       {type === "select"
         ? <select style={selSt}>
-            <option>– Tất cả –</option>
-            {opts?.map(o => <option key={o} value={o}>{o}</option>)}
-          </select>
+          <option>– Tất cả –</option>
+          {opts?.map(o => <option key={o} value={o}>{o}</option>)}
+        </select>
         : <input placeholder={ph || lbl} style={inSt} />}
     </div>
   );

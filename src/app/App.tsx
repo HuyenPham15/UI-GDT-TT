@@ -3308,7 +3308,7 @@ function TaoToTrinhModal({
     onClose();
   };
 
-  // Case info values
+  const isKhieuNai = detail?.isKhieuNai || (typeof detail?.maVuAn === "string" && detail.maVuAn.startsWith("KN"));
   const maVuAn = detail?.maVuAn || "VA26-002039";
   const tenVuAn = detail?.tenVuAn || "Vụ án Nguyễn Văn Minh – Tội cướp tài sản";
   const tenBiCan = "Nguyễn Văn Minh";
@@ -3589,43 +3589,40 @@ function TaoToTrinhModal({
             />
           </div>
 
-          {/* III. ĐỀ XUẤT GIẢI QUYẾT CỦA THẨM TRA VIÊN */}
-          <div>
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                marginBottom: 10,
-              }}
-            >
-              <span style={{ fontSize: 13, fontWeight: 700, color: "#111827", fontFamily: F }}>
-                III. ĐỀ XUẤT GIẢI QUYẾT CỦA THẨM TRA VIÊN
-              </span>
-              <button
-                type="button"
-                onClick={handleAddDonXuLy}
+          {/* III. ĐỀ XUẤT GIẢI QUYẾT */}
+          {!isKhieuNai && (
+            <div>
+              <div
                 style={{
-                  background: "#800000",
-                  color: "#fff",
-                  border: "none",
-                  borderRadius: 4,
-                  padding: "6px 14px",
-                  fontSize: 12,
-                  fontWeight: 700,
-                  fontFamily: F,
-                  cursor: "pointer",
-                  display: "inline-flex",
+                  display: "flex",
                   alignItems: "center",
-                  gap: 4,
+                  justifyContent: "space-between",
+                  marginBottom: 10,
                 }}
               >
-                Thêm đơn xử lý
-              </button>
-            </div>
-
-            {/* Table */}
-            <div style={{ border: "1px solid #e5e7eb", borderRadius: 4, overflow: "hidden" }}>
+                <span style={{ fontSize: 13, fontWeight: 700, color: "#111827", fontFamily: F }}>
+                  III. ĐỀ XUẤT GIẢI QUYẾT
+                </span>
+                <button
+                  type="button"
+                  onClick={handleAddDonXuLy}
+                  style={{
+                    background: "#800000",
+                    color: "#fff",
+                    border: "none",
+                    borderRadius: 4,
+                    padding: "6px 14px",
+                    fontSize: 12,
+                    fontWeight: 700,
+                    fontFamily: F,
+                    cursor: "pointer",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: 4,
+                  }}
+                >
+                  Thêm đơn xử lý
+                </button>
               <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12, fontFamily: F }}>
                 <thead>
                   <tr style={{ background: "#fff", borderBottom: "1px solid #e5e7eb" }}>
@@ -3641,28 +3638,30 @@ function TaoToTrinhModal({
                     >
                       STT
                     </th>
+                    {!isKhieuNai && (
+                      <th
+                        style={{
+                          padding: "8px 12px",
+                          width: 180,
+                          textAlign: "left",
+                          fontWeight: 600,
+                          color: "#374151",
+                          borderRight: "1px solid #e5e7eb",
+                        }}
+                      >
+                        Đơn
+                      </th>
+                    )}
                     <th
                       style={{
                         padding: "8px 12px",
-                        width: 180,
                         textAlign: "left",
                         fontWeight: 600,
                         color: "#374151",
                         borderRight: "1px solid #e5e7eb",
                       }}
                     >
-                      Đơn
-                    </th>
-                    <th
-                      style={{
-                        padding: "8px 12px",
-                        textAlign: "left",
-                        fontWeight: 600,
-                        color: "#374151",
-                        borderRight: "1px solid #e5e7eb",
-                      }}
-                    >
-                      Đề xuất giải quyết Thẩm tra viên
+                      Đề xuất giải quyết
                     </th>
                     <th
                       style={{
@@ -3701,26 +3700,28 @@ function TaoToTrinhModal({
                       </td>
 
                       {/* Đơn */}
-                      <td
-                        style={{
-                          padding: "12px 12px",
-                          borderRight: "1px solid #e5e7eb",
-                        }}
-                      >
-                        <div style={{ display: "flex", alignItems: "flex-start", gap: 6 }}>
-                          <span style={{ fontSize: 13, color: "#4b5563", marginTop: -1 }}>📄</span>
-                          <div>
-                            <div style={{ fontWeight: 600, color: "#111827", fontSize: 12 }}>
-                              {item.nguoiGui}
-                            </div>
-                            <div style={{ fontSize: 11, color: "#6b7280", marginTop: 2 }}>
-                              {item.tlm}
+                      {!isKhieuNai && (
+                        <td
+                          style={{
+                            padding: "12px 12px",
+                            borderRight: "1px solid #e5e7eb",
+                          }}
+                        >
+                          <div style={{ display: "flex", alignItems: "flex-start", gap: 6 }}>
+                            <span style={{ fontSize: 13, color: "#4b5563", marginTop: -1 }}>📄</span>
+                            <div>
+                              <div style={{ fontWeight: 600, color: "#111827", fontSize: 12 }}>
+                                {item.nguoiGui}
+                              </div>
+                              <div style={{ fontSize: 11, color: "#6b7280", marginTop: 2 }}>
+                                {item.tlm}
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      </td>
+                        </td>
+                      )}
 
-                      {/* Đề xuất giải quyết Thẩm tra viên */}
+                      {/* Đề xuất giải quyết */}
                       <td
                         style={{
                           padding: "12px 12px",
@@ -3744,10 +3745,19 @@ function TaoToTrinhModal({
                               width: "100%",
                             }}
                           >
-                            <option value="Kháng nghị">Kháng nghị</option>
-                            <option value="Không kháng nghị">Không kháng nghị (Trả lời đơn)</option>
-                            <option value="Yêu cầu xác minh">Yêu cầu xác minh / Bổ sung</option>
-                            <option value="Khác">Khác</option>
+                            {isKhieuNai ? (
+                              <>
+                                <option value="Chấp nhận kháng nghị">Chấp nhận kháng nghị</option>
+                                <option value="Không chấp nhận kháng nghị">Không chấp nhận kháng nghị</option>
+                              </>
+                            ) : (
+                              <>
+                                <option value="Kháng nghị">Kháng nghị</option>
+                                <option value="Không kháng nghị">Không kháng nghị (Trả lời đơn)</option>
+                                <option value="Yêu cầu xác minh">Yêu cầu xác minh / Bổ sung</option>
+                                <option value="Khác">Khác</option>
+                              </>
+                            )}
                           </select>
 
                           <textarea
@@ -3825,7 +3835,8 @@ function TaoToTrinhModal({
               </table>
             </div>
           </div>
-        </div>
+        )}
+      </div>
 
         {/* Modal Footer */}
         <div
