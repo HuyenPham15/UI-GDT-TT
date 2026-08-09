@@ -81,21 +81,22 @@ export function Tag({ type }: { type: string }) {
   return null;
 }
 
-// export function CapXetXu({ label }: { label: string }) {
-//   return (
-//     <span
-//       style={{
-//         display: "inline-flex", alignItems: "center",
-//         padding: "2px 8px", borderRadius: 20,
-//         fontSize: 11, fontWeight: 500,
-//         color: "#92400e", background: "#fef3c7",
-//         fontFamily: F, alignSelf: "flex-start",
-//       }}
-//     >
-//       {/* Cấp xét xử: {label} */}
-//     </span>
-//   );
-// }
+export function CapXetXu({ label }: { label: string }) {
+  if (!label) return null;
+  return (
+    <span
+      style={{
+        display: "inline-flex", alignItems: "center",
+        padding: "2px 8px", borderRadius: 20,
+        fontSize: 11, fontWeight: 500,
+        color: "#92400e", background: "#fef3c7",
+        fontFamily: F, alignSelf: "flex-start",
+      }}
+    >
+      Cấp xét xử: {label}
+    </span>
+  );
+}
 
 // ── Table header / row ───────────────────────────────────────────────────────
 
@@ -122,3 +123,144 @@ export const TD_STYLE: React.CSSProperties = {
   wordBreak: "break-word",
   overflowWrap: "break-word",
 };
+
+export type UserRoleType = "vu-1" | "vu-2" | "vu-3" | "vu-4" | "toan-bo" | "hinh-su" | "dan-su" | "hanh-chinh";
+
+export interface DepartmentInfo {
+  code: string;
+  maDonVi: string;
+  tenDayDu: string;
+  tenRutGon: string;
+  loaiAnChinh: string;
+  loaiAnList: string[];
+  donViNhanMacDinh: string;
+  nguoiLienQuanLabels: {
+    ben1: string;
+    ben2: string;
+    ben3: string;
+  };
+}
+
+export function getDepartmentInfo(role: UserRoleType): DepartmentInfo {
+  if (role === "vu-1" || role === "hinh-su") {
+    return {
+      code: "D01.106",
+      maDonVi: "D01",
+      tenDayDu: "Vụ Giám đốc kiểm tra về hình sự",
+      tenRutGon: "Vụ Giám đốc, kiểm tra I",
+      loaiAnChinh: "Hình sự",
+      loaiAnList: ["Hình sự"],
+      donViNhanMacDinh: "Vụ Giám đốc, kiểm tra I (TANDTC)",
+      nguoiLienQuanLabels: {
+        ben1: "Bị cáo",
+        ben2: "Bị hại",
+        ben3: "Người có quyền lợi và nghĩa vụ liên quan",
+      },
+    };
+  }
+  if (role === "vu-2" || role === "dan-su") {
+    return {
+      code: "D01.107",
+      maDonVi: "D01",
+      tenDayDu: "Vụ Giám đốc kiểm tra về dân sự",
+      tenRutGon: "Vụ Giám đốc, kiểm tra II",
+      loaiAnChinh: "Dân sự",
+      loaiAnList: ["Dân sự"],
+      donViNhanMacDinh: "Vụ Giám đốc, kiểm tra II (TANDTC)",
+      nguoiLienQuanLabels: {
+        ben1: "Nguyên đơn",
+        ben2: "Bị đơn",
+        ben3: "Người có quyền lợi và nghĩa vụ liên quan",
+      },
+    };
+  }
+  if (role === "vu-3") {
+    return {
+      code: "D01.108",
+      maDonVi: "D01",
+      tenDayDu: "Vụ Giám đốc, kiểm tra về kinh doanh, thương mại, phá sản, lao động, gia đình và người chưa thành niên",
+      tenRutGon: "Vụ Giám đốc, kiểm tra III",
+      loaiAnChinh: "Kinh doanh thương mại",
+      loaiAnList: ["Kinh doanh thương mại", "Phá sản", "Lao động", "Hôn nhân gia đình", "Sở hữu trí tuệ"],
+      donViNhanMacDinh: "Vụ Giám đốc, kiểm tra III (TANDTC)",
+      nguoiLienQuanLabels: {
+        ben1: "Nguyên đơn",
+        ben2: "Bị đơn",
+        ben3: "Người có quyền lợi và nghĩa vụ liên quan",
+      },
+    };
+  }
+  if (role === "vu-4" || role === "hanh-chinh") {
+    return {
+      code: "D01.109",
+      maDonVi: "D01",
+      tenDayDu: "Vụ Giám đốc, kiểm tra về hành chính",
+      tenRutGon: "Vụ Giám đốc, kiểm tra IV",
+      loaiAnChinh: "Hành chính",
+      loaiAnList: ["Hành chính"],
+      donViNhanMacDinh: "Vụ Giám đốc, kiểm tra IV (TANDTC)",
+      nguoiLienQuanLabels: {
+        ben1: "Người khởi kiện",
+        ben2: "Người bị kiện",
+        ben3: "Người có quyền lợi và nghĩa vụ liên quan",
+      },
+    };
+  }
+  return {
+    code: "TANDTC",
+    maDonVi: "D01",
+    tenDayDu: "Lãnh đạo TAND tối cao / Quản trị viên hệ thống",
+    tenRutGon: "Toàn bộ Vụ án (4 Vụ)",
+    loaiAnChinh: "Toàn bộ các loại án",
+    loaiAnList: ["Hình sự", "Dân sự", "Kinh doanh thương mại", "Hành chính", "Lao động", "Hôn nhân gia đình"],
+    donViNhanMacDinh: "Tòa án nhân dân tối cao",
+    nguoiLienQuanLabels: {
+      ben1: "Nguyên đơn / Bị cáo / Người khởi kiện",
+      ben2: "Bị đơn / Bị hại / Người bị kiện",
+      ben3: "Người có quyền lợi và nghĩa vụ liên quan",
+    },
+  };
+}
+
+export function TaiKhoanPhanQuyenBar({
+  userRole,
+  setUserRole,
+}: {
+  userRole: UserRoleType;
+  setUserRole: (role: UserRoleType) => void;
+}) {
+  const isVu1 = userRole === "vu-1" || userRole === "hinh-su";
+  const isVu2 = userRole === "vu-2" || userRole === "dan-su";
+  const isVu3 = userRole === "vu-3";
+  const isVu4 = userRole === "vu-4" || userRole === "hanh-chinh";
+
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "5px 12px", background: "#f8fafc", border: `1px solid ${BORDER}`, borderRadius: 6 }}>
+      <span style={{ fontSize: 12, fontWeight: 700, color: TEXT, fontFamily: F }}>
+        👤 Tài khoản phân quyền:
+      </span>
+      <select
+        value={userRole}
+        onChange={e => setUserRole(e.target.value as UserRoleType)}
+        style={{
+          padding: "5px 12px",
+          fontSize: 12,
+          fontWeight: 700,
+          fontFamily: F,
+          color: isVu1 ? RED : isVu2 ? "#1e40af" : isVu3 ? "#047857" : isVu4 ? "#c2410c" : "#6b21a8",
+          border: `1px solid ${isVu1 ? "#fca5a5" : isVu2 ? "#93c5fd" : isVu3 ? "#6ee7b7" : isVu4 ? "#fdba74" : "#d8b4fe"}`,
+          borderRadius: 4,
+          background: "#fff",
+          cursor: "pointer",
+          outline: "none",
+        }}
+      >
+        <option value="vu-1">🔴 D01.106 – Vụ Giám đốc kiểm tra về hình sự (Vụ Giám đốc, kiểm tra I)</option>
+        <option value="vu-2">🔵 D01.107 – Vụ Giám đốc kiểm tra về dân sự (Vụ Giám đốc, kiểm tra II)</option>
+        <option value="vu-3">🟢 D01.108 – Vụ Giám đốc, kiểm tra về KDTM, phá sản, LĐ, HNGĐ (Vụ Giám đốc, kiểm tra III)</option>
+        <option value="vu-4">🟠 D01.109 – Vụ Giám đốc, kiểm tra về hành chính (Vụ Giám đốc, kiểm tra IV)</option>
+        <option value="toan-bo">🟣 Lãnh đạo TANDTC / Quản trị viên (Toàn bộ 4 Vụ)</option>
+      </select>
+    </div>
+  );
+}

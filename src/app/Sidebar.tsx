@@ -6,6 +6,8 @@ export type View =
   | "cho-y-kien"
   | "da-co-vu-an"
   | "ho-so-khang-nghi"
+  | "ho-so-tu-hinh"
+  | "don-xin-an-giam"
   | "giao-tieu-ho-so"
   | "them-ho-so"
   | "phan-cong-ttv"
@@ -141,6 +143,7 @@ function NavLink({
 export default function Sidebar({ currentView, onNavigate }: SidebarProps) {
   const [qldOpen, setQldOpen] = useState(true);
   const [qlaOpen, setQlaOpen] = useState(true);
+  const [tuHinhOpen, setTuHinhOpen] = useState(true);
   const [ctldOpen, setCtldOpen] = useState(true);
 
   const inList = [
@@ -253,6 +256,83 @@ export default function Sidebar({ currentView, onNavigate }: SidebarProps) {
             onClick={() => onNavigate("ho-so-khang-nghi")}
             sub
           />
+          {/* Quản lý hồ sơ tử hình (2 tab con: Đơn xin ân giảm & Hồ sơ tử hình) */}
+          <div style={{ width: "100%" }}>
+            <button
+              onClick={() => {
+                setTuHinhOpen((v) => !v);
+                if (!tuHinhOpen && currentView !== "don-xin-an-giam" && currentView !== "ho-so-tu-hinh") {
+                  onNavigate("don-xin-an-giam");
+                }
+              }}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 8,
+                width: "100%",
+                padding: "7px 20px 7px 48px",
+                background: (currentView === "ho-so-tu-hinh" || currentView === "don-xin-an-giam") ? "#fef2f2" : "none",
+                border: "none",
+                borderLeft: (currentView === "ho-so-tu-hinh" || currentView === "don-xin-an-giam") ? `3px solid ${ACTIVE_COLOR}` : "3px solid transparent",
+                cursor: "pointer",
+                textAlign: "left",
+                fontFamily: F,
+                transition: "background 0.1s",
+              }}
+              onMouseEnter={(e) => {
+                if (currentView !== "ho-so-tu-hinh" && currentView !== "don-xin-an-giam") e.currentTarget.style.background = "#f3f4f6";
+              }}
+              onMouseLeave={(e) => {
+                if (currentView !== "ho-so-tu-hinh" && currentView !== "don-xin-an-giam") e.currentTarget.style.background = "none";
+              }}
+            >
+              {(currentView === "ho-so-tu-hinh" || currentView === "don-xin-an-giam") && (
+                <span
+                  style={{
+                    width: 6,
+                    height: 6,
+                    borderRadius: "50%",
+                    background: ACTIVE_COLOR,
+                    flexShrink: 0,
+                  }}
+                />
+              )}
+              <span
+                style={{
+                  flex: 1,
+                  fontSize: 13,
+                  color: (currentView === "ho-so-tu-hinh" || currentView === "don-xin-an-giam") ? ACTIVE_COLOR : "#4b5563",
+                  fontWeight: (currentView === "ho-so-tu-hinh" || currentView === "don-xin-an-giam") ? 600 : 400,
+                  lineHeight: 1.4,
+                }}
+              >
+                Quản lý hồ sơ tử hình
+              </span>
+              {tuHinhOpen ? (
+                <ChevronDown size={11} color="#9ca3af" />
+              ) : (
+                <ChevronRight size={11} color="#9ca3af" />
+              )}
+            </button>
+            {tuHinhOpen && (
+              <div style={{ background: "rgba(249,250,251,0.8)" }}>
+                <NavLink
+                  label="Đơn xin ân giảm"
+                  active={currentView === "don-xin-an-giam"}
+                  onClick={() => onNavigate("don-xin-an-giam")}
+                  sub
+                  indent={2}
+                />
+                <NavLink
+                  label="Hồ sơ tử hình"
+                  active={currentView === "ho-so-tu-hinh"}
+                  onClick={() => onNavigate("ho-so-tu-hinh")}
+                  sub
+                  indent={2}
+                />
+              </div>
+            )}
+          </div>
           <NavLink
             label="Quản lý vụ án"
             active={currentView === "quan-ly-vu-an"}

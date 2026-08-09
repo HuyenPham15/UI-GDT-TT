@@ -433,22 +433,40 @@ export const CASES: DonCase[] = LOAI_AN_META.flatMap((_, loaiIdx) =>
   ),
 );
 
-export function countByTab(tab: TabId): string {
-  const n = CASES.filter((c) => c.tabs.includes(tab)).length;
-  return String(n);
-}
-
 export const TAB_CONFIG = [
-  { id: "tat-ca", label: "Tất cả", count: countByTab("tat-ca") },
-  { id: "cho-y-kien", label: "Chờ xin ý kiến", count: countByTab("cho-y-kien") },
-  { id: "don-cho-phe-duyet", label: "Đơn chờ phê duyệt", count: countByTab("don-cho-phe-duyet") },
-  // { id: "ho-so-khang-nghi", label: "Hồ sơ kháng nghị", count: countByTab("ho-so-khang-nghi") },
-  { id: "da-co-vu-an", label: "Đã có vụ án", count: countByTab("da-co-vu-an") },
-  { id: "tra-lai", label: "Trả lại", count: countByTab("tra-lai") },
+  { id: "tat-ca", label: "Tất cả", count: "30" },
+  { id: "cho-y-kien", label: "Chờ xin ý kiến", count: "6" },
+  { id: "don-cho-phe-duyet", label: "Đơn chờ phê duyệt", count: "6" },
+  // { id: "ho-so-khang-nghi", label: "Hồ sơ kháng nghị", count: "6" },
+  { id: "da-co-vu-an", label: "Đã có vụ án", count: "6" },
+  { id: "tra-lai", label: "Trả lại", count: "6" },
 ] as const;
 
-export function getCasesByTab(tab: TabId): DonCase[] {
-  return CASES.filter((c) => c.tabs.includes(tab));
+export function filterCasesByRole(cases: DonCase[], userRole?: string): DonCase[] {
+  if (!userRole || userRole === "toan-bo") return cases;
+  if (userRole === "vu-1" || userRole === "hinh-su") return cases.filter((c) => c.loaiAn === "Hình sự");
+  if (userRole === "vu-2" || userRole === "dan-su") return cases.filter((c) => c.loaiAn === "Dân sự");
+  if (userRole === "vu-3" || userRole === "kdtm-ld")
+    return cases.filter(
+      (c) =>
+        c.loaiAn === "Kinh doanh thương mại" ||
+        c.loaiAn === "Phá sản" ||
+        c.loaiAn === "Lao động" ||
+        c.loaiAn === "Hôn nhân gia đình" ||
+        c.loaiAn === "Sở hữu trí tuệ"
+    );
+  if (userRole === "vu-4" || userRole === "hanh-chinh") return cases.filter((c) => c.loaiAn === "Hành chính");
+  return cases;
+}
+
+export function getCasesByTab(tab: TabId, userRole?: string): DonCase[] {
+  const tabCases = CASES.filter((c) => c.tabs.includes(tab));
+  return filterCasesByRole(tabCases, userRole);
+}
+
+export function countByTab(tab: TabId, userRole?: string): string {
+  const n = getCasesByTab(tab, userRole).length;
+  return String(n);
 }
 
 export function getCasesByLoaiAn(loaiAn: LoaiAn): DonCase[] {

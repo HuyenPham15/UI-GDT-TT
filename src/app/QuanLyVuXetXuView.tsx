@@ -1,9 +1,9 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Search, RotateCcw, ChevronDown, ChevronUp, MoreVertical, X, Eye, Pencil, Printer, FileText, Trash2, Calendar, Save, Send } from "lucide-react";
-import { F, RED, BORDER, TEXT, MUTED, BG, TH_STYLE, TD_STYLE, Badge } from "./shared";
+import { F, RED, BORDER, TEXT, MUTED, BG, TH_STYLE, TD_STYLE, Badge, TaiKhoanPhanQuyenBar, type UserRoleType } from "./shared";
 import { formatSoBA } from "./AppHelpers";
 import { TaoDuThaoModal } from "./TaoDuThaoModal";
-import { TrinhKyModal } from "./TrinhKyModal";
+import { TrinhKyModal, HoSoToTrinhModal } from "./TrinhKyModal";
 import { LichXetXuModal } from "./PhanCongHDXXView";
 
 // ── Types ─────────────────────────────────────────────────────────────────────
@@ -16,7 +16,7 @@ type TrangThai =
   | "da-xx"                 // Đã xét xử
   | "chuyen-tham-quyen";    // Chuyển thẩm quyền xét xử
 
-type DetailTab = "thong-tin" | "thu-ly" | "phan-cong" | "to-trinh" | "qd-vu-an" | "ket-qua";
+type DetailTab = "thong-tin" | "thu-ly" | "to-trinh" | "phan-cong" | "qd-vu-an" | "ket-qua" | "ho-so-vu-an";
 
 type VuXetXuRow = {
   id: number;
@@ -44,6 +44,7 @@ type VuXetXuRow = {
   soNgayBAQD: string;
   toaRABAQD: string;
   soNgayKhangNghi: string;
+  nguoiKhangNghi: string;
   soNgayThuLy: string;
   vienKiemSat: string;
   toaAnGiaiQuyet: string;
@@ -92,6 +93,7 @@ const ROWS: VuXetXuRow[] = [
     ttv: "Trịnh Thị Minh Trang", ldv: "Nguyễn Như Thắng", tp: "Lê Thị Thu Hiển",
     trangThai: "chua-xx-chua-ds",
     soNgayBAQD: "5469/2026/HS-ST – 03/07/2026", toaRABAQD: "Tòa án nhân dân khu vực 5 – Bắc Ninh",
+    nguoiKhangNghi: "Viện trưởng Viện kiểm sát nhân dân tối cao",
     soNgayKhangNghi: "QDKN_2707 – 27/07/2026", soNgayThuLy: "54681978 – 09/07/2026",
     vienKiemSat: "Viện kiểm sát nhân dân tối cao", toaAnGiaiQuyet: "Tòa án nhân dân tối cao",
     biCao: "Trần Văn Hải", loaiAn: "Hình sự", chuToa: "Lê Thị Thu Hiển",
@@ -108,6 +110,7 @@ const ROWS: VuXetXuRow[] = [
     ttv: "Vô Thị Thúy Giang", ldv: "Nguyễn Như Thắng", tp: "Nguyễn Biên Thùy",
     trangThai: "chua-xx-da-ds", thoiHanXX: "19 ngày",
     soNgayBAQD: "54681139/2026/HS-PT – 03/07/2026", toaRABAQD: "Tòa án nhân dân khu vực 5 – Bắc Ninh",
+    nguoiKhangNghi: "Phan Văn Hùng",
     soNgayKhangNghi: "QDKN_1111 – 11/11/2024", soNgayThuLy: "54681923 – 09/07/2026",
     vienKiemSat: "Viện kiểm sát nhân dân tối cao", toaAnGiaiQuyet: "Tòa án nhân dân tối cao",
     biCao: "Phan Văn Hùng", loaiAn: "Hình sự", chuToa: "Nguyễn Biên Thùy",
@@ -125,6 +128,7 @@ const ROWS: VuXetXuRow[] = [
     trangThai: "chua-thu-ly",
     soNgayBAQD: "112/2026/HS-ST – 15/06/2026", toaRABAQD: "Tòa án nhân dân TP Hà Nội",
     soNgayKhangNghi: "QDKN_1888 – 20/06/2026", soNgayThuLy: "–",
+    nguoiKhangNghi: "Viện trưởng Viện kiểm sát nhân dân tối cao",
     vienKiemSat: "Viện kiểm sát nhân dân tối cao", toaAnGiaiQuyet: "Tòa án nhân dân tối cao",
     biCao: "Trần Minh Quang", loaiAn: "Hình sự", chuToa: "–",
     hdxx: "–", ngayXX: "–", phongXX: "–",
@@ -140,6 +144,7 @@ const ROWS: VuXetXuRow[] = [
     ttv: "Nguyễn Thị Hương", ldv: "Nguyễn Như Thắng", tp: "Lê Thị Thu Hiển",
     trangThai: "rut-khang-nghi", soQD: "54/2026/QĐ-CA", ngayQD: "09/07/2026",
     soNgayBAQD: "18/2026/HS-ST – 08/07/2026", toaRABAQD: "Tòa án nhân dân khu vực 5 – Bắc Ninh",
+    nguoiKhangNghi: "Viện trưởng Viện kiểm sát nhân dân tối cao",
     soNgayKhangNghi: "QDKN_1201 – 01/05/2026", soNgayThuLy: "54681813 – 09/07/2026",
     vienKiemSat: "Viện kiểm sát nhân dân tối cao", toaAnGiaiQuyet: "Tòa án nhân dân tối cao",
     biCao: "Đỗ Thành Công", loaiAn: "Hình sự", chuToa: "Lê Thị Thu Hiển",
@@ -156,6 +161,7 @@ const ROWS: VuXetXuRow[] = [
     ttv: "Hoàng Quỳnh Trang", ldv: "Nguyễn Như Thắng", tp: "Nguyễn Biên Thùy",
     trangThai: "da-xx", soQD: "102/2026/QĐ-GĐT", ngayQD: "25/06/2026",
     soNgayBAQD: "99/2026/HS-PT – 20/04/2026", toaRABAQD: "Tòa án nhân dân tỉnh Vĩnh Phúc",
+    nguoiKhangNghi: "Viện trưởng Viện kiểm sát nhân dân tối cao",
     soNgayKhangNghi: "QDKN_1402 – 05/05/2026", soNgayThuLy: "54681555 – 10/05/2026",
     vienKiemSat: "Viện kiểm sát nhân dân tối cao", toaAnGiaiQuyet: "Tòa án nhân dân tối cao",
     biCao: "Bùi Thị Tuyết", loaiAn: "Hình sự", chuToa: "Nguyễn Biên Thùy",
@@ -172,6 +178,7 @@ const ROWS: VuXetXuRow[] = [
     ttv: "Vũ Diệu Thúy", ldv: "Nguyễn Như Thắng", tp: "Lê Thị Thu Hiển",
     trangThai: "chuyen-tham-quyen", soQD: "18/2026/QĐ-CTQ", ngayQD: "15/06/2026",
     soNgayBAQD: "45/2026/HS-ST – 12/05/2026", toaRABAQD: "Tòa án nhân dân tỉnh Quảng Ninh",
+    nguoiKhangNghi: "Viện trưởng Viện kiểm sát nhân dân tối cao",
     soNgayKhangNghi: "QDKN_1600 – 20/05/2026", soNgayThuLy: "54681600 – 01/06/2026",
     vienKiemSat: "Viện kiểm sát nhân dân tối cao", toaAnGiaiQuyet: "Tòa án nhân dân tối cao",
     biCao: "Nguyễn Văn Lợi", loaiAn: "Hình sự", chuToa: "Lê Thị Thu Hiển",
@@ -190,6 +197,7 @@ const ROWS: VuXetXuRow[] = [
     ttv: "Hoàng Quỳnh Trang", ldv: "Lê Thị Thu Hiển", tp: "Nguyễn Như Thắng",
     trangThai: "chua-thu-ly",
     soNgayBAQD: "21/2026/DS-ST – 03/07/2026", toaRABAQD: "Tòa án nhân dân khu vực 5 – Bắc Ninh",
+    nguoiKhangNghi: "Viện trưởng Viện kiểm sát nhân dân tối cao",
     soNgayKhangNghi: "QDKN_1543 – 15/06/2026", soNgayThuLy: "–",
     vienKiemSat: "Viện kiểm sát nhân dân tối cao", toaAnGiaiQuyet: "Tòa án nhân dân tối cao",
     biCao: "Ngô Mai Trang", loaiAn: "Dân sự", chuToa: "Nguyễn Như Thắng",
@@ -206,6 +214,7 @@ const ROWS: VuXetXuRow[] = [
     ttv: "Vũ Diệu Thúy", ldv: "Phạm Thị Bích Ngọc", tp: "Nguyễn Như Thắng",
     trangThai: "da-xx", soQD: "88/2026/QĐ-GĐT", ngayQD: "08/07/2026",
     soNgayBAQD: "08/2026/DS-ST – 08/07/2025", toaRABAQD: "Tòa án nhân dân khu vực 5 – Bắc Ninh",
+    nguoiKhangNghi: "Viện trưởng Viện kiểm sát nhân dân tối cao",
     soNgayKhangNghi: "QDKN_0987 – 10/04/2026", soNgayThuLy: "54681748 – 08/07/2026",
     vienKiemSat: "Viện kiểm sát nhân dân tối cao", toaAnGiaiQuyet: "Tòa án nhân dân tối cao",
     biCao: "Nguyễn Quốc Huy", loaiAn: "Dân sự", chuToa: "Nguyễn Như Thắng",
@@ -222,6 +231,7 @@ const ROWS: VuXetXuRow[] = [
     ttv: "Vô Thị Thúy Giang", ldv: "Lê Thị Thu Hiển", tp: "Nguyễn Như Thắng",
     trangThai: "chua-xx-chua-ds",
     soNgayBAQD: "77/2026/DS-PT – 28/06/2026", toaRABAQD: "Tòa án nhân dân TP Đà Nẵng",
+    nguoiKhangNghi: "Viện trưởng Viện kiểm sát nhân dân tối cao",
     soNgayKhangNghi: "QDKN_2300 – 05/07/2026", soNgayThuLy: "54682300 – 12/07/2026",
     vienKiemSat: "Viện kiểm sát nhân dân tối cao", toaAnGiaiQuyet: "Tòa án nhân dân tối cao",
     biCao: "Lê Văn Hùng", loaiAn: "Dân sự", chuToa: "Nguyễn Như Thắng",
@@ -238,6 +248,7 @@ const ROWS: VuXetXuRow[] = [
     ttv: "Nguyễn Thị Hương", ldv: "Phạm Thị Bích Ngọc", tp: "Trịnh Đức Minh",
     trangThai: "chua-xx-da-ds", thoiHanXX: "25 ngày",
     soNgayBAQD: "105/2026/DS-ST – 30/06/2026", toaRABAQD: "Tòa án nhân dân tỉnh Bình Dương",
+    nguoiKhangNghi: "Ngân hàng Thương mại Cổ phần Á Châu",
     soNgayKhangNghi: "QDKN_2410 – 08/07/2026", soNgayThuLy: "54682410 – 14/07/2026",
     vienKiemSat: "Viện kiểm sát nhân dân tối cao", toaAnGiaiQuyet: "Tòa án nhân dân tối cao",
     biCao: "Trần Quốc Toản", loaiAn: "Dân sự", chuToa: "Trịnh Đức Minh",
@@ -254,6 +265,7 @@ const ROWS: VuXetXuRow[] = [
     ttv: "Trịnh Thị Minh Trang", ldv: "Lê Thị Thu Hiển", tp: "Nguyễn Như Thắng",
     trangThai: "rut-khang-nghi", soQD: "72/2026/QĐ-CA", ngayQD: "18/07/2026",
     soNgayBAQD: "34/2026/DS-PT – 02/07/2026", toaRABAQD: "Tòa án nhân dân TP Hồ Chí Minh",
+    nguoiKhangNghi: "Viện trưởng Viện kiểm sát nhân dân tối cao",
     soNgayKhangNghi: "QDKN_2511 – 10/07/2026", soNgayThuLy: "54682511 – 15/07/2026",
     vienKiemSat: "Viện kiểm sát nhân dân tối cao", toaAnGiaiQuyet: "Tòa án nhân dân tối cao",
     biCao: "Công ty TNHH Truyền thông XYZ", loaiAn: "Dân sự", chuToa: "Nguyễn Như Thắng",
@@ -273,6 +285,7 @@ const ROWS: VuXetXuRow[] = [
     trangThai: "chuyen-tham-quyen", soQD: "29/2026/QĐ-CTQ", ngayQD: "12/07/2026",
     soNgayBAQD: "0807/2026/HC-ST – 08/07/2025", toaRABAQD: "Tòa án nhân dân quận Ninh Kiều",
     soNgayKhangNghi: "QDKN_0654 – 20/03/2026", soNgayThuLy: "54681800 – 08/07/2026",
+    nguoiKhangNghi: "Viện trưởng Viện kiểm sát nhân dân tối cao",
     vienKiemSat: "Viện kiểm sát nhân dân tối cao", toaAnGiaiQuyet: "Tòa án nhân dân tối cao",
     biCao: "ỦY BAN NHÂN DÂN QUẬN NINH KIỀU", loaiAn: "Hành chính", chuToa: "Nguyễn Như Thắng",
     hdxx: "Hội đồng toàn thể", ngayXX: "–", phongXX: "–",
@@ -288,6 +301,7 @@ const ROWS: VuXetXuRow[] = [
     ttv: "Trịnh Thị Minh Trang", ldv: "Nguyễn Như Thắng", tp: "Lê Thị Thu Hiển",
     trangThai: "chua-xx-chua-ds",
     soNgayBAQD: "18/2026/HC-ST – 08/07/2026", toaRABAQD: "Tòa án nhân dân cấp cao tại Hà Nội",
+    nguoiKhangNghi: "Viện trưởng Viện kiểm sát nhân dân tối cao",
     soNgayKhangNghi: "QDKN_2613 – 09/07/2026", soNgayThuLy: "54682613 – 10/07/2026",
     vienKiemSat: "Viện kiểm sát nhân dân tối cao", toaAnGiaiQuyet: "Tòa án nhân dân tối cao",
     biCao: "Ủy ban nhân dân tỉnh Bắc Ninh", loaiAn: "Hành chính", chuToa: "Lê Thị Thu Hiển",
@@ -304,6 +318,7 @@ const ROWS: VuXetXuRow[] = [
     ttv: "Hoàng Quỳnh Trang", ldv: "Phạm Thị Bích Ngọc", tp: "Trịnh Đức Minh",
     trangThai: "chua-xx-da-ds", thoiHanXX: "14 ngày",
     soNgayBAQD: "52/2026/HC-PT – 25/06/2026", toaRABAQD: "Tòa án nhân dân cấp cao tại TP.HCM",
+    nguoiKhangNghi: "Viện trưởng Viện kiểm sát nhân dân tối cao",
     soNgayKhangNghi: "QDKN_2714 – 02/07/2026", soNgayThuLy: "54682714 – 12/07/2026",
     vienKiemSat: "Viện kiểm sát nhân dân tối cao", toaAnGiaiQuyet: "Tòa án nhân dân tối cao",
     biCao: "Ủy ban nhân dân TP Thủ Đức", loaiAn: "Hành chính", chuToa: "Trịnh Đức Minh",
@@ -321,6 +336,7 @@ const ROWS: VuXetXuRow[] = [
     trangThai: "chua-thu-ly",
     soNgayBAQD: "99/2026/HC-ST – 12/07/2026", toaRABAQD: "Tòa án nhân dân tỉnh Vĩnh Phúc",
     soNgayKhangNghi: "QDKN_2815 – 15/07/2026", soNgayThuLy: "–",
+    nguoiKhangNghi: "Viện trưởng Viện kiểm sát nhân dân tối cao",
     vienKiemSat: "Viện kiểm sát nhân dân tối cao", toaAnGiaiQuyet: "Tòa án nhân dân tối cao",
     biCao: "Ủy ban nhân dân huyện Yên Lạc", loaiAn: "Hành chính", chuToa: "–",
     hdxx: "–", ngayXX: "–", phongXX: "–",
@@ -336,6 +352,7 @@ const ROWS: VuXetXuRow[] = [
     ttv: "Nguyễn Thị Hương", ldv: "Phạm Thị Bích Ngọc", tp: "Nguyễn Biên Thùy",
     trangThai: "da-xx", soQD: "44/2026/QĐ-GĐT", ngayQD: "28/06/2026",
     soNgayBAQD: "14/2026/HC-ST – 10/05/2026", toaRABAQD: "Tòa án nhân dân tỉnh Hải Dương",
+    nguoiKhangNghi: "Viện trưởng Viện kiểm sát nhân dân tối cao",
     soNgayKhangNghi: "QDKN_2916 – 20/05/2026", soNgayThuLy: "54682916 – 05/06/2026",
     vienKiemSat: "Viện kiểm sát nhân dân tối cao", toaAnGiaiQuyet: "Tòa án nhân dân tối cao",
     biCao: "Cục trưởng Cục Thuế tỉnh Hải Dương", loaiAn: "Hành chính", chuToa: "Nguyễn Biên Thùy",
@@ -353,6 +370,7 @@ const ROWS: VuXetXuRow[] = [
     trangThai: "rut-khang-nghi", soQD: "81/2026/QĐ-CA", ngayQD: "02/07/2026",
     soNgayBAQD: "28/2026/HC-PT – 01/06/2026", toaRABAQD: "Tòa án nhân dân cấp cao tại Hà Nội",
     soNgayKhangNghi: "QDKN_3017 – 10/06/2026", soNgayThuLy: "54683017 – 15/06/2026",
+    nguoiKhangNghi: "Viện trưởng Viện kiểm sát nhân dân tối cao",
     vienKiemSat: "Viện kiểm sát nhân dân tối cao", toaAnGiaiQuyet: "Tòa án nhân dân tối cao",
     biCao: "Văn phòng Đăng ký đất đai tỉnh Hòa Bình", loaiAn: "Hành chính", chuToa: "Lê Thị Thu Hiển",
     hdxx: "Hội đồng 5 thẩm phán", ngayXX: "–", phongXX: "–",
@@ -369,10 +387,11 @@ const LIST_TABS = [
 const DETAIL_TABS: { key: DetailTab; label: string }[] = [
   { key: "thong-tin", label: "Thông tin vụ án" },
   { key: "thu-ly", label: "Thụ lý" },
-  { key: "phan-cong", label: "Phân công" },
   { key: "to-trinh", label: "Tờ trình" },
+  { key: "phan-cong", label: "Phân công" },
   { key: "qd-vu-an", label: "Quyết định vụ án" },
   { key: "ket-qua", label: "Kết quả xét xử" },
+  { key: "ho-so-vu-an", label: "Hồ sơ vụ án" },
 ];
 
 // ── Trạng thái cell (rich – matches image-5) ─────────────────────────────────
@@ -455,15 +474,14 @@ function ThongTinChungBlock({ row }: { row: VuXetXuRow }) {
         <span style={{ fontSize: 12, fontWeight: 700, color: RED, textTransform: "uppercase" as const, letterSpacing: "0.3px", fontFamily: F }}>Thông tin chung của vụ án</span>
       </div>
       {open && (
-        <div style={{ border: `1px solid ${BORDER}`, borderRadius: 6, overflow: "hidden" }}>
+        <div style={{ border: `1px solid ${BORDER}`, borderRadius: 6, overflow: "hidden", marginBottom: 12 }}>
           <div style={{ padding: "8px 14px", background: BG, borderBottom: `1px solid ${BORDER}` }}>
             <span style={{ fontSize: 12, fontWeight: 600, color: TEXT, fontFamily: F }}>Thông tin chung của vụ án</span>
           </div>
           <InfoGrid rows={[
-            ["Mã vụ án – Tên vụ án", row.maVuAn, "Số – Ngày BA/QĐ", row.soNgayBAQD],
-            ["Tòa ra BA/QĐ", row.toaRABAQD, "Số – Ngày Kháng nghị", row.soNgayKhangNghi],
-            ["Số – Ngày thụ lý xét xử", row.soNgayThuLy, "Trạng thái", "Chưa xét xử"],
-            ["Viện kiểm sát giải quyết", row.vienKiemSat, "Tòa án giải quyết", row.toaAnGiaiQuyet],
+            ["Mã vụ án – Tên vụ án", row.maVuAn, "Số – Ngày Kháng nghị", row.soNgayKhangNghi],
+            ["Số – Ngày BA/QĐ", row.soNgayBAQD, "Người kháng nghị", row.nguoiKhangNghi || "Viện trưởng Viện kiểm sát nhân dân tối cao"],
+            ["Tòa ra BA/QĐ", row.toaRABAQD, "Tòa án giải quyết", row.toaAnGiaiQuyet],
           ]} />
         </div>
       )}
@@ -473,7 +491,7 @@ function ThongTinChungBlock({ row }: { row: VuXetXuRow }) {
 
 // ── Tab: Thông tin vụ án ─────────────────────────────────────────────────────
 
-function TabThongTin({ row }: { row: VuXetXuRow }) {
+function TabThongTin({ row, userRole }: { row: VuXetXuRow; userRole?: UserRoleType }) {
   const [sec1Open, setSec1Open] = useState(true);
   const [sec2Open, setSec2Open] = useState(true);
   const [kSuaOpen, setKSuaOpen] = useState(false);
@@ -510,10 +528,10 @@ function TabThongTin({ row }: { row: VuXetXuRow }) {
                 <span style={{ fontSize: 12, fontWeight: 600, color: TEXT, fontFamily: F }}>Thông tin chung của vụ án</span>
               </div>
               <InfoGrid rows={[
-                ["Mã vụ án – Tên vụ án", row.maVuAn, "Số – Ngày BA/QĐ", row.soNgayBAQD],
-                ["Tòa ra BA/QĐ", row.toaRABAQD, "Số – Ngày Kháng nghị", row.soNgayKhangNghi],
-                ["Số – Ngày thụ lý xét xử", row.soNgayThuLy, "Trạng thái", "Chưa xét xử"],
-                ["Viện kiểm sát giải quyết", row.vienKiemSat, "Tòa án giải quyết", row.toaAnGiaiQuyet],
+                ["Mã vụ án – Tên vụ án", row.maVuAn, "Số – Ngày Kháng nghị", row.soNgayKhangNghi],
+                ["Số – Ngày BA/QĐ", row.soNgayBAQD, "Người kháng nghị", row.nguoiKhangNghi],
+                ["Tòa ra BA/QĐ", row.toaRABAQD, "Tòa án giải quyết", row.toaAnGiaiQuyet],
+                // ["Viện kiểm sát giải quyết", row.vienKiemSat, ],
               ]} />
             </div>
             <div style={{ border: `1px solid ${BORDER}`, borderRadius: 6, overflow: "hidden", marginBottom: 12 }}>
@@ -524,10 +542,32 @@ function TabThongTin({ row }: { row: VuXetXuRow }) {
                 </button>
               </div>
               <div style={{ padding: "14px 16px" }}>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 16 }}>
-                  <div><label style={{ fontSize: 11, color: MUTED, fontFamily: F, display: "block", marginBottom: 5 }}>Ngày VKS trả/chuyển hồ sơ:</label><input style={inp} defaultValue="27/07/2026" readOnly={!kSuaOpen} /></div>
-                  <div><label style={{ fontSize: 11, color: MUTED, fontFamily: F, display: "block", marginBottom: 5 }}>Số bút lục VKS trả/chuyển HS:</label><input style={inp} placeholder="Nhập số" readOnly={!kSuaOpen} /></div>
-                  <div><label style={{ fontSize: 11, color: MUTED, fontFamily: F, display: "block", marginBottom: 5 }}>Người kháng nghị:</label><input style={inp} defaultValue="Viện trưởng viện kiểm sát nhân dân tối cao" readOnly={!kSuaOpen} /></div>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "12px 16px" }}>
+                  <div>
+                    <label style={{ fontSize: 11, color: MUTED, fontFamily: F, display: "block", marginBottom: 5 }}>Ngày VKS chuyển hồ sơ:</label>
+                    <input style={inp} defaultValue="27/07/2026" readOnly={!kSuaOpen} />
+                  </div>
+                  <div>
+                    <label style={{ fontSize: 11, color: MUTED, fontFamily: F, display: "block", marginBottom: 5 }}>Số bút lục VKS chuyển HS:</label>
+                    <input style={inp} defaultValue="BL-2026/05" placeholder="Nhập số bút lục chuyển" readOnly={!kSuaOpen} />
+                  </div>
+                  <div>
+                    <label style={{ fontSize: 11, color: MUTED, fontFamily: F, display: "block", marginBottom: 5 }}>Người kháng nghị:</label>
+                    <input style={inp} defaultValue="Viện trưởng Viện kiểm sát nhân dân tối cao" readOnly={!kSuaOpen} />
+                  </div>
+
+                  <div>
+                    <label style={{ fontSize: 11, color: MUTED, fontFamily: F, display: "block", marginBottom: 5 }}>Ngày VKS trả hồ sơ:</label>
+                    <input style={inp} defaultValue="05/08/2026" readOnly={!kSuaOpen} />
+                  </div>
+                  <div>
+                    <label style={{ fontSize: 11, color: MUTED, fontFamily: F, display: "block", marginBottom: 5 }}>Số bút lục VKS trả HS:</label>
+                    <input style={inp} defaultValue="BL-2026/18" placeholder="Nhập số bút lục trả" readOnly={!kSuaOpen} />
+                  </div>
+                  <div>
+                    <label style={{ fontSize: 11, color: MUTED, fontFamily: F, display: "block", marginBottom: 5 }}>Ghi chú trả/chuyển HS:</label>
+                    <input style={inp} placeholder="Nhập ghi chú" readOnly={!kSuaOpen} />
+                  </div>
                 </div>
               </div>
             </div>
@@ -542,18 +582,27 @@ function TabThongTin({ row }: { row: VuXetXuRow }) {
         </div>
         {sec2Open && (
           <>
-            {[
+            {((row.loaiAn === "Hành chính" || userRole === "vu-4" || userRole === "hanh-chinh") ? [
+              { title: "* Người khởi kiện", req: true, cols: ["STT", "Họ và tên/Tổ chức", "Năm sinh", "Địa chỉ", "Thao tác"], rows: [["1", "Phạm Văn Cường", "1975", "Phường Hoàng Văn Thụ, TP. Bắc Giang", actBtns]] },
+              { title: "* Người bị kiện", req: true, cols: ["STT", "Họ và tên/Tổ chức", "Năm sinh", "Địa chỉ", "Thao tác"], rows: [["1", row.biCao || "Ủy ban nhân dân huyện Yên Dũng", "-", "Thị trấn Nham Biền, Huyện Yên Dũng", actBtns]] },
+              { title: "Người có quyền lợi và nghĩa vụ liên quan", req: false, cols: ["STT", "Họ và tên/Tổ chức", "Năm sinh", "Địa chỉ", "Thao tác"], rows: [["1", "Sở Tài nguyên và Môi trường tỉnh Bắc Giang", "-", "TP. Bắc Giang, Tỉnh Bắc Giang", actBtns]] },
+            ] : (row.loaiAn === "Dân sự" || row.loaiAn === "Kinh doanh thương mại" || row.loaiAn === "Hôn nhân gia đình" || row.loaiAn === "Lao động" || userRole === "vu-2" || userRole === "vu-3" || userRole === "dan-su") ? [
+              { title: "* Nguyên đơn", req: true, cols: ["STT", "Họ và tên/Tổ chức", "Năm sinh", "Địa chỉ", "Thao tác"], rows: [["1", "Dương Thu Hằng", "2002", "Số 7, Xã Trường Sơn, Tỉnh Bắc Ninh", actBtns]] },
+              { title: "* Bị đơn", req: true, cols: ["STT", "Họ và tên/Tổ chức", "Năm sinh", "Địa chỉ", "Thao tác"], rows: [["1", row.biCao || "Nguyễn Thành Đô", "1997", "Số 10, Phường Chũ, Tỉnh Bắc Ninh", actBtns]] },
+              { title: "Người có quyền lợi và nghĩa vụ liên quan", req: false, cols: ["STT", "Họ và tên/Tổ chức", "Năm sinh", "Địa chỉ", "Thao tác"], rows: [["1", "Trần Anh Tuấn", "1988", "Xã Vân Sơn, Tỉnh Bắc Ninh", actBtns]] },
+            ] : [
               { title: "* Người khiếu nại", req: true, cols: ["STT", "Họ và tên/Tổ chức", "Năm sinh", "Địa chỉ", "Thao tác"], rows: [["1", "Phan Mai Hoa", "", "Tổ 3, phường Yên Nghĩa, TP Hà Nội", actBtns]] },
               {
                 title: "* Bị cáo", req: true, cols: ["STT", "Họ và tên/Tổ chức", "Địa vị pháp lý", "Thông tin tội danh, Mức án", "Năm sinh", "Địa chỉ", "Thao tác"],
                 rows: [["1", row.biCao, "Bị cáo đầu vụ", <div key="td" style={{ fontSize: 11, lineHeight: 1.5, fontFamily: F }}><div><b>Tội che giấu tội phạm (Tội danh chính)</b> Khoản 1 Điểm a</div><div style={{ color: MUTED }}>Tù có thời hạn – 15 năm, 6 tháng; Phạt tiền, khi không áp dụng hình phạt là phạt chính</div></div>, "2000", "Tổ 7, Xã Yên Định, Tỉnh Bắc Ninh", actBtns]]
               },
               { title: "Bị hại", req: false, cols: ["STT", "Họ và tên/Tổ chức", "Năm sinh", "Địa chỉ", "Thao tác"], rows: [] as React.ReactNode[][] },
-            ].map(sec => (
+              { title: "Người có quyền lợi và nghĩa vụ liên quan", req: false, cols: ["STT", "Họ và tên/Tổ chức", "Năm sinh", "Địa chỉ", "Thao tác"], rows: [] as React.ReactNode[][] },
+            ]).map(sec => (
               <div key={sec.title} style={{ border: `1px solid ${BORDER}`, borderRadius: 6, overflow: "hidden", marginBottom: 12 }}>
                 <div style={{ padding: "8px 14px", background: BG, borderBottom: `1px solid ${BORDER}`, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                   <label style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, fontWeight: 600, color: TEXT, fontFamily: F }}>
-                    {!sec.req && <input type="checkbox" style={{ cursor: "pointer" }} />}
+                    {!sec.req && <input type="checkbox" style={{ cursor: "pointer" }} defaultChecked />}
                     {sec.title}
                   </label>
                   <button style={{ padding: "4px 12px", background: "#fff", border: `1px solid ${BORDER}`, borderRadius: 4, cursor: "pointer", fontSize: 11, fontFamily: F, color: TEXT }}>+ Thêm mới</button>
@@ -627,16 +676,29 @@ function TabPhanCong({ row }: { row: VuXetXuRow }) {
   const TH: React.CSSProperties = { ...TH_STYLE, fontSize: 11, padding: "9px 12px" };
   const TD: React.CSSProperties = { ...TD_STYLE, fontSize: 12, padding: "9px 12px", verticalAlign: "top" as const };
 
+  const [thuKyTen, setThuKyTen] = useState("Hoàng Văn Toàn");
+  const [isEditingThuKy, setIsEditingThuKy] = useState(false);
+
+  const DANH_SACH_THU_KY = [
+    "Hoàng Văn Toàn",
+    "Lý Văn An",
+    "Nguyễn Thu Hằng",
+    "Đỗ Thị Kim Oanh",
+    "Phan Thanh Nhã",
+  ];
+
   const PC_ROWS = [
-    { vai: "Thẩm phán", ngay: "10/04/2026\n06/04/2026", ten: "Trịnh Đức Minh", phu: "Lê Đức Hòa", chuc: "Phó chánh án", nguoi: "Nguyễn Xuân Thành\n10/04/2026 – 10:20:10", hasDoc: true, hasLuu: false },
-    { vai: "Lãnh đạo vụ", ngay: "14/04/2026", ten: "Hoàng Văn Hòa", phu: "", chuc: "Phó Vụ trưởng", nguoi: "Nguyễn Xuân Thành\n14/04/2026 – 10:20:10", hasDoc: false, hasLuu: false },
-    { vai: "Thẩm tra viên", ngay: "16/04/2026", ten: "Nguyễn Ngọc Ngan", phu: "", chuc: "Thẩm tra viên chính", nguoi: "Nguyễn Xuân Thành\n14/04/2026 – 10:20:10", hasDoc: false, hasLuu: false },
-    { vai: "Thư ký", ngay: "", ten: "", phu: "", chuc: "", nguoi: "", hasDoc: false, hasLuu: true },
+    { vai: "Thẩm phán", ngay: "10/04/2026\n06/04/2026", ten: "Trịnh Đức Minh", phu: "Lê Đức Hòa", chuc: "Phó Chánh án", nguoi: "Nguyễn Xuân Thành\n10/04/2026 – 10:20:10", hasDoc: true, isThuKy: false },
+    { vai: "Lãnh đạo vụ", ngay: "14/04/2026", ten: "Hoàng Văn Hòa", phu: "", chuc: "Phó Vụ trưởng", nguoi: "Nguyễn Xuân Thành\n14/04/2026 – 10:20:10", hasDoc: false, isThuKy: false },
+    { vai: "Thẩm tra viên", ngay: "16/04/2026", ten: "Nguyễn Ngọc Ngan", phu: "", chuc: "Thẩm tra viên chính", nguoi: "Nguyễn Xuân Thành\n14/04/2026 – 10:20:10", hasDoc: false, isThuKy: false },
+    { vai: "Thư ký phiên tòa", ngay: "18/04/2026", ten: thuKyTen, phu: "", chuc: "Thư ký tòa án", nguoi: "Nguyễn Xuân Thành\n18/04/2026 – 08:30:00", hasDoc: true, isThuKy: true },
   ];
   const HDXX_ROWS = [
-    { vai: "Thẩm phán chủ tọa", nguoi: "Nguyễn Hoàng Hòa – 16/02/1989", chuc: "Phó chánh án – Thẩm phán tối cao", ngay: "12/02/2028" },
-    { vai: "Thẩm phán thành viên hội đồng xét xử", nguoi: "Nguyễn Hoàng Hòa – 16/02/1989", chuc: "Thẩm phán bậc 3", ngay: "12/02/2028" },
-    { vai: "Thẩm phán thành viên hội đồng xét xử", nguoi: "Nguyễn Hoàng Hòa – 16/02/1989", chuc: "Thẩm phán bậc 3", ngay: "12/02/2028" },
+    { vai: "Thẩm phán chủ tọa", nguoi: "Nguyễn Hoàng Hòa – 16/02/1989", chuc: "Phó Chánh án – Thẩm phán TAND tối cao", ngay: "12/02/2026" },
+    { vai: "Thẩm phán thành viên hội đồng xét xử", nguoi: "Trần Hồng Hà – 10/05/1982", chuc: "Thẩm phán TAND tối cao", ngay: "12/02/2026" },
+    { vai: "Thẩm phán thành viên hội đồng xét xử", nguoi: "Ngô Hồng Phúc – 18/08/1985", chuc: "Thẩm phán cao cấp", ngay: "12/02/2026" },
+    { vai: "Thẩm phán thành viên hội đồng xét xử", nguoi: "Lê Thanh Phong – 22/11/1980", chuc: "Thẩm phán cao cấp", ngay: "12/02/2026" },
+    { vai: "Thẩm phán thành viên hội đồng xét xử", nguoi: "Nguyễn Văn Cường – 05/03/1984", chuc: "Thẩm phán cao cấp", ngay: "12/02/2026" },
   ];
   const QD_ROWS = [
     { so: "12345681/2026/QĐ-TA", ngay: "31/03/2026", ten: "Quyết định thành lập hội đồng xét xử", nguoiKy: "Trần Văn Hành", chucVu: "Chánh tòa", tt: "Đã cấp số" },
@@ -652,11 +714,13 @@ function TabPhanCong({ row }: { row: VuXetXuRow }) {
   return (
     <div>
       <div style={{ border: `1px solid ${BORDER}`, borderRadius: 6, overflow: "hidden", marginBottom: 16 }}>
+        <div style={{ padding: "8px 14px", background: BG, borderBottom: `1px solid ${BORDER}` }}>
+          <span style={{ fontSize: 12, fontWeight: 600, color: TEXT, fontFamily: F }}>Thông tin chung của vụ án</span>
+        </div>
         <InfoGrid rows={[
-          ["Mã vụ án", row.maVuAn, "Số – Ngày thụ lý xét xử", row.soNgayThuLy],
-          ["Số – Ngày BA/QĐ", row.soNgayBAQD, "Trạng thái", "Chưa xét xử"],
-          ["Tòa ra bản án", row.toaRABAQD, "Viện kiểm sát giải quyết", row.vienKiemSat],
-          ["Số – Ngày kháng nghị", row.soNgayKhangNghi, "Tòa án giải quyết", row.toaAnGiaiQuyet],
+          ["Mã vụ án – Tên vụ án", row.maVuAn, "Số – Ngày Kháng nghị", row.soNgayKhangNghi],
+          ["Số – Ngày BA/QĐ", row.soNgayBAQD, "Người kháng nghị", row.nguoiKhangNghi || "Viện trưởng Viện kiểm sát nhân dân tối cao"],
+          ["Tòa ra BA/QĐ", row.toaRABAQD, "Tòa án giải quyết", row.toaAnGiaiQuyet],
         ]} />
       </div>
 
@@ -666,16 +730,51 @@ function TabPhanCong({ row }: { row: VuXetXuRow }) {
           <thead><tr>{["STT", "Vai trò", "Ngày phân công", "Họ và tên", "Chức danh/Chức vụ", "Người phân công/sửa", "Thao tác"].map(h => <th key={h} style={TH}>{h}</th>)}</tr></thead>
           <tbody>
             {PC_ROWS.map((r, i) => (
-              <tr key={i} style={{ background: i % 2 === 0 ? "#fff" : "#fafafa" }}>
+              <tr key={i} style={{ background: r.isThuKy ? "#f0f9ff" : i % 2 === 0 ? "#fff" : "#fafafa" }}>
                 <td style={{ ...TD, textAlign: "center" as const, color: MUTED }}>{i + 1}</td>
-                <td style={TD}>{r.vai}</td>
+                <td style={{ ...TD, fontWeight: r.isThuKy ? 700 : 400, color: r.isThuKy ? "#0369a1" : TEXT }}>{r.vai}</td>
                 <td style={{ ...TD, whiteSpace: "pre-line" as const, fontSize: 11, color: MUTED }}>{r.ngay}</td>
-                <td style={TD}>{r.ten && <div style={{ fontWeight: 600 }}>{r.ten}</div>}{r.phu && <div style={{ fontSize: 11, color: MUTED }}>{r.phu}</div>}</td>
+                <td style={TD}>
+                  {r.isThuKy && isEditingThuKy ? (
+                    <select
+                      value={thuKyTen}
+                      onChange={e => setThuKyTen(e.target.value)}
+                      style={{ padding: "4px 8px", fontSize: 12, border: `1px solid ${BORDER}`, borderRadius: 4, fontFamily: F, outline: "none", width: "100%", background: "#fff" }}
+                    >
+                      {DANH_SACH_THU_KY.map(tk => (
+                        <option key={tk} value={tk}>{tk}</option>
+                      ))}
+                    </select>
+                  ) : (
+                    <div>
+                      {r.ten && <div style={{ fontWeight: 600, color: r.isThuKy ? "#0369a1" : TEXT }}>{r.ten}</div>}
+                      {r.phu && <div style={{ fontSize: 11, color: MUTED }}>{r.phu}</div>}
+                    </div>
+                  )}
+                </td>
                 <td style={TD}>{r.chuc}</td>
                 <td style={{ ...TD, whiteSpace: "pre-line" as const, fontSize: 11 }}>{r.nguoi}</td>
                 <td style={{ ...TD, textAlign: "center" as const }}>
-                  {r.hasDoc && <button style={{ background: "none", border: "none", cursor: "pointer", color: MUTED }}><FileText size={14} /></button>}
-                  {r.hasLuu && <button style={{ display: "inline-flex", alignItems: "center", gap: 4, padding: "5px 14px", background: RED, color: "#fff", border: "none", borderRadius: 4, cursor: "pointer", fontSize: 11, fontFamily: F }}>Lưu</button>}
+                  <div style={{ display: "flex", gap: 6, justifyContent: "center", alignItems: "center" }}>
+                    {r.hasDoc && <button style={{ background: "none", border: "none", cursor: "pointer", color: MUTED }} title="Xem tài liệu"><FileText size={14} /></button>}
+                    {r.isThuKy && (
+                      isEditingThuKy ? (
+                        <button
+                          onClick={() => setIsEditingThuKy(false)}
+                          style={{ display: "inline-flex", alignItems: "center", gap: 4, padding: "4px 12px", background: "#0284c7", color: "#fff", border: "none", borderRadius: 4, cursor: "pointer", fontSize: 11, fontWeight: 700, fontFamily: F }}
+                        >
+                          ✓ Lưu
+                        </button>
+                      ) : (
+                        <button
+                          onClick={() => setIsEditingThuKy(true)}
+                          style={{ display: "inline-flex", alignItems: "center", gap: 4, padding: "4px 10px", background: "#fff", color: "#0369a1", border: `1px solid #7dd3fc`, borderRadius: 4, cursor: "pointer", fontSize: 11, fontFamily: F }}
+                        >
+                          ✏ Đổi Thư ký
+                        </button>
+                      )
+                    )}
+                  </div>
                 </td>
               </tr>
             ))}
@@ -757,6 +856,121 @@ function TabToTrinhXX({ row: _row }: { row: VuXetXuRow }) {
   const TH: React.CSSProperties = { padding: "8px 10px", background: BG, fontWeight: 700, fontSize: 11, color: "#374151", fontFamily: F, textAlign: "left" as const, borderBottom: `1px solid ${BORDER}`, borderRight: `1px solid ${BORDER}` };
   const TD: React.CSSProperties = { padding: "9px 10px", fontSize: 12, color: TEXT, fontFamily: F, borderBottom: `1px solid ${BORDER}`, borderRight: `1px solid ${BORDER}`, verticalAlign: "top" as const };
 
+  /* ── Hồ sơ tờ trình modal ── */
+  function HoSoToTrinhFileModal({ onClose }: { onClose: () => void }) {
+    const [docs, setDocs] = React.useState([
+      { id: 1, ten: "Bản án sơ thẩm 125/2023/HS-ST", loai: "Bản án", ngay: "15/10/2023", nguon: "TAND tỉnh Long An", size: "1.2 MB", inHoSo: true },
+      { id: 2, ten: "Bản án phúc thẩm 42/2024/HS-PT", loai: "Bản án", ngay: "20/01/2024", nguon: "TAND cấp cao tại TP.HCM", size: "980 KB", inHoSo: true },
+      { id: 3, ten: "Tờ trình thẩm tra hồ sơ số 1", loai: "Tờ trình", ngay: "05/07/2026", nguon: "Vụ GĐKT", size: "714 KB", inHoSo: true },
+      { id: 4, ten: "Biên bản phiên tòa xét xử", loai: "Biên bản", ngay: "10/07/2026", nguon: "TAND tỉnh Long An", size: "380 KB", inHoSo: false },
+      { id: 5, ten: "Kết luận điều tra", loai: "Kết luận", ngay: "20/05/2023", nguon: "Cơ quan điều tra", size: "540 KB", inHoSo: false },
+    ]);
+    const [showBsung, setShowBsung] = React.useState(false);
+
+    const THm: React.CSSProperties = { padding: "8px 12px", background: BG, fontWeight: 700, fontSize: 11, color: "#374151", fontFamily: F, textAlign: "left" as const, borderBottom: `1px solid ${BORDER}`, borderRight: `1px solid ${BORDER}`, whiteSpace: "nowrap" as const };
+    const TDm: React.CSSProperties = { padding: "9px 12px", fontSize: 12, color: TEXT, fontFamily: F, borderBottom: `1px solid ${BORDER}`, borderRight: `1px solid ${BORDER}`, verticalAlign: "top" as const };
+
+    const hoSoDocs = docs.filter(d => d.inHoSo);
+    const vuAnDocs = docs.filter(d => !d.inHoSo);
+
+    return (
+      <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.45)", zIndex: 1400, display: "flex", alignItems: "center", justifyContent: "center", padding: "24px 16px" }}>
+        <div style={{ background: "#fff", borderRadius: 10, width: "100%", maxWidth: 900, maxHeight: "90vh", display: "flex", flexDirection: "column" as const, boxShadow: "0 20px 60px rgba(0,0,0,0.2)", overflow: "hidden" }}>
+          {/* Header */}
+          <div style={{ display: "flex", alignItems: "center", padding: "14px 20px", borderBottom: `1px solid ${BORDER}`, flexShrink: 0, gap: 10 }}>
+            <div style={{ flex: 1 }}>
+              <div style={{ fontSize: 15, fontWeight: 700, color: TEXT, fontFamily: F }}>Hồ sơ tờ trình</div>
+              <div style={{ fontSize: 11, color: MUTED, fontFamily: F, marginTop: 2 }}>Vụ án đang xem · Tờ trình xét xử</div>
+            </div>
+            <button onClick={() => setShowBsung(true)} style={{ display: "flex", alignItems: "center", gap: 6, padding: "7px 16px", background: RED, color: "#fff", border: "none", borderRadius: 4, cursor: "pointer", fontSize: 12, fontWeight: 700, fontFamily: F }}>
+              <span>+</span> Bổ sung tài liệu
+            </button>
+            <button onClick={onClose} style={{ background: "none", border: "none", cursor: "pointer", padding: 4 }}>
+              <X size={18} color={MUTED} />
+            </button>
+          </div>
+
+          {/* Thống kê */}
+          <div style={{ padding: "10px 20px", borderBottom: `1px solid ${BORDER}`, background: "#fafafa", flexShrink: 0 }}>
+            <div style={{ display: "flex", gap: 20, flexWrap: "wrap" as const }}>
+              <span style={{ fontSize: 12, fontFamily: F, color: MUTED }}>Trong hồ sơ: <strong style={{ color: RED }}>{hoSoDocs.length}</strong></span>
+              <span style={{ fontSize: 12, fontFamily: F, color: MUTED }}>Hồ sơ vụ án: <strong style={{ color: TEXT }}>{docs.length}</strong></span>
+            </div>
+          </div>
+
+          {/* Danh sách tài liệu trong hồ sơ */}
+          <div style={{ flex: 1, overflowY: "auto" as const, padding: "16px 20px" }}>
+            <div style={{ fontSize: 13, fontWeight: 700, color: TEXT, fontFamily: F, marginBottom: 10 }}>📂 Tài liệu trong hồ sơ tờ trình</div>
+            <div style={{ border: `1px solid ${BORDER}`, borderRadius: 6, overflow: "hidden", marginBottom: 20 }}>
+              <div style={{ overflowX: "auto" as const }}>
+                <table style={{ width: "100%", borderCollapse: "collapse" as const, minWidth: 650 }}>
+                  <thead>
+                    <tr>
+                      <th style={{ ...THm, width: 40, textAlign: "center" as const }}>STT</th>
+                      <th style={THm}>TÊN TÀI LIỆU</th>
+                      <th style={{ ...THm, width: 90 }}>LOẠI</th>
+                      <th style={{ ...THm, width: 95 }}>NGÀY</th>
+                      <th style={{ ...THm, width: 150 }}>NGUỒN</th>
+                      <th style={{ ...THm, width: 75 }}>DUNG LƯỢNG</th>
+                      <th style={{ ...THm, width: 110, textAlign: "center" as const, borderRight: "none" }}>THAO TÁC</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {hoSoDocs.length === 0 ? (
+                      <tr><td colSpan={7} style={{ ...TDm, textAlign: "center" as const, color: MUTED, borderRight: "none" }}>Chưa có tài liệu nào trong hồ sơ</td></tr>
+                    ) : hoSoDocs.map((d, idx) => (
+                      <tr key={d.id} style={{ background: idx % 2 === 0 ? "#fff" : "#fafafa" }}>
+                        <td style={{ ...TDm, textAlign: "center" as const, color: MUTED }}>{idx + 1}</td>
+                        <td style={{ ...TDm, color: "#2563eb", fontWeight: 500 }}>📄 {d.ten}</td>
+                        <td style={TDm}><span style={{ display: "inline-block", padding: "2px 8px", borderRadius: 10, fontSize: 11, background: "#f3f4f6", color: "#374151", fontWeight: 500 }}>{d.loai}</span></td>
+                        <td style={{ ...TDm, color: MUTED }}>{d.ngay}</td>
+                        <td style={{ ...TDm, color: MUTED }}>{d.nguon}</td>
+                        <td style={{ ...TDm, color: MUTED }}>{d.size}</td>
+                        <td style={{ ...TDm, textAlign: "center" as const, borderRight: "none" }}>
+                          <div style={{ display: "flex", gap: 6, justifyContent: "center" }}>
+                            <button style={{ background: "none", border: "none", cursor: "pointer", color: "#0e7490", fontSize: 11, fontFamily: F, display: "flex", alignItems: "center", gap: 3 }}>
+                              <Eye size={12} />
+                            </button>
+                            <button
+                              onClick={() => setDocs(prev => prev.map(x => x.id === d.id ? { ...x, inHoSo: false } : x))}
+                              style={{ background: "none", border: "none", cursor: "pointer", color: "#dc2626", fontSize: 11, fontFamily: F, display: "flex", alignItems: "center", gap: 3 }}
+                              title="Bỏ khỏi hồ sơ tờ trình (vẫn giữ trong hồ sơ vụ án)"
+                            >
+                              <Trash2 size={12} />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            {/* Tài liệu vụ án chưa có trong hồ sơ */}
+
+          </div>
+
+          {/* Footer */}
+          <div style={{ padding: "12px 20px", borderTop: `1px solid ${BORDER}`, flexShrink: 0, display: "flex", justifyContent: "flex-end", gap: 10 }}>
+            <button onClick={onClose} style={{ padding: "7px 24px", background: "#fff", color: TEXT, border: `1px solid ${BORDER}`, borderRadius: 4, cursor: "pointer", fontSize: 13, fontFamily: F }}>Đóng</button>
+          </div>
+        </div>
+
+        {/* Bổ sung tài liệu bằng màn hồ sơ cũ */}
+        {showBsung && (
+          <HoSoToTrinhModal
+            onClose={() => setShowBsung(false)}
+            onSave={(doc) => {
+              setDocs(prev => [...prev, { id: Date.now(), ten: doc.ten, loai: doc.loai, ngay: doc.ngay, nguon: "Bổ sung", size: doc.size, inHoSo: true }]);
+              setShowBsung(false);
+            }}
+          />
+        )}
+      </div>
+    );
+  }
+
   /* ── mini modal stubs ── */
   const Modal = ({ title, onClose }: { title: string; onClose: () => void }) => (
     <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.4)", zIndex: 1200, display: "flex", alignItems: "center", justifyContent: "center" }}>
@@ -777,7 +991,7 @@ function TabToTrinhXX({ row: _row }: { row: VuXetXuRow }) {
     <div style={{ display: "flex", flexDirection: "column" as const, gap: 16 }}>
       {showTaoTT && <Modal title="Tạo tờ trình" onClose={() => setShowTaoTT(false)} />}
       {showTrinhKy && <Modal title="Trình ký" onClose={() => setShowTrinhKy(false)} />}
-      {showHoSo && <Modal title="Hồ sơ tờ trình" onClose={() => setShowHoSo(false)} />}
+      {showHoSo && <HoSoToTrinhFileModal onClose={() => setShowHoSo(false)} />}
       {showTaoDuThao && <TaoDuThaoModal onClose={() => setShowTaoDuThao(false)} />}
       {thuHoiIdx !== null && (
         <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.4)", zIndex: 1200, display: "flex", alignItems: "center", justifyContent: "center" }}>
@@ -1144,10 +1358,9 @@ function TabQuyetDinhVuAn({ row }: { row: VuXetXuRow }) {
           <span style={{ fontSize: 12, fontWeight: 600, color: TEXT, fontFamily: F }}>Thông tin chung của vụ án</span>
         </div>
         <InfoGrid rows={[
-          ["Mã vụ án – Tên vụ án", row.maVuAn, "Số – Ngày BA/QĐ", row.soNgayBAQD],
-          ["Tòa ra BA/QĐ", row.toaRABAQD, "Số – Ngày Kháng nghị", row.soNgayKhangNghi],
-          ["Số – Ngày thụ lý xét xử", row.soNgayThuLy, "Trạng thái", "Chưa xét xử"],
-          ["Viện kiểm sát giải quyết", row.vienKiemSat, "Tòa án giải quyết", row.toaAnGiaiQuyet],
+          ["Mã vụ án – Tên vụ án", row.maVuAn, "Số – Ngày Kháng nghị", row.soNgayKhangNghi],
+          ["Số – Ngày BA/QĐ", row.soNgayBAQD, "Người kháng nghị", row.nguoiKhangNghi || "Viện trưởng Viện kiểm sát nhân dân tối cao"],
+          ["Tòa ra BA/QĐ", row.toaRABAQD, "Tòa án giải quyết", row.toaAnGiaiQuyet],
         ]} />
       </div>
 
@@ -1244,9 +1457,232 @@ function TabQuyetDinhVuAn({ row }: { row: VuXetXuRow }) {
   );
 }
 
+// ── Tab: Hồ sơ vụ án ─────────────────────────────────────────────────────────
+
+function TabHoSoVuAn({ row }: { row: VuXetXuRow }) {
+  const [phamVi, setPhamVi] = React.useState<"hien-tai" | "tat-ca">("hien-tai");
+  const [hienThiTheo, setHienThiTheo] = React.useState<"but-luc" | "tai-lieu">("but-luc");
+  const [selectedDoc, setSelectedDoc] = React.useState<any | null>(null);
+  const [showHistory, setShowHistory] = React.useState(false);
+
+  // Sample data for demo when items are present
+  const mockDocs = [
+    { id: 1, ten: "Bút lục 01: Bản án sơ thẩm 125/2023/HS-ST", trang: "01-15", ngay: "15/10/2023" },
+    { id: 2, ten: "Bút lục 02: Bản án phúc thẩm 42/2024/HS-PT", trang: "16-30", ngay: "20/01/2024" },
+    { id: 3, ten: "Bút lục 03: Kết luận điều tra số 45/KL-ĐT", trang: "31-50", ngay: "05/08/2023" },
+  ];
+
+  return (
+    <div style={{ background: "#fff", border: `1px solid ${BORDER}`, borderRadius: 6, display: "flex", flexDirection: "column", height: "calc(100vh - 210px)", minHeight: 560, overflow: "hidden", fontFamily: F }}>
+      {/* Container main layout */}
+      <div style={{ flex: 1, display: "flex", overflow: "hidden" }}>
+        
+        {/* PANEL TRÁI: Hồ sơ lưu trữ */}
+        <div style={{ width: 280, borderRight: `1px solid ${BORDER}`, display: "flex", flexDirection: "column", flexShrink: 0, background: "#fff" }}>
+          
+          {/* Header trái */}
+          <div style={{ height: 42, padding: "0 14px", borderBottom: `1px solid ${BORDER}`, display: "flex", alignItems: "center", justifyContent: "space-between", flexShrink: 0 }}>
+            <span style={{ fontSize: 13, fontWeight: 700, color: TEXT }}>Hồ sơ lưu trữ</span>
+            <button style={{ background: "none", border: "none", cursor: "pointer", color: MUTED, padding: 4, display: "flex", alignItems: "center" }} title="Tùy chọn">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="4" y1="6" x2="20" y2="6"></line>
+                <line x1="4" y1="12" x2="20" y2="12"></line>
+                <line x1="4" y1="18" x2="20" y2="18"></line>
+                <circle cx="8" cy="6" r="2" fill="#fff"></circle>
+                <circle cx="16" cy="12" r="2" fill="#fff"></circle>
+                <circle cx="10" cy="18" r="2" fill="#fff"></circle>
+              </svg>
+            </button>
+          </div>
+
+          {/* Controls filtering */}
+          <div style={{ padding: "12px 14px", display: "flex", flexDirection: "column", gap: 14, flexShrink: 0 }}>
+            
+            {/* 1. Phạm vi tải */}
+            <div>
+              <div style={{ fontSize: 11, color: MUTED, marginBottom: 6 }}>Phạm vi tải</div>
+              <div style={{ background: "#f3f4f6", borderRadius: 6, padding: 3, display: "flex", gap: 2 }}>
+                <button
+                  onClick={() => setPhamVi("hien-tai")}
+                  style={{
+                    flex: 1, padding: "6px 4px", fontSize: 11, fontFamily: F, border: "none", borderRadius: 4, cursor: "pointer",
+                    background: phamVi === "hien-tai" ? "#fff" : "transparent",
+                    color: phamVi === "hien-tai" ? TEXT : MUTED,
+                    fontWeight: phamVi === "hien-tai" ? 600 : 400,
+                    boxShadow: phamVi === "hien-tai" ? "0 1px 3px rgba(0,0,0,0.08)" : "none",
+                    whiteSpace: "nowrap"
+                  }}
+                >
+                  Giai đoạn hiện tại
+                </button>
+                <button
+                  onClick={() => setPhamVi("tat-ca")}
+                  style={{
+                    flex: 1, padding: "6px 4px", fontSize: 11, fontFamily: F, border: "none", borderRadius: 4, cursor: "pointer",
+                    background: phamVi === "tat-ca" ? "#fff" : "transparent",
+                    color: phamVi === "tat-ca" ? TEXT : MUTED,
+                    fontWeight: phamVi === "tat-ca" ? 600 : 400,
+                    boxShadow: phamVi === "tat-ca" ? "0 1px 3px rgba(0,0,0,0.08)" : "none",
+                    whiteSpace: "nowrap"
+                  }}
+                >
+                  Tất cả giai đoạn
+                </button>
+              </div>
+            </div>
+
+            {/* 2. Hiển thị theo */}
+            <div>
+              <div style={{ fontSize: 11, color: MUTED, marginBottom: 6 }}>Hiển thị theo</div>
+              <div style={{ background: "#f3f4f6", borderRadius: 6, padding: 3, display: "flex", gap: 2 }}>
+                <button
+                  onClick={() => setHienThiTheo("but-luc")}
+                  style={{
+                    flex: 1, padding: "6px 4px", fontSize: 11, fontFamily: F, border: "none", borderRadius: 4, cursor: "pointer",
+                    background: hienThiTheo === "but-luc" ? "#fff" : "transparent",
+                    color: hienThiTheo === "but-luc" ? TEXT : MUTED,
+                    fontWeight: hienThiTheo === "but-luc" ? 600 : 400,
+                    boxShadow: hienThiTheo === "but-luc" ? "0 1px 3px rgba(0,0,0,0.08)" : "none",
+                    whiteSpace: "nowrap"
+                  }}
+                >
+                  Bút lục
+                </button>
+                <button
+                  onClick={() => setHienThiTheo("tai-lieu")}
+                  style={{
+                    flex: 1, padding: "6px 4px", fontSize: 11, fontFamily: F, border: "none", borderRadius: 4, cursor: "pointer",
+                    background: hienThiTheo === "tai-lieu" ? "#fff" : "transparent",
+                    color: hienThiTheo === "tai-lieu" ? TEXT : MUTED,
+                    fontWeight: hienThiTheo === "tai-lieu" ? 600 : 400,
+                    boxShadow: hienThiTheo === "tai-lieu" ? "0 1px 3px rgba(0,0,0,0.08)" : "none",
+                    whiteSpace: "nowrap"
+                  }}
+                >
+                  Tài liệu
+                </button>
+              </div>
+            </div>
+
+          </div>
+
+          {/* Danh sách / Empty state trong panel trái */}
+          <div style={{ flex: 1, overflowY: "auto", padding: "12px 14px", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
+            {selectedDoc ? (
+              <div style={{ width: "100%" }}>
+                {mockDocs.map(doc => (
+                  <div
+                    key={doc.id}
+                    onClick={() => setSelectedDoc(doc)}
+                    style={{
+                      padding: "8px 10px", borderRadius: 6, cursor: "pointer", marginBottom: 6,
+                      background: selectedDoc?.id === doc.id ? "#eff6ff" : "#f9fafb",
+                      border: `1px solid ${selectedDoc?.id === doc.id ? "#bfdbfe" : BORDER}`
+                    }}
+                  >
+                    <div style={{ fontSize: 12, fontWeight: 500, color: TEXT }}>📄 {doc.ten}</div>
+                    <div style={{ fontSize: 10, color: MUTED, marginTop: 2 }}>Trang: {doc.trang} · Ngày: {doc.ngay}</div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div style={{ textAlign: "center", color: "#9ca3af" }}>
+                <div style={{ marginBottom: 8, display: "flex", justifyContent: "center" }}>
+                  <svg width="48" height="48" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M20 18H44V46H20V18Z" stroke="#d1d5db" strokeWidth="2" strokeLinejoin="round" />
+                    <path d="M14 24H50V52H14V24Z" fill="#f3f4f6" stroke="#d1d5db" strokeWidth="2" strokeLinejoin="round" />
+                    <line x1="22" y1="32" x2="42" y2="32" stroke="#9ca3af" strokeWidth="2" strokeLinecap="round" />
+                    <line x1="22" y1="40" x2="34" y2="40" stroke="#9ca3af" strokeWidth="2" strokeLinecap="round" />
+                  </svg>
+                </div>
+                <div style={{ fontSize: 11, color: "#9ca3af" }}>Chưa có hồ sơ lưu trữ</div>
+              </div>
+            )}
+          </div>
+
+          {/* Bottom Action Button */}
+          <div style={{ padding: "10px 12px", borderTop: `1px solid ${BORDER}`, flexShrink: 0 }}>
+            <button
+              onClick={() => setSelectedDoc(mockDocs[0])}
+              style={{
+                width: "100%", padding: "7px 12px", background: "#fff", color: TEXT,
+                border: `1px solid ${BORDER}`, borderRadius: 4, cursor: "pointer", fontSize: 12,
+                fontFamily: F, fontWeight: 500, display: "flex", alignItems: "center", justifyContent: "center", gap: 6
+              }}
+            >
+              <span>⤓</span> Tải hồ sơ xuống
+            </button>
+          </div>
+
+        </div>
+
+        {/* PANEL PHẢI: Nội dung tài liệu */}
+        <div style={{ flex: 1, display: "flex", flexDirection: "column", background: "#fff", overflow: "hidden" }}>
+          
+          {/* Header panel phải */}
+          <div style={{ height: 42, padding: "0 16px", borderBottom: `1px solid ${BORDER}`, display: "flex", alignItems: "center", justifyContent: "space-between", flexShrink: 0 }}>
+            <span style={{ fontSize: 13, fontWeight: 600, color: TEXT }}>
+              {selectedDoc ? selectedDoc.ten : "Chưa chọn tài liệu"}
+            </span>
+          </div>
+
+          {/* Body Viewer Area */}
+          <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", background: "#fff", overflow: "auto" }}>
+            {selectedDoc ? (
+              <div style={{ padding: 40, width: "100%", maxWidth: 650, background: "#fff", border: `1px solid ${BORDER}`, boxShadow: "0 2px 10px rgba(0,0,0,0.05)" }}>
+                <h3 style={{ textAlign: "center", fontSize: 16, fontWeight: 700, marginBottom: 16 }}>{selectedDoc.ten}</h3>
+                <p style={{ fontSize: 13, lineHeight: 1.8, color: TEXT }}>
+                  Nội dung chi tiết tài liệu {selectedDoc.ten} đang được tải hiển thị tại đây...
+                </p>
+              </div>
+            ) : (
+              <div style={{ textAlign: "center", color: "#9ca3af" }}>
+                <div style={{ marginBottom: 12, display: "flex", justifyContent: "center" }}>
+                  <svg width="56" height="56" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="18" y="12" width="28" height="40" rx="2" fill="#f9fafb" stroke="#d1d5db" strokeWidth="2" />
+                    <line x1="24" y1="22" x2="38" y2="22" stroke="#9ca3af" strokeWidth="2" strokeLinecap="round" />
+                    <line x1="24" y1="28" x2="40" y2="28" stroke="#9ca3af" strokeWidth="2" strokeLinecap="round" />
+                    <line x1="24" y1="34" x2="34" y2="34" stroke="#9ca3af" strokeWidth="2" strokeLinecap="round" />
+                    <line x1="24" y1="40" x2="38" y2="40" stroke="#9ca3af" strokeWidth="2" strokeLinecap="round" />
+                  </svg>
+                </div>
+                <div style={{ fontSize: 12, color: "#9ca3af" }}>Chưa có hồ sơ lưu trữ</div>
+              </div>
+            )}
+          </div>
+
+        </div>
+
+        {/* FAR RIGHT: Lịch sử Vertical Tab Strip */}
+        <div style={{ width: 36, borderLeft: `1px solid ${BORDER}`, display: "flex", flexDirection: "column", alignItems: "center", background: "#fff", flexShrink: 0 }}>
+          <button
+            onClick={() => setShowHistory(v => !v)}
+            style={{ width: 36, height: 42, background: "none", border: "none", borderBottom: `1px solid ${BORDER}`, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", color: MUTED }}
+            title="Làm mới / Lịch sử"
+          >
+            <RotateCcw size={14} />
+          </button>
+          
+          <div
+            onClick={() => setShowHistory(v => !v)}
+            style={{
+              writingMode: "vertical-rl", transform: "rotate(180deg)", cursor: "pointer",
+              padding: "16px 4px", fontSize: 12, color: TEXT, fontFamily: F, letterSpacing: 0.5,
+              userSelect: "none"
+            }}
+          >
+            Lịch sử
+          </div>
+        </div>
+
+      </div>
+    </div>
+  );
+}
+
 // ── Detail view ───────────────────────────────────────────────────────────────
 
-function ChiTietVuXetXuView({ row, onBack }: { row: VuXetXuRow; onBack: () => void }) {
+function ChiTietVuXetXuView({ row, userRole, onBack }: { row: VuXetXuRow; userRole?: UserRoleType; onBack: () => void }) {
   const [tab, setTab] = useState<DetailTab>("thong-tin");
 
   return (
@@ -1271,12 +1707,13 @@ function ChiTietVuXetXuView({ row, onBack }: { row: VuXetXuRow; onBack: () => vo
         </div>
       </div>
       <div style={{ flex: 1, overflow: "auto", padding: 20 }}>
-        {tab === "thong-tin" && <TabThongTin row={row} />}
+        {tab === "thong-tin" && <TabThongTin row={row} userRole={userRole} />}
         {tab === "thu-ly" && <TabThuLy row={row} />}
-        {tab === "phan-cong" && <TabPhanCong row={row} />}
         {tab === "to-trinh" && <TabToTrinhXX row={row} />}
+        {tab === "phan-cong" && <TabPhanCong row={row} />}
         {tab === "qd-vu-an" && <TabQuyetDinhVuAn row={row} />}
         {tab === "ket-qua" && <TabKetQua row={row} />}
+        {tab === "ho-so-vu-an" && <TabHoSoVuAn row={row} />}
       </div>
     </div>
   );
@@ -1330,10 +1767,9 @@ function TabKetQua({ row }: { row: VuXetXuRow }) {
           <span style={{ fontSize: 13, fontWeight: 700, color: TEXT, fontFamily: F }}>Thông tin chung của vụ án</span>
         </div>
         <InfoGrid rows={[
-          ["Mã vụ án", row.maVuAn, "Số – Ngày thụ lý xét xử", row.soNgayThuLy],
-          ["Liên quan bản án sơ thẩm", row.soNgayBAQD, "Trạng thái", "Chưa xét xử"],
-          ["Tòa ra bản án sơ thẩm", row.toaRABAQD, "Viện kiểm sát giải quyết", row.vienKiemSat],
-          ["Thủ tục giải quyết", "Giám đốc thẩm", "Tòa án giải quyết", row.toaAnGiaiQuyet],
+          ["Mã vụ án – Tên vụ án", row.maVuAn, "Số – Ngày Kháng nghị", row.soNgayKhangNghi],
+          ["Số – Ngày BA/QĐ", row.soNgayBAQD, "Người kháng nghị", row.nguoiKhangNghi || "Viện trưởng Viện kiểm sát nhân dân tối cao"],
+          ["Tòa ra BA/QĐ", row.toaRABAQD, "Tòa án giải quyết", row.toaAnGiaiQuyet],
         ]} />
       </div>
 
@@ -3249,11 +3685,17 @@ function ThemVuXetXuModal({ userRole = "hinh-su", onClose }: { userRole?: string
   );
 }
 
-// ── Main list view ────────────────────────────────────────────────────────────
-
-export default function QuanLyVuXetXuView() {
+export default function QuanLyVuXetXuView({
+  userRole: propUserRole,
+  setUserRole: propSetUserRole,
+}: {
+  userRole?: UserRoleType;
+  setUserRole?: (role: UserRoleType) => void;
+} = {}) {
+  const [internalRole, setInternalRole] = useState<UserRoleType>("vu-1");
+  const userRole = propUserRole ?? internalRole;
+  const setUserRole = propSetUserRole ?? setInternalRole;
   const [activeTab, setActiveTab] = useState("tat-ca");
-  const [userRole, setUserRole] = useState<"hinh-su" | "dan-su" | "hanh-chinh" | "toan-bo">("hinh-su");
   const [filterExpanded, setFilterExpanded] = useState(false);
   const [search, setSearch] = useState("");
   const [menuOpen, setMenuOpen] = useState<number | null>(null);
@@ -3288,12 +3730,16 @@ export default function QuanLyVuXetXuView() {
 
   const filteredByRole = ROWS.filter(r => {
     const isHinhSu = r.loaiAn === "Hình sự" || r.soBA.includes("HS");
-    const isHanhChinh = r.loaiAn === "Hành chính" || r.soBA.includes("HC") || r.tenVuAn.includes("Khiếu kiện");
-    const isDanSu = (r.loaiAn === "Dân sự" || r.soBA.includes("DS")) && !isHinhSu && !isHanhChinh;
+    const isHanhChinh = r.loaiAn === "Hành chính" || r.soBA.includes("HC") || r.tenVuAn.toLowerCase().includes("khiếu kiện");
+    const isVu3 = r.loaiAn === "Kinh doanh thương mại" || r.loaiAn === "Phá sản" || r.loaiAn === "Lao động" || r.loaiAn === "Hôn nhân gia đình" || r.loaiAn === "Sở hữu trí tuệ" ||
+      r.soBA.includes("KDTM") || r.soBA.includes("HNGĐ") || r.soBA.includes("LĐ") || r.soBA.includes("PS") || r.soBA.includes("SHTT") ||
+      r.tenVuAn.toLowerCase().includes("sở hữu trí tuệ") || r.tenVuAn.toLowerCase().includes("vay tài sản") || r.tenVuAn.toLowerCase().includes("thương mại");
+    const isDanSu = (r.loaiAn === "Dân sự" || r.soBA.includes("DS")) && !isHinhSu && !isHanhChinh && !isVu3;
 
-    if (userRole === "hinh-su") return isHinhSu;
-    if (userRole === "dan-su") return isDanSu;
-    if (userRole === "hanh-chinh") return isHanhChinh;
+    if (userRole === "vu-1" || userRole === "hinh-su") return isHinhSu;
+    if (userRole === "vu-2" || userRole === "dan-su") return isDanSu;
+    if (userRole === "vu-3") return isVu3;
+    if (userRole === "vu-4" || userRole === "hanh-chinh") return isHanhChinh;
     return true;
   });
 
@@ -3319,7 +3765,7 @@ export default function QuanLyVuXetXuView() {
   const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const paginated = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
-  if (detail) return <ChiTietVuXetXuView row={detail} onBack={() => setDetail(null)} />;
+  if (detail) return <ChiTietVuXetXuView row={detail} userRole={userRole} onBack={() => setDetail(null)} />;
 
   return (
     <>
@@ -3336,33 +3782,7 @@ export default function QuanLyVuXetXuView() {
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, marginBottom: 10, flexWrap: "wrap" }}>
             <h2 style={{ fontSize: 20, fontWeight: 700, color: TEXT, fontFamily: F, margin: 0 }}>Danh sách vụ xét xử GĐT</h2>
 
-            {/* Phân quyền tài khoản Vụ chuyên môn */}
-            <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "5px 12px", background: "#f8fafc", border: `1px solid ${BORDER}`, borderRadius: 6 }}>
-              <span style={{ fontSize: 12, fontWeight: 700, color: TEXT, fontFamily: F }}>
-                👤 Tài khoản phân quyền:
-              </span>
-              <select
-                value={userRole}
-                onChange={e => setUserRole(e.target.value as any)}
-                style={{
-                  padding: "4px 10px",
-                  fontSize: 12,
-                  fontWeight: 700,
-                  fontFamily: F,
-                  color: userRole === "hinh-su" ? RED : userRole === "dan-su" ? "#1e40af" : userRole === "hanh-chinh" ? "#c2410c" : "#047857",
-                  border: `1px solid ${userRole === "hinh-su" ? "#fca5a5" : userRole === "dan-su" ? "#93c5fd" : userRole === "hanh-chinh" ? "#fdba74" : "#a7f3d0"}`,
-                  borderRadius: 4,
-                  background: "#fff",
-                  cursor: "pointer",
-                  outline: "none",
-                }}
-              >
-                <option value="hinh-su">🔴 Vụ I - Vụ GĐKT về Hình sự (Án Hình sự)</option>
-                <option value="dan-su">🔵 Vụ II - Vụ GĐKT về Dân sự (Án Dân sự)</option>
-                <option value="hanh-chinh">🟠 Vụ IV - Vụ GĐKT về Hành chính (Án Hành chính)</option>
-                <option value="toan-bo">🟣 Lãnh đạo TANDTC / Quản trị viên (Toàn bộ Vụ án)</option>
-              </select>
-            </div>
+            <TaiKhoanPhanQuyenBar userRole={userRole} setUserRole={setUserRole} />
           </div>
           <div style={{ display: "flex", flexWrap: "wrap" as const, overflowX: "auto" as const }}>
             {listTabs.map(t => {

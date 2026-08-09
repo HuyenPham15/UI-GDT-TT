@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Search, Download, Printer, ChevronDown, Eye, RotateCcw, ZoomIn, ZoomOut, ChevronLeft, ChevronRight, X } from "lucide-react";
-import { F, RED, BORDER, TEXT, MUTED, BG, Badge } from "./shared";
+import { F, RED, BORDER, TEXT, MUTED, BG, Badge, TaiKhoanPhanQuyenBar, type UserRoleType } from "./shared";
 
 type Screen = "list" | "detail" | "bieu-mau";
 type ListTab = "tat-ca" | "cho-duyet" | "da-duyet" | "tu-choi";
@@ -10,28 +10,36 @@ const TH: React.CSSProperties = { padding: "9px 12px", background: BG, fontWeigh
 const TD: React.CSSProperties = { padding: "10px 12px", fontSize: 12, color: TEXT, fontFamily: F, borderBottom: `1px solid ${BORDER}`, borderRight: `1px solid ${BORDER}`, verticalAlign: "top" as const };
 
 const ROWS = [
-  { id: 1, tenDA: "Số TB:10/YCBS\nNgày TB: 9/7/2026", noiDung: "Giấy yêu cầu bổ sung", nguoi: "Vũ Văn Yến", ngay: "21/07/2026\n15:35:41", trangThai: "da-duyet", yKien: "Đã duyệt", uuTien: false },
-  { id: 2, tenDA: "Nguyễn Văn An – Chu Văn Nam\ntranh chấp đất đai", noiDung: "Tờ trình thẩm tra vụ việc số 1", nguoi: "Vũ Văn Yến", ngay: "21/07/2026\n11:19:29", trangThai: "da-duyet", yKien: "Đã duyệt", uuTien: false },
-  { id: 3, tenDA: "Số CV: 12/CVCNB\nNgày CV: 22/07/2026", noiDung: "Công văn gửi nội bộ", nguoi: "Vũ Văn Yến", ngay: "21/07/2026\n11:19:24", trangThai: "da-duyet", yKien: "Đồng ý", uuTien: true },
-  { id: 4, tenDA: "Nguyễn Văn An giết người –\nTAND tỉnh Bắc Ninh", noiDung: "Tờ trình thẩm tra vụ việc số 2", nguoi: "Vũ Văn Yến", ngay: "21/07/2026\n16:29:54", trangThai: "da-duyet", yKien: "Đồng ý", uuTien: false },
-  { id: 5, tenDA: "Nguyễn Văn An giết người", noiDung: "Dự thảo trả lời đơn 00D9321 – Trần Minh Tuấn", nguoi: "Vũ Văn Yến", ngay: "21/07/2026\n11:19:39", trangThai: "da-duyet", yKien: "Đồng ý", uuTien: false },
-  { id: 6, tenDA: "Nguyễn Văn An giết người", noiDung: "Dự thảo trả lời đơn 000D987 – Chu Văn An", nguoi: "Nguyễn Văn Tiến", ngay: "21/07/2026\n09:37:27", trangThai: "da-duyet", yKien: "Đồng ý", uuTien: false },
+  { id: 1, loaiAn: "hinh-su", tenDA: "Số TB: 10/YCBS – VA26-002012 (Hình sự)\nNgày TB: 9/7/2026", noiDung: "Giấy yêu cầu bổ sung", nguoi: "Vũ Văn Yến", ngay: "21/07/2026\n15:35:41", trangThai: "da-duyet", yKien: "Đã duyệt", uuTien: false },
+  { id: 2, loaiAn: "dan-su", tenDA: "VA26-003102: Dương Thu Hằng – Tranh chấp hợp đồng vay tài sản", noiDung: "Tờ trình thẩm tra vụ việc số 1", nguoi: "Vũ Văn Yến", ngay: "21/07/2026\n11:19:29", trangThai: "da-duyet", yKien: "Đã duyệt", uuTien: false },
+  { id: 3, loaiAn: "hanh-chinh", tenDA: "VA26-004150: Phạm Văn Cường – Khiếu kiện quyết định thu hồi đất", noiDung: "Công văn gửi nội bộ", nguoi: "Vũ Văn Yến", ngay: "21/07/2026\n11:19:24", trangThai: "da-duyet", yKien: "Đồng ý", uuTien: true },
+  { id: 4, loaiAn: "hinh-su", tenDA: "VA26-002148: Đặng Thiên Dương – Tội cố ý gây thương tích\nTAND tỉnh Bắc Ninh", noiDung: "Tờ trình thẩm tra vụ việc số 2", nguoi: "Vũ Văn Yến", ngay: "21/07/2026\n16:29:54", trangThai: "da-duyet", yKien: "Đồng ý", uuTien: false },
+  { id: 5, loaiAn: "vu-3", tenDA: "VA26-005201: Công ty Á Châu – Tranh chấp hợp đồng mua bán hàng hóa", noiDung: "Dự thảo trả lời đơn 00D9321 – Trần Minh Tuấn", nguoi: "Vũ Văn Yến", ngay: "21/07/2026\n11:19:39", trangThai: "da-duyet", yKien: "Đồng ý", uuTien: false },
+  { id: 6, loaiAn: "hanh-chinh", tenDA: "VA26-004155: Nguyễn Văn Tiến – Khiếu kiện quyết định hành chính", noiDung: "Dự thảo trả lời đơn 000D987 – Chu Văn An", nguoi: "Nguyễn Văn Tiến", ngay: "21/07/2026\n09:37:27", trangThai: "da-duyet", yKien: "Đồng ý", uuTien: false },
+  { id: 7, loaiAn: "vu-3", tenDA: "VA26-005300: Vụ án Công ty TNHH Delta – Giải quyết phá sản doanh nghiệp", noiDung: "Tờ trình xem xét thủ tục phá sản", nguoi: "Lý Thái Phúc", ngay: "22/07/2026\n14:10:00", trangThai: "da-duyet", yKien: "Đã duyệt", uuTien: true },
 ];
 
 // ── Màn 3: Xem biểu mẫu (Word editor mock) ───────────────────────────────────
 
-export function XemBieuMauScreen({ onClose }: { onClose: () => void }) {
+export function XemBieuMauScreen({ onClose, loaiPhieu }: { onClose: () => void; loaiPhieu?: string }) {
   const menuItems = ["Tệp", "Trang chủ", "Chèn", "Vẽ", "Bố cục", "Tham khảo", "Công tác", "Bảo vệ", "View", "Plugin"];
   const tools = ["B", "I", "U", "abo", "≡", "≡", "≡"];
 
+  const isCongVanXacMinh = loaiPhieu === "Công văn xác minh";
+  const docTitle = isCongVanXacMinh
+    ? "Công văn yêu cầu chuyển hồ sơ vụ án - 527/CV-TANDTC"
+    : loaiPhieu
+    ? `${loaiPhieu} hồ sơ vụ án - /2026/${loaiPhieu === "Phiếu trả" ? "PT" : "PM"}-TA`
+    : "Giấy xác nhận - /2026/TB-TA";
+
   return (
-    <div style={{ display: "flex", flexDirection: "column", height: "100%", background: "#f3f3f3", fontFamily: F }}>
+    <div style={{ position: "fixed", inset: 0, zIndex: 3000, display: "flex", flexDirection: "column", background: "#f3f3f3", fontFamily: F }}>
       {/* Top bar */}
       <div style={{ background: "#1e3a5f", color: "#fff", display: "flex", alignItems: "center", padding: "0 16px", height: 40, gap: 8 }}>
         <button onClick={onClose} style={{ background: "none", border: "none", cursor: "pointer", color: "#fff", display: "flex", alignItems: "center", gap: 4 }}>
-          <ChevronLeft size={16} />
+          <ChevronLeft size={16} /> Quay lại
         </button>
-        <span style={{ fontSize: 13, fontWeight: 600, flex: 1 }}>Giấy xác nhận - /2026/TB-TA</span>
+        <span style={{ fontSize: 13, fontWeight: 600, flex: 1 }}>{docTitle}</span>
         <button style={{ display: "flex", alignItems: "center", gap: 6, padding: "5px 16px", background: RED, color: "#fff", border: "none", borderRadius: 4, cursor: "pointer", fontSize: 12, fontWeight: 700 }}>
           ✏ Trình ký
         </button>
@@ -73,55 +81,201 @@ export function XemBieuMauScreen({ onClose }: { onClose: () => void }) {
       {/* Document area */}
       <div style={{ flex: 1, overflowY: "auto", display: "flex", justifyContent: "center", padding: "32px 16px", background: "#e8e8e8" }}>
         {/* Side icons */}
-        <div style={{ position: "fixed", left: 12, top: "50%", transform: "translateY(-50%)", display: "flex", flexDirection: "column", gap: 12 }}>
+        <div style={{ position: "fixed", left: 12, top: "50%", transform: "translateY(-50%)", display: "flex", flexDirection: "column", gap: 12, zIndex: 3100 }}>
           {["📋","💬","ℹ","🖼"].map((ic, i) => (
             <button key={i} style={{ background: "none", border: "none", cursor: "pointer", fontSize: 18, color: "#555" }}>{ic}</button>
           ))}
         </div>
         {/* Search icon on right */}
-        <div style={{ position: "fixed", right: 12, top: "30%" }}>
+        <div style={{ position: "fixed", right: 12, top: "30%", zIndex: 3100 }}>
           <Search size={18} color="#555" />
         </div>
 
         {/* A4 page */}
-        <div style={{ background: "#fff", width: 595, minHeight: 842, boxShadow: "0 2px 16px rgba(0,0,0,0.18)", padding: "60px 64px", fontFamily: "Times New Roman, serif" }}>
-          {/* Header two-column */}
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 24, fontSize: 13 }}>
-            <div style={{ textAlign: "center" }}>
-              <div style={{ fontWeight: 700, fontSize: 13 }}>TÒA ÁN NHÂN DÂN TỐI CAO</div>
-              <div style={{ borderBottom: "1px solid #000", width: 120, margin: "4px auto" }} />
-              <div>Số: 12/TTr-TTV</div>
-            </div>
-            <div style={{ textAlign: "center" }}>
-              <div style={{ fontWeight: 700, fontSize: 13 }}>CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</div>
-              <div style={{ fontWeight: 700 }}>Độc lập - Tự do - Hạnh phúc</div>
-              <div style={{ borderBottom: "1px solid #000", width: 180, margin: "4px auto" }} />
-              <div style={{ fontStyle: "italic" }}>Hà Nội, ngày 08 tháng 04 năm 2026</div>
-            </div>
-          </div>
+        <div contentEditable suppressContentEditableWarning style={{ background: "#fff", width: 595, minHeight: 842, boxShadow: "0 2px 16px rgba(0,0,0,0.18)", padding: "50px 60px", fontFamily: "Times New Roman, serif", color: "#000", lineHeight: 1.5, outline: "none" }}>
+          {isCongVanXacMinh ? (
+            <div>
+              {/* Header two-column */}
+              <div style={{ display: "grid", gridTemplateColumns: "45% 55%", gap: 12, marginBottom: 20, fontSize: 13 }}>
+                <div style={{ textAlign: "center" }}>
+                  <div style={{ fontWeight: 700, fontSize: 13 }}>TÒA ÁN NHÂN DÂN TỐI CAO</div>
+                  <div style={{ fontSize: 12, marginTop: 4 }}>Số: 527/CV-TANDTC</div>
+                  <div style={{ fontSize: 12, fontStyle: "italic", marginTop: 2 }}>V/v: Yêu cầu chuyển hồ sơ vụ án</div>
+                </div>
+                <div style={{ textAlign: "center" }}>
+                  <div style={{ fontWeight: 700, fontSize: 13 }}>CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</div>
+                  <div style={{ fontWeight: 700, fontSize: 13 }}>Độc lập - Tự do - Hạnh phúc</div>
+                  <div style={{ borderBottom: "1px solid #000", width: 160, margin: "4px auto 8px" }} />
+                  <div style={{ fontStyle: "italic", fontSize: 12 }}>Hà Nội, ngày 14 tháng 5 năm 2026</div>
+                </div>
+              </div>
 
-          {/* Title */}
-          <div style={{ textAlign: "center", fontWeight: 700, fontSize: 14, marginBottom: 4 }}>TỜ TRÌNH</div>
-          <div style={{ textAlign: "center", fontWeight: 700, fontSize: 14, marginBottom: 20 }}>THẨM TRA VỤ VIỆC</div>
+              {/* Recipient */}
+              <div style={{ textAlign: "center", margin: "24px 0 20px" }}>
+                <span style={{ fontWeight: 700, fontStyle: "italic", fontSize: 14 }}>
+                  Kính gửi: Tòa Phúc thẩm Tòa án nhân dân tối cao tại Thành phố Hồ Chí Minh
+                </span>
+              </div>
 
-          {/* Body */}
-          <p style={{ marginBottom: 12, fontSize: 13, lineHeight: 1.7 }}>
-            <strong>Kính trình:</strong> Lãnh đạo Tòa án nhân dân tối cao
-          </p>
-          <p style={{ marginBottom: 12, fontSize: 13, lineHeight: 1.7 }}>
-            Căn cứ đơn đề nghị xem xét theo thủ tục giám đốc thẩm, tái thẩm và các tài liệu có trong hồ sơ vụ việc; Thẩm tra viên báo cáo kết quả nghiên cứu hồ sơ như sau:
-          </p>
-          <p style={{ fontWeight: 700, fontSize: 13, marginBottom: 8 }}>I. THÔNG TIN CHUNG</p>
-          <ol style={{ paddingLeft: 24, fontSize: 13, lineHeight: 2, marginBottom: 12 }}>
-            <li>Số bản án: 137120/2026/HSST-QĐ</li>
-            <li>Tòa án xét xử: Tòa án nhân dân tối cao</li>
-            <li>Người đề nghị: Nguyễn Văn A</li>
-            <li>Nội dung đề nghị: Xem xét lại bản án theo thủ tục giám đốc thẩm, tái thẩm.</li>
-          </ol>
-          <p style={{ fontWeight: 700, fontSize: 13, marginBottom: 8 }}>II. NHẬN XÉT, ĐỀ XUẤT</p>
-          <p style={{ fontSize: 13, lineHeight: 1.7 }}>
-            Qua kiểm tra, hồ sơ có nội dung cần xin ý kiến lãnh đạo để thống nhất hướng xử lý. Thẩm tra viên kính đề nghị lãnh đạo xem xét, cho ý kiến chỉ đạo làm căn cứ thực hiện các bước tiếp theo theo đúng quy định.
-          </p>
+              {/* Body */}
+              <div style={{ textAlign: "justify", fontSize: 13, lineHeight: 1.75, display: "flex", flexDirection: "column", gap: 14 }}>
+                <p style={{ textIndent: 30, margin: 0 }}>
+                  Căn cứ vào khoản 1 Điều 46 Luật Tổ chức Tòa án nhân dân và Điều 18 Bộ luật tố tụng dân sự;
+                </p>
+
+                <p style={{ textIndent: 30, margin: 0 }}>
+                  Để có cơ sở giải quyết đơn đề nghị xem xét theo thủ tục giám đốc thẩm, tái thẩm của đương sự, đề nghị Tòa Phúc thẩm Tòa án nhân dân tối cao tại Thành phố Hồ Chí Minh chuyển cho Vụ Giám đốc, kiểm tra II Tòa án nhân dân tối cao hồ sơ vụ án <i>“Tranh chấp hợp đồng đặt cọc”</i> giữa các đương sự là:
+                </p>
+
+                <div style={{ paddingLeft: 40, display: "flex", flexDirection: "column", gap: 4 }}>
+                  <div>- Nguyên đơn: <b>Ông Võ Đông Phong</b></div>
+                  <div>- Bị đơn: <b>Ông Phạm Thành Tài</b></div>
+                </div>
+
+                <p style={{ textIndent: 30, margin: 0 }}>
+                  Do Ủy ban Thẩm phán Tòa án nhân dân cấp cao tại Thành phố Hồ Chí Minh xét xử tại Quyết định giám đốc thẩm số 157/2024/DS-GĐT ngày 11/06/2024.
+                </p>
+
+                <p style={{ fontStyle: "italic", textIndent: 30, margin: 0 }}>
+                  (Hồ sơ gửi chuyển phát nhanh về địa chỉ: Vụ Giám đốc, kiểm tra II, Tòa án nhân dân tối cao - số 1 Phạm Văn Bạch, Cầu Giấy, Hà Nội trong thời hạn 07 ngày kể từ ngày nhận được Công văn yêu cầu chuyển hồ sơ vụ án).
+                </p>
+
+                <p style={{ textIndent: 30, margin: 0 }}>
+                  Trường hợp hồ sơ vụ án đã được chuyển cho cơ quan, đơn vị khác thì đề nghị Quý Tòa thông báo lại cho Vụ Giám đốc, kiểm tra II Tòa án nhân dân tối cao để theo dõi.
+                </p>
+              </div>
+
+              {/* Footer signatures */}
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20, marginTop: 36, fontSize: 12 }}>
+                <div>
+                  <div style={{ fontWeight: 700, fontStyle: "italic", marginBottom: 4 }}>Nơi nhận:</div>
+                  <div style={{ fontSize: 11, lineHeight: 1.6 }}>
+                    <div>- Như trên;</div>
+                    <div>- Đ/c Chánh án TANDTC (để b/c);</div>
+                    <div>- Lưu VP, Vụ Giám đốc, kiểm tra II-TANDTC, THS.</div>
+                  </div>
+                </div>
+                <div style={{ textAlign: "center" }}>
+                  <div style={{ fontWeight: 700 }}>TL. CHÁNH ÁN</div>
+                  <div style={{ fontWeight: 700, textTransform: "uppercase" }}>KT. VỤ TRƯỞNG VỤ GIÁM ĐỐC,</div>
+                  <div style={{ fontWeight: 700, textTransform: "uppercase" }}>KIỂM TRA II</div>
+                </div>
+              </div>
+            </div>
+          ) : loaiPhieu === "Phiếu mượn" ? (
+            <div>
+              {/* Header two-column */}
+              <div style={{ display: "grid", gridTemplateColumns: "45% 55%", gap: 12, marginBottom: 20, fontSize: 13 }}>
+                <div style={{ textAlign: "center" }}>
+                  <div style={{ fontWeight: 700, fontSize: 13 }}>TÒA ÁN NHÂN DÂN TỐI CAO</div>
+                  <div style={{ fontSize: 12, marginTop: 4 }}>Số: 1/2026/CV-TANDTC</div>
+                  <div style={{ fontSize: 12, fontStyle: "italic", marginTop: 2 }}>V/v: Yêu cầu chuyển hồ sơ vụ án</div>
+                </div>
+                <div style={{ textAlign: "center" }}>
+                  <div style={{ fontWeight: 700, fontSize: 13 }}>CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</div>
+                  <div style={{ fontWeight: 700, fontSize: 13 }}>Độc lập - Tự do - Hạnh phúc</div>
+                  <div style={{ borderBottom: "1px solid #000", width: 160, margin: "4px auto 8px" }} />
+                  <div style={{ fontStyle: "italic", fontSize: 12 }}>Hà Nội, ngày 28 tháng 2 năm 2026</div>
+                </div>
+              </div>
+
+              {/* Recipient */}
+              <div style={{ textAlign: "center", margin: "24px 0 20px" }}>
+                <span style={{ fontWeight: 700, fontStyle: "italic", fontSize: 14 }}>
+                  Kính gửi: Tòa án nhân dân tỉnh Quảng Ngãi
+                </span>
+              </div>
+
+              {/* Body */}
+              <div style={{ textAlign: "justify", fontSize: 13, lineHeight: 1.75, display: "flex", flexDirection: "column", gap: 14 }}>
+                <p style={{ textIndent: 30, margin: 0 }}>
+                  Căn cứ vào khoản 1 Điều 20 Luật Tổ chức Tòa án nhân dân và Điều 18 Bộ luật Tố tụng dân sự;
+                </p>
+
+                <p style={{ textIndent: 30, margin: 0 }}>
+                  Để có cơ sở giải quyết đơn đề nghị xem xét theo thủ tục giám đốc thẩm của đương sự, đề nghị Tòa án nhân dân tỉnh Quảng Ngãi chỉ đạo chuyển cho Vụ Giám đốc, kiểm tra về dân sự - Tòa án nhân dân tối cao hồ sơ vụ án giữa các đương sự là:
+                </p>
+
+                <div style={{ paddingLeft: 40, display: "flex", flexDirection: "column", gap: 4 }}>
+                  <div>- Nguyên đơn: <b>Võ Thị Hoàng Oanh</b></div>
+                  <div>- Bị đơn: <b>Nguyễn Thị Kim Bích</b></div>
+                </div>
+
+                <p style={{ textIndent: 30, margin: 0 }}>
+                  Do Tòa án nhân dân tỉnh Quảng Ngãi xét xử phúc thẩm tại Bản án phúc thẩm số 56/2017/DSPT ngày 14/06/2017.
+                </p>
+
+                <p style={{ fontStyle: "italic", textIndent: 30, margin: 0 }}>
+                  (Hồ sơ gửi chuyển phát nhanh về địa chỉ: Vụ Giám đốc kiểm tra II, Tòa án nhân dân tối cao – ngõ 1 Phạm Văn Bạch, Cầu Giấy, Hà Nội trong thời hạn 07 ngày kể từ ngày nhận được Công văn yêu cầu chuyển hồ sơ vụ án)
+                </p>
+
+                <p style={{ textIndent: 30, margin: 0 }}>
+                  Trường hợp hồ sơ vụ án đã được chuyển cho cơ quan, đơn vị khác thì đề nghị thông báo cho để theo dõi.
+                </p>
+              </div>
+
+              {/* Footer signatures */}
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20, marginTop: 36, fontSize: 12 }}>
+                <div>
+                  <div style={{ fontWeight: 700, fontStyle: "italic", marginBottom: 4 }}>Nơi nhận:</div>
+                  <div style={{ fontSize: 11, lineHeight: 1.6 }}>
+                    <div>- Như trên;</div>
+                    <div>- Đ/c Chánh án TANDTC (để b/c);</div>
+                    <div>- Lưu VP, Vụ Giám đốc, kiểm tra về dân sự-TANDTC, THS.</div>
+                  </div>
+                </div>
+                <div style={{ textAlign: "center" }}>
+                  <div style={{ fontWeight: 700 }}>TL. CHÁNH ÁN</div>
+                  <div style={{ fontWeight: 700, textTransform: "uppercase" }}>KT. VỤ TRƯỞNG VỤ GIÁM ĐỐC,</div>
+                  <div style={{ fontWeight: 700, textTransform: "uppercase" }}>KIỂM TRA VỀ DÂN SỰ</div>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div>
+              {/* Header two-column */}
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 24, fontSize: 13 }}>
+                <div style={{ textAlign: "center" }}>
+                  <div style={{ fontWeight: 700, fontSize: 13 }}>TÒA ÁN NHÂN DÂN TỐI CAO</div>
+                  <div style={{ borderBottom: "1px solid #000", width: 120, margin: "4px auto" }} />
+                  <div>Số: 12/TTr-TTV</div>
+                </div>
+                <div style={{ textAlign: "center" }}>
+                  <div style={{ fontWeight: 700, fontSize: 13 }}>CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</div>
+                  <div style={{ fontWeight: 700 }}>Độc lập - Tự do - Hạnh phúc</div>
+                  <div style={{ borderBottom: "1px solid #000", width: 180, margin: "4px auto" }} />
+                  <div style={{ fontStyle: "italic" }}>Hà Nội, ngày 08 tháng 04 năm 2026</div>
+                </div>
+              </div>
+
+              {/* Title */}
+              <div style={{ textAlign: "center", fontWeight: 700, fontSize: 14, marginBottom: 4 }}>
+                {loaiPhieu ? loaiPhieu.toUpperCase() : "TỜ TRÌNH"}
+              </div>
+              <div style={{ textAlign: "center", fontWeight: 700, fontSize: 14, marginBottom: 20 }}>
+                {loaiPhieu ? "HỒ SƠ VỤ ÁN" : "THẨM TRA VỤ VIỆC"}
+              </div>
+
+              {/* Body */}
+              <p style={{ marginBottom: 12, fontSize: 13, lineHeight: 1.7 }}>
+                <strong>Kính trình:</strong> Lãnh đạo Tòa án nhân dân tối cao
+              </p>
+              <p style={{ marginBottom: 12, fontSize: 13, lineHeight: 1.7 }}>
+                Căn cứ đơn đề nghị xem xét theo thủ tục giám đốc thẩm, tái thẩm và các tài liệu có trong hồ sơ vụ việc; Thẩm tra viên báo cáo kết quả nghiên cứu hồ sơ như sau:
+              </p>
+              <p style={{ fontWeight: 700, fontSize: 13, marginBottom: 8 }}>I. THÔNG TIN CHUNG</p>
+              <ol style={{ paddingLeft: 24, fontSize: 13, lineHeight: 2, marginBottom: 12 }}>
+                <li>Số bản án: 137120/2026/HSST-QĐ</li>
+                <li>Tòa án xét xử: Tòa án nhân dân tối cao</li>
+                <li>Người đề nghị: Nguyễn Văn A</li>
+                <li>Nội dung đề nghị: Xem xét lại bản án theo thủ tục giám đốc thẩm, tái thẩm.</li>
+              </ol>
+              <p style={{ fontWeight: 700, fontSize: 13, marginBottom: 8 }}>II. NHẬN XÉT, ĐỀ XUẤT</p>
+              <p style={{ fontSize: 13, lineHeight: 1.7 }}>
+                Qua kiểm tra, hồ sơ có nội dung cần xin ý kiến lãnh đạo để thống nhất hướng xử lý. Thẩm tra viên kính đề nghị lãnh đạo xem xét, cho ý kiến chỉ đạo làm căn cứ thực hiện các bước tiếp theo theo đúng quy định.
+              </p>
+            </div>
+          )}
         </div>
       </div>
 
@@ -372,9 +526,16 @@ function PheDuyetDetail({ onClose, onXemBieuMau }: { onClose: () => void; onXemB
   );
 }
 
-// ── Màn 1: Danh sách đề xuất ─────────────────────────────────────────────────
-
-export default function PheDuyetDeXuatView() {
+export default function PheDuyetDeXuatView({
+  userRole: propUserRole,
+  setUserRole: propSetUserRole,
+}: {
+  userRole?: UserRoleType;
+  setUserRole?: (role: UserRoleType) => void;
+} = {}) {
+  const [internalRole, setInternalRole] = useState<UserRoleType>("vu-1");
+  const userRole = propUserRole ?? internalRole;
+  const setUserRole = propSetUserRole ?? setInternalRole;
   const [screen, setScreen] = useState<Screen>("list");
   const [activeTab, setActiveTab] = useState<ListTab>("da-duyet");
   const [selectedRow, setSelectedRow] = useState<number | null>(null);
@@ -382,11 +543,19 @@ export default function PheDuyetDeXuatView() {
   if (screen === "bieu-mau") return <XemBieuMauScreen onClose={() => setScreen("detail")} />;
   if (screen === "detail") return <PheDuyetDetail onClose={() => setScreen("list")} onXemBieuMau={() => setScreen("bieu-mau")} />;
 
+  const filteredByRole = ROWS.filter(r => {
+    if (userRole === "vu-1" || userRole === "hinh-su") return r.loaiAn === "vu-1" || r.loaiAn === "hinh-su";
+    if (userRole === "vu-2" || userRole === "dan-su") return r.loaiAn === "vu-2" || r.loaiAn === "dan-su";
+    if (userRole === "vu-3") return r.loaiAn === "vu-3" || r.loaiAn === "kdtm-ld";
+    if (userRole === "vu-4" || userRole === "hanh-chinh") return r.loaiAn === "vu-4" || r.loaiAn === "hanh-chinh";
+    return true;
+  });
+
   const TABS: { id: ListTab; label: string; count: number }[] = [
-    { id: "tat-ca", label: "Tất cả", count: 6 },
-    { id: "cho-duyet", label: "Chờ duyệt", count: 0 },
-    { id: "da-duyet", label: "Đã duyệt", count: 6 },
-    { id: "tu-choi", label: "Từ chối", count: 0 },
+    { id: "tat-ca", label: "Tất cả", count: filteredByRole.length },
+    { id: "cho-duyet", label: "Chờ duyệt", count: filteredByRole.filter(r => r.trangThai === "cho-duyet").length },
+    { id: "da-duyet", label: "Đã duyệt", count: filteredByRole.filter(r => r.trangThai === "da-duyet").length },
+    { id: "tu-choi", label: "Từ chối", count: filteredByRole.filter(r => r.trangThai === "tu-choi").length },
   ];
 
   const tabStyle = (active: boolean): React.CSSProperties => ({
@@ -397,9 +566,9 @@ export default function PheDuyetDeXuatView() {
     display: "flex", alignItems: "center", gap: 6,
   });
 
-  const filteredRows = activeTab === "tat-ca" ? ROWS
-    : activeTab === "da-duyet" ? ROWS.filter(r => r.trangThai === "da-duyet")
-    : [];
+  const filteredRows = activeTab === "tat-ca" ? filteredByRole
+    : activeTab === "da-duyet" ? filteredByRole.filter(r => r.trangThai === "da-duyet")
+    : filteredByRole.filter(r => r.trangThai === activeTab);
 
   return (
     <div style={{ padding: "20px 24px", fontFamily: F, overflowY: "auto", height: "100%" }}>
@@ -407,7 +576,10 @@ export default function PheDuyetDeXuatView() {
       <div style={{ fontSize: 12, color: MUTED, marginBottom: 8 }}>
         Trang chủ / Công tác lãnh đạo / Phê duyệt đề xuất / <span style={{ color: TEXT }}>Danh sách đề xuất</span>
       </div>
-      <h2 style={{ fontSize: 20, fontWeight: 700, color: TEXT, marginBottom: 16 }}>Danh sách đề xuất</h2>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, marginBottom: 16, flexWrap: "wrap" }}>
+        <h2 style={{ fontSize: 20, fontWeight: 700, color: TEXT, margin: 0 }}>Danh sách đề xuất</h2>
+        <TaiKhoanPhanQuyenBar userRole={userRole} setUserRole={setUserRole} />
+      </div>
 
       {/* Tabs */}
       <div style={{ display: "flex", borderBottom: `1px solid ${BORDER}`, marginBottom: 16 }}>

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { F, RED, BORDER, TEXT, MUTED, BG, TH_STYLE, TD_STYLE, Badge } from "./shared";
 
-export function HoSoToTrinhModal({ onClose }: { onClose: () => void }) {
+export function HoSoToTrinhModal({ onClose, onSave }: { onClose: () => void; onSave?: (doc: { ten: string; loai: string; size: string; ngay: string }) => void }) {
   const [selected, setSelected] = useState("hoa-pdf");
   const folders = [
     { key: "tai-lieu", label: "Tài liệu đánh dấu", count: 0, icon: "📁" },
@@ -72,7 +72,16 @@ export function HoSoToTrinhModal({ onClose }: { onClose: () => void }) {
             </div>
           </div>
           <div style={{ display: "flex", gap: 8, padding: "12px", borderTop: `1px solid ${BORDER}` }}>
-            <button style={{ padding: "7px 20px", background: RED, color: "#fff", border: "none", borderRadius: 4, cursor: "pointer", fontSize: 12, fontWeight: 700, fontFamily: F }}>Lưu</button>
+            <button
+              onClick={() => {
+                const f = files.find(x => x.key === selected);
+                if (f && onSave) {
+                  onSave({ ten: f.label, loai: f.type, size: f.size, ngay: new Date().toLocaleDateString("vi-VN") });
+                }
+                onClose();
+              }}
+              style={{ padding: "7px 20px", background: RED, color: "#fff", border: "none", borderRadius: 4, cursor: "pointer", fontSize: 12, fontWeight: 700, fontFamily: F }}
+            >Lưu</button>
             <button onClick={onClose} style={{ padding: "7px 16px", background: "#fff", color: "#374151", border: `1px solid ${BORDER}`, borderRadius: 4, cursor: "pointer", fontSize: 12, fontFamily: F }}>Đóng</button>
           </div>
         </div>

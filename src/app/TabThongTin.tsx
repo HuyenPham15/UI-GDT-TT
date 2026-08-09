@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Eye, Trash2, Sliders } from "lucide-react";
-import { F, RED, BORDER, TEXT, MUTED, BG, TH_STYLE, TD_STYLE, Badge } from "./shared";
+import { F, RED, BORDER, TEXT, MUTED, BG, TH_STYLE, TD_STYLE, Badge, type UserRoleType } from "./shared";
 import type { VuAnDetailData } from "./App";
 import { LOAI_AN_OPTIONS, LoaiAn } from "./data";
 
@@ -639,10 +639,28 @@ function NguoiLienQuanTable({ rows, noMarginBottom = false }: { rows: NguoiLienQ
   );
 }
 
-export function TabThongTin({ detail }: { detail?: VuAnDetailData }) {
-  // Lấy Loại án mặc định từ detail (nếu có) hoặc "Hình sự"
-  const defaultLoaiAn = (detail?.loaiAn as LoaiAn) || "Hình sự";
-  const [selectedLoaiAn, setSelectedLoaiAn] = useState<LoaiAn>(defaultLoaiAn);
+export function TabThongTin({ detail, userRole }: { detail?: VuAnDetailData; userRole?: UserRoleType }) {
+  // Lấy Loại án mặc định từ detail (nếu có) hoặc dựa trên userRole
+  const getInitialLoaiAn = (): LoaiAn => {
+    if (detail?.loaiAn && LOAI_AN_OPTIONS.includes(detail.loaiAn as LoaiAn)) {
+      return detail.loaiAn as LoaiAn;
+    }
+    if (userRole === "vu-1" || userRole === "hinh-su") return "Hình sự";
+    if (userRole === "vu-2" || userRole === "dan-su") return "Dân sự";
+    if (userRole === "vu-3") return "Kinh doanh thương mại";
+    if (userRole === "vu-4" || userRole === "hanh-chinh") return "Hành chính";
+    return "Hình sự";
+  };
+
+  const [selectedLoaiAn, setSelectedLoaiAn] = useState<LoaiAn>(getInitialLoaiAn());
+
+  // Cập nhật selectedLoaiAn khi userRole thay đổi
+  useEffect(() => {
+    if (userRole === "vu-1" || userRole === "hinh-su") setSelectedLoaiAn("Hình sự");
+    else if (userRole === "vu-2" || userRole === "dan-su") setSelectedLoaiAn("Dân sự");
+    else if (userRole === "vu-3") setSelectedLoaiAn("Kinh doanh thương mại");
+    else if (userRole === "vu-4" || userRole === "hanh-chinh") setSelectedLoaiAn("Hành chính");
+  }, [userRole]);
 
   // Cập nhật selectedLoaiAn khi prop detail thay đổi
   useEffect(() => {

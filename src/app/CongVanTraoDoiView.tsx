@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Search, Eye, X, Printer, FileText, Pencil, Send, Paperclip, Trash2, RotateCw } from "lucide-react";
-import { F, RED, BORDER, TEXT, MUTED, BG, TH_STYLE, TD_STYLE, Badge } from "./shared";
+import { F, RED, BORDER, TEXT, MUTED, BG, TH_STYLE, TD_STYLE, Badge, TaiKhoanPhanQuyenBar, type UserRoleType } from "./shared";
 import { TaoToTrinhModal, ThuHoiConfirmDialog } from "./AppHelpers";
 import { TrinhKyModal, HoSoToTrinhModal } from "./TrinhKyModal";
 import { TaoDuThaoModal } from "./TaoDuThaoModal";
@@ -90,6 +90,22 @@ export const CV_ROWS: CVRow[] = [
     phanHoi: "–",
     phanCong: "TTV: Nguyễn Văn An",
     coKQGG: false,
+  },
+  {
+    stt: "05",
+    soCV: "Số CV: 45/CV-HC",
+    ngayCV: "15/08/2026",
+    loai: "den",
+    soBA: "45/2026/HC-PT",
+    ngayBA: "10/05/2026",
+    toaRaBA: "TAND tỉnh Vĩnh Phúc",
+    soThuLy: "105",
+    ngayThuLy: "16/08/2026",
+    donViGui: "TAND tỉnh Vĩnh Phúc",
+    donViNhan: "Tòa án nhân dân tối cao",
+    phanHoi: "–",
+    phanCong: "TTV: Hoàng Quỳnh Trang",
+    coKQGG: true,
   },
 ];
 
@@ -1478,7 +1494,16 @@ function ChiTietCongVanView({ row, onBack }: { row: CVRow; onBack: () => void })
 
 // ── CongVanTraoDoiView (list + detail) ───────────────────────────────────────
 
-export default function CongVanTraoDoiView() {
+export default function CongVanTraoDoiView({
+  userRole: propUserRole,
+  setUserRole: propSetUserRole,
+}: {
+  userRole?: UserRoleType;
+  setUserRole?: (role: UserRoleType) => void;
+} = {}) {
+  const [internalRole, setInternalRole] = useState<UserRoleType>("vu-1");
+  const userRole = propUserRole ?? internalRole;
+  const setUserRole = propSetUserRole ?? setInternalRole;
   const [tab, setTab] = useState<CongVanTab>("tat-ca");
   const [search, setSearch] = useState("");
   const [filterExpanded, setFilterExpanded] = useState(false);
@@ -1518,6 +1543,10 @@ export default function CongVanTraoDoiView() {
   }
 
   const filtered = CV_ROWS.filter(r => {
+    if ((userRole === "vu-1" || userRole === "hinh-su") && !r.soBA.includes("HS")) return false;
+    if ((userRole === "vu-2" || userRole === "dan-su") && !r.soBA.includes("DS")) return false;
+    if (userRole === "vu-3" && !r.soBA.includes("KDTM") && !r.soBA.includes("HNGĐ") && !r.soBA.includes("LĐ") && !r.soBA.includes("SHTT") && !r.soBA.includes("PS")) return false;
+    if ((userRole === "vu-4" || userRole === "hanh-chinh") && !r.soBA.includes("HC")) return false;
     if (tab === "den" && r.loai !== "den") return false;
     if (tab === "di" && r.loai !== "di") return false;
     if (soCVFilter && !r.soCV.toLowerCase().includes(soCVFilter.toLowerCase())) return false;
@@ -1552,7 +1581,10 @@ export default function CongVanTraoDoiView() {
         <div style={{ fontSize: 10, color: MUTED, fontFamily: F, marginBottom: 6 }}>
           Quản lý án &rsaquo; <span style={{ color: RED, fontWeight: 600 }}>Công văn trao đổi</span>
         </div>
-        <h1 style={{ fontSize: 22, fontWeight: 700, color: TEXT, fontFamily: F, margin: "0 0 16px" }}>Công văn trao đổi</h1>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, marginBottom: 16, flexWrap: "wrap" }}>
+          <h1 style={{ fontSize: 22, fontWeight: 700, color: TEXT, fontFamily: F, margin: 0 }}>Công văn trao đổi</h1>
+          <TaiKhoanPhanQuyenBar userRole={userRole} setUserRole={setUserRole} />
+        </div>
 
         <div style={{ display: "flex", gap: 0, borderBottom: `1px solid ${BORDER}`, marginBottom: 20 }}>
           {tabs.map(t => (
