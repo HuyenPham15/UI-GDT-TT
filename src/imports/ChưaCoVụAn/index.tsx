@@ -2240,7 +2240,7 @@ function Data3() {
     <div className="content-stretch flex flex-col items-start pl-[10px] pr-[12px] py-[39.5px] relative shrink-0 w-[185px]" data-name="Data">
       <div className="[word-break:break-word] flex flex-col font-['Be_Vietnam_Pro:Regular',sans-serif] justify-center leading-[0] not-italic relative shrink-0 text-[12px] text-black w-[173px] whitespace-pre-wrap">
         <p className="mb-0">
-          <span className="[word-break:break-word] font-['Be_Vietnam_Pro:Bold',sans-serif] leading-[16px] not-italic">{`Người khiếu nại: `}</span>
+          <span className="[word-break:break-word] font-['Be_Vietnam_Pro:Bold',sans-serif] leading-[16px]">{`Người khiếu nại: `}</span>
           <span className="leading-[16px]">Đỗ Tất Đạt</span>
         </p>
         <p className="leading-[16px] mb-0">​</p>
@@ -2291,7 +2291,7 @@ function Container85() {
   return (
     <div className="content-stretch flex flex-col items-start relative shrink-0 w-full" data-name="Container">
       <div className="[word-break:break-word] flex flex-col font-['Be_Vietnam_Pro:Regular',sans-serif] justify-center leading-[0] not-italic relative shrink-0 text-[#f97316] text-[12px] w-full">
-              </div>
+      </div>
     </div>
   );
 }
@@ -2560,7 +2560,7 @@ function Container95() {
   return (
     <div className="content-stretch flex flex-col items-start relative shrink-0 w-full" data-name="Container">
       <div className="[word-break:break-word] flex flex-col font-['Be_Vietnam_Pro:Regular',sans-serif] justify-center leading-[0] not-italic relative shrink-0 text-[#f97316] text-[12px] w-full">
-              </div>
+      </div>
     </div>
   );
 }
@@ -2915,7 +2915,7 @@ function Container105() {
   return (
     <div className="content-stretch flex flex-col items-start relative shrink-0 w-full" data-name="Container">
       <div className="[word-break:break-word] flex flex-col font-['Be_Vietnam_Pro:Regular',sans-serif] justify-center leading-[0] not-italic relative shrink-0 text-[#f97316] text-[12px] w-full">
-              </div>
+      </div>
     </div>
   );
 }
@@ -3159,7 +3159,7 @@ function Container114() {
   return (
     <div className="content-stretch flex flex-col items-start relative shrink-0 w-full" data-name="Container">
       <div className="[word-break:break-word] flex flex-col font-['Be_Vietnam_Pro:Regular',sans-serif] justify-center leading-[0] not-italic relative shrink-0 text-[#f97316] text-[12px] w-full">
-              </div>
+      </div>
     </div>
   );
 }
@@ -3392,7 +3392,7 @@ function Container122() {
   return (
     <div className="content-stretch flex flex-col items-start relative shrink-0 w-full" data-name="Container">
       <div className="[word-break:break-word] flex flex-col font-['Be_Vietnam_Pro:Regular',sans-serif] justify-center leading-[0] not-italic relative shrink-0 text-[#f97316] text-[12px] w-full">
-              </div>
+      </div>
     </div>
   );
 }
@@ -3663,7 +3663,7 @@ function Container130() {
   return (
     <div className="content-stretch flex flex-col items-start relative shrink-0 w-full" data-name="Container">
       <div className="[word-break:break-word] flex flex-col font-['Be_Vietnam_Pro:Regular',sans-serif] justify-center leading-[0] not-italic relative shrink-0 text-[#f97316] text-[12px] w-full">
-              </div>
+      </div>
     </div>
   );
 }

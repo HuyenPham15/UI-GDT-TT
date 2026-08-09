@@ -37,10 +37,10 @@ export function Badge({
 export function StatusBadge({ status }: { status: DonCase["trangThai"] | undefined }) {
   if (!status) return null;
   const map = {
-    "don-cho-phe-duyet":        { label: "Đơn chờ phê duyệt",          color: "#92400e", bg: "#fef3c7" },
-    "da-co-vu-an":          { label: "Đã có vụ án",             color: "#065f46", bg: "#d1fae5" },
+    "don-cho-phe-duyet": { label: "Đơn chờ phê duyệt", color: "#92400e", bg: "#fef3c7" },
+    "da-co-vu-an": { label: "Đã có vụ án", color: "#065f46", bg: "#d1fae5" },
     "thong-bao-giai-quyet": { label: "Đã có Thông báo giải quyết", color: "#065f46", bg: "#d1fae5" },
-    "chua-co-hs":           { label: "Chưa có hồ sơ liên hành", color: "#92400e", bg: "#fef3c7" },
+    "chua-co-hs": { label: "Chưa có hồ sơ liên hành", color: "#92400e", bg: "#fef3c7" },
   };
   const s = map[status];
   if (!s) return null;
@@ -49,10 +49,10 @@ export function StatusBadge({ status }: { status: DonCase["trangThai"] | undefin
 
 export function VuAnBtn({ action, onClick }: { action: VuAnAction; onClick?: () => void }) {
   const map: Record<VuAnAction, { label: string; color: string; bg: string; border: string }> = {
-    "chuyen-vu-an": { label: "Chuyển vụ án",    color: "#1e40af", bg: "#dbeafe", border: "#93c5fd" },
-    "huy-ghep":     { label: "Hủy ghép vụ án",  color: "#92400e", bg: "#fef3c7", border: "#fcd34d" },
-    "them-vu-an":   { label: "Thêm vụ án",      color: "#ffffff", bg: RED,       border: RED       },
-    "ghep-vu-an":   { label: "Ghép vụ án",      color: "#065f46", bg: "#d1fae5", border: "#6ee7b7" },
+    "chuyen-vu-an": { label: "Chuyển vụ án", color: "#1e40af", bg: "#dbeafe", border: "#93c5fd" },
+    "huy-ghep": { label: "Hủy ghép vụ án", color: "#92400e", bg: "#fef3c7", border: "#fcd34d" },
+    "them-vu-an": { label: "Thêm vụ án", color: "#ffffff", bg: RED, border: RED },
+    "ghep-vu-an": { label: "Ghép vụ án", color: "#065f46", bg: "#d1fae5", border: "#6ee7b7" },
   };
   const s = map[action];
   return (
@@ -70,15 +70,88 @@ export function VuAnBtn({ action, onClick }: { action: VuAnAction; onClick?: () 
 }
 
 export function Tag({ type }: { type: string }) {
-  if (type === "an-dan-de") 
+  if (type === "an-dan-de" || type === "an-chi-dao" || type === "Án chỉ đạo")
     return (
-      <Badge color="#78350f" bg="#fef9c3">
-        ⭐ Án chỉ đạo
+      <Badge color="#854d0e" bg="#fefce8">
+        ★ Án chỉ đạo
       </Badge>
     );
-  // if (type === "an-tu-hinh")
-  //   return <Badge color="#ffffff" bg="#991b1b">🔴 Án tử hình</Badge>;
+  if (type === "an-quoc-hoi" || type === "an-qh" || type === "Án quốc hội")
+    return (
+      <Badge color="#3730a3" bg="#e0e7ff">
+        🏛️ Án quốc hội
+      </Badge>
+    );
+  if (type === "an-tvtn" || type === "Án TVTN")
+    return (
+      <Badge color="#065f46" bg="#d1fae5">
+        📋 Án TVTN
+      </Badge>
+    );
+  if (type === "an-tu-hinh" || type === "Án tử hình")
+    return (
+      <Badge color="#7f1d1d" bg="#fee2e2">
+        ● Án tử hình
+      </Badge>
+    );
   return null;
+}
+
+export function getAnDacThuOptions(userRole?: UserRoleType, loaiAnStr?: string) {
+  const loai = (loaiAnStr || "").toLowerCase();
+  const isVu1 = userRole === "vu-1" || userRole === "hinh-su" || loai.includes("hình sự");
+  const isOtherVu = userRole === "vu-2" || userRole === "vu-3" || userRole === "vu-4" || userRole === "dan-su" || userRole === "hanh-chinh";
+
+  if (isVu1) {
+    return ["Án quốc hội", "Án chỉ đạo", "Án TVTN", "Án tử hình"];
+  } else if (isOtherVu) {
+    return ["Án quốc hội", "Án chỉ đạo"];
+  } else {
+    return ["Án quốc hội", "Án chỉ đạo", "Án TVTN", "Án tử hình"];
+  }
+}
+
+export function getThoiHieuOptions(userRole?: UserRoleType, loaiAnStr?: string) {
+  const loai = (loaiAnStr || "").toLowerCase();
+
+  if (loai.includes("hình sự")) {
+    return [
+      { val: "1 năm", label: "1 năm" },
+      { val: "Không xác định thời hiệu", label: "Không xác định thời hiệu" },
+    ];
+  }
+
+  if (loai && !loai.includes("hình sự")) {
+    return [
+      { val: "3 năm", label: "3 năm" },
+      { val: "5 năm", label: "5 năm" },
+    ];
+  }
+
+  // Nếu chưa chọn loại án cụ thể, xét theo tài khoản phân quyền userRole
+  const isHinhSuRole = userRole === "vu-1" || userRole === "hinh-su";
+  const isOtherRole = userRole === "vu-2" || userRole === "vu-3" || userRole === "vu-4" || userRole === "dan-su" || userRole === "hanh-chinh";
+
+  if (isHinhSuRole) {
+    return [
+      { val: "1 năm", label: "1 năm" },
+      { val: "Không xác định thời hiệu", label: "Không xác định thời hiệu" },
+    ];
+  }
+
+  if (isOtherRole) {
+    return [
+      { val: "3 năm", label: "3 năm" },
+      { val: "5 năm", label: "5 năm" },
+    ];
+  }
+
+  return [
+    { val: "1 năm", label: "1 năm" },
+    { val: "Không xác định thời hiệu", label: "Không xác định thời hiệu" },
+    { val: "3 năm", label: "3 năm" },
+    { val: "5 năm", label: "5 năm" },
+  ];
 }
 
 export function CapXetXu({ label }: { label: string }) {
@@ -93,7 +166,7 @@ export function CapXetXu({ label }: { label: string }) {
         fontFamily: F, alignSelf: "flex-start",
       }}
     >
-      Cấp xét xử: {label}
+      {/* Cấp xét xử: {label} */}
     </span>
   );
 }

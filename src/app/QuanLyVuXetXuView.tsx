@@ -88,7 +88,7 @@ const ROWS: VuXetXuRow[] = [
     soThuLy: "54681978", ngayThuLy: "09/07/2026",
     soBA: "5469/2026/HS-ST", ngayBA: "03/07/2026",
     toa: "Tòa án nhân dân khu vực 5 – Bắc Ninh",
-    capXetXu: "Sơ thẩm", thoiHieu: "5 năm", tag: "an-qh",
+    capXetXu: "Sơ thẩm", thoiHieu: "1 năm", tag: "an-qh",
     ndkn: "Trần Văn Hải", ndd: "Nguyễn Đơn Hải",
     ttv: "Trịnh Thị Minh Trang", ldv: "Nguyễn Như Thắng", tp: "Lê Thị Thu Hiển",
     trangThai: "chua-xx-chua-ds",
@@ -105,7 +105,7 @@ const ROWS: VuXetXuRow[] = [
     soThuLy: "54681923", ngayThuLy: "09/07/2026",
     soBA: "54681139/2026/HS-PT", ngayBA: "03/07/2026",
     toa: "Tòa án nhân dân khu vực 5 – Bắc Ninh",
-    capXetXu: "Phúc thẩm", thoiHieu: "3 năm", tag: "an-tu-hinh",
+    capXetXu: "Phúc thẩm", thoiHieu: "Không xác định thời hiệu", tag: "an-tu-hinh",
     ndkn: "Phan Văn Hùng", ndd: "Nguyễn Văn Đạt",
     ttv: "Vô Thị Thúy Giang", ldv: "Nguyễn Như Thắng", tp: "Nguyễn Biên Thùy",
     trangThai: "chua-xx-da-ds", thoiHanXX: "19 ngày",
@@ -122,7 +122,7 @@ const ROWS: VuXetXuRow[] = [
     soThuLy: "–", ngayThuLy: "–",
     soBA: "112/2026/HS-ST", ngayBA: "15/06/2026",
     toa: "Tòa án nhân dân TP Hà Nội",
-    capXetXu: "Sơ thẩm", thoiHieu: "5 năm", tag: "an-chi-dao",
+    capXetXu: "Sơ thẩm", thoiHieu: "1 năm", tag: "an-chi-dao",
     ndkn: "Trần Minh Quang", ndd: "Lê Thanh Tùng",
     ttv: "Trịnh Thị Minh Trang", ldv: "Nguyễn Như Thắng", tp: "Lê Thị Thu Hiển",
     trangThai: "chua-thu-ly",
@@ -139,7 +139,7 @@ const ROWS: VuXetXuRow[] = [
     soThuLy: "54681813", ngayThuLy: "09/07/2026",
     soBA: "18/2026/HS-ST", ngayBA: "08/07/2026",
     toa: "Tòa án nhân dân khu vực 5 – Bắc Ninh",
-    capXetXu: "Sơ thẩm", thoiHieu: "3 năm", tag: "an-chi-dao",
+    capXetXu: "Sơ thẩm", thoiHieu: "Không xác định thời hiệu", tag: "an-tvtn",
     ndkn: "Đỗ Thành Công", ndd: "Phan Kim Ngân",
     ttv: "Nguyễn Thị Hương", ldv: "Nguyễn Như Thắng", tp: "Lê Thị Thu Hiển",
     trangThai: "rut-khang-nghi", soQD: "54/2026/QĐ-CA", ngayQD: "09/07/2026",
@@ -156,7 +156,7 @@ const ROWS: VuXetXuRow[] = [
     soThuLy: "54681555", ngayThuLy: "10/05/2026",
     soBA: "99/2026/HS-PT", ngayBA: "20/04/2026",
     toa: "Tòa án nhân dân tỉnh Vĩnh Phúc",
-    capXetXu: "Phúc thẩm", thoiHieu: "3 năm",
+    capXetXu: "Phúc thẩm", thoiHieu: "1 năm", tag: "an-tu-hinh",
     ndkn: "Bùi Thị Tuyết", ndd: "Hoàng Văn Nam",
     ttv: "Hoàng Quỳnh Trang", ldv: "Nguyễn Như Thắng", tp: "Nguyễn Biên Thùy",
     trangThai: "da-xx", soQD: "102/2026/QĐ-GĐT", ngayQD: "25/06/2026",
@@ -173,7 +173,7 @@ const ROWS: VuXetXuRow[] = [
     soThuLy: "54681600", ngayThuLy: "01/06/2026",
     soBA: "45/2026/HS-ST", ngayBA: "12/05/2026",
     toa: "Tòa án nhân dân tỉnh Quảng Ninh",
-    capXetXu: "Sơ thẩm", thoiHieu: "5 năm", tag: "an-tu-hinh",
+    capXetXu: "Sơ thẩm", thoiHieu: "Không xác định thời hiệu", tag: "an-tu-hinh",
     ndkn: "Nguyễn Văn Lợi", ndd: "Trần Đức Tiến",
     ttv: "Vũ Diệu Thúy", ldv: "Nguyễn Như Thắng", tp: "Lê Thị Thu Hiển",
     trangThai: "chuyen-tham-quyen", soQD: "18/2026/QĐ-CTQ", ngayQD: "15/06/2026",
@@ -3920,9 +3920,9 @@ export default function QuanLyVuXetXuView({
                         <span style={{ display: "inline-block", padding: "1px 7px", background: "#dcfce7", color: "#15803d", borderRadius: 3, fontSize: 10, fontWeight: 600, fontFamily: F }}>
                           Thời hiệu: {row.thoiHieu}
                         </span>
-                        {row.tag === "an-qh" && (
-                          <span style={{ display: "inline-flex", alignItems: "center", gap: 3, padding: "1px 7px", background: "#fff7ed", color: "#c2410c", border: "1px solid #fed7aa", borderRadius: 3, fontSize: 10, fontWeight: 600, fontFamily: F }}>
-                            🏠 ÁN QH
+                        {(row.tag === "an-qh" || row.tag === "an-quoc-hoi") && (
+                          <span style={{ display: "inline-flex", alignItems: "center", gap: 3, padding: "1px 7px", background: "#e0e7ff", color: "#3730a3", border: "1px solid #c7d2fe", borderRadius: 3, fontSize: 10, fontWeight: 600, fontFamily: F }}>
+                            🏛️ Án quốc hội
                           </span>
                         )}
                         {row.tag === "an-tu-hinh" && (
@@ -3933,6 +3933,11 @@ export default function QuanLyVuXetXuView({
                         {row.tag === "an-chi-dao" && (
                           <span style={{ display: "inline-flex", alignItems: "center", gap: 3, padding: "1px 7px", background: "#fefce8", color: "#854d0e", border: "1px solid #fef08a", borderRadius: 3, fontSize: 10, fontWeight: 600, fontFamily: F }}>
                             ★ Án chỉ đạo
+                          </span>
+                        )}
+                        {row.tag === "an-tvtn" && (
+                          <span style={{ display: "inline-flex", alignItems: "center", gap: 3, padding: "1px 7px", background: "#d1fae5", color: "#065f46", border: "1px solid #a7f3d0", borderRadius: 3, fontSize: 10, fontWeight: 600, fontFamily: F }}>
+                            📋 Án TVTN
                           </span>
                         )}
                       </div>

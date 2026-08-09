@@ -1,6 +1,6 @@
 import React from "react";
 import { Search, RotateCcw, ChevronUp, ChevronDown } from "lucide-react";
-import { F, RED, BORDER, TEXT, MUTED } from "./shared";
+import { F, RED, BORDER, TEXT, MUTED, getAnDacThuOptions, getThoiHieuOptions, type UserRoleType } from "./shared";
 import { LOAI_AN_OPTIONS } from "./data";
 
 type FieldType = "input" | "select" | "date" | "dateRange";
@@ -12,7 +12,7 @@ interface FieldDef {
   options?: string[];
 }
 
-type RowCell = FieldDef | "diaChi" | null;
+type RowCell = FieldDef | "diaChi" | "anDacThu" | "thoiHieu" | null;
 
 const SEARCH_ROWS: [RowCell, RowCell, RowCell, RowCell][] = [
   [
@@ -25,6 +25,7 @@ const SEARCH_ROWS: [RowCell, RowCell, RowCell, RowCell][] = [
     { label: "Thời gian nhận đơn", type: "dateRange", placeholder: "Chọn khoảng ngày" },
     { label: "Chi tiết", type: "input", placeholder: "Chi tiết" },
     { label: "Thẩm phán", type: "select", placeholder: "-- Tất cả --" },
+    "anDacThu",
   ],
   [
     "diaChi",
@@ -52,17 +53,21 @@ const SEARCH_ROWS: [RowCell, RowCell, RowCell, RowCell][] = [
     { label: "Nơi chuyển", type: "select", placeholder: "-- Tất cả --" },
     { label: "Số tờ trình phân công thẩm phán", type: "input", placeholder: "Số tờ trình phân công thẩm phán" },
     { label: "Ngày tờ trình", type: "date" },
-    null,
+    "thoiHieu",
   ],
 ];
 
 export function SearchFilterPanel({
   expanded,
   onToggle,
+  userRole,
 }: {
   expanded: boolean;
   onToggle: () => void;
+  userRole?: UserRoleType;
 }) {
+  const [selectedLoaiAn, setSelectedLoaiAn] = React.useState<string>("");
+
   const inputStyle: React.CSSProperties = {
     width: "100%",
     padding: "6px 10px",
@@ -94,7 +99,12 @@ export function SearchFilterPanel({
       <span style={labelStyle}>{label}</span>
   
       {type === "select" ? (
-        <select style={selectStyle} defaultValue="">
+        <select
+          style={selectStyle}
+          defaultValue=""
+          value={label === "Loại án" ? selectedLoaiAn : undefined}
+          onChange={label === "Loại án" ? (e) => setSelectedLoaiAn(e.target.value) : undefined}
+        >
           <option value="">{placeholder ?? "-- Chọn --"}</option>
           {options?.map((o) => (
             <option key={o} value={o}>
@@ -154,6 +164,34 @@ export function SearchFilterPanel({
             const key = `${rowIdx}-${colIdx}`;
             if (cell === null) return <div key={key} />;
             if (cell === "diaChi") return <React.Fragment key={key}>{diaChiGui}</React.Fragment>;
+            if (cell === "anDacThu") {
+              const options = getAnDacThuOptions(userRole, selectedLoaiAn);
+              return (
+                <div key={key} style={{ display: "flex", flexDirection: "column", minWidth: 0 }}>
+                  <span style={labelStyle}>Án đặc thù</span>
+                  <select style={selectStyle} defaultValue="">
+                    <option value="">-- Tất cả --</option>
+                    {options.map((o) => (
+                      <option key={o} value={o}>{o}</option>
+                    ))}
+                  </select>
+                </div>
+              );
+            }
+            if (cell === "thoiHieu") {
+              const options = getThoiHieuOptions(userRole, selectedLoaiAn);
+              return (
+                <div key={key} style={{ display: "flex", flexDirection: "column", minWidth: 0 }}>
+                  <span style={labelStyle}>Thời hiệu</span>
+                  <select style={selectStyle} defaultValue="">
+                    <option value="">-- Tất cả --</option>
+                    {options.map((o) => (
+                      <option key={o.val} value={o.val}>{o.label}</option>
+                    ))}
+                  </select>
+                </div>
+              );
+            }
             return <React.Fragment key={key}>{renderField(cell)}</React.Fragment>;
           }),
         )}

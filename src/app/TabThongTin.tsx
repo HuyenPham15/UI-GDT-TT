@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Eye, Trash2, Sliders } from "lucide-react";
-import { F, RED, BORDER, TEXT, MUTED, BG, TH_STYLE, TD_STYLE, Badge, type UserRoleType } from "./shared";
+import { F, RED, BORDER, TEXT, MUTED, BG, TH_STYLE, TD_STYLE, Badge, getThoiHieuOptions, type UserRoleType } from "./shared";
 import type { VuAnDetailData } from "./App";
 import { LOAI_AN_OPTIONS, LoaiAn } from "./data";
 
@@ -197,7 +197,7 @@ export const MOCK_DATA_BY_LOAI_AN: Record<LoaiAn, TabThongTinMockData> = {
       },
     ],
     thongTinThem: {
-      thoiHieuDefault: "trong-han-1-nam",
+      thoiHieuDefault: "3-nam",
       quanHePL: "Tranh chấp hợp đồng vay tài sản",
       quanHePLThongKe: "Tranh chấp hợp đồng dân sự",
       quanHePLThongKeOptions: [
@@ -261,7 +261,7 @@ export const MOCK_DATA_BY_LOAI_AN: Record<LoaiAn, TabThongTinMockData> = {
       },
     ],
     thongTinThem: {
-      thoiHieuDefault: "trong-han-1-nam",
+      thoiHieuDefault: "1-nam",
       quanHePL: "Khiếu kiện quyết định hành chính về bồi thường, hỗ trợ tái định cư",
       quanHePLThongKe: "Khiếu kiện QĐHC trong quản lý đất đai",
       quanHePLThongKeOptions: [
@@ -323,7 +323,7 @@ export const MOCK_DATA_BY_LOAI_AN: Record<LoaiAn, TabThongTinMockData> = {
       },
     ],
     thongTinThem: {
-      thoiHieuDefault: "trong-han-1-nam",
+      thoiHieuDefault: "3-nam",
       quanHePL: "Tranh chấp hợp đồng mua bán hàng hóa quốc tế",
       quanHePLThongKe: "Tranh chấp hợp đồng mua bán hàng hóa",
       quanHePLThongKeOptions: [
@@ -385,7 +385,7 @@ export const MOCK_DATA_BY_LOAI_AN: Record<LoaiAn, TabThongTinMockData> = {
       },
     ],
     thongTinThem: {
-      thoiHieuDefault: "trong-han-1-nam",
+      thoiHieuDefault: "3-nam",
       quanHePL: "Tranh chấp tài sản chung vợ chồng sau ly hôn",
       quanHePLThongKe: "Chia tài sản chung vợ chồng",
       quanHePLThongKeOptions: [
@@ -447,7 +447,7 @@ export const MOCK_DATA_BY_LOAI_AN: Record<LoaiAn, TabThongTinMockData> = {
       },
     ],
     thongTinThem: {
-      thoiHieuDefault: "trong-han-1-nam",
+      thoiHieuDefault: "1-nam",
       quanHePL: "Tranh chấp về xử lý kỷ luật lao động theo hình thức sa thải",
       quanHePLThongKe: "Tranh chấp về đơn phương chấm dứt HĐLĐ",
       quanHePLThongKeOptions: [
@@ -878,14 +878,9 @@ export function TabThongTin({ detail, userRole }: { detail?: VuAnDetailData; use
           <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
             <label style={{ fontSize: 11, color: MUTED, fontFamily: F }}>Thời hiệu giải quyết</label>
             <div style={{ display: "flex", flexWrap: "wrap", gap: 20 }}>
-              {[
-                { val: "khong-xac-dinh", label: "Không xác định thời hiệu giải quyết" },
-                { val: "trong-han-1-nam", label: "Trong hạn giải quyết 1 năm" },
-                { val: "qua-3-nam", label: "Án quá thời hiệu 3 năm" },
-                { val: "qua-5-nam", label: "Án quá thời hiệu 5 năm" },
-              ].map(({ val, label }) => (
+              {getThoiHieuOptions(userRole, selectedLoaiAn).map(({ val, label }) => (
                 <label key={val} style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: TEXT, fontFamily: F, cursor: "pointer", whiteSpace: "nowrap" }}>
-                  <input type="radio" name="thoiHieu" value={val} checked={thoiHieu === val} onChange={() => setThoiHieu(val)}
+                  <input type="radio" name="thoiHieu" value={val} checked={thoiHieu === val || (thoiHieu !== "1-nam" && thoiHieu !== "ko-xac-dinh" && thoiHieu !== "3-nam" && thoiHieu !== "5-nam" && val === "1-nam")} onChange={() => setThoiHieu(val)}
                     style={{ width: 14, height: 14, accentColor: RED, cursor: "pointer" }} />
                   {label}
                 </label>

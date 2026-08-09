@@ -2103,7 +2103,7 @@ function BackgroundBorder1() {
     <div className="bg-[#fff3cd] content-stretch flex items-start px-[9px] py-[3px] relative rounded-[4px] shrink-0" data-name="Background+Border">
       <div aria-hidden className="absolute border border-[#ffeeba] border-solid inset-0 pointer-events-none rounded-[4px]" />
       <div className="[word-break:break-word] flex flex-col font-['Be_Vietnam_Pro:Regular',sans-serif] justify-center leading-[0] not-italic relative shrink-0 text-[#856404] text-[11px] whitespace-nowrap">
-        <p className="leading-[16.5px]">Cấp xét xử : Sơ thẩm</p>
+        {/* <p className="leading-[16.5px]">Cấp xét xử : Sơ thẩm</p> */}
       </div>
     </div>
   );

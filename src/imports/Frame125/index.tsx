@@ -1,4 +1,7 @@
+import React, { useState } from "react";
 import svgPaths from "./svg-k984wk8udr";
+import { TaiLieuHoSoView } from "@/app/TaiLieuHoSoView";
+import { HoSoLuuTruView } from "@/app/HoSoLuuTruView";
 
 function Container1() {
   return (
@@ -2645,10 +2648,88 @@ function TabGiiQuytVanBnDNgh() {
 }
 
 export default function Frame2() {
+  const [activeTab, setActiveTab] = useState<"giai-quyet" | "tai-lieu" | "ho-so-luu-tru">("giai-quyet");
+
   return (
     <div className="content-stretch flex items-center relative size-full">
       <HtmlBody />
-      <TabGiiQuytVanBnDNgh />
+      <div
+        className="content-stretch flex flex-col gap-[16px] h-[889px] items-start pb-[20px] pt-[16px] px-[16px] relative shrink-0 w-[1280px]"
+        style={{
+          backgroundImage:
+            "linear-gradient(90deg, rgb(255, 255, 255) 0%, rgb(255, 255, 255) 100%), linear-gradient(90deg, rgb(252, 252, 252) 0%, rgb(252, 252, 252) 100%), linear-gradient(90deg, rgb(255, 255, 255) 0%, rgb(255, 255, 255) 100%)",
+        }}
+      >
+        <NavBreadcrumb />
+        <CaseHeader />
+
+        {/* Tab switcher bar */}
+        <div style={{ display: "flex", gap: 8, borderBottom: "1px solid #e5e7eb", width: "100%", paddingBottom: 6 }}>
+          <button
+            onClick={() => setActiveTab("giai-quyet")}
+            style={{
+              padding: "6px 14px",
+              fontSize: 12,
+              fontWeight: activeTab === "giai-quyet" ? 700 : 500,
+              color: activeTab === "giai-quyet" ? "#a80000" : "#4b5563",
+              borderBottom: activeTab === "giai-quyet" ? "2px solid #a80000" : "none",
+              background: "none",
+              cursor: "pointer",
+            }}
+          >
+            ✔️ Giải quyết văn bản đề nghị
+          </button>
+          <button
+            onClick={() => setActiveTab("tai-lieu")}
+            style={{
+              padding: "6px 14px",
+              fontSize: 12,
+              fontWeight: activeTab === "tai-lieu" ? 700 : 500,
+              color: activeTab === "tai-lieu" ? "#a80000" : "#4b5563",
+              borderBottom: activeTab === "tai-lieu" ? "2px solid #a80000" : "none",
+              background: "none",
+              cursor: "pointer",
+            }}
+          >
+            📂 Tài liệu vụ án
+          </button>
+          <button
+            onClick={() => setActiveTab("ho-so-luu-tru")}
+            style={{
+              padding: "6px 14px",
+              fontSize: 12,
+              fontWeight: activeTab === "ho-so-luu-tru" ? 700 : 500,
+              color: activeTab === "ho-so-luu-tru" ? "#a80000" : "#4b5563",
+              borderBottom: activeTab === "ho-so-luu-tru" ? "2px solid #a80000" : "none",
+              background: "none",
+              cursor: "pointer",
+            }}
+          >
+            💾 Hồ sơ lưu trữ
+          </button>
+        </div>
+
+        {/* Tab content */}
+        <div style={{ flex: 1, width: "100%", overflow: "hidden", display: "flex" }}>
+          {activeTab === "giai-quyet" && (
+            <div style={{ width: "100%", overflowY: "auto" }}>
+              <SuspensionSection />
+              <ResolutionResultSection />
+              <AsideSidebar1 />
+            </div>
+          )}
+          {activeTab === "tai-lieu" && (
+            <div style={{ height: "calc(100vh - 180px)", width: "100%", overflow: "hidden" }}>
+              <TaiLieuHoSoView />
+            </div>
+          )}
+          {activeTab === "ho-so-luu-tru" && (
+            <div style={{ height: "calc(100vh - 180px)", width: "100%", overflow: "hidden" }}>
+              <HoSoLuuTruView />
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   );
 }
