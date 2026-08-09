@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Search, RefreshCw, Eye, ChevronDown, FileText, Users, X, Send } from "lucide-react";
+import { Search, RefreshCw, Eye, ChevronDown, FileText, Users, X, Send, Calendar, Trash2, Layers } from "lucide-react";
 import { F, RED, BORDER, TEXT, MUTED, BG, TH_STYLE, TD_STYLE, Badge, TaiKhoanPhanQuyenBar, type UserRoleType } from "./shared";
 import { HoSoToTrinhModal, TrinhKyModal } from "./TrinhKyModal";
 import { TaoDuThaoModal } from "./TaoDuThaoModal";
@@ -174,35 +174,281 @@ function HSPagination({ total }: { total: number }) {
     </div>
   );
 }
+
 function HSTHTaoToTrinhModal({ onClose }: { onClose: () => void }) {
-  const inSt: React.CSSProperties = { padding: "8px 10px", fontSize: 12, border: `1px solid ${BORDER}`, borderRadius: 4, fontFamily: F, outline: "none", width: "100%", background: "#fff", boxSizing: "border-box" };
+  const [ngayLap, setNgayLap] = useState("");
+  const [soToTrinh, setSoToTrinh] = useState("");
+  const [biAnSelect, setBiAnSelect] = useState("");
+  const [tomTatNoiDung, setTomTatNoiDung] = useState("");
+  const [noiDungVuAn, setNoiDungVuAn] = useState("");
+  const [quaTrinhGiaiQuyet, setQuaTrinhGiaiQuyet] = useState("");
+
+  const [yKienRows, setYKienRows] = useState([
+    {
+      id: 1,
+      biAn: "Chu Văn An",
+      deXuat: "Kháng nghị",
+      yKienChiTiet: "Đồng ý. Giao TTV hoàn thiện dự thảo văn bản trả lời đơn gửi Lãnh đạo Vụ xem xét, trình Chánh án TANDTC. Đồng ý. Giao TTV hoàn thiện dự thảo văn bản trả lời đơn gửi Lãnh đạo Vụ xem xét, trình Chánh án TANDTC.",
+    },
+    {
+      id: 2,
+      biAn: "Trần Văn Hùng",
+      deXuat: "Kháng nghị",
+      yKienChiTiet: "",
+    },
+  ]);
+
+  const inpStyle: React.CSSProperties = {
+    width: "100%", padding: "8px 12px", fontSize: 12,
+    border: `1px solid ${BORDER}`, borderRadius: 4,
+    fontFamily: F, color: TEXT, outline: "none", background: "#fff",
+    boxSizing: "border-box",
+  };
+
+  const lblStyle: React.CSSProperties = {
+    fontSize: 12, color: TEXT, fontFamily: F, display: "block", marginBottom: 4, fontWeight: 500,
+  };
+
+  const sectionTitleStyle: React.CSSProperties = {
+    fontSize: 13, fontWeight: 700, color: TEXT, fontFamily: F, marginBottom: 4, marginTop: 14, textTransform: "uppercase",
+  };
+
+  const hrStyle: React.CSSProperties = {
+    height: 1, background: "#e5e7eb", border: "none", margin: "4px 0 10px 0",
+  };
+
   return (
-    <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.45)", zIndex: 1000, display: "flex", alignItems: "flex-start", justifyContent: "center", overflowY: "auto", padding: "24px 16px" }}>
-      <div style={{ background: "#fff", borderRadius: 10, width: "100%", maxWidth: 720, boxShadow: "0 20px 60px rgba(0,0,0,0.2)", marginBottom: 24 }}>
-        <div style={{ display: "flex", alignItems: "center", padding: "13px 20px", borderBottom: `1px solid ${BORDER}` }}>
-          <span style={{ fontSize: 15, fontWeight: 700, color: TEXT, fontFamily: F, flex: 1 }}>Thêm mới tờ trình</span>
-          <button onClick={onClose} style={{ background: "none", border: "none", cursor: "pointer" }}><X size={18} color={MUTED} /></button>
+    <div style={{
+      position: "fixed", top: 0, left: 0, right: 0, bottom: 0,
+      background: "rgba(0,0,0,0.45)", zIndex: 1000,
+      display: "flex", alignItems: "center", justifyContent: "center",
+      padding: 16, fontFamily: F,
+    }}>
+      <div style={{
+        background: "#fff", borderRadius: 8, width: 880, maxWidth: "95vw",
+        maxHeight: "92vh", display: "flex", flexDirection: "column",
+        boxShadow: "0 12px 36px rgba(0,0,0,0.18)", overflow: "hidden",
+      }}>
+        
+        {/* Header */}
+        <div style={{
+          display: "flex", alignItems: "center", justifyContent: "space-between",
+          padding: "14px 20px", borderBottom: `1px solid ${BORDER}`, background: "#fff",
+        }}>
+          <h3 style={{ margin: 0, fontSize: 15, fontWeight: 700, color: TEXT, fontFamily: F }}>
+            Thêm mới tờ trình
+          </h3>
+          <button
+            onClick={onClose}
+            style={{ background: "none", border: "none", fontSize: 18, cursor: "pointer", color: TEXT }}
+          >
+            ✕
+          </button>
         </div>
-        <div style={{ padding: "16px 20px" }}>
-          <div style={{ marginBottom: 16 }}>
-            <span style={{ fontSize: 11, color: MUTED, fontFamily: F, display: "block", marginBottom: 3 }}><span style={{ color: RED }}>*</span> Ngày lập tờ trình</span>
-            <input placeholder="dd/mm/yyyy" style={{ ...inSt, maxWidth: 180 }} />
+
+        {/* Modal Body Scrollable */}
+        <div style={{ padding: "16px 24px", overflowY: "auto", flex: 1, display: "flex", flexDirection: "column", gap: 14 }}>
+          
+          {/* Summary Box */}
+          <div style={{
+            background: "#fff5f5", border: "1px solid #fecaca", borderRadius: 6,
+            padding: "12px 16px", display: "grid", gridTemplateColumns: "1.2fr 1fr", gap: 12,
+            fontSize: 12, fontFamily: F,
+          }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+              <div><span style={{ color: "#1d4ed8", fontWeight: 700 }}>Mã vụ án : </span><span style={{ color: TEXT }}>VA26-002039</span></div>
+              <div><span style={{ color: "#1d4ed8", fontWeight: 700 }}>Tên vụ án : </span><span style={{ color: TEXT }}>Vụ án Nguyễn Văn Minh - Tội cướp tài sản</span></div>
+            </div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+              <div><span style={{ color: "#1d4ed8", fontWeight: 700 }}>Số BA : </span><span style={{ color: TEXT }}>Nguyễn Văn Minh</span></div>
+              <div><span style={{ color: "#1d4ed8", fontWeight: 700 }}>Ngày BA : </span><span style={{ color: TEXT }}>Tội cướp tài sản</span></div>
+              <div><span style={{ color: "#1d4ed8", fontWeight: 700 }}>Tòa xét xử : </span><span style={{ color: TEXT }}>Tội cướp tài sản</span></div>
+            </div>
           </div>
-          <div style={{ marginBottom: 16 }}>
-            <div style={{ fontSize: 13, fontWeight: 700, color: TEXT, fontFamily: F, marginBottom: 8, paddingBottom: 6, borderBottom: `1px solid ${BORDER}` }}>I. NỘI DUNG VỤ ÁN</div>
-            <span style={{ fontSize: 11, color: MUTED, fontFamily: F, display: "block", marginBottom: 4 }}><span style={{ color: RED }}>*</span> Tóm tắt nội dung</span>
-            <textarea placeholder="Nhập tóm tắt nội dung vụ án" style={{ ...inSt, minHeight: 80, resize: "vertical" }} />
+
+          {/* Form Row 1 */}
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 16 }}>
+            <div>
+              <label style={lblStyle}><span style={{ color: RED }}>* </span>Ngày lập tờ trình</label>
+              <div style={{ position: "relative" }}>
+                <input
+                  type="text"
+                  value={ngayLap}
+                  onChange={e => setNgayLap(e.target.value)}
+                  placeholder="dd/mm/yyyy"
+                  style={inpStyle}
+                />
+                <Calendar size={14} color="#6b7280" style={{ position: "absolute", right: 10, top: 10, pointerEvents: "none" }} />
+              </div>
+            </div>
+
+            <div>
+              <label style={lblStyle}><span style={{ color: RED }}>* </span>Số tờ trình</label>
+              <input
+                placeholder="Nhập số tờ trình"
+                value={soToTrinh}
+                onChange={e => setSoToTrinh(e.target.value)}
+                style={inpStyle}
+              />
+            </div>
+
+            <div>
+              <label style={lblStyle}><span style={{ color: RED }}>* </span>BỊ ÁN</label>
+              <select
+                value={biAnSelect}
+                onChange={e => setBiAnSelect(e.target.value)}
+                style={inpStyle}
+              >
+                <option value="">Chọn người ký</option>
+                <option value="Chu Văn An">Chu Văn An</option>
+                <option value="Trần Văn Hùng">Trần Văn Hùng</option>
+              </select>
+            </div>
           </div>
-          <div style={{ marginBottom: 16 }}>
-            <div style={{ fontSize: 13, fontWeight: 700, color: TEXT, fontFamily: F, marginBottom: 8, paddingBottom: 6, borderBottom: `1px solid ${BORDER}` }}>II. QUÁ TRÌNH GIẢI QUYẾT</div>
-            <span style={{ fontSize: 11, color: MUTED, fontFamily: F, display: "block", marginBottom: 4 }}><span style={{ color: RED }}>*</span> Diễn biến quá trình giải quyết</span>
-            <textarea placeholder="Nhập quá trình giải quyết" style={{ ...inSt, minHeight: 80, resize: "vertical" }} />
+
+          {/* Section I */}
+          <div>
+            <div style={sectionTitleStyle}>I. THÔNG TIN BỊ ÁN</div>
+            <div style={hrStyle} />
+            <label style={lblStyle}><span style={{ color: RED }}>* </span>Thông tin bị án</label>
+            <textarea
+              placeholder="Nhập tóm tắt nội dung vụ án"
+              value={tomTatNoiDung}
+              onChange={e => setTomTatNoiDung(e.target.value)}
+              rows={3}
+              style={{ ...inpStyle, resize: "vertical", minHeight: 75 }}
+            />
           </div>
-          <div style={{ display: "flex", justifyContent: "center", gap: 10, borderTop: `1px solid ${BORDER}`, paddingTop: 16 }}>
-            <button onClick={onClose} style={{ padding: "7px 24px", background: "#fff", color: "#374151", border: `1px solid ${BORDER}`, borderRadius: 4, cursor: "pointer", fontSize: 12, fontFamily: F }}>Đóng</button>
-            <button style={{ padding: "7px 28px", background: RED, color: "#fff", border: "none", borderRadius: 4, cursor: "pointer", fontSize: 12, fontWeight: 700, fontFamily: F }}>Lưu</button>
+
+          {/* Section II */}
+          <div>
+            <div style={sectionTitleStyle}>II. NỘI DUNG VỤ ÁN/HÀNH VI PHẠM TỘI</div>
+            <div style={hrStyle} />
+            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+              <div>
+                <label style={lblStyle}><span style={{ color: RED }}>* </span>Nội dung vụ án</label>
+                <textarea
+                  placeholder="Nhập quá trình giải quyết vụ án"
+                  value={noiDungVuAn}
+                  onChange={e => setNoiDungVuAn(e.target.value)}
+                  rows={3}
+                  style={{ ...inpStyle, resize: "vertical", minHeight: 75 }}
+                />
+              </div>
+
+              <div>
+                <label style={lblStyle}><span style={{ color: RED }}>* </span>Quá trình giải quyết</label>
+                <textarea
+                  placeholder="Nhập quá trình giải quyết vụ án"
+                  value={quaTrinhGiaiQuyet}
+                  onChange={e => setQuaTrinhGiaiQuyet(e.target.value)}
+                  rows={3}
+                  style={{ ...inpStyle, resize: "vertical", minHeight: 75 }}
+                />
+              </div>
+            </div>
           </div>
+
+          {/* Section III */}
+          <div>
+            <div style={sectionTitleStyle}>III. NỘI DUNG Ý KIẾN</div>
+            <div style={{ border: `1px solid #fecaca`, borderRadius: 4, overflow: "hidden" }}>
+              <table style={{ width: "100%", borderCollapse: "collapse", tableLayout: "fixed" }}>
+                <thead>
+                  <tr style={{ background: "#fff5f5", borderBottom: `1px solid #fecaca` }}>
+                    <th style={{ ...TH_STYLE, width: 45, textAlign: "center", color: TEXT }}>STT</th>
+                    <th style={{ ...TH_STYLE, width: 160, color: TEXT }}>Bị án tử hình</th>
+                    <th style={{ ...TH_STYLE, color: TEXT }}>Đề xuất giải quyết Thẩm tra viên</th>
+                    <th style={{ ...TH_STYLE, width: 90, textAlign: "center", color: TEXT }}>Thao tác</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {yKienRows.map((row, idx) => (
+                    <tr key={row.id} style={{ borderBottom: idx < yKienRows.length - 1 ? `1px solid ${BORDER}` : "none", background: "#fff" }}>
+                      <td style={{ ...TD_STYLE, textAlign: "center", fontSize: 12, verticalAlign: "top", paddingTop: 12 }}>{idx + 1}</td>
+                      <td style={{ ...TD_STYLE, fontSize: 12, fontWeight: 700, color: TEXT, verticalAlign: "top", paddingTop: 12 }}>{row.biAn}</td>
+                      <td style={{ ...TD_STYLE, padding: "8px 10px" }}>
+                        <select
+                          value={row.deXuat}
+                          onChange={e => {
+                            const val = e.target.value;
+                            setYKienRows(prev => prev.map(r => r.id === row.id ? { ...r, deXuat: val } : r));
+                          }}
+                          style={{ ...inpStyle, width: 160, marginBottom: row.id === 1 ? 8 : 0 }}
+                        >
+                          <option value="Kháng nghị">Kháng nghị</option>
+                          <option value="Không kháng nghị">Không kháng nghị</option>
+                        </select>
+
+                        {row.id === 1 && (
+                          <textarea
+                            placeholder="Nhập ý kiến chi tiết..."
+                            value={row.yKienChiTiet}
+                            onChange={e => {
+                              const val = e.target.value;
+                              setYKienRows(prev => prev.map(r => r.id === row.id ? { ...r, yKienChiTiet: val } : r));
+                            }}
+                            rows={3}
+                            style={{ ...inpStyle, border: "1px solid #fecaca", resize: "vertical", background: "#fff" }}
+                          />
+                        )}
+                      </td>
+                      <td style={{ ...TD_STYLE, textAlign: "center", verticalAlign: "top", paddingTop: 12 }}>
+                        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}>
+                          {row.id === 2 && (
+                            <button
+                              style={{ background: "none", border: "none", cursor: "pointer", color: "#2563eb" }}
+                              title="Đổi mẫu"
+                            >
+                              <Layers size={16} color="#2563eb" />
+                            </button>
+                          )}
+                          <button
+                            onClick={() => setYKienRows(prev => prev.filter(r => r.id !== row.id))}
+                            style={{ background: "none", border: "none", cursor: "pointer", color: RED }}
+                            title="Xóa"
+                          >
+                            <Trash2 size={16} color={RED} />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
         </div>
+
+        {/* Modal Footer */}
+        <div style={{
+          padding: "12px 20px", borderTop: `1px solid ${BORDER}`, background: "#f3f4f6",
+          display: "flex", justifyContent: "center", gap: 12,
+        }}>
+          <button
+            onClick={onClose}
+            style={{
+              padding: "8px 28px", background: "#e5e7eb", color: TEXT,
+              border: "none", borderRadius: 4, cursor: "pointer",
+              fontSize: 13, fontFamily: F, fontWeight: 600,
+            }}>
+            Đóng
+          </button>
+          <button
+            onClick={() => {
+              alert("Đã lưu thông tin tờ trình thành công!");
+              onClose();
+            }}
+            style={{
+              padding: "8px 32px", background: "#800000", color: "#fff",
+              border: "none", borderRadius: 4, cursor: "pointer",
+              fontSize: 13, fontFamily: F, fontWeight: 700,
+            }}>
+            Lưu
+          </button>
+        </div>
+
       </div>
     </div>
   );
@@ -468,6 +714,12 @@ function HSTHTabPhanCong() {
 // ── Tab Tờ trình (HSTH) ───────────────────────────────────────────────────────
 function HSTHTabToTrinh() {
   const [showTaoTT, setShowTaoTT] = useState(false);
+  const [showCTNToTrinh, setShowCTNToTrinh] = useState(false);
+  const [showQDKhangNghi, setShowQDKhangNghi] = useState(false);
+  const [showQDKhongKhangNghi, setShowQDKhongKhangNghi] = useState(false);
+  const [showTaoDuThaoDrop, setShowTaoDuThaoDrop] = useState(false);
+  const [showTaoTTDrop, setShowTaoTTDrop] = useState(false);
+
   const [showTrinhKy, setShowTrinhKy] = useState(false);
   const [showHoSo, setShowHoSo] = useState(false);
   const [showTaoDuThao, setShowTaoDuThao] = useState(false);
@@ -501,6 +753,9 @@ function HSTHTabToTrinh() {
   return (
     <div style={{ padding: 16, display: "flex", flexDirection: "column", gap: 16 }}>
       {showTaoTT && <HSTHTaoToTrinhModal onClose={() => setShowTaoTT(false)} />}
+      {showCTNToTrinh && <CTNTaoToTrinhModal onClose={() => setShowCTNToTrinh(false)} />}
+      {showQDKhangNghi && <ModalQDKhangNghi onClose={() => setShowQDKhangNghi(false)} />}
+      {showQDKhongKhangNghi && <ModalQDKhongKhangNghi onClose={() => setShowQDKhongKhangNghi(false)} />}
       {showTrinhKy && <TrinhKyModal onClose={() => setShowTrinhKy(false)} />}
       {showHoSo && <HoSoTuHinhFileModal onClose={() => setShowHoSo(false)} loaiHoSo="to-trinh" />}
       {showTaoDuThao && <TaoDuThaoModal onClose={() => setShowTaoDuThao(false)} />}
@@ -516,8 +771,83 @@ function HSTHTabToTrinh() {
         <div style={{ display: "flex", alignItems: "center", padding: "12px 16px", borderBottom: `1px solid ${BORDER}`, gap: 8, flexWrap: "wrap" }}>
           <span style={{ fontSize: 14, fontWeight: 700, color: TEXT, fontFamily: F, flex: 1 }}>Danh sách văn bản</span>
           <button onClick={() => setShowTrinhKy(true)} style={{ padding: "6px 14px", background: "#fff", color: TEXT, border: `1px solid ${BORDER}`, borderRadius: 4, cursor: "pointer", fontSize: 12, fontFamily: F }}>Trình ký</button>
-          <button onClick={() => setShowTaoDuThao(true)} style={{ padding: "6px 14px", background: "#fff", color: TEXT, border: `1px solid ${BORDER}`, borderRadius: 4, cursor: "pointer", fontSize: 12, fontFamily: F }}>Tạo dự thảo</button>
-          <button onClick={() => setShowTaoTT(true)} style={{ padding: "6px 14px", background: RED, color: "#fff", border: "none", borderRadius: 4, cursor: "pointer", fontSize: 12, fontWeight: 700, fontFamily: F }}>+ Tạo tờ trình</button>
+          
+          {/* Dropdown Tạo dự thảo */}
+          <div style={{ position: "relative" }}>
+            <button
+              onClick={() => { setShowTaoDuThaoDrop(v => !v); setShowTaoTTDrop(false); }}
+              style={{ display: "flex", alignItems: "center", gap: 4, padding: "6px 14px", background: "#fff", color: TEXT, border: `1px solid ${BORDER}`, borderRadius: 4, cursor: "pointer", fontSize: 12, fontFamily: F }}
+            >
+              Tạo dự thảo <ChevronDown size={12} />
+            </button>
+            {showTaoDuThaoDrop && (
+              <div style={{ position: "absolute", top: "calc(100% + 4px)", right: 0, background: "#fff", border: `1px solid ${BORDER}`, borderRadius: 6, boxShadow: "0 6px 20px rgba(0,0,0,0.12)", zIndex: 300, minWidth: 240, overflow: "hidden" }}>
+                <button
+                  onClick={() => { setShowTaoDuThaoDrop(false); setShowTaoTT(true); }}
+                  style={{ display: "block", width: "100%", padding: "10px 14px", textAlign: "left", background: "none", border: "none", cursor: "pointer", fontSize: 12, fontFamily: F, color: TEXT }}
+                  onMouseEnter={e => (e.currentTarget.style.background = "#fef2f2")}
+                  onMouseLeave={e => (e.currentTarget.style.background = "none")}
+                >
+                  Tờ trình
+                </button>
+                <button
+                  onClick={() => { setShowTaoDuThaoDrop(false); setShowCTNToTrinh(true); }}
+                  style={{ display: "block", width: "100%", padding: "10px 14px", textAlign: "left", background: "none", border: "none", cursor: "pointer", fontSize: 12, fontFamily: F, color: TEXT, borderTop: `1px solid ${BORDER}` }}
+                  onMouseEnter={e => (e.currentTarget.style.background = "#fef2f2")}
+                  onMouseLeave={e => (e.currentTarget.style.background = "none")}
+                >
+                  Tờ trình trình Chủ tịch nước
+                </button>
+                <button
+                  onClick={() => { setShowTaoDuThaoDrop(false); setShowQDKhangNghi(true); }}
+                  style={{ display: "block", width: "100%", padding: "10px 14px", textAlign: "left", background: "none", border: "none", cursor: "pointer", fontSize: 12, fontFamily: F, color: TEXT, borderTop: `1px solid ${BORDER}` }}
+                  onMouseEnter={e => (e.currentTarget.style.background = "#fef2f2")}
+                  onMouseLeave={e => (e.currentTarget.style.background = "none")}
+                >
+                  Quyết định kháng nghị
+                </button>
+                <button
+                  onClick={() => { setShowTaoDuThaoDrop(false); setShowQDKhongKhangNghi(true); }}
+                  style={{ display: "block", width: "100%", padding: "10px 14px", textAlign: "left", background: "none", border: "none", cursor: "pointer", fontSize: 12, fontFamily: F, color: TEXT, borderTop: `1px solid ${BORDER}` }}
+                  onMouseEnter={e => (e.currentTarget.style.background = "#fef2f2")}
+                  onMouseLeave={e => (e.currentTarget.style.background = "none")}
+                >
+                  Quyết định không kháng nghị
+                </button>
+              </div>
+            )}
+          </div>
+
+          {/* Dropdown + Tạo tờ trình */}
+          <div style={{ position: "relative" }}>
+            <button
+              onClick={() => { setShowTaoTTDrop(v => !v); setShowTaoDuThaoDrop(false); }}
+              style={{ display: "flex", alignItems: "center", gap: 4, padding: "6px 14px", background: RED, color: "#fff", border: "none", borderRadius: 4, cursor: "pointer", fontSize: 12, fontWeight: 700, fontFamily: F }}
+            >
+              + Tạo tờ trình <ChevronDown size={12} color="#fff" />
+            </button>
+            {showTaoTTDrop && (
+              <div style={{ position: "absolute", top: "calc(100% + 4px)", right: 0, background: "#fff", border: `1px solid ${BORDER}`, borderRadius: 6, boxShadow: "0 6px 20px rgba(0,0,0,0.12)", zIndex: 300, minWidth: 220, overflow: "hidden" }}>
+                <button
+                  onClick={() => { setShowTaoTTDrop(false); setShowTaoTT(true); }}
+                  style={{ display: "block", width: "100%", padding: "10px 14px", textAlign: "left", background: "none", border: "none", cursor: "pointer", fontSize: 12, fontFamily: F, color: TEXT }}
+                  onMouseEnter={e => (e.currentTarget.style.background = "#fef2f2")}
+                  onMouseLeave={e => (e.currentTarget.style.background = "none")}
+                >
+                  Tờ trình
+                </button>
+                <button
+                  onClick={() => { setShowTaoTTDrop(false); setShowCTNToTrinh(true); }}
+                  style={{ display: "block", width: "100%", padding: "10px 14px", textAlign: "left", background: "none", border: "none", cursor: "pointer", fontSize: 12, fontFamily: F, color: TEXT, borderTop: `1px solid ${BORDER}` }}
+                  onMouseEnter={e => (e.currentTarget.style.background = "#fef2f2")}
+                  onMouseLeave={e => (e.currentTarget.style.background = "none")}
+                >
+                  Tờ trình trình Chủ tịch nước
+                </button>
+              </div>
+            )}
+          </div>
+
           <button onClick={() => setShowHoSo(true)} style={{ padding: "6px 14px", background: "#fff", color: TEXT, border: `1px solid ${BORDER}`, borderRadius: 4, cursor: "pointer", fontSize: 12, fontFamily: F }}>Hồ sơ tờ trình</button>
         </div>
         <div style={{ overflowX: "auto" }}>
@@ -1455,6 +1785,12 @@ function XacMinhSubTab() {
     </>
   );
 }
+
+export function ModalThemMoiToTrinh({ onClose }: { onClose: () => void }) {
+  return <HSTHTaoToTrinhModal onClose={onClose} />;
+}
+
+
 
 function HoSoTuHinhDetailView({ id, onBack }: { id: string; onBack: () => void }) {
   const [tab, setTab] = useState<HSDetailTab>("thong-tin");
