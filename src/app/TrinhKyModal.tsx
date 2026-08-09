@@ -5,7 +5,7 @@ export function HoSoToTrinhModal({ onClose, onSave }: { onClose: () => void; onS
   const [selected, setSelected] = useState("hoa-pdf");
   const folders = [
     { key: "tai-lieu", label: "Tài liệu đánh dấu", count: 0, icon: "📁" },
-    { key: "tieu-ho-so", label: "Tiểu hồ sơ", count: 1, icon: "📁" },
+    // { key: "tieu-ho-so", label: "Tiểu hồ sơ", count: 1, icon: "📁" },
     { key: "ths1", label: "THS1", count: 0, icon: "📁" },
   ];
   const files = [
@@ -374,7 +374,7 @@ export function TrinhKyModal({ onClose }: { onClose: () => void }) {
         <div style={{ width: 360, borderRight: `1px solid ${BORDER}`, display: "flex", flexDirection: "column", flexShrink: 0, background: "#fff" }}>
           {/* Sub-tabs */}
           <div style={{ display: "flex", borderBottom: `1px solid ${BORDER}`, flexShrink: 0 }}>
-            {([["noi-dung","Nội dung xin ý kiến"],["thong-tin","Thông tin tờ trình"],["ho-so","Hồ sơ tờ trình"]] as const).map(([k,lbl]) => (
+            {([["noi-dung", "Nội dung xin ý kiến"], ["thong-tin", "Thông tin tờ trình"], ["ho-so", "Hồ sơ tờ trình"]] as const).map(([k, lbl]) => (
               <button key={k} onClick={() => setLeftTab(k)}
                 style={{ flex: 1, padding: "9px 4px", fontSize: 11, fontFamily: F, fontWeight: leftTab === k ? 700 : 400, background: "none", border: "none", cursor: "pointer", color: leftTab === k ? RED : MUTED, borderBottom: leftTab === k ? `2px solid ${RED}` : "2px solid transparent", marginBottom: -1 }}>
                 {lbl}
@@ -434,7 +434,7 @@ export function TrinhKyModal({ onClose }: { onClose: () => void }) {
                   <colgroup><col style={{ width: "32%" }} /><col style={{ width: "33%" }} /><col style={{ width: "22%" }} /><col style={{ width: 36 }} /></colgroup>
                   <thead>
                     <tr>
-                      {["Cấp trình","Người được trình","Ưu tiên",""].map((h, i) => (
+                      {["Cấp trình", "Người được trình", "Ưu tiên", ""].map((h, i) => (
                         <th key={i} style={{ ...TH_STYLE, fontSize: 10 }}>{h}</th>
                       ))}
                     </tr>

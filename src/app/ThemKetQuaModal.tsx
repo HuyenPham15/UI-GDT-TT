@@ -2,9 +2,10 @@ import React, { useState } from "react";
 import { FileText } from "lucide-react";
 import { F, RED, BORDER, TEXT, MUTED, TH_STYLE, TD_STYLE } from "./shared";
 
-export function ThemKetQuaModal({ onClose }: { onClose: () => void }) {
-  type KetQua = "tra-loi" | "khang-nghi" | "xep-don" | "vks";
-  const [ketQua, setKetQua] = useState<KetQua>("tra-loi");
+export function ThemKetQuaModal({ onClose, detail }: { onClose: () => void; detail?: any }) {
+  const isKhieuNai = detail?.isKhieuNai || detail?.entityWord === "Khiếu nại" || detail?.moduleLabel === "Quản lý khiếu nại" || (typeof detail?.maVuAn === "string" && detail.maVuAn.includes("KN")) || (typeof detail?.id === "string" && detail.id.includes("KN")) || (typeof detail?.tenVuAn === "string" && detail.tenVuAn.toLowerCase().includes("khiếu nại"));
+  type KetQua = "tra-loi" | "khang-nghi" | "xep-don" | "vks" | "chap-nhan" | "khong-chap-nhan";
+  const [ketQua, setKetQua] = useState<KetQua>(isKhieuNai ? "chap-nhan" : "tra-loi");
 
   const DON_LIST = [
     { id: "don-1", label: "Hoàng Anh, số TL: 123457, ngày TL: 04/05/2026", nguoi: ["Hoàng Anh"] },
@@ -60,10 +61,14 @@ export function ThemKetQuaModal({ onClose }: { onClose: () => void }) {
   const inSt: React.CSSProperties = { padding: "8px 10px", fontSize: 12, border: `1px solid ${BORDER}`, borderRadius: 4, fontFamily: F, outline: "none", width: "100%", background: "#fff", boxSizing: "border-box" };
   const lblSt: React.CSSProperties = { fontSize: 11, color: MUTED, fontFamily: F, display: "block", marginBottom: 3 };
 
-  const RADIO_OPTIONS: { value: KetQua; label: string }[] = [
-    { value: "tra-loi", label: "Trả lời đơn" },
+  const RADIO_OPTIONS: { value: KetQua; label: string }[] = isKhieuNai ? [
+    { value: "chap-nhan", label: "Chấp nhận kháng nghị" },
+    { value: "khong-chap-nhan", label: "Không chấp nhận kháng nghị" },
+  ] : [
     { value: "khang-nghi", label: "Kháng nghị" },
+    { value: "tra-loi", label: "Trả lời đơn" },
     { value: "xep-don", label: "Xếp đơn" },
+    { value: "nghien-cuu" as any, label: "Nghiên cứu, xác minh, bổ sung" },
     { value: "vks", label: "Viện kiểm sát đang giải quyết" },
   ];
 

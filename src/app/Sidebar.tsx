@@ -17,7 +17,9 @@ export type View =
   | "cong-van-trao-doi"
   | "phan-cong-hdxx"
   | "quan-ly-vu-xet-xu"
-  | "phe-duyet-de-xuat";
+  | "phe-duyet-de-xuat"
+  | "an-quoc-hoi"
+  | "an-thoi-hieu";
 
 interface SidebarProps {
   currentView: View;
@@ -364,8 +366,18 @@ export default function Sidebar({ currentView, onNavigate }: SidebarProps) {
             sub
           />
           <NavLink label="Danh sách vụ án phân côn..." onClick={() => onNavigate("quan-ly-vu-an")} sub />
-          <NavLink label="Án quốc hội" onClick={() => onNavigate("quan-ly-vu-an")} sub />
-          <NavLink label="Án thời hiệu" onClick={() => onNavigate("quan-ly-vu-an")} sub />
+          <NavLink
+            label="Án quốc hội"
+            active={currentView === "an-quoc-hoi"}
+            onClick={() => onNavigate("an-quoc-hoi")}
+            sub
+          />
+          <NavLink
+            label="Án thời hiệu"
+            active={currentView === "an-thoi-hieu"}
+            onClick={() => onNavigate("an-thoi-hieu")}
+            sub
+          />
           <NavLink
             label="Công văn trao đổi"
             active={currentView === "cong-van-trao-doi"}

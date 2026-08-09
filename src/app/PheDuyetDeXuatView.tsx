@@ -4,7 +4,7 @@ import { F, RED, BORDER, TEXT, MUTED, BG, Badge, TaiKhoanPhanQuyenBar, type User
 
 type Screen = "list" | "detail" | "bieu-mau";
 type ListTab = "tat-ca" | "cho-duyet" | "da-duyet" | "tu-choi";
-type DetailTab = "y-kien" | "thong-tin" | "ho-so";
+type DetailTab = "y-kien" | "ho-so-to-trinh" | "ho-so-vu-an";
 
 const TH: React.CSSProperties = { padding: "9px 12px", background: BG, fontWeight: 700, fontSize: 11, color: "#374151", fontFamily: F, textAlign: "left" as const, borderBottom: `1px solid ${BORDER}`, borderRight: `1px solid ${BORDER}` };
 const TD: React.CSSProperties = { padding: "10px 12px", fontSize: 12, color: TEXT, fontFamily: F, borderBottom: `1px solid ${BORDER}`, borderRight: `1px solid ${BORDER}`, verticalAlign: "top" as const };
@@ -382,15 +382,173 @@ function LichSuModal({ idx, onClose }: { idx: number; onClose: () => void }) {
   );
 }
 
+// ── Hồ sơ tờ trình Tab ──────────────────────────────────────────────────────
+
+const HO_SO_TO_TRINH = [
+  { ten: "Tờ trình thẩm tra án hình sự", loai: "PDF", ngay: "24/09/2026", dangXem: false },
+  { ten: "Tổng hợp tờ trình", loai: "FILE", ngay: "", dangXem: false },
+  { ten: "Phiếu ký - Trình Thẩm phán - Nguyễn Thị Bình", loai: "PDF", ngay: "24/09/2026 · ĐANG XEM", dangXem: true },
+  { ten: "Phiếu ký - Phó Vụ trưởng - Trần Quốc Hạnh", loai: "PDF", ngay: "24/09/2026", dangXem: false },
+];
+
+const HO_SO_TIEU = [
+  { ten: "Đơn đề nghị giám đốc thẩm", loai: "FILE", ngay: "25/09/2026" },
+  { ten: "Bản án sơ thẩm số 45/2025/HSST", loai: "PDF", ngay: "25/09/2026" },
+  { ten: "Biên bản lấy lời khai nhân chứng", loai: "FILE", ngay: "25/09/2026" },
+  { ten: "Kết luận giám định pháp y", loai: "FILE", ngay: "25/09/2026" },
+];
+
+function FileIcon({ loai }: { loai: string }) {
+  return (
+    <div style={{ width: 28, height: 28, borderRadius: 4, background: loai === "PDF" ? "#fee2e2" : "#fef3c7", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={loai === "PDF" ? RED : "#d97706"} strokeWidth="2">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+        <polyline points="14 2 14 8 20 8"/>
+      </svg>
+    </div>
+  );
+}
+
+function HoSoToTrinhTab() {
+  const [openTT, setOpenTT] = React.useState(true);
+  const [openTieu, setOpenTieu] = React.useState(true);
+
+  const sectionHeader = (label: string, count: number, open: boolean, toggle: () => void) => (
+    <div
+      onClick={toggle}
+      style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "8px 16px", background: "#f9fafb", borderBottom: `1px solid ${BORDER}`, cursor: "pointer", userSelect: "none" as const }}
+    >
+      <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+        <ChevronDown size={13} color={MUTED} style={{ transform: open ? "rotate(0deg)" : "rotate(-90deg)", transition: "transform 0.2s" }} />
+        <span style={{ fontSize: 12, fontWeight: 700, color: TEXT }}>{label}</span>
+      </div>
+      <span style={{ fontSize: 11, fontWeight: 700, background: RED, color: "#fff", borderRadius: 10, minWidth: 20, height: 20, display: "flex", alignItems: "center", justifyContent: "center", padding: "0 6px" }}>{count}</span>
+    </div>
+  );
+
+  const fileRow = (f: { ten: string; loai: string; ngay: string; dangXem?: boolean }) => (
+    <div
+      key={f.ten}
+      style={{ display: "flex", alignItems: "center", gap: 10, padding: "8px 16px", background: f.dangXem ? "#fef2f2" : "#fff", borderBottom: `1px solid ${BORDER}`, borderLeft: f.dangXem ? `3px solid ${RED}` : "3px solid transparent", cursor: "pointer" }}
+    >
+      <FileIcon loai={f.loai} />
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div style={{ fontSize: 12, fontWeight: 600, color: f.dangXem ? RED : TEXT, whiteSpace: "nowrap" as const, overflow: "hidden", textOverflow: "ellipsis" }}>{f.ten}</div>
+        {f.ngay && <div style={{ fontSize: 10, color: MUTED, marginTop: 2 }}>{f.loai} · {f.ngay}</div>}
+        {!f.ngay && <div style={{ fontSize: 10, color: MUTED, marginTop: 2 }}>{f.loai}</div>}
+      </div>
+    </div>
+  );
+
+  return (
+    <div style={{ flex: 1, overflowY: "auto" as const }}>
+      {sectionHeader("Thông tin tờ trình", HO_SO_TO_TRINH.length, openTT, () => setOpenTT(v => !v))}
+      {openTT && HO_SO_TO_TRINH.map(f => fileRow(f))}
+      {sectionHeader("Tiểu hồ sơ", HO_SO_TIEU.length, openTieu, () => setOpenTieu(v => !v))}
+      {openTieu && HO_SO_TIEU.map(f => fileRow(f))}
+    </div>
+  );
+}
+
+function HoSoVuAnTab() {
+  const [subTab, setSubTab] = React.useState<"hien-tai" | "con-lai">("hien-tai");
+  const subTabStyle = (active: boolean): React.CSSProperties => ({
+    flex: 1, padding: "9px 12px", fontSize: 12, fontFamily: F,
+    fontWeight: active ? 700 : 400, color: active ? RED : MUTED,
+    background: "none", border: "none", cursor: "pointer",
+    borderBottom: active ? `2px solid ${RED}` : `2px solid transparent`,
+  });
+  const VA_FILES = [
+    { ten: "Tờ trình thẩm tra vụ việc", loai: "PDF", ngay: "08/04/2026" },
+    { ten: "Bản án sơ thẩm số 137120/2026/HSST-QĐ", loai: "PDF", ngay: "11/03/2026" },
+    { ten: "Tài liệu bổ sung hồ sơ", loai: "FILE", ngay: "11/03/2026" },
+  ];
+  return (
+    <div style={{ display: "flex", flexDirection: "column", flex: 1, overflowY: "auto" as const }}>
+      <div style={{ display: "flex", borderBottom: `1px solid ${BORDER}` }}>
+        <button style={subTabStyle(subTab === "hien-tai")} onClick={() => setSubTab("hien-tai")}>Giai đoạn hiện tại</button>
+        <button style={subTabStyle(subTab === "con-lai")} onClick={() => setSubTab("con-lai")}>Các giai đoạn còn lại</button>
+      </div>
+      {subTab === "hien-tai" && (
+        <div>
+          {VA_FILES.map((f, i) => (
+            <div key={i} style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 16px", background: i % 2 === 0 ? "#fff" : "#fafafa", borderBottom: `1px solid ${BORDER}`, cursor: "pointer" }}>
+              <FileIcon loai={f.loai} />
+              <div style={{ flex: 1 }}>
+                <div style={{ fontSize: 12, fontWeight: 600, color: TEXT }}>{f.ten}</div>
+                <div style={{ fontSize: 10, color: MUTED, marginTop: 2 }}>{f.loai} · {f.ngay}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+      {subTab === "con-lai" && (
+        <div style={{ padding: 20, color: MUTED, fontSize: 12, textAlign: "center" as const, marginTop: 40 }}>Không có giai đoạn nào khác</div>
+      )}
+    </div>
+  );
+}
+
 // ── Màn 2: Phê duyệt ý kiến (detail) ────────────────────────────────────────
 
 const DON_DATA = [
-  { nguoi: "Trần Văn Hùng", loai: "TLM", soTL: "STL: 10", soNTL: "NTL", ngay: "22/05/2026", yKien: "Trả lời đơn" },
-  { nguoi: "Trần Văn Hùng", loai: "TLM", soTL: "STL: 10", soNTL: "NTL", ngay: "22/05/2026", yKien: "Trả lời đơn" },
-  { nguoi: "Trần Văn Hùng", loai: "TLM", soTL: "STL: 09", soNTL: "ĐTL", ngay: "22/05/2026", yKien: "Trả lời đơn" },
+  { maDon: "DH23648", nguoi: "Phạm Minh Tuấn", loai: "TLM", soTL: "STL: 24", soNTL: "NTL", ngay: "20/05/2026", yKien: "Trả lời đơn" },
+  { maDon: "DH43902", nguoi: "Phạm Minh Tuấn", loai: "TLMTTP", soTL: "STL: 25", soNTL: "NTL", ngay: "22/05/2026", yKien: "Trả lời đơn" },
+  { maDon: "DH58012", nguoi: "Trần Văn Hùng", loai: "TLM", soTL: "STL: 09", soNTL: "ĐTL", ngay: "22/05/2026", yKien: "Trả lời đơn" },
 ];
 
-const Y_KIEN_DON_OPTIONS = ["Trả lời đơn", "Kháng nghị", "VKS đang xử lý", "Xếp đơn", "Nghiên cứu, xác minh, bổ sung"];
+function CopyYKienModal({ fromIdx, donYKien, donData, onApply, onClose }: {
+  fromIdx: number;
+  donYKien: string[];
+  donData: typeof DON_DATA;
+  onApply: (targets: number[]) => void;
+  onClose: () => void;
+}) {
+  const [selected, setSelected] = React.useState<number[]>(
+    donYKien.map((_, i) => i).filter(i => i !== fromIdx)
+  );
+  const toggle = (i: number) => setSelected(prev =>
+    prev.includes(i) ? prev.filter(x => x !== i) : [...prev, i]
+  );
+  return (
+    <div style={{ position: "fixed", inset: 0, zIndex: 4000, background: "rgba(0,0,0,0.45)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+      <div style={{ background: "#fff", borderRadius: 8, width: 340, boxShadow: "0 8px 32px rgba(0,0,0,0.2)", fontFamily: F, overflow: "hidden" }}>
+        {/* Header */}
+        <div style={{ background: RED, color: "#fff", padding: "12px 16px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <span style={{ fontSize: 14, fontWeight: 700 }}>Áp dụng ý kiến cho đơn khác</span>
+          <button onClick={onClose} style={{ background: "none", border: "1px solid rgba(255,255,255,0.5)", borderRadius: 4, cursor: "pointer", color: "#fff", width: 24, height: 24, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14 }}>&#x2715;</button>
+        </div>
+        {/* List */}
+        <div style={{ padding: "12px 16px", display: "flex", flexDirection: "column", gap: 10, maxHeight: 260, overflowY: "auto" }}>
+          {donData.map((don, i) => {
+            if (i === fromIdx) return null;
+            return (
+              <label key={i} style={{ display: "flex", alignItems: "flex-start", gap: 10, cursor: "pointer" }}>
+                <input
+                  type="checkbox"
+                  checked={selected.includes(i)}
+                  onChange={() => toggle(i)}
+                  style={{ width: 16, height: 16, accentColor: RED, marginTop: 2, cursor: "pointer", flexShrink: 0 }}
+                />
+                <div>
+                  <div style={{ fontSize: 13, fontWeight: 600, color: TEXT }}>{don.maDon} - {don.nguoi}</div>
+                  <div style={{ fontSize: 11, color: MUTED }}>{don.loai}: {don.soTL.replace("STL: ", "")} - {don.ngay}</div>
+                </div>
+              </label>
+            );
+          })}
+        </div>
+        {/* Footer */}
+        <div style={{ padding: "12px 16px", borderTop: `1px solid ${BORDER}`, display: "flex", gap: 8, justifyContent: "center" }}>
+          <button onClick={() => onApply(selected)} style={{ flex: 1, padding: "8px 0", background: RED, color: "#fff", border: "none", borderRadius: 4, cursor: "pointer", fontSize: 13, fontWeight: 700, fontFamily: F }}>Áp dụng</button>
+          <button onClick={onClose} style={{ flex: 1, padding: "8px 0", background: "#fff", color: TEXT, border: `1px solid ${BORDER}`, borderRadius: 4, cursor: "pointer", fontSize: 13, fontFamily: F }}>Đóng</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+const Y_KIEN_DON_OPTIONS = ["Kháng nghị", "Trả lời đơn", "Xếp đơn", "Nghiên cứu, xác minh, bổ sung", "Viện kiểm sát đang giải quyết"];
 
 function PheDuyetDetail({ onClose, onXemBieuMau, userRole, noiDung }: { onClose: () => void; onXemBieuMau: () => void; userRole: UserRoleType; noiDung: string }) {
   const isVu1 = userRole === "vu-1" || userRole === "hinh-su";
@@ -401,6 +559,7 @@ function PheDuyetDetail({ onClose, onXemBieuMau, userRole, noiDung }: { onClose:
   const [lichSuIdx, setLichSuIdx] = useState<number | null>(null);
   const [donYKien, setDonYKien] = useState<string[]>(DON_DATA.map(d => d.yKien));
   const [yKienOption, setYKienOption] = useState("Kháng nghị");
+  const [copyFromIdx, setCopyFromIdx] = useState<number | null>(null);
 
   const tabStyle = (active: boolean): React.CSSProperties => ({
     padding: "10px 20px", fontSize: 13, fontFamily: F, fontWeight: active ? 700 : 400,
@@ -417,6 +576,19 @@ function PheDuyetDetail({ onClose, onXemBieuMau, userRole, noiDung }: { onClose:
   return (
     <div style={{ display: "flex", flexDirection: "column", flex: 1, minHeight: 0, fontFamily: F }}>
       {lichSuIdx !== null && <LichSuModal idx={lichSuIdx} onClose={() => setLichSuIdx(null)} />}
+      {copyFromIdx !== null && (
+        <CopyYKienModal
+          fromIdx={copyFromIdx}
+          donYKien={donYKien}
+          donData={DON_DATA}
+          onApply={(targets) => {
+            const val = donYKien[copyFromIdx];
+            setDonYKien(prev => prev.map((v, i) => targets.includes(i) ? val : v));
+            setCopyFromIdx(null);
+          }}
+          onClose={() => setCopyFromIdx(null)}
+        />
+      )}
       {/* Red header */}
       <div style={{ background: RED, color: "#fff", padding: "14px 24px" }}>
         <div style={{ fontSize: 16, fontWeight: 700 }}>Phê duyệt ý kiến</div>
@@ -429,9 +601,11 @@ function PheDuyetDetail({ onClose, onXemBieuMau, userRole, noiDung }: { onClose:
         <div style={{ width: 520, flexShrink: 0, display: "flex", flexDirection: "column", borderRight: `1px solid ${BORDER}`, overflowY: "auto" }}>
           {/* Tabs */}
           <div style={{ display: "flex", borderBottom: `1px solid ${BORDER}` }}>
-            {([["y-kien", "Ý kiến lãnh đạo"], ["thong-tin", "Thông tin tờ trình"], ["ho-so", "Hồ sơ tờ trình"]] as [DetailTab, string][]).map(([k, l]) => (
-              <button key={k} onClick={() => setTab(k)} style={tabStyle(tab === k)}>{l}</button>
-            ))}
+            {(["y-kien", "Hồ sơ tờ trình", "Hồ sơ vụ án"] as const).map((k, ki) => {
+              const labels = ["Ý kiến lãnh đạo", "Hồ sơ tờ trình", "Hồ sơ vụ án"];
+              const keys: DetailTab[] = ["y-kien", "ho-so-to-trinh", "ho-so-vu-an"];
+              return <button key={k} onClick={() => setTab(keys[ki])} style={tabStyle(tab === keys[ki])}>{labels[ki]}</button>;
+            })}
           </div>
 
           {tab === "y-kien" && (
@@ -478,7 +652,7 @@ function PheDuyetDetail({ onClose, onXemBieuMau, userRole, noiDung }: { onClose:
                               <button title="Lịch sử" onClick={() => setLichSuIdx(idx)} style={{ background: "none", border: "none", cursor: "pointer", padding: 2 }}>
                                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={MUTED} strokeWidth="2"><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" /></svg>
                               </button>
-                              <button title="Lấy số" style={{ background: "none", border: "none", cursor: "pointer", padding: 2 }}>
+                              <button title="Sao chép ý kiến" onClick={() => setCopyFromIdx(idx)} style={{ background: "none", border: "none", cursor: "pointer", padding: 2 }}>
                                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={MUTED} strokeWidth="2"><rect x="9" y="9" width="13" height="13" rx="2" /><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" /></svg>
                               </button>
                             </div>
@@ -538,21 +712,12 @@ function PheDuyetDetail({ onClose, onXemBieuMau, userRole, noiDung }: { onClose:
             </div>
           )}
 
-          {tab === "thong-tin" && (
-            <div style={{ padding: 20 }}>
-              <div style={{ display: "grid", gridTemplateColumns: "120px 1fr", gap: "8px 0", fontSize: 12 }}>
-                {[["Số tờ trình", "12/TTr-TTV"], ["Ngày tờ trình", "08/04/2026"], ["Người tạo", "Vũ Văn Yến"], ["Vụ việc", "Vụ án Phan Văn Thành – bức cung"], ["Trạng thái", "Chờ duyệt"]].map(([k, v]) => (
-                  <React.Fragment key={k}>
-                    <span style={{ color: MUTED, fontWeight: 600 }}>{k}</span>
-                    <span style={{ color: TEXT }}>{v}</span>
-                  </React.Fragment>
-                ))}
-              </div>
-            </div>
+          {tab === "ho-so-to-trinh" && (
+            <HoSoToTrinhTab />
           )}
 
-          {tab === "ho-so" && (
-            <div style={{ padding: 20, color: MUTED, fontSize: 12, textAlign: "center" as const, marginTop: 40 }}>Không có hồ sơ đính kèm</div>
+          {tab === "ho-so-vu-an" && (
+            <HoSoVuAnTab />
           )}
 
           {/* Footer buttons */}
@@ -568,18 +733,17 @@ function PheDuyetDetail({ onClose, onXemBieuMau, userRole, noiDung }: { onClose:
         {/* Right panel: PDF preview */}
         <div style={{ flex: 1, display: "flex", flexDirection: "column", background: "#e8e8e8" }}>
           {/* PDF toolbar */}
-          <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "6px 16px", background: "#fff", borderBottom: `1px solid ${BORDER}` }}>
-            <ZoomIn size={15} color={MUTED} style={{ cursor: "pointer" }} />
+          <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "6px 16px", background: "#fff", borderBottom: `1px solid ${BORDER}` }}>
+            <Search size={15} color={MUTED} style={{ cursor: "pointer" }} />
             <span style={{ fontSize: 12, color: TEXT }}>100%</span>
-            <ZoomOut size={15} color={MUTED} style={{ cursor: "pointer" }} />
+            <ZoomIn size={15} color={MUTED} style={{ cursor: "pointer" }} />
             <div style={{ flex: 1 }} />
             <ChevronLeft size={15} color={MUTED} style={{ cursor: "pointer" }} />
-            <span style={{ fontSize: 12, color: TEXT }}>1 /2</span>
+            <span style={{ fontSize: 12, color: TEXT }}>1 / 2</span>
             <ChevronRight size={15} color={MUTED} style={{ cursor: "pointer" }} />
             <div style={{ flex: 1 }} />
             <Download size={15} color={MUTED} style={{ cursor: "pointer" }} />
             <Printer size={15} color={MUTED} style={{ cursor: "pointer" }} />
-            <button onClick={onXemBieuMau} style={{ padding: "4px 12px", background: "none", border: `1px solid ${BORDER}`, borderRadius: 3, cursor: "pointer", fontSize: 11, fontFamily: F, color: TEXT }}>Xem biểu mẫu</button>
           </div>
 
           {/* PDF page */}
@@ -610,7 +774,20 @@ function PheDuyetDetail({ onClose, onXemBieuMau, userRole, noiDung }: { onClose:
                 <li>Nội dung đề nghị: Xem xét lại bản án theo thủ tục giám đốc thẩm, tái thẩm.</li>
               </ol>
               <p style={{ fontWeight: 700, marginBottom: 6 }}>II. NHẬN XÉT, ĐỀ XUẤT</p>
-              <p>Qua kiểm tra, hồ sơ có nội dung cần xin ý kiến lãnh đạo để thống nhất hướng xử lý. Thẩm tra viên kính đề nghị lãnh đạo xem xét, cho ý kiến chỉ đạo làm căn cứ thực hiện các bước tiếp theo theo đúng quy định.</p>
+              <p style={{ marginBottom: 16 }}>Qua kiểm tra, hồ sơ có nội dung cần xin ý kiến lãnh đạo để thống nhất hướng xử lý. Thẩm tra viên kính đề nghị lãnh đạo xem xét, cho ý kiến chỉ đạo làm căn cứ thực hiện các bước tiếp theo theo đúng quy định.</p>
+              {/* Chữ ký */}
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginTop: 24, fontSize: 12 }}>
+                <div>
+                  <div style={{ fontStyle: "italic", marginBottom: 4 }}>Nơi nhận:</div>
+                  <div style={{ fontSize: 11 }}>- Như trên;</div>
+                  <div style={{ fontSize: 11 }}>- Lưu hồ sơ.</div>
+                </div>
+                <div style={{ textAlign: "center" as const }}>
+                  <div style={{ fontWeight: 700, marginBottom: 4 }}>THẨM TRA VIÊN</div>
+                  <div style={{ fontStyle: "italic", fontSize: 11, color: MUTED, marginBottom: 48 }}>(Đã ký)</div>
+                  <div style={{ fontWeight: 600 }}>Nguyễn Tiến Hiện</div>
+                </div>
+              </div>
             </div>
           </div>
         </div>

@@ -303,11 +303,19 @@ export function TaoDuThaoModal({
   if (detail?.isCongVan || detail?.loai === "cong-van") {
     return <TaoDuThaoCongVanModal onClose={onClose} onSave={onSave} />;
   }
-  // Top Case Info values (Fallback theo đúng ảnh)
-  const maVuAn = detail?.maVuAn || "VA26-00321";
-  const tenVuAn = detail?.tenVuAn || "Vụ án Phan Văn Thành – bức cung";
-  const tenBiCan = "Phan Văn Thành";
-  const toiDanh = "Bức cung";
+  const isKhieuNai = Boolean(
+    detail?.isKhieuNai ||
+    detail?.entityWord === "Khiếu nại" ||
+    detail?.moduleLabel === "Quản lý khiếu nại" ||
+    (typeof detail?.maVuAn === "string" && detail.maVuAn.includes("KN")) ||
+    (typeof detail?.id === "string" && detail.id.includes("KN")) ||
+    (typeof detail?.tenVuAn === "string" && detail.tenVuAn.toLowerCase().includes("khiếu nại"))
+  );
+
+  const maVuAn = detail?.maVuAn || (isKhieuNai ? "KN26-004128" : "VA26-00321");
+  const tenVuAn = detail?.tenVuAn || (isKhieuNai ? "Vụ khiếu nại Quyết định giải quyết đơn số 45/QĐ-TANDTC" : "Vụ án Phan Văn Thành – bức cung");
+  const tenBiCan = isKhieuNai ? "Nguyễn Thị Lan" : "Phan Văn Thành";
+  const toiDanh = isKhieuNai ? "Khiếu nại tố tụng" : "Bức cung";
   const soBA = "050526_CTH02";
   const ngayBA = "05/05/2026";
   const toaXetXu = "Tòa án nhân dân tỉnh Hải Phòng";
@@ -620,47 +628,84 @@ export function TaoDuThaoModal({
               <label style={lblSt}>
                 <span style={{ color: "#dc2626", marginRight: 3 }}>*</span>Kết quả giải quyết đơn
               </label>
-              <div style={{ display: "flex", gap: 24, alignItems: "center", marginTop: 4 }}>
-                <label style={{ display: "flex", alignItems: "center", gap: 6, cursor: "pointer", fontSize: 13, fontFamily: F, color: "#111827" }}>
-                  <input
-                    type="radio"
-                    name="ketQuaGQ"
-                    checked={ketQuaGQ === "tra-loi"}
-                    onChange={() => setKetQuaGQ("tra-loi")}
-                    style={{ accentColor: "#800000", cursor: "pointer" }}
-                  />
-                  <span style={{ fontWeight: ketQuaGQ === "tra-loi" ? 700 : 400 }}>Trả lời đơn</span>
-                </label>
-                <label style={{ display: "flex", alignItems: "center", gap: 6, cursor: "pointer", fontSize: 13, fontFamily: F, color: "#111827" }}>
-                  <input
-                    type="radio"
-                    name="ketQuaGQ"
-                    checked={ketQuaGQ === "khang-nghi"}
-                    onChange={() => setKetQuaGQ("khang-nghi")}
-                    style={{ accentColor: "#800000", cursor: "pointer" }}
-                  />
-                  <span style={{ fontWeight: ketQuaGQ === "khang-nghi" ? 700 : 400 }}>Kháng nghị</span>
-                </label>
-                <label style={{ display: "flex", alignItems: "center", gap: 6, cursor: "pointer", fontSize: 13, fontFamily: F, color: "#111827" }}>
-                  <input
-                    type="radio"
-                    name="ketQuaGQ"
-                    checked={ketQuaGQ === "xep-don"}
-                    onChange={() => setKetQuaGQ("xep-don")}
-                    style={{ accentColor: "#800000", cursor: "pointer" }}
-                  />
-                  <span style={{ fontWeight: ketQuaGQ === "xep-don" ? 700 : 400 }}>Xếp đơn</span>
-                </label>
-                <label style={{ display: "flex", alignItems: "center", gap: 6, cursor: "pointer", fontSize: 13, fontFamily: F, color: "#111827" }}>
-                  <input
-                    type="radio"
-                    name="ketQuaGQ"
-                    checked={ketQuaGQ === "xep-don"}
-                    onChange={() => setKetQuaGQ("xep-don")}
-                    style={{ accentColor: "#800000", cursor: "pointer" }}
-                  />
-                  <span style={{ fontWeight: ketQuaGQ === "xep-don" ? 700 : 400 }}>Xếp đơn</span>
-                </label>
+              <div style={{ display: "flex", gap: 20, alignItems: "center", marginTop: 4, flexWrap: "wrap" }}>
+                {isKhieuNai ? (
+                  <>
+                    <label style={{ display: "flex", alignItems: "center", gap: 6, cursor: "pointer", fontSize: 13, fontFamily: F, color: "#111827" }}>
+                      <input
+                        type="radio"
+                        name="ketQuaGQ"
+                        checked={ketQuaGQ === "chap-nhan" || ketQuaGQ === "tra-loi"}
+                        onChange={() => setKetQuaGQ("chap-nhan")}
+                        style={{ accentColor: "#800000", cursor: "pointer" }}
+                      />
+                      <span style={{ fontWeight: (ketQuaGQ === "chap-nhan" || ketQuaGQ === "tra-loi") ? 700 : 400 }}>Chấp nhận kháng nghị</span>
+                    </label>
+                    <label style={{ display: "flex", alignItems: "center", gap: 6, cursor: "pointer", fontSize: 13, fontFamily: F, color: "#111827" }}>
+                      <input
+                        type="radio"
+                        name="ketQuaGQ"
+                        checked={ketQuaGQ === "khong-chap-nhan"}
+                        onChange={() => setKetQuaGQ("khong-chap-nhan")}
+                        style={{ accentColor: "#800000", cursor: "pointer" }}
+                      />
+                      <span style={{ fontWeight: ketQuaGQ === "khong-chap-nhan" ? 700 : 400 }}>Không chấp nhận kháng nghị</span>
+                    </label>
+                  </>
+                ) : (
+                  <>
+                    <label style={{ display: "flex", alignItems: "center", gap: 6, cursor: "pointer", fontSize: 13, fontFamily: F, color: "#111827" }}>
+                      <input
+                        type="radio"
+                        name="ketQuaGQ"
+                        checked={ketQuaGQ === "khang-nghi"}
+                        onChange={() => setKetQuaGQ("khang-nghi")}
+                        style={{ accentColor: "#800000", cursor: "pointer" }}
+                      />
+                      <span style={{ fontWeight: ketQuaGQ === "khang-nghi" ? 700 : 400 }}>Kháng nghị</span>
+                    </label>
+                    <label style={{ display: "flex", alignItems: "center", gap: 6, cursor: "pointer", fontSize: 13, fontFamily: F, color: "#111827" }}>
+                      <input
+                        type="radio"
+                        name="ketQuaGQ"
+                        checked={ketQuaGQ === "tra-loi"}
+                        onChange={() => setKetQuaGQ("tra-loi")}
+                        style={{ accentColor: "#800000", cursor: "pointer" }}
+                      />
+                      <span style={{ fontWeight: ketQuaGQ === "tra-loi" ? 700 : 400 }}>Trả lời đơn</span>
+                    </label>
+                    <label style={{ display: "flex", alignItems: "center", gap: 6, cursor: "pointer", fontSize: 13, fontFamily: F, color: "#111827" }}>
+                      <input
+                        type="radio"
+                        name="ketQuaGQ"
+                        checked={ketQuaGQ === "xep-don"}
+                        onChange={() => setKetQuaGQ("xep-don")}
+                        style={{ accentColor: "#800000", cursor: "pointer" }}
+                      />
+                      <span style={{ fontWeight: ketQuaGQ === "xep-don" ? 700 : 400 }}>Xếp đơn</span>
+                    </label>
+                    <label style={{ display: "flex", alignItems: "center", gap: 6, cursor: "pointer", fontSize: 13, fontFamily: F, color: "#111827" }}>
+                      <input
+                        type="radio"
+                        name="ketQuaGQ"
+                        checked={ketQuaGQ === "nghien-cuu"}
+                        onChange={() => setKetQuaGQ("nghien-cuu" as any)}
+                        style={{ accentColor: "#800000", cursor: "pointer" }}
+                      />
+                      <span style={{ fontWeight: (ketQuaGQ as any) === "nghien-cuu" ? 700 : 400 }}>Nghiên cứu, xác minh, bổ sung</span>
+                    </label>
+                    <label style={{ display: "flex", alignItems: "center", gap: 6, cursor: "pointer", fontSize: 13, fontFamily: F, color: "#111827" }}>
+                      <input
+                        type="radio"
+                        name="ketQuaGQ"
+                        checked={ketQuaGQ === "vks"}
+                        onChange={() => setKetQuaGQ("vks" as any)}
+                        style={{ accentColor: "#800000", cursor: "pointer" }}
+                      />
+                      <span style={{ fontWeight: (ketQuaGQ as any) === "vks" ? 700 : 400 }}>Viện kiểm sát đang giải quyết</span>
+                    </label>
+                  </>
+                )}
               </div>
             </div>
           </div>
