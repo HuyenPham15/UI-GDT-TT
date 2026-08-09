@@ -196,88 +196,144 @@ const LOAI_AN_META: LoaiAnMeta[] = [
       "Vụ án PHẠM QUỐC CƯỜNG – Tội giết người có tính chất dã man và Tội cướp tài sản",
       "Vụ án NGUYỄN THỊ DUNG – Tội lừa đảo chiếm đoạt tài sản thông qua hình thức huy động vốn đa cấp trái phép",
       "Vụ án HOÀNG VĂN EM – Tội cố ý gây thương tích",
+      "Vụ án ĐẶNG THỊ DƯƠNG – Tội lạm dụng chức vụ, quyền hạn chiếm đoạt tài sản Nhà nước",
+      "Vụ án VŨ MINH KHOA – Tội sản xuất, buôn bán hàng giả là thuốc chữa bệnh, thuốc phòng bệnh quy mô lớn",
+      "Vụ án LÊ ANH TUẤN – Tội cướp tài sản có tổ chức theo khoản 4 Điều 168 Bộ luật Hình sự",
+      "Vụ án HOÀNG HOA THÁM – Tội đánh bạc và tổ chức đánh bạc qua mạng internet công nghệ cao",
+      "Vụ án TRỊNH TIẾN ĐẠT – Tội đưa và nhận hối lộ xảy ra tại các Trung tâm đăng kiểm phương tiện cơ giới",
     ],
   },
   {
     loaiAn: "Dân sự",
     vuAnTitles: [
       "Vụ án TỔNG CÔNG TY CỔ PHẦN ĐẦU TƯ BẤT ĐỘNG SẢN & PHÁT TRIỂN ĐÔ THỊ – Tranh chấp hợp đồng hợp tác đầu tư xây dựng hạ tầng khu đô thị mới và bồi thường thiệt hại",
-      "Vụ án NGUYỄN VĂN GIANG – Tranh chấp quyền sử dụng đất",
+      "Vụ án NGUYỄN VĂN GIANG – Tranh chấp quyền sử dụng đất và yêu cầu hủy hợp đồng chuyển nhượng",
       "Vụ án TRẦN THỊ HÀ – Tranh chấp thừa kế di sản nhà đất và yêu cầu hủy Giấy chứng nhận quyền sử dụng đất cấp sai đối tượng",
-      "Vụ án ĐỖ VĂN HÙNG – Tranh chấp hợp đồng vay tài sản",
+      "Vụ án ĐỖ VĂN HÙNG – Tranh chấp hợp đồng vay tài sản và xử lý tài sản thế chấp",
       "Vụ án LÊ THỊ KHÁNH – Tranh chấp đòi lại tài sản và bồi thường thiệt hại ngoài hợp đồng",
+      "Vụ án NGÔ MAI TRANG – Tranh chấp hợp đồng mua bán nhà ở và quyền sử dụng đất tại Bắc Ninh",
+      "Vụ án LÊ VĂN HÙNG – Tranh chấp phân chia quyền sử dụng đất do cha mẹ để lại tại Đà Nẵng",
+      "Vụ án PHẠM THỊ BÍCH NGỌC – Tranh chấp lối đi chung và ranh giới quyền sử dụng đất liền kề",
+      "Vụ án BÙI THỊ LAN – Tranh chấp hợp đồng ủy quyền định đoạt nhà đất và tuyên bố giao dịch vô hiệu",
+      "Vụ án TRẦN QUANG HUY – Tranh chấp hợp đồng đặt cọc mua bán căn hộ chung cư cao cấp",
     ],
   },
   {
     loaiAn: "Hành chính",
     vuAnTitles: [
       "Vụ án PHẠM VĂN LÂM – Khiếu kiện Quyết định thu hồi đất, Quyết định phê duyệt phương án bồi thường, hỗ trợ tái định cư và Quyết định cưỡng chế thu hồi đất của UBND tỉnh",
-      "Vụ án NGUYỄN THỊ MINH – Khiếu kiện quyết định xử phạt VPHC",
+      "Vụ án NGUYỄN THỊ MINH – Khiếu kiện quyết định xử phạt vi phạm hành chính trong lĩnh vực xây dựng",
       "Vụ án TRẦN VĂN PHÚC – Khiếu kiện Quyết định cấp Giấy chứng nhận quyền sử dụng đất và hành vi không giải quyết thủ tục đăng ký biến động đất đai của Văn phòng ĐKĐĐ",
-      "Vụ án LÊ THỊ QUỲNH – Khiếu kiện quyết định kỷ luật buộc thôi việc",
+      "Vụ án LÊ THỊ QUỲNH – Khiếu kiện quyết định kỷ luật buộc thôi việc công chức",
       "Vụ án HOÀNG VĂN SƠN – Khiếu kiện quyết định thu hồi giấy phép xây dựng dự án thương mại",
+      "Vụ án PHẠM VĂN CƯỜNG – Khiếu kiện Quyết định thu hồi đất và phương án bồi thường tái định cư huyện Yên Dũng",
+      "Vụ án HOÀNG VĂN MINH – Khiếu kiện Quyết định xử phạt vi phạm hành chính trong lĩnh vực đất đai TP Nha Trang",
+      "Vụ án ĐINH XUÂN BÁCH – Khiếu kiện Quyết định cưỡng chế thu hồi đất và giải tỏa mặt bằng huyện Mê Linh",
+      "Vụ án CÔNG TY TNHH PHƯƠNG ĐÔNG – Khiếu kiện Quyết định ấn định thuế và xử phạt vi phạm hành chính về thuế của Cục Thuế",
+      "Vụ án NGUYỄN TIẾN DŨNG – Khiếu kiện hành vi hành chính từ chối cấp Giấy phép kinh doanh môi trường",
     ],
   },
   {
     loaiAn: "Kinh doanh thương mại",
     vuAnTitles: [
       "Vụ án CÔNG TY TNHH TẬP ĐOÀN THƯƠNG MẠI & XUẤT NHẬP KHẨU TOÀN CẦU – Tranh chấp hợp đồng mua bán hàng hóa quốc tế, mở L/C và bảo lãnh ngân hàng thanh toán",
-      "Vụ án NGUYỄN VĂN THẮNG – Tranh chấp hợp đồng đại lý",
+      "Vụ án NGUYỄN VĂN THẮNG – Tranh chấp hợp đồng đại lý phân phối độc quyền",
       "Vụ án CÔNG TY CP ĐẦU TƯ & NĂNG LƯỢNG SẠCH – Tranh chấp giữa công ty với cổ đông về Nghị quyết Đại hội đồng cổ đông và quyền quản lý điều hành doanh nghiệp",
-      "Vụ án PHẠM THỊ UYÊN – Tranh chấp hợp đồng thi công xây dựng",
-      "Vụ án VŨ VĂN VIỆT – Tranh chấp hợp đồng dịch vụ logistics",
+      "Vụ án PHẠM THỊ UYÊN – Tranh chấp hợp đồng thi công xây dựng công trình cảng biển",
+      "Vụ án VŨ VĂN VIỆT – Tranh chấp hợp đồng dịch vụ logistics và vận tải đa phương thức quốc tế",
+      "Vụ án CÔNG TY CP XÂY LẮP DẦU KHÍ – Tranh chấp hợp đồng tín dụng trung và dài hạn có bảo lãnh ngân hàng",
+      "Vụ án CÔNG TY CP ĐẦU TƯ HẢI PHÁT – Tranh chấp hợp đồng hợp tác góp vốn đầu tư dự án khu nghỉ dưỡng sinh thái",
+      "Vụ án NGÂN HÀNG TMCP NGOẠI THƯƠNG VIỆT NAM – Tranh chấp hợp đồng thế chấp tài sản bảo đảm và thu hồi nợ xấu",
+      "Vụ án CÔNG TY TNHH MINH PHÁT – Tranh chấp hợp đồng gia công hàng may mặc xuất khẩu sang thị trường EU",
+      "Vụ án CÔNG TY CỔ PHẦN CÔNG NGHỆ Á CHÂU – Tranh chấp hợp đồng chuyển giao công nghệ tự động hóa dây chuyền sản xuất",
     ],
   },
   {
     loaiAn: "Hôn nhân gia đình",
     vuAnTitles: [
       "Vụ án NGUYỄN VĂN XUÂN & TRẦN THỊ YẾN – Ly hôn, tranh chấp quyền trực tiếp nuôi 3 con nhỏ và chia khối tài sản chung gồm nhiều bất động sản và cổ phần doanh nghiệp",
-      "Vụ án ĐỖ VĂN ZŨNG – Tranh chấp quyền nuôi con",
+      "Vụ án ĐỖ VĂN ZŨNG – Tranh chấp quyền nuôi con và thay đổi mức cấp dưỡng",
       "Vụ án PHẠM THỊ ÁNH – Tranh chấp chia tài sản chung của vợ chồng sau khi ly hôn có yếu tố nước ngoài",
-      "Vụ án HOÀNG VĂN BÌNH – Xác định cha cho con",
-      "Vụ án LÊ THỊ CẨM – Tranh chấp thay đổi mức cấp dưỡng nuôi con",
+      "Vụ án HOÀNG VĂN BÌNH – Xác định cha cho con và quyền hưởng thừa kế",
+      "Vụ án LÊ THỊ CẨM – Tranh chấp thay đổi người trực tiếp nuôi con sau ly hôn",
+      "Vụ án TRẦN ĐÌNH KHANG – Ly hôn và phân chia tài sản là cổ phần tại tập đoàn tài chính",
+      "Vụ án NGUYỄN THỊ THU HÀ – Yêu cầu hủy kết hôn trái pháp luật và phân chia tài sản độc lập",
+      "Vụ án VŨ HỒNG PHÚC – Tranh chấp phân chia tài sản là quyền sử dụng đất tạo lập trong thời kỳ hôn nhân",
+      "Vụ án ĐẶNG HOÀNG NAM – Yêu cầu cấp dưỡng nuôi con chưa thành niên sau khi cha mẹ ly hôn",
+      "Vụ án BÙI THỊ NGỌC – Tranh chấp xác nhận quan hệ mẹ con và thừa kế tài sản có yếu tố nước ngoài",
     ],
   },
   {
     loaiAn: "Lao động",
     vuAnTitles: [
       "Vụ án NGUYỄN VĂN ĐÀO – Tranh chấp về đơn phương chấm dứt hợp đồng lao động trái pháp luật, bồi thường tiền lương và trợ cấp thôi việc tại Công ty Liên doanh Nước ngoài",
-      "Vụ án TRẦN THỊ THỦY – Tranh chấp kỷ luật sa thải",
+      "Vụ án TRẦN THỊ THỦY – Tranh chấp kỷ luật sa thải chuyên gia kỹ thuật cấp cao",
       "Vụ án LÊ VĂN GIÁP – Tranh chấp bồi thường chi phí đào tạo và cam kết làm việc tối thiểu 5 năm",
-      "Vụ án PHẠM THỊ HƯƠNG – Tranh chấp bảo hiểm xã hội",
-      "Vụ án VŨ VĂN ÍCH – Tranh chấp bồi thường tai nạn lao động",
+      "Vụ án PHẠM THỊ HƯƠNG – Tranh chấp quyền lợi bảo hiểm xã hội, bảo hiểm y tế và tiền lương ngừng việc",
+      "Vụ án VŨ VĂN ÍCH – Tranh chấp bồi thường tai nạn lao động và bệnh nghề nghiệp nặng",
+      "Vụ án NGUYỄN VĂN TOÀN – Tranh chấp đơn phương chấm dứt HĐLĐ và bồi thường tổn thất thu nhập tại Bình Dương",
+      "Vụ án ĐÀO THỊ MAI – Tranh chấp bảo hộ thai sản và chấm dứt HĐLĐ đối với lao động nữ",
+      "Vụ án LÝ THÀNH LONG – Tranh chấp thỏa thuận bảo mật thông tin và không cạnh tranh (NDA/NCA)",
+      "Vụ án PHAN VĂN HẬU – Tranh chấp chế độ trợ cấp mất việc làm khi tái cơ cấu doanh nghiệp",
+      "Vụ án HOÀNG MỸ HẠNH – Tranh chấp tiền lương làm thêm giờ ban đêm và ngày nghỉ lễ tết",
     ],
   },
   {
     loaiAn: "Sở hữu trí tuệ",
     vuAnTitles: [
       "Vụ án CÔNG TY CP TẬP ĐOÀN CÔNG NGHỆ & TRUYỀN THÔNG SỐ – Tranh chấp bản quyền tác giả phần mềm quản trị doanh nghiệp và yêu cầu bồi thường thiệt hại 50 tỷ đồng",
-      "Vụ án NGUYỄN VĂN KHIÊM – Xử lý vi phạm nhãn hiệu",
+      "Vụ án NGUYỄN VĂN KHIÊM – Xử lý vi phạm nhãn hiệu hàng hóa trong ngành mỹ phẩm",
       "Vụ án CÔNG TY TNHH DƯỢC PHẨM & VẬT TƯ Y TẾ – Tranh chấp quyền sở hữu công nghiệp đối với Bằng hộ chiếu sáng chế thuốc chữa bệnh độc quyền",
-      "Vụ án PHẠM THỊ LIÊN – Vi phạm kiểu dáng công nghiệp",
-      "Vụ án HOÀNG VĂN NAM – Tranh chấp quyền đối với giống cây trồng mới",
+      "Vụ án PHẠM THỊ LIÊN – Vi phạm kiểu dáng công nghiệp bao bì sản phẩm xuất khẩu",
+      "Vụ án HOÀNG VĂN NAM – Tranh chấp quyền đối với giống cây trồng mới lai tạo",
+      "Vụ án CÔNG TY CP GIẢI TRÍ ĐIỆN ẢNH VÀNG – Tranh chấp quyền tác giả đối với kịch bản phim điện ảnh",
+      "Vụ án CÔNG TY TNHH PHẦN MỀM TRÍ TUỆ NHÂN TẠO – Tranh chấp bí mật kinh doanh mã nguồn thuật toán",
+      "Vụ án DOANH NGHIỆP TƯ NHÂN GỐM SỨ MINH LONG – Xâm phạm quyền bảo hộ nhãn hiệu nổi tiếng",
+      "Vụ án CÔNG TY CP THỜI TRANG QUỐC TẾ – Tranh chấp quyền tác giả mẫu thiết kế thời trang ứng dụng",
+      "Vụ án CÔNG TY CÔNG NGHỆ SINH HỌC XANH – Tranh chấp quyền đăng ký sáng chế gen vi sinh vật",
     ],
   },
   {
     loaiAn: "Phá sản",
     vuAnTitles: [
       "Vụ án CÔNG TY CỔ PHẦN ĐẦU TƯ XÂY DỰNG & THƯƠNG MẠI ĐẠI VIỆT – Yêu cầu mở thủ tục phá sản doanh nghiệp, thanh lý tài sản và phân chia thứ tự ưu tiên thanh toán nợ",
-      "Vụ án CÔNG TY TNHH PHÁT TRIỂN HẠ TẦNG – Phá sản doanh nghiệp",
+      "Vụ án CÔNG TY TNHH PHÁT TRIỂN HẠ TẦNG – Phá sản doanh nghiệp vận tải hành khách",
       "Vụ án HỢP TÁC XÃ NÔNG NGHIỆP & DỊCH VỤ TỔNG HỢP XANH – Giải quyết yêu cầu mở thủ tục phá sản hợp tác xã theo đề nghị của nhóm chủ nợ",
-      "Vụ án LÊ VĂN PHONG – Phá sản DNTN",
+      "Vụ án LÊ VĂN PHONG – Phá sản Doanh nghiệp tư nhân chuỗi siêu thị bán lẻ",
       "Vụ án PHẠM THỊ QUANG – Yêu cầu tuyên bố phá sản công ty chứng khoán",
+      "Vụ án CÔNG TY CP BẤT ĐỘNG SẢN THĂNG LONG – Yêu cầu mở thủ tục phá sản do mất khả năng thanh toán trái phiếu",
+      "Vụ án CÔNG TY TNHH THÉP VIỆT NHẬT – Yêu cầu tuyên bố phá sản và xử lý nợ có bảo đảm của các tổ chức tín dụng",
+      "Vụ án TỔNG CÔNG TY NÔNG SẢN XUẤT KHẨU MIỀN TÂY – Tuyên bố phá sản và phân chia tài sản cho người lao động",
+      "Vụ án CÔNG TY CP HÓA CHẤT & DẦU KHÍ ĐÔNG Á – Mở thủ tục phục hồi hoạt động kinh doanh trước khi phá sản",
+      "Vụ án HỢP TÁC XÃ VẬN TẢI THỦY BỘ MIỀN TRUNG – Tuyên bố phá sản hợp tác xã và thanh lý tài sản tàu thuyền",
     ],
   },
 ];
 
-const THAM_PHAN_LIST = ["Đỗ Tất Thống", "Lê Thị Hoa", "Trần Minh Hải", "Nguyễn Thị Lan", "Cao Thị Mai"];
-const CAP_THAM_PHAN_LIST = ["TPB3", "TPB2", "TPTC", "TPB1", "TPB3"];
+const THAM_PHAN_LIST = [
+  "Đỗ Tất Thống",
+  "Lê Thị Hoa",
+  "Trần Minh Hải",
+  "Nguyễn Thị Lan",
+  "Cao Thị Mai",
+  "Phạm Quốc Khánh",
+  "Vũ Xuân Hiển",
+  "Nguyễn Như Thắng",
+  "Hoàng Thị Thu",
+  "Lê Quang Vinh",
+];
+const CAP_THAM_PHAN_LIST = ["TPB3", "TPB2", "TPTC", "TPB1", "TPB3", "TPTC", "TPB2", "TPB1", "TPB3", "TPTC"];
 const TOA_LIST = [
   "Tòa án nhân dân cấp cao tại thành phố Hồ Chí Minh",
   "TAND tỉnh Bắc Ninh",
   "Tòa án nhân dân cấp cao tại Hà Nội",
   "TAND tỉnh Quảng Ninh",
   "Tòa án nhân dân thành phố Đà Nẵng",
+  "Tòa án nhân dân tỉnh Thanh Hóa",
+  "Tòa án nhân dân TP Hải Phòng",
+  "Tòa án nhân dân tỉnh Bình Dương",
+  "Tòa án nhân dân tỉnh Khánh Hòa",
+  "Tòa án nhân dân tỉnh Đồng Nai",
 ];
 const NKN_LIST = [
   "Tổng Công ty Cổ phần Xây dựng & Khoáng sản Thương mại Miền Bắc",
@@ -285,6 +341,11 @@ const NKN_LIST = [
   "Công ty TNHH Đầu tư & Phát triển Hạ tầng Giao thông Đô thị",
   "Trần Văn Khoa",
   "Vũ Thanh Tùng",
+  "Nguyễn Thị Lan",
+  "Phạm Văn Cường",
+  "Lê Anh Tuấn",
+  "Công ty Cổ phần Đầu tư Hải Phát",
+  "Đặng Thị Dương",
 ];
 const BICAO_LIST = [
   "Ủy ban nhân dân thành phố Thủ Đức (Người bị kiện)",
@@ -292,6 +353,11 @@ const BICAO_LIST = [
   "Công ty Cổ phần Tập đoàn Quốc tế Á Châu",
   "Lý Thị Hồng",
   "Đỗ Hữu Bình",
+  "Nguyễn Hữu Đức",
+  "UBND huyện Yên Dũng",
+  "Ngô Văn Quyết",
+  "Nguyễn Thanh Sơn",
+  "Hoàng Ngọc Hoa",
 ];
 const NDD_LIST = [
   "Luật sư Trần Hữu Nam – Văn phòng Luật sư Trí Đức (Đoàn Luật sư TP. Hà Nội)",
@@ -299,6 +365,11 @@ const NDD_LIST = [
   "Võ Thành Nhân",
   "Đặng Hoàng Nam",
   "Hoàng Mỹ Linh",
+  "Luật sư Phan Thị Lan",
+  "UBND Tỉnh Bắc Giang",
+  "Luật sư Đặng Minh Tuấn",
+  "Luật sư Vũ Ngọc Hùng",
+  "Lập Thái Phúc",
 ];
 
 function pad2(n: number): string {
@@ -317,9 +388,9 @@ function buildCase(loaiIdx: number, recIdx: number, globalId: number): DonCase {
   const nguoiKhieuNai = NKN_LIST[recIdx % NKN_LIST.length];
   const biCao = BICAO_LIST[recIdx % BICAO_LIST.length];
   const ndd = NDD_LIST[recIdx % NDD_LIST.length];
-  const tenVuAn = meta.vuAnTitles[recIdx];
+  const tenVuAn = meta.vuAnTitles[recIdx] || `Vụ án ${loaiAn} số ${recIdx + 1}`;
   const soCV = String(10 + recIdx + loaiIdx);
-  const ngayCV = `${pad2(recIdx + 1)}/06/2026`;
+  const ngayCV = `${pad2((recIdx % 28) + 1)}/06/2026`;
   const SHORT_MAP: Record<string, string> = {
     "Hình sự": "HS",
     "Dân sự": "DS",
@@ -333,23 +404,23 @@ function buildCase(loaiIdx: number, recIdx: number, globalId: number): DonCase {
   const shortCode = SHORT_MAP[loaiAn] || "HS";
   const capCode = recIdx % 3 === 0 ? "PT" : "ST";
   const soBA = `${pad2(recIdx + 1)}06/${shortCode}-${capCode}`;
-  const ngayBA = `${pad2(recIdx + 1)}/06/2026`;
+  const ngayBA = `${pad2((recIdx % 28) + 1)}/06/2026`;
   const thuLyMoi = String(2330000 + globalId);
 
   // Phân bổ số lượng tag linh hoạt (1, 2-3, 4 label)
   let caseTags: string[] = [];
   if (loaiAn === "Hình sự") {
-    if (recIdx === 0) caseTags = ["an-quoc-hoi", "an-chi-dao", "an-tvtn", "an-tu-hinh"]; // 4 labels
-    else if (recIdx === 1) caseTags = ["an-tu-hinh", "an-chi-dao", "an-quoc-hoi"]; // 3 labels
-    else if (recIdx === 2) caseTags = ["an-tu-hinh", "an-tvtn"]; // 2 labels
-    else if (recIdx === 3) caseTags = ["an-tu-hinh"]; // 1 label hồ sơ tử hình
-    else caseTags = ["an-chi-dao"]; // 1 label
+    if (recIdx % 5 === 0) caseTags = ["an-quoc-hoi", "an-chi-dao", "an-tvtn", "an-tu-hinh"];
+    else if (recIdx % 5 === 1) caseTags = ["an-tu-hinh", "an-chi-dao", "an-quoc-hoi"];
+    else if (recIdx % 5 === 2) caseTags = ["an-tu-hinh", "an-tvtn"];
+    else if (recIdx % 5 === 3) caseTags = ["an-tu-hinh"];
+    else caseTags = ["an-chi-dao"];
   } else {
-    if (recIdx === 0) caseTags = ["an-quoc-hoi", "an-chi-dao"]; // 2 labels
-    else if (recIdx === 1) caseTags = ["an-chi-dao", "an-quoc-hoi"]; // 2 labels
-    else if (recIdx === 2) caseTags = ["an-chi-dao"]; // 1 label
-    else if (recIdx === 3) caseTags = ["an-quoc-hoi"]; // 1 label
-    else caseTags = ["an-chi-dao"]; // 1 label
+    if (recIdx % 5 === 0) caseTags = ["an-quoc-hoi", "an-chi-dao"];
+    else if (recIdx % 5 === 1) caseTags = ["an-chi-dao", "an-quoc-hoi"];
+    else if (recIdx % 5 === 2) caseTags = ["an-chi-dao"];
+    else if (recIdx % 5 === 3) caseTags = ["an-quoc-hoi"];
+    else caseTags = ["an-chi-dao"];
   }
 
   let thoiHieu: string;
@@ -393,7 +464,9 @@ function buildCase(loaiIdx: number, recIdx: number, globalId: number): DonCase {
     "don-cho-phe-duyet",
   ];
 
-  switch (recIdx) {
+  const ttvList = ["Nguyễn Văn A", "Phạm Thị Minh", "Lê Văn Hùng", "Trịnh Đức Minh", "Hoàng Văn Tuấn"];
+
+  switch (recIdx % 5) {
     case 0:
       return {
         ...base,
@@ -406,7 +479,7 @@ function buildCase(loaiIdx: number, recIdx: number, globalId: number): DonCase {
         hinhThuc: "Đơn đề nghị GĐT/TT",
         maVuAn,
         tenVuAn,
-        ttv: "Nguyễn Văn A",
+        ttv: ttvList[0],
         trangThai: statusOptions[0],
         yKienLD: [leadershipOptions[0], leadershipOptions[1]],
       };
@@ -422,11 +495,11 @@ function buildCase(loaiIdx: number, recIdx: number, globalId: number): DonCase {
         hinhThuc: "Đơn khiếu nại tư pháp tố tụng",
         maVuAn,
         tenVuAn,
-        ttv: "Phạm Thị Minh",
+        ttv: ttvList[1],
         trangThai: statusOptions[1],
         vuAnActions: ["ghep-vu-an", "them-vu-an"],
         yKienLD: [leadershipOptions[1]],
-        ...(recIdx === 1 && loaiIdx % 2 === 0 ? { daThuLy: true } : {}),
+        ...(recIdx % 2 === 1 && loaiIdx % 2 === 0 ? { daThuLy: true } : {}),
       };
     case 2:
       return {
@@ -440,17 +513,18 @@ function buildCase(loaiIdx: number, recIdx: number, globalId: number): DonCase {
         hinhThuc: "Đơn đề nghị GĐT/TT",
         maVuAn,
         tenVuAn,
-        ttv: "Lê Văn Hùng",
+        ttv: ttvList[2],
         trangThai: statusOptions[2],
         vuAnActions: ["chuyen-vu-an", "huy-ghep"],
-        ngayNhan: `${10 + recIdx}/6/2026`,
+        ngayNhan: `${10 + (recIdx % 10)}/6/2026`,
         yKienLD: [leadershipOptions[2]],
+        daThuLy: true,
       };
     case 3:
       return {
         ...base,
         type: "don",
-        tabs: ["tat-ca", "ho-so-khang-nghi"],
+        tabs: ["tat-ca", "da-co-vu-an", "ho-so-khang-nghi"],
         maDon,
         soCV,
         ngayCV,
@@ -458,9 +532,10 @@ function buildCase(loaiIdx: number, recIdx: number, globalId: number): DonCase {
         hinhThuc: "Hồ sơ kháng nghị GĐT",
         maVuAn,
         tenVuAn,
-        ttv: "Trịnh Đức Minh",
+        ttv: ttvList[3],
         trangThai: statusOptions[3],
         yKienLD: [leadershipOptions[3]],
+        daThuLy: true,
       };
     default:
       const lyDoTraOptions = [
@@ -486,16 +561,16 @@ function buildCase(loaiIdx: number, recIdx: number, globalId: number): DonCase {
         ttvGiaiQuyet: "Nguyễn Văn An",
         tpGiaiQuyet: "Đào Văn Nam",
         nguoiTra: "Trần Quốc Hải",
-        ngayTra: `${14 + recIdx}/6/2026`,
+        ngayTra: `${14 + (recIdx % 10)}/6/2026`,
         lyDoTraLai: lyDoTraOptions[loaiIdx % lyDoTraOptions.length],
         yKienLD: [leadershipOptions[4]],
       };
   }
 }
 
-export const CASES: DonCase[] = LOAI_AN_META.flatMap((_, loaiIdx) =>
-  Array.from({ length: 5 }, (_, recIdx) =>
-    buildCase(loaiIdx, recIdx, loaiIdx * 5 + recIdx + 1),
+export const CASES: DonCase[] = LOAI_AN_META.flatMap((meta, loaiIdx) =>
+  Array.from({ length: meta.vuAnTitles.length }, (_, recIdx) =>
+    buildCase(loaiIdx, recIdx, loaiIdx * 10 + recIdx + 1),
   ),
 );
 

@@ -18,14 +18,15 @@ import {
 } from "./shared";
 import { formatSoBA } from "./AppHelpers";
 import {
-  KHIEU_NAI_LIST,
-  filterVuAnListByRole,
   isVu234,
   getQuanHePhapLuat,
   getPartyLabels,
-  UserRoleType,
-  ChiTietTab,
 } from "./App";
+import {
+  KHIEU_NAI_LIST,
+  filterVuAnListByRole,
+  type ChiTietTab,
+} from "./QuanLyVuAnView";
 import { VuAnSearchFilterPanel } from "./VuAnSearchFilterPanel";
 
 const paginBtn: React.CSSProperties = {
