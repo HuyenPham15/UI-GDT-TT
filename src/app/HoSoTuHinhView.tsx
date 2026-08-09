@@ -150,7 +150,7 @@ function HSPagination({ total }: { total: number }) {
 function HSTHTaoToTrinhModal({ onClose }: { onClose: () => void }) {
   const [ngayLap, setNgayLap] = useState("");
   const [soToTrinh, setSoToTrinh] = useState("");
-  
+
   const BI_AN_LIST = ["Chu Văn An", "Trần Văn Hùng", "Lê Văn Tám"];
   const [selectedBiAnList, setSelectedBiAnList] = useState<string[]>(["Chu Văn An", "Trần Văn Hùng"]);
   const [biAnDropdownOpen, setBiAnDropdownOpen] = useState(false);
@@ -356,7 +356,7 @@ function HSTHTaoToTrinhModal({ onClose }: { onClose: () => void }) {
                           <input
                             type="checkbox"
                             checked={checked}
-                            onChange={() => {}}
+                            onChange={() => { }}
                             style={{ accentColor: RED, cursor: "pointer" }}
                           />
                           <span style={{ fontSize: 12, color: TEXT, fontWeight: checked ? 600 : 400 }}>👤 {name}</span>
@@ -680,13 +680,75 @@ function HSTHTabToTrinh() {
   const [showHoSo, setShowHoSo] = useState(false);
   const [showTaoDuThao, setShowTaoDuThao] = useState(false);
   const [thuHoiIdx, setThuHoiIdx] = useState<number | null>(null);
-  const [filterDon, setFilterDon] = useState("");
+  const [filterBiAn, setFilterBiAn] = useState("");
   const [filterVanBan, setFilterVanBan] = useState("");
   const [lichSuData, setLichSuData] = useState([
-    { ngayTrinh: "10/07/2026", lanh: "Nguyễn Văn C", capTrinh: "Phó Chánh án", vanBan: "Tờ trình thẩm tra hồ sơ số 2", yKien: "–", ngayDuyet: "–", trangThai: "cho-duyet", subRows: [] as { label: string; ngayDuyet: string }[] },
-    { ngayTrinh: "07/07/2026", lanh: "Nguyễn Văn A", capTrinh: "Thẩm phán", vanBan: "Tờ trình thẩm tra hồ sơ số 1", yKien: "Kháng nghị: Nguyễn Văn An/Không kháng nghị: Phạm Minh Tuấn", ngayDuyet: "07/07/2026", trangThai: "da-duyet", subRows: [] },
-    { ngayTrinh: "08/07/2026", lanh: "Nguyễn Văn B", capTrinh: "Thẩm phán", vanBan: "Tờ trình thẩm tra hồ sơ số 1", yKien: "Kháng nghị: Nguyễn Văn An/Không kháng nghị: Phạm Minh Tuấn", ngayDuyet: "08/07/2026", trangThai: "da-duyet", subRows: [{ label: "Dự thảo 01", ngayDuyet: "08/07/2026" }, { label: "Dự thảo 02", ngayDuyet: "08/07/2026" }] },
-    { ngayTrinh: "06/07/2026", lanh: "Nguyễn Văn D", capTrinh: "Chánh án", vanBan: "Tờ trình thẩm tra hồ sơ số 1", yKien: "Hồ sơ thiếu biên bản thẩm tra, đề nghị bổ sung trước khi trình", ngayDuyet: "06/07/2026", trangThai: "tu-choi", subRows: [] },
+    {
+      ngayTrinh: "12/07/2026",
+      lanh: "Dương Văn Hải",
+      capTrinh: "Phó Chánh án",
+      vanBan: "Tờ trình trình Chủ tịch nước số 1",
+      biAn: "Chu Văn An, Trần Văn Hùng",
+      yKien: "Ân giảm án tử hình: Chu Văn An\nKhông ân giảm án tử hình: Trần Văn Hùng",
+      ngayDuyet: "12/07/2026",
+      trangThai: "da-duyet",
+      subRows: [{ label: "Dự thảo Tờ trình CTN 01", ngayDuyet: "12/07/2026" }],
+    },
+    {
+      ngayTrinh: "10/07/2026",
+      lanh: "Nguyễn Văn C",
+      capTrinh: "Phó Chánh án",
+      vanBan: "Tờ trình thẩm tra hồ sơ số 2",
+      biAn: "Chu Văn An, Trần Văn Hùng",
+      yKien: "Ân giảm: Chu Văn An\nKhông ân giảm: Trần Văn Hùng",
+      ngayDuyet: "–",
+      trangThai: "cho-duyet",
+      subRows: [] as { label: string; ngayDuyet: string }[],
+    },
+    {
+      ngayTrinh: "08/07/2026",
+      lanh: "Nguyễn Văn B",
+      capTrinh: "Thẩm phán",
+      vanBan: "Tờ trình thẩm tra hồ sơ số 1",
+      biAn: "Trần Văn Hùng",
+      yKien: "Không ân giảm án tử hình: Trần Văn Hùng\nKháng nghị: Chu Văn An",
+      ngayDuyet: "08/07/2026",
+      trangThai: "da-duyet",
+      subRows: [{ label: "Dự thảo 01", ngayDuyet: "08/07/2026" }, { label: "Dự thảo 02", ngayDuyet: "08/07/2026" }],
+    },
+    {
+      ngayTrinh: "07/07/2026",
+      lanh: "Nguyễn Văn A",
+      capTrinh: "Thẩm phán",
+      vanBan: "Tờ trình thẩm tra hồ sơ số 1",
+      biAn: "Chu Văn An",
+      yKien: "Kháng nghị: Chu Văn An\nKhông kháng nghị: Phạm Minh Tuấn",
+      ngayDuyet: "07/07/2026",
+      trangThai: "da-duyet",
+      subRows: [],
+    },
+    {
+      ngayTrinh: "06/07/2026",
+      lanh: "Nguyễn Văn D",
+      capTrinh: "Chánh án",
+      vanBan: "Tờ trình thẩm tra hồ sơ số 1",
+      biAn: "Lê Văn Tám",
+      yKien: "Không ân giảm án tử hình: Lê Văn Tám (Hồ sơ thiếu biên bản thẩm tra, đề nghị bổ sung)",
+      ngayDuyet: "06/07/2026",
+      trangThai: "tu-choi",
+      subRows: [],
+    },
+    {
+      ngayTrinh: "04/07/2026",
+      lanh: "Nguyễn Văn A",
+      capTrinh: "Thẩm phán",
+      vanBan: "Tờ trình xem xét ân giảm số 1",
+      biAn: "Nguyễn Văn An",
+      yKien: "Ân giảm án tử hình: Nguyễn Văn An (Có nhiều tình tiết giảm nhẹ mới)",
+      ngayDuyet: "05/07/2026",
+      trangThai: "da-duyet",
+      subRows: [],
+    },
   ]);
 
   const vanBanRows = [
@@ -695,12 +757,12 @@ function HSTHTabToTrinh() {
     { stt: 3, vanBan: "Thông báo trả lời đơn 0902344 số 2", biAn: "Trần Thị Hương", ngayTao: "09/07/2026", nguoiKy: "–", trangThai: "Chờ ký số" },
   ];
 
-  const allDonOptions = Array.from(new Set(lichSuData.flatMap(r => r.yKien === "–" ? [] : r.yKien.split("\n").map(s => s.trim()).filter(Boolean))));
+  const allBiAnOptions = ["Chu Văn An", "Trần Văn Hùng", "Lê Văn Tám", "Phạm Minh Tuấn", "Nguyễn Văn An", "Trần Thị Hương"];
   const allVanBanOpts = Array.from(new Set(lichSuData.map(r => r.vanBan)));
   const filteredLichSu = lichSuData.filter(r => {
-    const okDon = !filterDon || r.yKien.includes(filterDon);
+    const okBiAn = !filterBiAn || (r.biAn && r.biAn.includes(filterBiAn)) || (r.yKien && r.yKien.includes(filterBiAn));
     const okVanBan = !filterVanBan || r.vanBan === filterVanBan;
-    return okDon && okVanBan;
+    return okBiAn && okVanBan;
   });
 
   const TH: React.CSSProperties = { padding: "8px 10px", background: BG, fontWeight: 700, fontSize: 11, color: "#374151", fontFamily: F, textAlign: "left", borderBottom: `1px solid ${BORDER}`, borderRight: `1px solid ${BORDER}`, wordBreak: "break-word" };
@@ -850,10 +912,10 @@ function HSTHTabToTrinh() {
       <div style={{ background: "#fff", borderRadius: 8, border: `1px solid ${BORDER}`, overflow: "hidden" }}>
         <div style={{ display: "flex", alignItems: "center", padding: "12px 16px", borderBottom: `1px solid ${BORDER}`, gap: 8, flexWrap: "wrap" }}>
           <span style={{ fontSize: 14, fontWeight: 700, color: TEXT, fontFamily: F, flex: 1 }}>Lịch sử trình ký</span>
-          <select value={filterDon} onChange={e => setFilterDon(e.target.value)}
+          <select value={filterBiAn} onChange={e => setFilterBiAn(e.target.value)}
             style={{ padding: "5px 8px", fontSize: 12, border: `1px solid ${BORDER}`, borderRadius: 4, fontFamily: F, background: "#fff", color: TEXT }}>
-            <option value="">Lọc theo đơn</option>
-            {allDonOptions.map(o => <option key={o} value={o}>{o}</option>)}
+            <option value="">Lọc theo bị án</option>
+            {allBiAnOptions.map(o => <option key={o} value={o}>{o}</option>)}
           </select>
           <select value={filterVanBan} onChange={e => setFilterVanBan(e.target.value)}
             style={{ padding: "5px 8px", fontSize: 12, border: `1px solid ${BORDER}`, borderRadius: 4, fontFamily: F, background: "#fff", color: TEXT }}>
@@ -868,14 +930,14 @@ function HSTHTabToTrinh() {
               <col style={{ width: "10%" }} />
               <col style={{ width: "14%" }} />
               <col style={{ width: "13%" }} />
-              <col style={{ width: "22%" }} />
-              <col style={{ width: "16%" }} />
+              <col style={{ width: "20%" }} />
+              <col style={{ width: "18%" }} />
               <col style={{ width: "10%" }} />
               <col style={{ width: "11%" }} />
               <col style={{ width: 90 }} />
             </colgroup>
             <thead>
-              <tr>{["STT", "NGÀY TRÌNH", "LÃNH ĐẠO ĐƯỢC TRÌNH", "CẤP TRÌNH", "VĂN BẢN", "Ý KIẾN/ĐƠN", "NGÀY DUYỆT", "TRẠNG THÁI", "THAO TÁC"].map(h => <th key={h} style={TH}>{h}</th>)}</tr>
+              <tr>{["STT", "NGÀY TRÌNH", "LÃNH ĐẠO ĐƯỢC TRÌNH", "CẤP TRÌNH", "VĂN BẢN", "Ý KIẾN / BỊ ÁN", "NGÀY DUYỆT", "TRẠNG THÁI", "THAO TÁC"].map(h => <th key={h} style={TH}>{h}</th>)}</tr>
             </thead>
             <tbody>
               {filteredLichSu.map((r) => {
@@ -888,7 +950,10 @@ function HSTHTabToTrinh() {
                       <td style={TD}>{r.lanh}</td>
                       <td style={TD}>{r.capTrinh}</td>
                       <td style={{ ...TD, color: "#2563eb" }}>{r.vanBan}</td>
-                      <td style={{ ...TD, fontSize: 11, whiteSpace: "pre-line" }}>{r.yKien}</td>
+                      <td style={{ ...TD, fontSize: 11 }}>
+
+                        <div style={{ color: MUTED, whiteSpace: "pre-line" }}>{r.yKien}</div>
+                      </td>
                       <td style={TD}>{r.ngayDuyet}</td>
                       <td style={TD}>
                         {r.trangThai === "cho-duyet"

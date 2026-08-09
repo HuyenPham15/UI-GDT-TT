@@ -1071,9 +1071,11 @@ interface VuAnRow {
   soThuLy: string; ngayThuLy: string;
   soBA: string; ngayBA: string;
   toa: string; capXetXu: string;
+  thoiHieu?: string;
   extraTags: string[];
-  anLoai?: "dan-su";
+  anLoai?: "chi-dao" | "quoc-hoi" | "tvtn" | "tu-hinh" | string;
   loaiAn?: string;
+  quanHePhapLuat?: string;
   nkn: string; biCao: string; ndd: string;
   ttv: string; lanhDao: string;
   kqgq: "chua-phan-cong" | "trinh-pho-chanh-an" | "trinh-tham-phan";
@@ -1110,7 +1112,7 @@ export function filterVuAnListByRole(groups: VuAnGroup[], userRole?: UserRoleTyp
 }
 
 const VU_AN_LIST: VuAnGroup[] = [
-  // ── Vụ I: Hình sự ──
+  // ── Vụ I: Hình sự (Thời hiệu: 1 năm / Không xác định thời hiệu) ──
   {
     id: "VA26-002621", maSo: "VA26-002621",
     tenVuAn: "Vụ án Đặng Thị Dương – Tội cố ý gây thương tích",
@@ -1122,8 +1124,9 @@ const VU_AN_LIST: VuAnGroup[] = [
         soThuLy: "5:44682424", ngayThuLy: "20/07/2026",
         soBA: "CVKN_GDT", ngayBA: "20/07/2026",
         toa: "Tòa án nhân dân cấp cao tại Hà Nội", capXetXu: "Tái thẩm",
+        thoiHieu: "1 năm",
+        anLoai: "quoc-hoi",
         extraTags: ["Tiếp nhận đơn"],
-        anLoai: "dan-su",
         nkn: "Đặng Thị Dương", biCao: "Hoàng Ngọc Hoa", ndd: "Lập Thái Phúc",
         ttv: "Lý Thái Phúc", lanhDao: "GD Giải quyết đơn",
         kqgq: "chua-phan-cong", trangThaiHoSo: "chua-co", kqGiaiQuyet: "chua-co", trangThaiToTrinh: "chua-co", soToTrinh: 0,
@@ -1133,6 +1136,8 @@ const VU_AN_LIST: VuAnGroup[] = [
         soThuLy: "5:44682425", ngayThuLy: "22/07/2026",
         soBA: "CVKN_GDT", ngayBA: "20/07/2026",
         toa: "Tòa án nhân dân cấp cao tại Hà Nội", capXetXu: "Tái thẩm",
+        thoiHieu: "Không xác định thời hiệu",
+        anLoai: "chi-dao",
         extraTags: [],
         nkn: "Đặng Thị Dương", biCao: "Hoàng Ngọc Hoa", ndd: "Lập Thái Phúc",
         ttv: "Lý Thái Phúc", lanhDao: "GD Giải quyết đơn",
@@ -1151,8 +1156,9 @@ const VU_AN_LIST: VuAnGroup[] = [
         soThuLy: "5:4684H06", ngayThuLy: "07/07/2026",
         soBA: "5A648139", ngayBA: "03/07/2026",
         toa: "Tòa án nhân dân cấp cao – Bắc Ninh", capXetXu: "Phúc thẩm",
+        thoiHieu: "Không xác định thời hiệu",
+        anLoai: "chi-dao",
         extraTags: [],
-        anLoai: "dan-su",
         nkn: "Phạm Ngọc Hoa", biCao: "Hoàng Hoa Vân", ndd: "Hoàng Hoa Vân",
         ttv: "Vũ Biêu Thư", lanhDao: "Lê Thị Bình Ngọc",
         kqgq: "trinh-pho-chanh-an", trangThaiHoSo: "da-co", kqGiaiQuyet: "da-co-con-don", trangThaiToTrinh: "dang-trinh", soToTrinh: 2,
@@ -1162,6 +1168,7 @@ const VU_AN_LIST: VuAnGroup[] = [
         soThuLy: "5:4684606", ngayThuLy: "07/07/2026",
         soBA: "5A648139", ngayBA: "03/07/2026",
         toa: "Tòa án nhân dân cấp cao – Bắc Ninh", capXetXu: "Phúc thẩm",
+        thoiHieu: "1 năm",
         extraTags: [],
         nkn: "Phạm Ngọc Hoa", biCao: "Hoàng Hoa Vân", ndd: "Hoàng Hoa Vân",
         ttv: "Nguyễn Thị Bình", lanhDao: "Lê Thị Bình Ngọc",
@@ -1172,15 +1179,16 @@ const VU_AN_LIST: VuAnGroup[] = [
         soThuLy: "5:4684606", ngayThuLy: "07/07/2026",
         soBA: "5A648139", ngayBA: "03/07/2026",
         toa: "Tòa án nhân dân cấp cao – Bắc Ninh", capXetXu: "Phúc thẩm",
+        thoiHieu: "1 năm",
+        anLoai: "quoc-hoi",
         extraTags: [],
-        anLoai: "dan-su",
         nkn: "Phạm Ngọc Hoa", biCao: "Hoàng Hoa Vân", ndd: "Hoàng Hoa Vân",
         ttv: "Vũ Biêu Thư", lanhDao: "Lê Thị Bình Ngọc",
         kqgq: "chua-phan-cong", trangThaiHoSo: "chua-co", kqGiaiQuyet: "chua-co", trangThaiToTrinh: "chua-co", soToTrinh: 0,
       },
     ],
   },
-  // ── Vụ II: Dân sự ──
+  // ── Vụ II: Dân sự (Thời hiệu: 1 năm / 3 năm / 5 năm) ──
   {
     id: "VA26-001543-DS", maSo: "VA26-001543",
     tenVuAn: "Vụ án Ngô Mai Trang – Tranh chấp hợp đồng mua bán nhà ở và QSDĐ",
@@ -1192,6 +1200,8 @@ const VU_AN_LIST: VuAnGroup[] = [
         soThuLy: "54681543", ngayThuLy: "03/07/2026",
         soBA: "21/2026/DS-ST", ngayBA: "03/07/2026",
         toa: "Tòa án nhân dân tỉnh Bắc Ninh", capXetXu: "Sơ thẩm",
+        thoiHieu: "3 năm",
+        anLoai: "chi-dao",
         extraTags: ["Tiếp nhận đơn"],
         loaiAn: "Dân sự",
         nkn: "Ngô Mai Trang", biCao: "Phạm Văn Thành, Lê Thị Nhải", ndd: "Luật sư Nguyễn Văn Nam",
@@ -1211,6 +1221,8 @@ const VU_AN_LIST: VuAnGroup[] = [
         soThuLy: "54682300", ngayThuLy: "28/06/2026",
         soBA: "77/2026/DS-PT", ngayBA: "28/06/2026",
         toa: "Tòa án nhân dân TP Đà Nẵng", capXetXu: "Phúc thẩm",
+        thoiHieu: "1 năm",
+        anLoai: "quoc-hoi",
         extraTags: [],
         loaiAn: "Dân sự",
         nkn: "Lê Văn Hùng", biCao: "Lê Thị Hồng", ndd: "Lê Văn Tuấn",
@@ -1219,7 +1231,7 @@ const VU_AN_LIST: VuAnGroup[] = [
       },
     ],
   },
-  // ── Vụ III: Kinh doanh thương mại, Lao động, HNGĐ, Phá sản ──
+  // ── Vụ III: Kinh doanh thương mại, Lao động, HNGĐ, Phá sản (Thời hiệu: 1 năm / 3 năm / 5 năm) ──
   {
     id: "VA26-001890-KDTM", maSo: "VA26-001890",
     tenVuAn: "Vụ án Công ty CP Xây lắp Dầu khí – Tranh chấp hợp đồng tín dụng và bảo lãnh",
@@ -1231,6 +1243,8 @@ const VU_AN_LIST: VuAnGroup[] = [
         soThuLy: "54681890", ngayThuLy: "19/06/2026",
         soBA: "45/2026/KDTM-ST", ngayBA: "19/06/2026",
         toa: "Tòa án nhân dân TP Hồ Chí Minh", capXetXu: "Sơ thẩm",
+        thoiHieu: "5 năm",
+        anLoai: "chi-dao",
         extraTags: ["Tiếp nhận đơn"],
         nkn: "Ngân hàng TMCP Ngoại thương Việt Nam", biCao: "Công ty CP Xây lắp Dầu khí", ndd: "Trần Đình Khang",
         ttv: "Lê Hoàng Long", lanhDao: "Phạm Văn Nam",
@@ -1249,6 +1263,7 @@ const VU_AN_LIST: VuAnGroup[] = [
         soThuLy: "54681920", ngayThuLy: "10/06/2026",
         soBA: "08/2026/LĐ-PT", ngayBA: "10/06/2026",
         toa: "Tòa án nhân dân tỉnh Bình Dương", capXetXu: "Phúc thẩm",
+        thoiHieu: "3 năm",
         extraTags: [],
         nkn: "Nguyễn Văn Toàn", biCao: "Công ty TNHH May Mặc Quốc Tế", ndd: "Luật sư Đặng Quốc Tuấn",
         ttv: "Phan Văn Hậu", lanhDao: "Lê Văn Minh",
@@ -1256,7 +1271,7 @@ const VU_AN_LIST: VuAnGroup[] = [
       },
     ],
   },
-  // ── Vụ IV: Hành chính ──
+  // ── Vụ IV: Hành chính (Thời hiệu: 1 năm / 3 năm / 5 năm) ──
   {
     id: "VA26-001104-HC", maSo: "VA26-001104",
     tenVuAn: "Vụ án Phạm Văn Cường – Khiếu kiện Quyết định thu hồi đất và bồi thường tái định cư",
@@ -1268,6 +1283,8 @@ const VU_AN_LIST: VuAnGroup[] = [
         soThuLy: "54681104", ngayThuLy: "25/07/2026",
         soBA: "12/2026/HC-ST", ngayBA: "25/07/2026",
         toa: "Tòa án nhân dân tỉnh Bắc Giang", capXetXu: "Sơ thẩm",
+        thoiHieu: "1 năm",
+        anLoai: "quoc-hoi",
         extraTags: ["Tiếp nhận đơn"],
         nkn: "Phạm Văn Cường", biCao: "Ủy ban nhân dân huyện Yên Dũng", ndd: "UBND Tỉnh Bắc Giang",
         ttv: "Hoàng Minh Tâm", lanhDao: "Vũ Xuân Hiển",
@@ -1286,6 +1303,8 @@ const VU_AN_LIST: VuAnGroup[] = [
         soThuLy: "54681115", ngayThuLy: "15/07/2026",
         soBA: "19/2026/HC-PT", ngayBA: "15/07/2026",
         toa: "Tòa án nhân dân cấp cao tại Đà Nẵng", capXetXu: "Phúc thẩm",
+        thoiHieu: "3 năm",
+        anLoai: "chi-dao",
         extraTags: [],
         nkn: "Hoàng Văn Minh", biCao: "Chủ tịch UBND Thành phố Nha Trang", ndd: "Sở TN&MT Tỉnh Khánh Hòa",
         ttv: "Đỗ Thành Công", lanhDao: "Vũ Xuân Hiển",
@@ -1305,6 +1324,8 @@ const VU_AN_LIST: VuAnGroup[] = [
         soThuLy: "54683001", ngayThuLy: "05/07/2026",
         soBA: "32/2026/HS-PT", ngayBA: "01/07/2026",
         toa: "Tòa án nhân dân cấp cao tại Hà Nội", capXetXu: "Phúc thẩm",
+        thoiHieu: "Không xác định thời hiệu",
+        anLoai: "chi-dao",
         extraTags: [],
         nkn: "Trịnh Minh Khoa", biCao: "Nguyễn Hữu Đức", ndd: "Luật sư Phan Thị Lan",
         ttv: "Phạm Thị Ngọc Anh", lanhDao: "Nguyễn Như Thắng",
@@ -1323,6 +1344,8 @@ const VU_AN_LIST: VuAnGroup[] = [
         soThuLy: "54683002", ngayThuLy: "10/07/2026",
         soBA: "41/2026/DS-ST", ngayBA: "08/07/2026",
         toa: "Tòa án nhân dân tỉnh Vĩnh Phúc", capXetXu: "Sơ thẩm",
+        thoiHieu: "5 năm",
+        anLoai: "quoc-hoi",
         extraTags: [],
         loaiAn: "Dân sự",
         nkn: "Bùi Thị Lan", biCao: "Ngân hàng TMCP Đầu tư và Phát triển Việt Nam", ndd: "Trần Văn Hải",
@@ -1342,6 +1365,8 @@ const VU_AN_LIST: VuAnGroup[] = [
         soThuLy: "54683003", ngayThuLy: "12/07/2026",
         soBA: "09/2026/HC-PT", ngayBA: "10/07/2026",
         toa: "Tòa án nhân dân TP Hà Nội", capXetXu: "Phúc thẩm",
+        thoiHieu: "1 năm",
+        anLoai: "chi-dao",
         extraTags: [],
         nkn: "Đinh Xuân Bách", biCao: "UBND huyện Mê Linh", ndd: "Sở TN&MT Hà Nội",
         ttv: "Lê Quang Vinh", lanhDao: "Vũ Xuân Hiển",
@@ -1360,6 +1385,8 @@ const VU_AN_LIST: VuAnGroup[] = [
         soThuLy: "54683004", ngayThuLy: "15/07/2026",
         soBA: "28/2026/KDTM-PT", ngayBA: "14/07/2026",
         toa: "Tòa án nhân dân TP Hà Nội", capXetXu: "Phúc thẩm",
+        thoiHieu: "3 năm",
+        anLoai: "quoc-hoi",
         extraTags: [],
         nkn: "Công ty CP Đầu tư Hải Phát", biCao: "Nguyễn Thanh Sơn", ndd: "Luật sư Vũ Ngọc Hùng",
         ttv: "Trần Minh Quang", lanhDao: "Phạm Văn Nam",
@@ -1378,6 +1405,8 @@ const VU_AN_LIST: VuAnGroup[] = [
         soThuLy: "54683005", ngayThuLy: "18/07/2026",
         soBA: "57/2026/HS-ST", ngayBA: "16/07/2026",
         toa: "Tòa án nhân dân tỉnh Thanh Hóa", capXetXu: "Sơ thẩm",
+        thoiHieu: "1 năm",
+        anLoai: "chi-dao",
         extraTags: [],
         nkn: "Lê Anh Tuấn", biCao: "Ngô Văn Quyết", ndd: "Luật sư Đặng Minh Tuấn",
         ttv: "Nguyễn Thị Bình", lanhDao: "Nguyễn Như Thắng",
@@ -1388,7 +1417,7 @@ const VU_AN_LIST: VuAnGroup[] = [
 ];
 
 export const KHIEU_NAI_LIST: VuAnGroup[] = [
-  // ── Khám phá / Vụ I: Hình sự khiếu nại ──
+  // ── Vụ I: Hình sự khiếu nại (Thời hiệu: 1 năm / Không xác định thời hiệu) ──
   {
     id: "KN26-004128", maSo: "KN26-004128",
     tenVuAn: "Vụ khiếu nại Quyết định giải quyết đơn số 45/QĐ-TANDTC của TAND tỉnh Hà Nam",
@@ -1400,8 +1429,10 @@ export const KHIEU_NAI_LIST: VuAnGroup[] = [
         soThuLy: "KN-2026/00142", ngayThuLy: "15/05/2026",
         soBA: "12/2026/HS-ST", ngayBA: "10/04/2026",
         toa: "Tòa án nhân dân tỉnh Hà Nam", capXetXu: "Sơ thẩm",
+        thoiHieu: "1 năm",
+        anLoai: "chi-dao",
         extraTags: ["Khiếu nại tố tụng"],
-        anLoai: "hinh-su",
+        anLoaiTag: "hinh-su",
         nkn: "Nguyễn Thị Lan (KN-88421)", biCao: "Phạm Văn Tuấn", ndd: "Luật sư Trần Văn Nam",
         ttv: "Vũ Diệu Thúy", lanhDao: "Phạm Thị Bích Ngọc",
         kqgq: "trinh-pho-chanh-an", trangThaiHoSo: "da-co", kqGiaiQuyet: "da-co", trangThaiToTrinh: "da-duyet", soToTrinh: 1,
@@ -1411,15 +1442,17 @@ export const KHIEU_NAI_LIST: VuAnGroup[] = [
         soThuLy: "KN-2026/00143", ngayThuLy: "20/06/2026",
         soBA: "12/2026/HS-ST", ngayBA: "10/04/2026",
         toa: "Tòa án nhân dân tỉnh Hà Nam", capXetXu: "Sơ thẩm",
+        thoiHieu: "Không xác định thời hiệu",
+        anLoai: "quoc-hoi",
         extraTags: [],
-        anLoai: "hinh-su",
+        anLoaiTag: "hinh-su",
         nkn: "Nguyễn Thị Lan (KN-88421)", biCao: "Phạm Văn Tuấn", ndd: "Luật sư Trần Văn Nam",
         ttv: "Vũ Diệu Thúy", lanhDao: "Phạm Thị Bích Ngọc",
         kqgq: "trinh-pho-chanh-an", trangThaiHoSo: "da-co", kqGiaiQuyet: "da-co", trangThaiToTrinh: "da-duyet", soToTrinh: 1,
       },
     ],
   },
-  // ── Vụ II: Dân sự khiếu nại ──
+  // ── Vụ II: Dân sự khiếu nại (Thời hiệu: 1 năm / 3 năm / 5 năm) ──
   {
     id: "KN26-005230-DS", maSo: "KN26-005230",
     tenVuAn: "Khiếu nại Thông báo không kháng nghị số 128/TB-TA về vụ tranh chấp đất đai Bắc Ninh",
@@ -1431,6 +1464,8 @@ export const KHIEU_NAI_LIST: VuAnGroup[] = [
         soThuLy: "KN-2026/00189", ngayThuLy: "02/06/2026",
         soBA: "54681139", ngayBA: "03/05/2026",
         toa: "Tòa án nhân dân cấp cao tại Hà Nội", capXetXu: "Giám đốc thẩm",
+        thoiHieu: "3 năm",
+        anLoai: "quoc-hoi",
         extraTags: ["Khiếu nại TB giải quyết"],
         loaiAn: "Dân sự",
         nkn: "Phạm Văn Hùng (KN-74291)", biCao: "Ngô Quỳnh Trang", ndd: "Nguyễn Văn Hùng",
@@ -1439,7 +1474,7 @@ export const KHIEU_NAI_LIST: VuAnGroup[] = [
       },
     ],
   },
-  // ── Vụ III: Kinh doanh thương mại khiếu nại ──
+  // ── Vụ III: Kinh doanh thương mại khiếu nại (Thời hiệu: 1 năm / 3 năm / 5 năm) ──
   {
     id: "KN26-003891-KDTM", maSo: "KN26-003891",
     tenVuAn: "Khiếu nại Quyết định xử lý hành vi cản trở hoạt động tố tụng số 08/QĐ-XPHC",
@@ -1451,6 +1486,8 @@ export const KHIEU_NAI_LIST: VuAnGroup[] = [
         soThuLy: "KN-2026/00245", ngayThuLy: "20/07/2026",
         soBA: "08/2026/QĐ-KDTM", ngayBA: "18/07/2026",
         toa: "Tòa án nhân dân TP. Đà Nẵng", capXetXu: "Sơ thẩm",
+        thoiHieu: "5 năm",
+        anLoai: "chi-dao",
         extraTags: ["Khẩn cấp"],
         nkn: "Trần Minh Đức (ĐD Công ty CP Minh Phát)", biCao: "Công ty TNHH Hoàng Gia", ndd: "Đặng Quốc Tuấn",
         ttv: "Đỗ Thị Thu Hằng", lanhDao: "Nguyễn Tiến Mạnh",
@@ -1458,7 +1495,7 @@ export const KHIEU_NAI_LIST: VuAnGroup[] = [
       },
     ],
   },
-  // ── Vụ IV: Hành chính khiếu nại ──
+  // ── Vụ IV: Hành chính khiếu nại (Thời hiệu: 1 năm / 3 năm / 5 năm) ──
   {
     id: "KN26-006102-HC", maSo: "KN26-006102",
     tenVuAn: "Khiếu nại việc chậm trả lời đơn đề nghị kháng nghị giám đốc thẩm bản án hành chính",
@@ -1470,6 +1507,8 @@ export const KHIEU_NAI_LIST: VuAnGroup[] = [
         soThuLy: "KN-2026/00310", ngayThuLy: "10/08/2026",
         soBA: "19/2026/HC-PT", ngayBA: "12/04/2026",
         toa: "Tòa án nhân dân tối cao", capXetXu: "Giám đốc thẩm",
+        thoiHieu: "1 năm",
+        anLoai: "quoc-hoi",
         extraTags: ["Khiếu nại thời hạn giải quyết"],
         nkn: "Hoàng Thị Thu", biCao: "Ủy ban nhân dân tỉnh Thanh Hóa", ndd: "Nguyễn Văn Tiến",
         ttv: "Hoàng Minh Tâm", lanhDao: "Vũ Xuân Hiển",
@@ -1766,14 +1805,26 @@ function QuanLyVuAnView({
                         <span style={{ fontSize: 11, color: TEXT, fontFamily: F }}>
                           <span style={{ color: TEXT }}>Tại: </span>{row.toa}
                         </span>
-                        <CapXetXu label={row.capXetXu} />
+                        {/* <CapXetXu label={row.capXetXu} /> */}
+                        {row.thoiHieu && (
+                          <span style={{ fontSize: 11, color: TEXT, fontFamily: F }}>
+                            <span style={{ color: TEXT }}>Thời hiệu: </span>
+                            <span style={{ color: row.thoiHieu === "Không xác định thời hiệu" || row.thoiHieu === "Không có thời hiệu giải quyết" ? "#047857" : "#c2410c", fontWeight: 600 }}>
+                              {row.thoiHieu}
+                            </span>
+                          </span>
+                        )}
                         {isVu234(userRole, row.loaiAn) && (
                           <span style={{ fontSize: 11, color: "#047857", fontFamily: F, fontWeight: 500 }}>
                             <span style={{ color: TEXT, fontWeight: 400 }}>QHPL: </span>{getQuanHePhapLuat(row)}
                           </span>
                         )}
-                        {row.anLoai === "chi-dao" && <Badge color="#92400e" bg="#fef3c7">Án chỉ đạo</Badge>}
-                        {row.anLoai === "quoc-hoi" && <Badge color="#3730a3" bg="#e0e7ff">Án QH</Badge>}
+                        <div style={{ display: "flex", gap: 4, flexWrap: "wrap", marginTop: 2 }}>
+                          {row.anLoai === "chi-dao" && <Badge color="#92400e" bg="#fef3c7">Án chỉ đạo</Badge>}
+                          {row.anLoai === "quoc-hoi" && <Badge color="#3730a3" bg="#e0e7ff">Án Quốc hội</Badge>}
+                          {row.anLoai === "tvtn" && <Badge color="#065f46" bg="#d1fae5">Án TVTN</Badge>}
+                          {row.anLoai === "tu-hinh" && <Badge color="#991b1b" bg="#fee2e2">Án tử hình</Badge>}
+                        </div>
                       </div>
                     </td>
 
@@ -1784,10 +1835,18 @@ function QuanLyVuAnView({
                           <span style={{ color: TEXT, fontWeight: 600 }}>{label1}:</span>{" "}
                           <span style={{ fontWeight: 600, color: TEXT }}>{row.nkn}</span>
                         </span>
-                        <span style={{ fontSize: 11, fontFamily: F }}>
-                          <span style={{ color: TEXT, fontWeight: 600 }}>NĐĐ:</span>{" "}
-                          <span style={{ color: TEXT }}>{row.ndd}</span>
-                        </span>
+                        {row.biCao && (
+                          <span style={{ fontSize: 11, fontFamily: F }}>
+                            <span style={{ color: TEXT, fontWeight: 600 }}>{label2}:</span>{" "}
+                            <span style={{ fontWeight: 600, color: TEXT }}>{row.biCao}</span>
+                          </span>
+                        )}
+                        {row.ndd && (
+                          <span style={{ fontSize: 11, fontFamily: F }}>
+                            <span style={{ color: TEXT, fontWeight: 600 }}>NĐĐ:</span>{" "}
+                            <span style={{ color: TEXT }}>{row.ndd}</span>
+                          </span>
+                        )}
                       </div>
                     </td>
 
@@ -1853,7 +1912,7 @@ function QuanLyVuAnView({
                         </div>
 
                         {/* — Tờ trình — */}
-                        <div style={{ display: "flex", flexDirection: "column", gap: 2, borderTop: `1px dashed #e5e7eb`, paddingTop: 4 }}>
+                        {/* <div style={{ display: "flex", flexDirection: "column", gap: 2, borderTop: `1px dashed #e5e7eb`, paddingTop: 4 }}>
                           <span style={{ fontSize: 10, color: MUTED, fontFamily: F, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.04em" }}>Tờ trình</span>
                           {row.trangThaiToTrinh === "chua-co" && (
                             <span style={{ fontSize: 11, color: "#6b7280", fontFamily: F }}>Chưa có tờ trình</span>
@@ -1874,7 +1933,7 @@ function QuanLyVuAnView({
                             <FileText size={11} />
                             Danh sách Tờ trình
                           </button>
-                        </div>
+                        </div> */}
 
                       </div>
                     </td>

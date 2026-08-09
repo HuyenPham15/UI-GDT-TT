@@ -262,13 +262,25 @@ export function QuanLyKhieuNaiView({
                           <span style={{ color: TEXT }}>Tại: </span>{row.toa}
                         </span>
                         <CapXetXu label={row.capXetXu} />
+                        {row.thoiHieu && (
+                          <span style={{ fontSize: 11, color: TEXT, fontFamily: F }}>
+                            <span style={{ color: TEXT }}>Thời hiệu: </span>
+                            <span style={{ color: row.thoiHieu === "Không xác định thời hiệu" || row.thoiHieu === "Không có thời hiệu giải quyết" ? "#047857" : "#c2410c", fontWeight: 600 }}>
+                              {row.thoiHieu}
+                            </span>
+                          </span>
+                        )}
                         {isVu234(userRole, row.loaiAn) && (
                           <span style={{ fontSize: 11, color: "#047857", fontFamily: F, fontWeight: 500 }}>
                             <span style={{ color: TEXT, fontWeight: 400 }}>QHPL: </span>{getQuanHePhapLuat(row)}
                           </span>
                         )}
-                        {row.anLoai === "chi-dao" && <Badge color="#92400e" bg="#fef3c7">Án chỉ đạo</Badge>}
-                        {row.anLoai === "quoc-hoi" && <Badge color="#3730a3" bg="#e0e7ff">Án QH</Badge>}
+                        <div style={{ display: "flex", gap: 4, flexWrap: "wrap", marginTop: 2 }}>
+                          {row.anLoai === "chi-dao" && <Badge color="#92400e" bg="#fef3c7">Án chỉ đạo</Badge>}
+                          {row.anLoai === "quoc-hoi" && <Badge color="#3730a3" bg="#e0e7ff">Án Quốc hội</Badge>}
+                          {row.anLoai === "tvtn" && <Badge color="#065f46" bg="#d1fae5">Án TVTN</Badge>}
+                          {row.anLoai === "tu-hinh" && <Badge color="#991b1b" bg="#fee2e2">Án tử hình</Badge>}
+                        </div>
                       </div>
                     </td>
 
@@ -279,10 +291,18 @@ export function QuanLyKhieuNaiView({
                           <span style={{ color: TEXT, fontWeight: 600 }}>{label1}:</span>{" "}
                           <span style={{ fontWeight: 600, color: TEXT }}>{row.nkn}</span>
                         </span>
-                        <span style={{ fontSize: 11, fontFamily: F }}>
-                          <span style={{ color: TEXT, fontWeight: 600 }}>NĐĐ:</span>{" "}
-                          <span style={{ color: TEXT }}>{row.ndd}</span>
-                        </span>
+                        {row.biCao && (
+                          <span style={{ fontSize: 11, fontFamily: F }}>
+                            <span style={{ color: TEXT, fontWeight: 600 }}>{label2}:</span>{" "}
+                            <span style={{ fontWeight: 600, color: TEXT }}>{row.biCao}</span>
+                          </span>
+                        )}
+                        {row.ndd && (
+                          <span style={{ fontSize: 11, fontFamily: F }}>
+                            <span style={{ color: TEXT, fontWeight: 600 }}>NĐĐ:</span>{" "}
+                            <span style={{ color: TEXT }}>{row.ndd}</span>
+                          </span>
+                        )}
                       </div>
                     </td>
 
