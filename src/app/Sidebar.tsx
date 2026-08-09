@@ -11,6 +11,7 @@ export type View =
   | "giao-tieu-ho-so"
   | "them-ho-so"
   | "phan-cong-ttv"
+  | "phan-cong-tham-phan"
   | "cau-hinh-ttv"
   | "quan-ly-vu-an"
   | "quan-ly-khieu-nai"
@@ -19,7 +20,8 @@ export type View =
   | "quan-ly-vu-xet-xu"
   | "phe-duyet-de-xuat"
   | "an-quoc-hoi"
-  | "an-thoi-hieu";
+  | "an-thoi-hieu"
+  | "phan-cong-tptc";
 
 interface SidebarProps {
   currentView: View;
@@ -236,7 +238,12 @@ export default function Sidebar({ currentView, onNavigate }: SidebarProps) {
         >
           <NavLink label="Tiếp nhận đơn" onClick={() => onNavigate("don-cho-phe-duyet")} sub />
           <NavLink label="Danh sách đơn" onClick={() => onNavigate("don-cho-phe-duyet")} sub />
-          <NavLink label="Phân công thẩm phán" onClick={() => onNavigate("phan-cong-ttv")} sub />
+          <NavLink
+            label="Phân công thẩm phán (4)"
+            active={currentView === "phan-cong-tham-phan"}
+            onClick={() => onNavigate("phan-cong-tham-phan")}
+            sub
+          />
         </NavGroup>
 
         {/* Quản lý án GĐT/TT */}
@@ -256,6 +263,43 @@ export default function Sidebar({ currentView, onNavigate }: SidebarProps) {
             label="Hồ sơ kháng nghị"
             active={currentView === "ho-so-khang-nghi"}
             onClick={() => onNavigate("ho-so-khang-nghi")}
+            sub
+          />
+
+          <NavLink
+            label="Quản lý vụ án"
+            active={currentView === "quan-ly-vu-an"}
+            onClick={() => onNavigate("quan-ly-vu-an")}
+            sub
+          />
+          <NavLink
+            label="Danh sách phân công TTV"
+            active={currentView === "phan-cong-ttv"}
+            onClick={() => onNavigate("phan-cong-ttv")}
+            sub
+          />
+          <NavLink
+            label="Phân công Hội đồng xét xử"
+            active={currentView === "phan-cong-hdxx"}
+            onClick={() => onNavigate("phan-cong-hdxx")}
+            sub
+          />
+          <NavLink
+            label="Quản lý vụ xét xử GĐT"
+            active={currentView === "quan-ly-vu-xet-xu"}
+            onClick={() => onNavigate("quan-ly-vu-xet-xu")}
+            sub
+          />
+          <NavLink
+            label="Quản lý khiếu nại"
+            active={currentView === "quan-ly-khieu-nai"}
+            onClick={() => onNavigate("quan-ly-khieu-nai")}
+            sub
+          />
+          <NavLink
+            label="Danh sách vụ án phân công TPTC"
+            active={currentView === "phan-cong-tptc"}
+            onClick={() => onNavigate("phan-cong-tptc")}
             sub
           />
           {/* Quản lý hồ sơ tử hình (2 tab con: Đơn xin ân giảm & Hồ sơ tử hình) */}
@@ -335,37 +379,6 @@ export default function Sidebar({ currentView, onNavigate }: SidebarProps) {
               </div>
             )}
           </div>
-          <NavLink
-            label="Quản lý vụ án"
-            active={currentView === "quan-ly-vu-an"}
-            onClick={() => onNavigate("quan-ly-vu-an")}
-            sub
-          />
-          <NavLink
-            label="Danh sách phân công TTV"
-            active={currentView === "phan-cong-ttv"}
-            onClick={() => onNavigate("phan-cong-ttv")}
-            sub
-          />
-          <NavLink
-            label="Phân công Hội đồng xét xử"
-            active={currentView === "phan-cong-hdxx"}
-            onClick={() => onNavigate("phan-cong-hdxx")}
-            sub
-          />
-          <NavLink
-            label="Quản lý vụ xét xử GĐT"
-            active={currentView === "quan-ly-vu-xet-xu"}
-            onClick={() => onNavigate("quan-ly-vu-xet-xu")}
-            sub
-          />
-          <NavLink
-            label="Quản lý khiếu nại"
-            active={currentView === "quan-ly-khieu-nai"}
-            onClick={() => onNavigate("quan-ly-khieu-nai")}
-            sub
-          />
-          <NavLink label="Danh sách vụ án phân côn..." onClick={() => onNavigate("quan-ly-vu-an")} sub />
           <NavLink
             label="Án quốc hội"
             active={currentView === "an-quoc-hoi"}

@@ -2071,7 +2071,7 @@ function Cell6() {
   return (
     <div className="content-stretch flex flex-col items-center p-[12px] relative shrink-0 w-[187px]" data-name="Cell">
       <div className="[word-break:break-word] flex flex-col font-['Be_Vietnam_Pro:Bold',sans-serif] justify-center leading-[0] not-italic relative shrink-0 text-[#4b5563] text-[12px] text-center uppercase w-[146px]">
-        <p className="leading-[16px]">THÔNG TIN NHẬN/TRẢ</p>
+        <p className="leading-[16px]">NGÀY DUYỆT TỜ TRÌNH</p>
       </div>
     </div>
   );
@@ -2277,7 +2277,7 @@ function Container88() {
   return (
     <div className="content-stretch flex flex-col items-start relative shrink-0 w-full" data-name="Container">
       <div className="[word-break:break-word] flex flex-col font-['Be_Vietnam_Pro:Regular',sans-serif] justify-center leading-[0] not-italic relative shrink-0 text-[#f97316] text-[12px] w-full">
-              </div>
+      </div>
     </div>
   );
 }
@@ -2658,7 +2658,7 @@ function Container100() {
   return (
     <div className="content-stretch flex flex-col items-start relative shrink-0 w-full" data-name="Container">
       <div className="[word-break:break-word] flex flex-col font-['Be_Vietnam_Pro:Regular',sans-serif] justify-center leading-[0] not-italic relative shrink-0 text-[#f97316] text-[12px] w-full">
-              </div>
+      </div>
     </div>
   );
 }
@@ -2960,7 +2960,7 @@ function Container112() {
   return (
     <div className="content-stretch flex flex-col items-start relative shrink-0 w-full" data-name="Container">
       <div className="[word-break:break-word] flex flex-col font-['Be_Vietnam_Pro:Regular',sans-serif] justify-center leading-[0] not-italic relative shrink-0 text-[#f97316] text-[12px] w-full">
-              </div>
+      </div>
     </div>
   );
 }
@@ -3303,7 +3303,7 @@ function Container125() {
   return (
     <div className="content-stretch flex flex-col items-start relative shrink-0 w-full" data-name="Container">
       <div className="[word-break:break-word] flex flex-col font-['Be_Vietnam_Pro:Regular',sans-serif] justify-center leading-[0] not-italic relative shrink-0 text-[#f97316] text-[12px] w-full">
-              </div>
+      </div>
     </div>
   );
 }

@@ -14,7 +14,7 @@ interface FieldDef {
 
 type RowCell = FieldDef | "diaChi" | "anDacThu" | "thoiHieu" | null;
 
-const SEARCH_ROWS: [RowCell, RowCell, RowCell, RowCell][] = [
+const SEARCH_ROWS: RowCell[][] = [
   [
     { label: "Mã đơn", type: "input", placeholder: "Mã đơn" },
     { label: "Số BA/QĐ", type: "input", placeholder: "Số BA/QĐ" },
@@ -30,30 +30,32 @@ const SEARCH_ROWS: [RowCell, RowCell, RowCell, RowCell][] = [
   [
     "diaChi",
     { label: "Phân loại đơn", type: "select", placeholder: "-- Tất cả --" },
-    { label: "Số CCCD", type: "input", placeholder: "Số CCCD" },
     { label: "Người gửi đơn", type: "input", placeholder: "Người gửi đơn" },
-  ],
-  [
-    { label: "Khoảng thời gian chuyển", type: "dateRange", placeholder: 'Chọn ngày chuyển'},
     { label: "Hình thức đơn", type: "select", placeholder: "-- Tất cả --" },
-    { label: "Số thụ lý", type: "input", placeholder: "Số thụ lý" },
   ],
   [
+    { label: "Khoảng thời gian chuyển", type: "dateRange", placeholder: "Chọn ngày chuyển" },
+    { label: "Số thụ lý", type: "input", placeholder: "Số thụ lý" },
     { label: "Ngày thụ lý", type: "dateRange" },
     { label: "Thụ lý đơn", type: "select", placeholder: "-- Tất cả --" },
-    { label: "Số CV chuyển", type: "input", placeholder: "Số CV chuyển" },
   ],
   [
+    { label: "Số CV chuyển", type: "input", placeholder: "Số CV chuyển" },
     { label: "Ngày CV chuyển", type: "date" },
     { label: "TTV giải quyết đơn", type: "select", placeholder: "-- Tất cả --" },
-    { label: "Loại án", type: "select", placeholder: "-- Tất cả --", options: [...LOAI_AN_OPTIONS] },
     { label: "Giao THS", type: "select", placeholder: "-- Tất cả --" },
   ],
   [
+    { label: "Loại án", type: "select", placeholder: "-- Tất cả --", options: [...LOAI_AN_OPTIONS] },
     { label: "Nơi chuyển", type: "select", placeholder: "-- Tất cả --" },
     { label: "Số tờ trình phân công thẩm phán", type: "input", placeholder: "Số tờ trình phân công thẩm phán" },
     { label: "Ngày tờ trình", type: "date" },
+  ],
+  [
     "thoiHieu",
+    null,
+    null,
+    null,
   ],
 ];
 
@@ -97,7 +99,7 @@ export function SearchFilterPanel({
   const renderField = ({ label, type, placeholder, options }: FieldDef) => (
     <div style={{ display: "flex", flexDirection: "column", minWidth: 0 }}>
       <span style={labelStyle}>{label}</span>
-  
+
       {type === "select" ? (
         <select
           style={selectStyle}
@@ -168,7 +170,7 @@ export function SearchFilterPanel({
               const options = getAnDacThuOptions(userRole, selectedLoaiAn);
               return (
                 <div key={key} style={{ display: "flex", flexDirection: "column", minWidth: 0 }}>
-                  <span style={labelStyle}>Án đặc thù</span>
+                  <span style={labelStyle}>Thuộc án</span>
                   <select style={selectStyle} defaultValue="">
                     <option value="">-- Tất cả --</option>
                     {options.map((o) => (

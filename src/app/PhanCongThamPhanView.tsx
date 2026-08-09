@@ -1,118 +1,167 @@
 import React, { useState } from "react";
-import { Search, RotateCcw, Calendar, ChevronDown, ChevronUp, Printer, Trash2 } from "lucide-react";
+import {
+  Search,
+  RotateCcw,
+  Calendar,
+  ChevronDown,
+  ChevronUp,
+  Printer,
+  X,
+  Users,
+} from "lucide-react";
 import { F, RED, BORDER, TEXT, MUTED, BG, TH_STYLE, TD_STYLE } from "./shared";
+
+const DANH_SACH_THAM_PHAN = [
+  "Lê Thị Thu Hiền",
+  "Nguyễn Văn A",
+  "Trần Văn B",
+  "Phạm Văn C",
+  "Nguyễn Thị Hương",
+  "Vũ Đức Thiện",
+  "Hoàng Ngọc Chiêu",
+];
+
+const LOAI_AN_CHECKBOXES = [
+  "Hình sự",
+  "Dân sự",
+  "Hành chính",
+  "Kinh doanh thương mại",
+  "Hôn nhân gia đình",
+  "Lao động",
+  "Sở hữu trí tuệ",
+  "Phá sản",
+];
+
+interface DonRecord {
+  id: number;
+  soThuLy: string[];
+  moTaDon: string;
+  nguoiDungDon: string;
+  hinhThuc: string;
+  soBA: string;
+  ngayBA: string;
+  toaBA: string;
+  ngayPhanCong: string;
+  thamPhan: string;
+  ghiChu: string;
+  trangThai?: "chua-ngau-nhien" | "chua-chi-dinh" | "da-phan-cong";
+}
+
+const INITIAL_RECORDS: DonRecord[] = [
+  {
+    id: 1,
+    soThuLy: ["Số: 4 - 29/06/2026", "Số: 5 - 29/06/2026"],
+    moTaDon: "Số đơn 2(2 đơn TLM)",
+    nguoiDungDon: "",
+    hinhThuc: "Đơn đề nghị GĐT, TT",
+    soBA: "123",
+    ngayBA: "23/06/2026",
+    toaBA: "Tòa án nhân dân tỉnh Cần Thơ",
+    ngayPhanCong: "23/06/2026",
+    thamPhan: "Lê Thị Thu Hiền",
+    ghiChu: "",
+    trangThai: "chua-chi-dinh",
+  },
+  {
+    id: 2,
+    soThuLy: ["Số: 5 - 29/06/2026"],
+    moTaDon: "Số đơn 5 (1 đơn TLM)",
+    nguoiDungDon: "Chu Văn An",
+    hinhThuc: "Đơn đề nghị GĐT, TT",
+    soBA: "123",
+    ngayBA: "23/06/2026",
+    toaBA: "Tòa án nhân dân tỉnh Cần Thơ",
+    ngayPhanCong: "23/06/2026",
+    thamPhan: "Lê Thị Thu Hiền",
+    ghiChu: "",
+    trangThai: "chua-chi-dinh",
+  },
+  {
+    id: 3,
+    soThuLy: ["Số: 12 - 02/07/2026"],
+    moTaDon: "Số đơn 1 (1 đơn TLM)",
+    nguoiDungDon: "Trần Thị Mai",
+    hinhThuc: "Đơn đề nghị GĐT, TT",
+    soBA: "88/2026/HS-PT",
+    ngayBA: "15/06/2026",
+    toaBA: "Tòa án nhân dân TP Đà Nẵng",
+    ngayPhanCong: "-",
+    thamPhan: "-",
+    ghiChu: "",
+    trangThai: "chua-ngau-nhien",
+  },
+  {
+    id: 4,
+    soThuLy: ["Số: 18 - 05/07/2026"],
+    moTaDon: "Số đơn 3 (2 đơn TLM)",
+    nguoiDungDon: "Đỗ Quốc Việt",
+    hinhThuc: "Đơn đề nghị GĐT, TT",
+    soBA: "102/2026/DS-PT",
+    ngayBA: "20/06/2026",
+    toaBA: "Tòa án nhân dân TP Hà Nội",
+    ngayPhanCong: "-",
+    thamPhan: "-",
+    ghiChu: "",
+    trangThai: "chua-ngau-nhien",
+  },
+];
 
 export function PhanCongThamPhanView() {
   const [activeTab, setActiveTab] = useState<"ngau-nhien" | "chi-dinh" | "ket-qua">("chi-dinh");
-  const [filterType, setFilterType] = useState<"tat-ca" | "bac-3" | "toi-cao">("toi-cao");
-  const [hinhThucFilter, setHinhThucFilter] = useState("don-tpb3");
+  const [filterJudgeType, setFilterJudgeType] = useState<"tat-ca" | "bac-3" | "toi-cao">("toi-cao");
   const [filterExpanded, setFilterExpanded] = useState(true);
 
-  // Selected judge in table header toolbar
+  // Search Filter Form states
+  const [fTenToaAn, setFTenToaAn] = useState("Tòa án nhân dân tối cao");
+  const [fNhapDonTuNgay, setFNhapDonTuNgay] = useState("");
+  const [fNhapDonDenNgay, setFNhapDonDenNgay] = useState("");
+  const [fSoBA, setFSoBA] = useState("");
+  const [fHinhThuc, setFHinhThuc] = useState("don-tpb3-gq");
+  const [fSoThuLy, setFSoThuLy] = useState("");
+  const [fNgayTLTuNgay, setFNgayTLTuNgay] = useState("");
+  const [fNgayTLDenNgay, setFNgayTLDenNgay] = useState("");
+  const [fNguoiNhapDon, setFNguoiNhapDon] = useState("");
+  const [selectedLoaiAn, setSelectedLoaiAn] = useState<string[]>([]);
+
+  // Toolbar & selections
   const [bulkJudge, setBulkJudge] = useState("");
   const [selectedRowIds, setSelectedRowIds] = useState<number[]>([1]);
 
-  // Sample Data matching screenshot exactly
-  const [records, setRecords] = useState([
-    {
-      id: 1,
-      soThuLy: ["Số: 4 - 29/06/2026", "Số: 5 - 29/06/2026"],
-      moTaDon: "Số đơn 2(2 đơn TLM)",
-      nguoiDungDon: "",
-      hinhThuc: "Đơn đề nghị GĐT, TT",
-      soBA: "123",
-      ngayBA: "23/06/2026",
-      toaBA: "Tòa án nhân dân tỉnh Cần Thơ",
-      ngayPhanCong: "23/06/2026",
-      thamPhan: "Lê Thị Thu Hiền",
-      ghiChu: "",
-    },
-    {
-      id: 2,
-      soThuLy: ["Số: 5 - 29/06/2026"],
-      moTaDon: "Số đơn 5 (1 đơn TLM)",
-      nguoiDungDon: "Chu Văn An",
-      hinhThuc: "Đơn đề nghị GĐT, TT",
-      soBA: "123",
-      ngayBA: "23/06/2026",
-      toaBA: "Tòa án nhân dân tỉnh Cần Thơ",
-      ngayPhanCong: "23/06/2026",
-      thamPhan: "Lê Thị Thu Hiền",
-      ghiChu: "",
-    },
-  ]);
+  // Data lists
+  const [records, setRecords] = useState<DonRecord[]>(INITIAL_RECORDS);
 
-  const [congVanRecords, setCongVanRecords] = useState([
-    {
-      id: 101,
-      soThuLy: ["Số: 12/2026/TL-CV - 15/07/2026"],
-      moTaDon: "Công văn trao đổi",
-      soCongVan: "CV-2026/088",
-      ngayCongVan: "10/07/2026",
-      donViGui: "Viện kiểm sát nhân dân tối cao",
-      trichYeu: "V/v trao đổi thông tin giải quyết hồ sơ vụ án",
-      soBA: "123",
-      ngayBA: "23/06/2026",
-      toaBA: "Tòa án nhân dân tỉnh Cần Thơ",
-      ngayPhanCong: "23/06/2026",
-      thamPhan: "Lê Thị Thu Hiền",
-      ghiChu: "",
-    },
-    {
-      id: 102,
-      soThuLy: ["Số: 15/2026/TL-CV - 18/07/2026"],
-      moTaDon: "Công văn trao đổi",
-      soCongVan: "CV-2026/092",
-      ngayCongVan: "12/07/2026",
-      donViGui: "Tòa án nhân dân tỉnh Bắc Ninh",
-      trichYeu: "V/v phối hợp xác minh chứng cứ",
-      soBA: "456",
-      ngayBA: "25/06/2026",
-      toaBA: "Tòa án nhân dân tỉnh Bắc Ninh",
-      ngayPhanCong: "24/06/2026",
-      thamPhan: "Nguyễn Văn A",
-      ghiChu: "",
-    },
-  ]);
+  // Modal danh sách thẩm phán
+  const [showJudgeListModal, setShowJudgeListModal] = useState(false);
 
-  const [tuHinhRecords, setTuHinhRecords] = useState([
-    {
-      id: 201,
-      soThuLy: ["Số: 08/2026/TL-TH - 20/07/2026"],
-      moTaDon: "Hồ sơ tử hình",
-      soLuongBiAn: "02 bị án",
-      danhSachBiAn: "Nguyễn Văn Hùng, Lê Văn Nam",
-      hinhThuc: "Hồ sơ tử hình",
-      soBA: "158/2026/HS-ST",
-      ngayBA: "15/06/2026",
-      toaBA: "Tòa án nhân dân tỉnh Nghệ An",
-      ngayPhanCong: "20/07/2026",
-      thamPhan: "Lê Thị Thu Hiền",
-      ghiChu: "",
-    },
-    {
-      id: 202,
-      soThuLy: ["Số: 14/2026/TL-TH - 22/07/2026"],
-      moTaDon: "Hồ sơ tử hình",
-      soLuongBiAn: "01 bị án",
-      danhSachBiAn: "Trần Đình Trọng",
-      hinhThuc: "Hồ sơ tử hình",
-      soBA: "99/2026/HS-ST",
-      ngayBA: "10/05/2026",
-      toaBA: "Tòa án nhân dân tỉnh Thanh Hóa",
-      ngayPhanCong: "22/07/2026",
-      thamPhan: "Nguyễn Văn A",
-      ghiChu: "",
-    },
-  ]);
+  const toggleLoaiAn = (item: string) => {
+    setSelectedLoaiAn((prev) =>
+      prev.includes(item) ? prev.filter((i) => i !== item) : [...prev, item]
+    );
+  };
 
-  const isCongVanMode = hinhThucFilter === "cong-van-trao-doi";
-  const isTuHinhMode = hinhThucFilter === "ho-so-tu-hinh";
-  const currentRecords = isCongVanMode ? congVanRecords : isTuHinhMode ? tuHinhRecords : records;
+  const handleResetFilters = () => {
+    setFTenToaAn("Tòa án nhân dân tối cao");
+    setFNhapDonTuNgay("");
+    setFNhapDonDenNgay("");
+    setFSoBA("");
+    setFHinhThuc("don-tpb3-gq");
+    setFSoThuLy("");
+    setFNgayTLTuNgay("");
+    setFNgayTLDenNgay("");
+    setFNguoiNhapDon("");
+    setSelectedLoaiAn([]);
+  };
+
+  const currentRecords =
+    activeTab === "ngau-nhien"
+      ? records.filter((r) => r.trangThai === "chua-ngau-nhien")
+      : activeTab === "chi-dinh"
+      ? records.filter((r) => r.trangThai === "chua-chi-dinh")
+      : records.filter((r) => r.trangThai === "da-phan-cong");
 
   const toggleSelectRow = (id: number) => {
-    setSelectedRowIds(prev =>
-      prev.includes(id) ? prev.filter(item => item !== id) : [...prev, id]
+    setSelectedRowIds((prev) =>
+      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
     );
   };
 
@@ -121,440 +170,664 @@ export function PhanCongThamPhanView() {
       alert("Vui lòng chọn ít nhất 1 đơn để phân công!");
       return;
     }
-    if (!bulkJudge) {
+    if (!bulkJudge && activeTab === "chi-dinh") {
       alert("Vui lòng chọn Thẩm phán để phân công!");
       return;
     }
-    setRecords(prev =>
-      prev.map(r => selectedRowIds.includes(r.id) ? { ...r, thamPhan: bulkJudge } : r)
+
+    const assignedJudge =
+      bulkJudge || DANH_SACH_THAM_PHAN[Math.floor(Math.random() * DANH_SACH_THAM_PHAN.length)];
+
+    setRecords((prev) =>
+      prev.map((r) =>
+        selectedRowIds.includes(r.id)
+          ? {
+              ...r,
+              thamPhan: assignedJudge,
+              ngayPhanCong: "23/06/2026",
+              trangThai: "da-phan-cong",
+            }
+          : r
+      )
     );
-    alert(`Đã phân công chỉ định thành công ${selectedRowIds.length} đơn cho Thẩm phán ${bulkJudge}!`);
+
+    setSelectedRowIds([]);
+    alert(`Đã phân công thành công ${selectedRowIds.length} đơn cho Thẩm phán ${assignedJudge}!`);
+    setActiveTab("ket-qua");
   };
 
+  const handleDeleteSelected = () => {
+    if (selectedRowIds.length === 0) {
+      alert("Chưa chọn dòng nào để xóa!");
+      return;
+    }
+    if (confirm(`Bạn có chắc chắn muốn xóa ${selectedRowIds.length} đơn đã chọn khỏi danh sách?`)) {
+      setRecords((prev) => prev.filter((r) => !selectedRowIds.includes(r.id)));
+      setSelectedRowIds([]);
+    }
+  };
+
+  const countNgauNhien = records.filter((r) => r.trangThai === "chua-ngau-nhien").length;
+  const countChiDinh = records.filter((r) => r.trangThai === "chua-chi-dinh").length;
+
   const inputStyle: React.CSSProperties = {
-    width: "100%", padding: "7px 11px", fontSize: 12,
-    border: `1px solid ${BORDER}`, borderRadius: 4,
-    fontFamily: F, color: TEXT, outline: "none", background: "#fff",
+    width: "100%",
+    padding: "7px 11px",
+    fontSize: 12,
+    border: `1px solid ${BORDER}`,
+    borderRadius: 4,
+    fontFamily: F,
+    color: TEXT,
+    outline: "none",
+    background: "#fff",
     boxSizing: "border-box",
+  };
+
+  const labelStyle: React.CSSProperties = {
+    fontSize: 11,
+    fontWeight: 500,
+    color: MUTED,
+    marginBottom: 4,
+    fontFamily: F,
+    display: "block",
   };
 
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "100%", overflowY: "auto", background: "#f9fafb", fontFamily: F }}>
-
       {/* Breadcrumb Header */}
-      <div style={{ padding: "10px 24px", fontSize: 12, color: TEXT, fontFamily: F, background: "#fff", borderBottom: `1px solid ${BORDER}` }}>
-        Trang chủ &nbsp;/&nbsp; Quản lý đơn &nbsp;/&nbsp; <b style={{ color: TEXT }}>Phân công thẩm phán</b>
+      <div style={{ padding: "10px 24px", fontSize: 12, color: MUTED, fontFamily: F, background: "#fff", borderBottom: `1px solid ${BORDER}` }}>
+        <span>Trang chủ</span> &nbsp;/&nbsp; <span>Quản lý đơn</span> &nbsp;/&nbsp; <b style={{ color: TEXT }}>Phân công thẩm phán</b>
       </div>
 
-      {/* Page Title */}
-      <div style={{ padding: "16px 24px 8px 24px" }}>
-        <h1 style={{ fontSize: 20, fontWeight: 700, color: TEXT, margin: 0, fontFamily: F }}>Phân công thẩm phán</h1>
-      </div>
-
-      {/* Tabs */}
-      <div style={{ display: "flex", borderBottom: `1px solid ${BORDER}`, background: "#f9fafb", padding: "0 24px", gap: 32 }}>
-        {[
-          { id: "ngau-nhien", label: "DS chưa phân công ngẫu nhiên (2)" },
-          { id: "chi-dinh", label: "DS chưa phân công chỉ định (2)" },
-          { id: "ket-qua", label: "Quản lý kết quả phân công" },
-        ].map((tab) => {
-          const isActive = activeTab === tab.id;
-          return (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id as any)}
-              style={{
-                padding: "12px 0", fontSize: 13, fontFamily: F, fontWeight: isActive ? 700 : 500,
-                background: "none", border: "none", cursor: "pointer",
-                color: isActive ? RED : TEXT,
-                borderBottom: isActive ? `2.5px solid ${RED}` : "2.5px solid transparent",
-                marginBottom: -1, whiteSpace: "nowrap", transition: "all 0.15s",
-              }}
-            >
-              {tab.label}
-            </button>
-          );
-        })}
-      </div>
-
-      {/* Content Container */}
       <div style={{ padding: "20px 24px", display: "flex", flexDirection: "column", gap: 16 }}>
+        {/* Page Title */}
+        <h1 style={{ fontSize: 18, fontWeight: 700, color: TEXT, margin: 0, fontFamily: F }}>
+          Phân công thẩm phán
+        </h1>
 
-        {/* Filter Card */}
-        <div style={{ background: "#fff", borderRadius: 6, border: `1px solid ${BORDER}`, padding: "16px 20px", display: "flex", flexDirection: "column", gap: 14 }}>
+        {/* Main Tabs */}
+        <div style={{ display: "flex", borderBottom: `1px solid ${BORDER}`, background: "transparent", gap: 32 }}>
+          <button
+            onClick={() => {
+              setActiveTab("ngau-nhien");
+              setSelectedRowIds([]);
+            }}
+            style={{
+              padding: "8px 4px 12px",
+              background: "none",
+              border: "none",
+              borderBottom: activeTab === "ngau-nhien" ? `2.5px solid ${RED}` : "2.5px solid transparent",
+              color: activeTab === "ngau-nhien" ? RED : MUTED,
+              fontWeight: activeTab === "ngau-nhien" ? 700 : 500,
+              fontSize: 13,
+              cursor: "pointer",
+              fontFamily: F,
+            }}
+          >
+            DS chưa phân công ngẫu nhiên ({countNgauNhien})
+          </button>
 
-          {/* Radio Row */}
-          <div style={{ display: "flex", alignItems: "center", gap: 28, fontSize: 13, fontFamily: F }}>
-            {[
-              { id: "tat-ca", label: "Tất cả" },
-              { id: "bac-3", label: "Thẩm phán bậc 3" },
-              { id: "toi-cao", label: "Thẩm phán tối cao" },
-            ].map(item => {
-              const isSelected = filterType === item.id;
-              return (
-                <label
-                  key={item.id}
-                  style={{
-                    display: "flex", alignItems: "center", gap: 8, cursor: "pointer",
-                    fontWeight: isSelected ? 700 : 500,
-                    color: isSelected ? RED : TEXT,
-                    fontFamily: F,
-                    fontSize: 13,
-                  }}
-                >
-                  <input
-                    type="radio"
-                    name="filterType"
-                    checked={isSelected}
-                    onChange={() => setFilterType(item.id as any)}
-                    style={{ accentColor: RED, cursor: "pointer" }}
-                  />
-                  {item.label}
-                </label>
-              );
-            })}
+          <button
+            onClick={() => {
+              setActiveTab("chi-dinh");
+              setSelectedRowIds([1]);
+            }}
+            style={{
+              padding: "8px 4px 12px",
+              background: "none",
+              border: "none",
+              borderBottom: activeTab === "chi-dinh" ? `2.5px solid ${RED}` : "2.5px solid transparent",
+              color: activeTab === "chi-dinh" ? RED : MUTED,
+              fontWeight: activeTab === "chi-dinh" ? 700 : 500,
+              fontSize: 13,
+              cursor: "pointer",
+              fontFamily: F,
+            }}
+          >
+            DS chưa phân công chỉ định ({countChiDinh})
+          </button>
+
+          <button
+            onClick={() => {
+              setActiveTab("ket-qua");
+              setSelectedRowIds([]);
+            }}
+            style={{
+              padding: "8px 4px 12px",
+              background: "none",
+              border: "none",
+              borderBottom: activeTab === "ket-qua" ? `2.5px solid ${RED}` : "2.5px solid transparent",
+              color: activeTab === "ket-qua" ? RED : MUTED,
+              fontWeight: activeTab === "ket-qua" ? 700 : 500,
+              fontSize: 13,
+              cursor: "pointer",
+              fontFamily: F,
+            }}
+          >
+            Quản lý kết quả phân công
+          </button>
+        </div>
+
+        {/* Search Filter Panel */}
+        <div style={{ background: "#fff", border: `1px solid ${BORDER}`, borderRadius: 8, padding: "16px 20px", boxShadow: "0 1px 2px rgba(0,0,0,0.03)" }}>
+          {/* Radio filter judge level */}
+          <div style={{ display: "flex", alignItems: "center", gap: 32, marginBottom: 16 }}>
+            <label style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, fontWeight: 500, color: TEXT, cursor: "pointer" }}>
+              <input
+                type="radio"
+                name="filter-judge-level"
+                checked={filterJudgeType === "tat-ca"}
+                onChange={() => setFilterJudgeType("tat-ca")}
+                style={{ accentColor: RED, cursor: "pointer", width: 16, height: 16 }}
+              />
+              Tất cả
+            </label>
+
+            <label style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, fontWeight: 500, color: TEXT, cursor: "pointer" }}>
+              <input
+                type="radio"
+                name="filter-judge-level"
+                checked={filterJudgeType === "bac-3"}
+                onChange={() => setFilterJudgeType("bac-3")}
+                style={{ accentColor: RED, cursor: "pointer", width: 16, height: 16 }}
+              />
+              Thẩm phán bậc 3
+            </label>
+
+            <label style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, fontWeight: 600, color: TEXT, cursor: "pointer" }}>
+              <input
+                type="radio"
+                name="filter-judge-level"
+                checked={filterJudgeType === "toi-cao"}
+                onChange={() => setFilterJudgeType("toi-cao")}
+                style={{ accentColor: RED, cursor: "pointer", width: 16, height: 16 }}
+              />
+              Thẩm phán tối cao
+            </label>
           </div>
 
-          {/* Form Fields Grid */}
           {filterExpanded && (
-            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-
-              {/* Line 1 */}
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 16 }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+              {/* Row 1: Tên tòa án | Nhập đơn từ ngày đến ngày | Số BA/QĐ */}
+              <div style={{ display: "grid", gridTemplateColumns: "1.8fr 1.2fr 1fr", gap: "10px 16px" }}>
                 <div>
-                  <div style={{ fontSize: 12, color: TEXT, marginBottom: 4, fontFamily: F }}>Tên tòa án</div>
-                  <input value="Tòa án nhân dân tối cao" readOnly style={{ ...inputStyle, background: "#f8fafc", color: TEXT }} />
+                  <label style={labelStyle}>Tên tòa án</label>
+                  <input
+                    value={fTenToaAn}
+                    onChange={(e) => setFTenToaAn(e.target.value)}
+                    style={{ ...inputStyle, background: "#fafafa" }}
+                  />
                 </div>
+
                 <div>
-                  <div style={{ fontSize: 12, color: TEXT, marginBottom: 4, fontFamily: F }}>Nhập đơn từ ngày đến ngày</div>
+                  <label style={labelStyle}>Nhập đơn từ ngày đến ngày</label>
                   <div style={{ position: "relative" }}>
-                    <input placeholder="Vui lòng chọn" style={inputStyle} />
-                    <Calendar size={14} color={TEXT} style={{ position: "absolute", right: 10, top: 9, pointerEvents: "none" }} />
+                    <input
+                      placeholder="Vui lòng chọn"
+                      value={fNhapDonTuNgay}
+                      onChange={(e) => setFNhapDonTuNgay(e.target.value)}
+                      style={inputStyle}
+                    />
+                    <Calendar size={14} color={MUTED} style={{ position: "absolute", right: 8, top: "50%", transform: "translateY(-50%)", pointerEvents: "none" }} />
                   </div>
                 </div>
+
                 <div>
-                  <div style={{ fontSize: 12, color: TEXT, marginBottom: 4, fontFamily: F }}>Số BA/QĐ</div>
-                  <input placeholder="Nhập dữ liệu" style={inputStyle} />
+                  <label style={labelStyle}>Số BA/QĐ</label>
+                  <input
+                    placeholder="Nhập dữ liệu"
+                    value={fSoBA}
+                    onChange={(e) => setFSoBA(e.target.value)}
+                    style={inputStyle}
+                  />
                 </div>
               </div>
 
-              {/* Line 2 */}
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: 16 }}>
+              {/* Row 2: Hình thức | Số thụ lý | Ngày thụ lý từ ngày đến ngày | Người nhập đơn */}
+              <div style={{ display: "grid", gridTemplateColumns: "1.3fr 1fr 1.2fr 1fr", gap: "10px 16px" }}>
                 <div>
-                  <div style={{ fontSize: 12, color: TEXT, marginBottom: 4, fontFamily: F }}>Hình thức</div>
+                  <label style={labelStyle}>Hình thức</label>
                   <select
-                    value={hinhThucFilter}
-                    onChange={e => setHinhThucFilter(e.target.value)}
+                    value={fHinhThuc}
+                    onChange={(e) => setFHinhThuc(e.target.value)}
                     style={inputStyle}
                   >
-                    <option value="don-tpb3">Đơn TPB3 GQ cần phân công TPTC</option>
-                    <option value="ho-so-tu-hinh">Hồ sơ tử hình</option>
+                    <option value="don-tpb3-gq">Đơn TPB3 GQ cần phân công TPTC</option>
+                    <option value="don-de-nghi-gdt">Đơn đề nghị GĐT, TT</option>
                     <option value="cong-van-trao-doi">Công văn trao đổi</option>
+                    <option value="ho-so-tu-hinh">Hồ sơ tử hình</option>
                   </select>
                 </div>
+
                 <div>
-                  <div style={{ fontSize: 12, color: TEXT, marginBottom: 4, fontFamily: F }}>Số thụ lý</div>
-                  <input placeholder="nhập dữ liệu" style={inputStyle} />
+                  <label style={labelStyle}>Số thụ lý</label>
+                  <input
+                    placeholder="nhập dữ liệu"
+                    value={fSoThuLy}
+                    onChange={(e) => setFSoThuLy(e.target.value)}
+                    style={inputStyle}
+                  />
                 </div>
+
                 <div>
-                  <div style={{ fontSize: 12, color: TEXT, marginBottom: 4, fontFamily: F }}>Ngày thụ lý từ ngày đến ngày</div>
+                  <label style={labelStyle}>Ngày thụ lý từ ngày đến ngày</label>
                   <div style={{ position: "relative" }}>
-                    <input placeholder="Vui lòng chọn" style={inputStyle} />
-                    <Calendar size={14} color={TEXT} style={{ position: "absolute", right: 10, top: 9, pointerEvents: "none" }} />
+                    <input
+                      placeholder="Vui lòng chọn"
+                      value={fNgayTLTuNgay}
+                      onChange={(e) => setFNgayTLTuNgay(e.target.value)}
+                      style={inputStyle}
+                    />
+                    <Calendar size={14} color={MUTED} style={{ position: "absolute", right: 8, top: "50%", transform: "translateY(-50%)", pointerEvents: "none" }} />
                   </div>
                 </div>
+
                 <div>
-                  <div style={{ fontSize: 12, color: TEXT, marginBottom: 4, fontFamily: F }}>Người nhập đơn</div>
-                  <select style={inputStyle}>
+                  <label style={labelStyle}>Người nhập đơn</label>
+                  <select
+                    value={fNguoiNhapDon}
+                    onChange={(e) => setFNguoiNhapDon(e.target.value)}
+                    style={inputStyle}
+                  >
                     <option value="">Vui lòng chọn</option>
+                    <option value="Nguyễn Văn Tiến">Nguyễn Văn Tiến</option>
+                    <option value="Lê Thị Thu Hiền">Lê Thị Thu Hiền</option>
+                    <option value="Trần Văn B">Trần Văn B</option>
                   </select>
                 </div>
               </div>
 
-              {/* Line 3: Loại án Checkboxes */}
+              {/* Row 3: Loại án Checkboxes */}
               <div>
-                <div style={{ fontSize: 12, color: TEXT, marginBottom: 6, fontFamily: F }}>Loại án</div>
-                <div style={{ display: "flex", flexWrap: "wrap", gap: 18, fontSize: 12, color: TEXT, fontFamily: F }}>
-                  {["Hình sự", "Dân sự", "Hành chính", "Kinh doanh thương mại", "Hôn nhân gia đình", "Lao động", "Sở hữu trí tuệ", "Phá sản"].map(item => (
-                    <label key={item} style={{ display: "flex", alignItems: "center", gap: 6, cursor: "pointer", fontFamily: F, fontSize: 12, color: TEXT, fontWeight: 400 }}>
-                      <input type="checkbox" style={{ accentColor: RED, cursor: "pointer" }} />
-                      {item}
-                    </label>
-                  ))}
+                <label style={labelStyle}>Loại án</label>
+                <div style={{ display: "flex", flexDirection: "column", gap: 8, marginTop: 4 }}>
+                  {/* Row 1 checkboxes */}
+                  <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 20 }}>
+                    {LOAI_AN_CHECKBOXES.slice(0, 5).map((item) => (
+                      <label key={item} style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: TEXT, cursor: "pointer" }}>
+                        <input
+                          type="checkbox"
+                          checked={selectedLoaiAn.includes(item)}
+                          onChange={() => toggleLoaiAn(item)}
+                          style={{ cursor: "pointer" }}
+                        />
+                        {item}
+                      </label>
+                    ))}
+                  </div>
+
+                  {/* Row 2 checkboxes */}
+                  <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 20 }}>
+                    {LOAI_AN_CHECKBOXES.slice(5).map((item) => (
+                      <label key={item} style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: TEXT, cursor: "pointer" }}>
+                        <input
+                          type="checkbox"
+                          checked={selectedLoaiAn.includes(item)}
+                          onChange={() => toggleLoaiAn(item)}
+                          style={{ cursor: "pointer" }}
+                        />
+                        {item}
+                      </label>
+                    ))}
+                  </div>
                 </div>
               </div>
-
             </div>
           )}
 
           {/* Filter Footer Actions */}
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", paddingTop: 4 }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: 14, paddingTop: 4 }}>
             <button
-              onClick={() => alert("Mở danh sách thẩm phán")}
-              style={{ background: "none", border: "none", color: "#2563eb", fontSize: 12, fontFamily: F, cursor: "pointer", padding: 0 }}
+              onClick={() => setShowJudgeListModal(true)}
+              style={{
+                background: "none",
+                border: "none",
+                color: "#2563eb",
+                fontSize: 13,
+                cursor: "pointer",
+                padding: 0,
+                fontFamily: F,
+                textDecoration: "none",
+                fontWeight: 500,
+              }}
             >
               Danh sách thẩm phán
             </button>
 
             <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
               <button
-                onClick={() => setFilterExpanded(v => !v)}
-                style={{ background: "none", border: "none", color: "#2563eb", fontSize: 12, fontFamily: F, cursor: "pointer", display: "flex", alignItems: "center", gap: 4 }}
+                onClick={() => setFilterExpanded(!filterExpanded)}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 4,
+                  background: "none",
+                  border: "none",
+                  cursor: "pointer",
+                  fontSize: 12,
+                  color: "#2563eb",
+                  fontFamily: F,
+                  padding: "6px 8px",
+                  fontWeight: 500,
+                }}
               >
                 {filterExpanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
                 {filterExpanded ? "Thu gọn" : "Mở rộng"}
               </button>
 
               <button
+                onClick={() => alert("Đang tìm kiếm đơn theo bộ lọc...")}
                 style={{
-                  display: "flex", alignItems: "center", gap: 6,
-                  padding: "7px 18px", background: RED, color: "#fff",
-                  border: "none", borderRadius: 4, cursor: "pointer",
-                  fontSize: 12, fontWeight: 700, fontFamily: F,
-                }}>
-                <Search size={14} /> Tìm kiếm
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 6,
+                  padding: "6px 18px",
+                  background: RED,
+                  color: "#fff",
+                  border: "none",
+                  borderRadius: 4,
+                  fontSize: 12,
+                  fontWeight: 600,
+                  cursor: "pointer",
+                  fontFamily: F,
+                }}
+              >
+                <Search size={13} /> Tìm kiếm
               </button>
 
               <button
+                onClick={handleResetFilters}
                 style={{
-                  display: "flex", alignItems: "center", gap: 6,
-                  padding: "7px 16px", background: "#fff", color: "#374151",
-                  border: `1px solid ${BORDER}`, borderRadius: 4, cursor: "pointer",
-                  fontSize: 12, fontFamily: F,
-                }}>
-                <RotateCcw size={14} /> Xóa bộ lọc
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 6,
+                  padding: "6px 14px",
+                  background: "#fff",
+                  color: TEXT,
+                  border: `1px solid ${BORDER}`,
+                  borderRadius: 4,
+                  fontSize: 12,
+                  cursor: "pointer",
+                  fontFamily: F,
+                }}
+              >
+                <RotateCcw size={13} /> Xóa bộ lọc
               </button>
             </div>
           </div>
-
         </div>
 
         {/* Table Header Toolbar */}
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
-          <div style={{ fontSize: 12, fontFamily: F }}>
-            Đã chọn <b style={{ color: TEXT }}>{selectedRowIds.length}</b> mục
+          <div style={{ fontSize: 13, color: MUTED, fontFamily: F }}>
+            Đã chọn {selectedRowIds.length} mục
           </div>
 
           <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            {activeTab !== "ngau-nhien" && (
-              <>
-                <select
-                  value={bulkJudge}
-                  onChange={e => setBulkJudge(e.target.value)}
-                  style={{ ...inputStyle, width: 170 }}
-                >
-                  <option value="">-- Chọn thẩm phán --</option>
-                  <option value="Lê Thị Thu Hiền">Lê Thị Thu Hiền</option>
-                  <option value="Nguyễn Văn A">Nguyễn Văn A</option>
-                  <option value="Trần Văn B">Trần Văn B</option>
-                  <option value="Phạm Văn C">Phạm Văn C</option>
-                </select>
-
-                <button
-                  onClick={handleBulkAssign}
-                  style={{
-                    padding: "7px 16px", background: RED, color: "#fff",
-                    border: "none", borderRadius: 4, cursor: "pointer",
-                    fontSize: 12, fontWeight: 700, fontFamily: F,
-                  }}>
-                  Phân công chỉ định ({selectedRowIds.length} đơn)
-                </button>
-              </>
+            {activeTab === "chi-dinh" && (
+              <select
+                value={bulkJudge}
+                onChange={(e) => setBulkJudge(e.target.value)}
+                style={{ ...inputStyle, width: 170, padding: "6px 10px" }}
+              >
+                <option value="">-- Chọn thẩm phán --</option>
+                {DANH_SACH_THAM_PHAN.map((tp) => (
+                  <option key={tp} value={tp}>{tp}</option>
+                ))}
+              </select>
             )}
 
-            {activeTab === "ngau-nhien" && (
+            {activeTab === "chi-dinh" ? (
               <button
-                onClick={() => alert(`Đã phân công ngẫu nhiên thành công ${selectedRowIds.length} đơn!`)}
+                onClick={handleBulkAssign}
                 style={{
-                  padding: "7px 16px", background: RED, color: "#fff",
-                  border: "none", borderRadius: 4, cursor: "pointer",
-                  fontSize: 12, fontWeight: 700, fontFamily: F,
-                }}>
+                  padding: "7px 18px",
+                  background: RED,
+                  color: "#fff",
+                  border: "none",
+                  borderRadius: 4,
+                  cursor: "pointer",
+                  fontSize: 12,
+                  fontWeight: 700,
+                  fontFamily: F,
+                }}
+              >
+                Phân công chỉ định ({selectedRowIds.length} đơn)
+              </button>
+            ) : activeTab === "ngau-nhien" ? (
+              <button
+                onClick={handleBulkAssign}
+                style={{
+                  padding: "7px 18px",
+                  background: RED,
+                  color: "#fff",
+                  border: "none",
+                  borderRadius: 4,
+                  cursor: "pointer",
+                  fontSize: 12,
+                  fontWeight: 700,
+                  fontFamily: F,
+                }}
+              >
                 Phân công ngẫu nhiên ({selectedRowIds.length} đơn)
               </button>
-            )}
+            ) : null}
 
             <button
+              onClick={() => window.print()}
               style={{
-                display: "flex", alignItems: "center", gap: 6,
-                padding: "7px 16px", background: "#fff", color: TEXT,
-                border: `1px solid ${BORDER}`, borderRadius: 4, cursor: "pointer",
-                fontSize: 12, fontFamily: F,
-              }}>
+                display: "flex",
+                alignItems: "center",
+                gap: 6,
+                padding: "7px 16px",
+                background: "#fff",
+                color: TEXT,
+                border: `1px solid ${BORDER}`,
+                borderRadius: 4,
+                cursor: "pointer",
+                fontSize: 12,
+                fontFamily: F,
+                fontWeight: 500,
+              }}
+            >
               <Printer size={14} /> In danh sách
             </button>
 
             <button
-              onClick={() => {
-                if (selectedRowIds.length === 0) alert("Chưa chọn dòng nào!");
-                else {
-                  setRecords(prev => prev.filter(r => !selectedRowIds.includes(r.id)));
-                  setSelectedRowIds([]);
-                }
-              }}
+              onClick={handleDeleteSelected}
               style={{
-                display: "flex", alignItems: "center", gap: 4,
-                background: "none", border: "none", color: "#2563eb",
-                cursor: "pointer", fontSize: 12, fontFamily: F,
-              }}>
-              <RotateCcw size={14} /> Xóa
+                display: "flex",
+                alignItems: "center",
+                gap: 6,
+                padding: "7px 14px",
+                background: "#fff",
+                color: "#2563eb",
+                border: `1px solid ${BORDER}`,
+                borderRadius: 4,
+                cursor: "pointer",
+                fontSize: 12,
+                fontFamily: F,
+              }}
+            >
+              <RotateCcw size={13} /> Xóa
             </button>
           </div>
         </div>
 
         {/* Data Table */}
-        <div style={{ background: "#fff", borderRadius: 6, border: `1px solid ${BORDER}`, overflow: "hidden" }}>
-          <table style={{ width: "100%", borderCollapse: "collapse", tableLayout: "fixed" }}>
-            <thead>
-              <tr style={{ background: BG }}>
-                <th style={{ ...TH_STYLE, width: 40, textAlign: "center" }}>
-                  <input
-                    type="checkbox"
-                    checked={currentRecords.length > 0 && selectedRowIds.length === currentRecords.length}
-                    onChange={(e) => {
-                      if (e.target.checked) setSelectedRowIds(currentRecords.map(r => r.id));
-                      else setSelectedRowIds([]);
-                    }}
-                  />
-                </th>
-                <th style={{ ...TH_STYLE, width: 45, textAlign: "center" }}>STT</th>
-                <th style={{ ...TH_STYLE, width: 220 }}>{isTuHinhMode ? "THÔNG TIN BẢN ÁN ĐỀ NGHỊ" : "THÔNG TIN THỤ LÝ"}</th>
-                {isCongVanMode ? (
-                  <th style={{ ...TH_STYLE, width: 380 }}>THÔNG TIN CÔNG VĂN</th>
-                ) : isTuHinhMode ? (
-                  <th style={{ ...TH_STYLE, width: 380 }}>SỐ LƯỢNG BỊ ÁN TỬ HÌNH</th>
-                ) : (
-                  <>
-                    <th style={{ ...TH_STYLE, width: 220 }}>THÔNG TIN NGƯỜI ĐỨNG ĐƠN</th>
-                    <th style={{ ...TH_STYLE, width: 240 }}>THÔNG TIN BA/QĐ ĐỀ NGHỊ GĐT,TT</th>
-                  </>
-                )}
-                <th style={{ ...TH_STYLE, width: 130, textAlign: "center" }}>NGÀY PHÂN CÔNG</th>
-                <th style={{ ...TH_STYLE, width: 170 }}>THẨM PHÁN</th>
-                <th style={{ ...TH_STYLE, width: 160 }}>GHI CHÚ</th>
-              </tr>
-            </thead>
-            <tbody>
-              {currentRecords.map((r, idx) => (
-                <tr
-                  key={r.id}
-                  style={{ background: idx % 2 === 0 ? "#fff" : "#fafafa" }}
-                  onMouseEnter={(e) => (e.currentTarget.style.background = "#f0f9ff")}
-                  onMouseLeave={(e) => (e.currentTarget.style.background = idx % 2 === 0 ? "#fff" : "#fafafa")}
-                >
-                  <td style={{ ...TD_STYLE, textAlign: "center" }}>
-                    <input
-                      type="checkbox"
-                      checked={selectedRowIds.includes(r.id)}
-                      onChange={() => toggleSelectRow(r.id)}
-                    />
-                  </td>
-                  <td style={{ ...TD_STYLE, textAlign: "center", fontSize: 12 }}>{idx + 1}</td>
-
-                  {/* Thông tin thụ lý HOẶC Thông tin bản án đề nghị */}
-                  {isTuHinhMode ? (
-                    <td style={{ ...TD_STYLE, fontSize: 12, fontFamily: F }}>
-                      <div><b style={{ color: TEXT }}>Số BA/QĐ:</b> {r.soBA}</div>
-                      <div style={{ fontSize: 12, color: TEXT, marginTop: 2 }}>
-                        <span>Ngày: </span><span style={{ color: TEXT }}>{r.ngayBA}</span>
-                      </div>
-                      <div style={{ fontSize: 12, color: TEXT, marginTop: 2 }}>
-                        <span>Tại: </span><span style={{ color: TEXT }}>{r.toaBA}</span>
-                      </div>
-                    </td>
-                  ) : (
-                    <td style={{ ...TD_STYLE, fontSize: 12, fontFamily: F }}>
-                      {r.soThuLy.map((s, i) => (
-                        <div key={i} style={{ fontWeight: 600, color: TEXT, marginBottom: 2 }}>{s}</div>
-                      ))}
-                      <div style={{ fontSize: 12, color: TEXT, marginTop: 2 }}>{r.moTaDon}</div>
-                    </td>
-                  )}
-
-                  {/* Cột chính tùy theo hình thức */}
-                  {isCongVanMode ? (
-                    <td style={{ ...TD_STYLE, fontSize: 12, fontFamily: F }}>
-                      <div style={{ color: TEXT, fontWeight: 600 }}>
-                        {(r as any).soCongVan} <span style={{ color: TEXT, fontWeight: 400 }}>(Ngày {(r as any).ngayCongVan})</span>
-                      </div>
-                      <div style={{ fontSize: 12, marginTop: 3 }}>
-                        <span>Đơn vị gửi: </span><b style={{ color: TEXT }}>{(r as any).donViGui}</b>
-                      </div>
-                      <div style={{ fontSize: 12, color: TEXT, marginTop: 3 }}>
-                        <span>Trích yếu: </span><span style={{ color: TEXT }}>{(r as any).trichYeu}</span>
-                      </div>
-                    </td>
-                  ) : isTuHinhMode ? (
-                    <td style={{ ...TD_STYLE, fontSize: 12, fontFamily: F }}>
-                      <div style={{ color: TEXT }}>
-                        <b>Số lượng bị án tử hình:</b> <span style={{ color: RED, fontWeight: 700 }}>{(r as any).soLuongBiAn || "01 bị án"}</span>
-                      </div>
-                    </td>
-                  ) : (
-                    <>
-                      <td style={{ ...TD_STYLE, fontSize: 12, fontFamily: F }}>
-                        <div style={{ color: TEXT }}>
-                          <b>Người đứng đơn:</b> {(r as any).nguoiDungDon}
-                        </div>
-                        <div style={{ fontSize: 12, color: TEXT, marginTop: 3 }}>
-                          <span>Hình thức: </span><b style={{ color: TEXT }}>{(r as any).hinhThuc}</b>
-                        </div>
-                      </td>
-
-                      <td style={{ ...TD_STYLE, fontSize: 12, fontFamily: F }}>
-                        <div><b style={{ color: TEXT }}>Số BA/QĐ:</b> {r.soBA}</div>
-                        <div style={{ fontSize: 12, color: TEXT, marginTop: 2 }}>
-                          <span>Ngày: </span><span style={{ color: TEXT }}>{r.ngayBA}</span>
-                        </div>
-                        <div style={{ fontSize: 12, color: TEXT, marginTop: 2 }}>
-                          <span>Tại: </span><span style={{ color: TEXT }}>{r.toaBA}</span>
-                        </div>
-                      </td>
-                    </>
-                  )}
-
-                  {/* Ngày phân công */}
-                  <td style={{ ...TD_STYLE, textAlign: "center", fontSize: 12, color: TEXT, fontFamily: F }}>
-                    {r.ngayPhanCong}
-                  </td>
-
-                  {/* Thẩm phán select */}
-                  <td style={{ ...TD_STYLE, fontFamily: F }}>
-                    <select
-                      value={r.thamPhan}
-                      onChange={(e) => {
-                        const val = e.target.value;
-                        setRecords(prev => prev.map(item => item.id === r.id ? { ...item, thamPhan: val } : item));
-                      }}
-                      style={{ ...inputStyle, padding: "5px 8px" }}
-                    >
-                      <option value="Lê Thị Thu Hiền">Lê Thị Thu Hiền</option>
-                      <option value="Nguyễn Văn A">Nguyễn Văn A</option>
-                      <option value="Trần Văn B">Trần Văn B</option>
-                      <option value="Phạm Văn C">Phạm Văn C</option>
-                    </select>
-                  </td>
-
-                  {/* Ghi chú input */}
-                  <td style={{ ...TD_STYLE, fontFamily: F }}>
-                    <input
-                      placeholder="Nhập ghi chú"
-                      value={r.ghiChu}
-                      onChange={(e) => {
-                        const val = e.target.value;
-                        setRecords(prev => prev.map(item => item.id === r.id ? { ...item, ghiChu: val } : item));
-                      }}
-                      style={{ ...inputStyle, padding: "5px 8px" }}
-                    />
-                  </td>
+        <div style={{ background: "#fff", borderRadius: 8, border: `1px solid ${BORDER}`, overflow: "hidden", boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
+          <div style={{ overflowX: "auto" }}>
+            <table style={{ width: "100%", borderCollapse: "collapse", minWidth: 1050 }}>
+              <thead>
+                <tr style={{ background: "#f8fafc" }}>
+                  <th style={{ ...TH_STYLE, width: 50, textAlign: "center", borderRight: `1px solid ${BORDER}` }}>STT</th>
+                  <th style={{ ...TH_STYLE, width: 170, borderRight: `1px solid ${BORDER}` }}>Số – Ngày thụ lý</th>
+                  <th style={{ ...TH_STYLE, width: 240, borderRight: `1px solid ${BORDER}` }}>Thông tin người đứng đơn</th>
+                  <th style={{ ...TH_STYLE, width: 250, borderRight: `1px solid ${BORDER}` }}>Thông tin BA/QĐ đề nghị GĐT,TT</th>
+                  <th style={{ ...TH_STYLE, width: 130, textAlign: "center", borderRight: `1px solid ${BORDER}` }}>Ngày phân công</th>
+                  <th style={{ ...TH_STYLE, width: 170, borderRight: `1px solid ${BORDER}` }}>Thẩm phán</th>
+                  <th style={{ ...TH_STYLE, width: 180, borderRight: "none" }}>Ghi chú</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody>
+                {currentRecords.length === 0 ? (
+                  <tr>
+                    <td colSpan={7} style={{ ...TD_STYLE, textAlign: "center", padding: 36, color: MUTED }}>
+                      Không có bản ghi nào trong danh sách
+                    </td>
+                  </tr>
+                ) : (
+                  currentRecords.map((r, idx) => {
+                    const isSelected = selectedRowIds.includes(r.id);
+                    return (
+                      <tr
+                        key={r.id}
+                        onClick={() => toggleSelectRow(r.id)}
+                        style={{
+                          background: isSelected ? "#fef2f2" : idx % 2 === 0 ? "#fff" : "#fafafa",
+                          cursor: "pointer",
+                          transition: "background 0.1s",
+                        }}
+                      >
+                        <td style={{ ...TD_STYLE, textAlign: "center", fontSize: 12, fontWeight: 500, color: TEXT, borderRight: `1px solid ${BORDER}` }}>
+                          {idx + 1}
+                        </td>
 
+                        {/* Số – Ngày thụ lý */}
+                        <td style={{ ...TD_STYLE, fontSize: 12, fontFamily: F, borderRight: `1px solid ${BORDER}`, verticalAlign: "top" }}>
+                          {r.soThuLy.map((s, i) => (
+                            <div key={i} style={{ color: TEXT, marginBottom: 2 }}>{s}</div>
+                          ))}
+                          <div style={{ color: TEXT, marginTop: 2 }}>{r.moTaDon}</div>
+                        </td>
+
+                        {/* Thông tin người đứng đơn */}
+                        <td style={{ ...TD_STYLE, fontSize: 12, fontFamily: F, borderRight: `1px solid ${BORDER}`, verticalAlign: "top" }}>
+                          <div>
+                            <b>Người đứng đơn:</b> {r.nguoiDungDon}
+                          </div>
+                          <div style={{ marginTop: 3 }}>
+                            <b>Hình thức:</b> {r.hinhThuc}
+                          </div>
+                        </td>
+
+                        {/* Thông tin BA/QĐ */}
+                        <td style={{ ...TD_STYLE, fontSize: 12, fontFamily: F, borderRight: `1px solid ${BORDER}`, verticalAlign: "top" }}>
+                          <div><b>Số BA:</b> {r.soBA}</div>
+                          <div style={{ marginTop: 2 }}>
+                            <b>Ngày:</b> {r.ngayBA}
+                          </div>
+                          <div style={{ marginTop: 2 }}>
+                            <b>Tại:</b> {r.toaBA}
+                          </div>
+                        </td>
+
+                        {/* Ngày phân công */}
+                        <td style={{ ...TD_STYLE, textAlign: "center", fontSize: 12, color: TEXT, fontFamily: F, borderRight: `1px solid ${BORDER}`, verticalAlign: "top" }}>
+                          {r.ngayPhanCong}
+                        </td>
+
+                        {/* Thẩm phán */}
+                        <td
+                          onClick={(e) => e.stopPropagation()}
+                          style={{ ...TD_STYLE, fontFamily: F, borderRight: `1px solid ${BORDER}`, verticalAlign: "top" }}
+                        >
+                          <select
+                            value={r.thamPhan}
+                            onChange={(e) => {
+                              const val = e.target.value;
+                              setRecords((prev) =>
+                                prev.map((item) =>
+                                  item.id === r.id ? { ...item, thamPhan: val } : item
+                                )
+                              );
+                            }}
+                            style={{ ...inputStyle, padding: "5px 8px" }}
+                          >
+                            {DANH_SACH_THAM_PHAN.map((tp) => (
+                              <option key={tp} value={tp}>{tp}</option>
+                            ))}
+                          </select>
+                        </td>
+
+                        {/* Ghi chú */}
+                        <td
+                          onClick={(e) => e.stopPropagation()}
+                          style={{ ...TD_STYLE, fontFamily: F, borderRight: "none", verticalAlign: "top" }}
+                        >
+                          <input
+                            placeholder="Nhập ghi chú"
+                            value={r.ghiChu}
+                            onChange={(e) => {
+                              const val = e.target.value;
+                              setRecords((prev) =>
+                                prev.map((item) =>
+                                  item.id === r.id ? { ...item, ghiChu: val } : item
+                                )
+                              );
+                            }}
+                            style={{ ...inputStyle, padding: "5px 8px" }}
+                          />
+                        </td>
+                      </tr>
+                    );
+                  })
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
 
+      {/* Modal Danh sách thẩm phán */}
+      {showJudgeListModal && (
+        <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)", zIndex: 4000, display: "flex", alignItems: "center", justifyContent: "center", padding: 20 }}>
+          <div style={{ background: "#fff", borderRadius: 10, width: "100%", maxWidth: 640, boxShadow: "0 20px 50px rgba(0,0,0,0.25)", overflow: "hidden", fontFamily: F }}>
+            <div style={{ padding: "14px 20px", background: "#f8fafc", borderBottom: `1px solid ${BORDER}`, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 8, fontWeight: 700, fontSize: 15, color: RED }}>
+                <Users size={18} /> Danh sách Thẩm phán TAND tối cao
+              </div>
+              <button onClick={() => setShowJudgeListModal(false)} style={{ background: "none", border: "none", cursor: "pointer", color: MUTED }}>
+                <X size={20} />
+              </button>
+            </div>
+
+            <div style={{ padding: 20, maxHeight: 400, overflowY: "auto" }}>
+              <table style={{ width: "100%", borderCollapse: "collapse" }}>
+                <thead>
+                  <tr style={{ background: "#f8fafc" }}>
+                    <th style={{ ...TH_STYLE, width: 50, textAlign: "center" }}>STT</th>
+                    <th style={TH_STYLE}>Họ và tên</th>
+                    <th style={TH_STYLE}>Chức danh</th>
+                    <th style={TH_STYLE}>Số vụ đang giải quyết</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {DANH_SACH_THAM_PHAN.map((tp, i) => (
+                    <tr key={tp} style={{ borderBottom: `1px solid ${BORDER}` }}>
+                      <td style={{ ...TD_STYLE, textAlign: "center", color: MUTED }}>{i + 1}</td>
+                      <td style={{ ...TD_STYLE, fontWeight: 600, color: TEXT }}>{tp}</td>
+                      <td style={{ ...TD_STYLE, color: MUTED }}>Thẩm phán Tòa án nhân dân tối cao</td>
+                      <td style={{ ...TD_STYLE, color: "#1e40af", fontWeight: 600 }}>{Math.floor(Math.random() * 8) + 2} vụ</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            <div style={{ padding: "12px 20px", background: "#f8fafc", borderTop: `1px solid ${BORDER}`, display: "flex", justifyContent: "flex-end" }}>
+              <button
+                onClick={() => setShowJudgeListModal(false)}
+                style={{ padding: "7px 20px", border: `1px solid ${BORDER}`, background: "#fff", borderRadius: 4, cursor: "pointer", fontSize: 12, fontWeight: 600 }}
+              >
+                Đóng
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
+
+export default PhanCongThamPhanView;

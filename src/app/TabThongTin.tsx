@@ -697,44 +697,6 @@ export function TabThongTin({ detail, userRole }: { detail?: VuAnDetailData; use
 
   return (
     <div style={{ padding: 20 }}>
-      {/* ── BỘ CHỌN LOẠI ÁN DEMO (8 LOẠI ÁN) ── */}
-      <div style={{
-        display: "flex",
-        alignItems: "center",
-        justify: "space-between",
-        gap: 12,
-        background: "#f0fdf4",
-        border: "1px solid #bbf7d0",
-        borderRadius: 8,
-        padding: "8px 16px",
-        marginBottom: 16
-      }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <Sliders size={16} color="#166534" />
-          <span style={{ fontSize: 12, fontWeight: 700, color: "#166534", fontFamily: F }}>
-            Xem Fake Data theo Loại án (8 loại):
-          </span>
-        </div>
-        <select
-          value={selectedLoaiAn}
-          onChange={(e) => setSelectedLoaiAn(e.target.value as LoaiAn)}
-          style={{
-            padding: "5px 12px",
-            fontSize: 12,
-            fontWeight: 600,
-            color: TEXT,
-            borderRadius: 6,
-            border: `1px solid ${BORDER}`,
-            background: "#fff",
-            cursor: "pointer",
-            outline: "none",
-            fontFamily: F
-          }}>
-          {LOAI_AN_OPTIONS.map(opt => (
-            <option key={opt} value={opt}>{opt}</option>
-          ))}
-        </select>
-      </div>
 
       {/* ── THÔNG TIN CHUNG ── */}
       <div style={{ background: "#fff", borderRadius: 8, border: `1px solid ${BORDER}`, marginBottom: 16, overflow: "hidden" }}>
@@ -797,26 +759,6 @@ export function TabThongTin({ detail, userRole }: { detail?: VuAnDetailData; use
           </tbody>
         </table>
       </div>
-
-      {/* ── THÔNG TIN ĐỀ NGHỊ GĐT/TT ── */}
-      <div style={{ background: "#fff", borderRadius: 8, border: `1px solid ${BORDER}`, marginBottom: 16, overflow: "hidden" }}>
-        <div
-          onClick={() => setDenNghiOpen(v => !v)}
-          style={{ display: "flex", alignItems: "center", gap: 8, padding: "10px 16px", cursor: "pointer", userSelect: "none" }}>
-          <span style={{ fontSize: 14, color: RED, lineHeight: 1 }}>{denNghiOpen ? "⊟" : "⊞"}</span>
-          <span style={{ fontSize: 13, fontWeight: 700, color: TEXT, fontFamily: F }}>THÔNG TIN ĐỀ NGHỊ GIÁM ĐỐC THẨM / TÁI THẨM</span>
-        </div>
-        {denNghiOpen && (
-          <div style={{ padding: "12px 16px", borderTop: `1px solid ${BORDER}` }}>
-            {mock.denNghiGDT.hasData ? (
-              <span style={{ fontSize: 12, color: TEXT, fontFamily: F }}>{mock.denNghiGDT.noiDung}</span>
-            ) : (
-              <span style={{ fontSize: 12, color: MUTED, fontFamily: F }}>Chưa có dữ liệu</span>
-            )}
-          </div>
-        )}
-      </div>
-
       {/* ── QUÁ TRÌNH GIẢI QUYẾT ── */}
       <div style={{ background: "#fff", borderRadius: 8, border: `1px solid ${BORDER}`, marginBottom: 16, overflow: "hidden" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "10px 16px", borderBottom: `1px solid ${BORDER}` }}>
@@ -836,7 +778,7 @@ export function TabThongTin({ detail, userRole }: { detail?: VuAnDetailData; use
           </colgroup>
           <thead>
             <tr>
-              {["STT","VỤ ÁN","LOẠI BA/QĐ","GIAI ĐOẠN","SỐ BẢN ÁN","NGÀY RA BẢN ÁN","TÒA ÁN RA BẢN ÁN","THẨM PHÁN XÉT XỬ"].map(h => (
+              {["STT", "VỤ ÁN", "LOẠI BA/QĐ", "GIAI ĐOẠN", "SỐ BẢN ÁN", "NGÀY RA BẢN ÁN", "TÒA ÁN RA BẢN ÁN", "THẨM PHÁN XÉT XỬ"].map(h => (
                 <th key={h} style={TH_STYLE}>{h}</th>
               ))}
             </tr>

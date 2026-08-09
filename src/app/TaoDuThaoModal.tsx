@@ -58,6 +58,26 @@ function XemBieuMauDuThaoModal({
     cursor: "pointer",
   };
 
+  const getDoiTuongText = () => {
+    const loai = ((detail?.loaiAn || detail?.linhVuc || detail?.tenVuAn || detail?.maVuAn || "") + "").toLowerCase();
+    if (loai.includes("hành chính") || loai.includes("hc")) {
+      const nkk = detail?.nguoiKhoiKien || detail?.nkk || "Nguyễn Văn A";
+      const nbk = detail?.nguoiBiKien || detail?.nbk || "Ủy ban nhân dân tỉnh X";
+      return `Người khởi kiện (NKK): ${nkk} – Người bị kiện (NBK): ${nbk}`;
+    } else if (loai.includes("dân sự") || loai.includes("ds") || loai.includes("hôn nhân") || loai.includes("lao động") || loai.includes("kinh doanh")) {
+      const nguyenDon = detail?.nguyenDon || "Trần Thị B";
+      const biDon = detail?.biDon || "Nguyễn Văn C";
+      return `Nguyên đơn: ${nguyenDon} – Bị đơn: ${biDon}`;
+    } else if (loai.includes("khiếu nại") || loai.includes("kn")) {
+      const nkn = detail?.nguoiKhieuNai || detail?.nkn || "Lê Văn D";
+      const nbkn = detail?.nguoiBiKhieuNai || "Tòa án nhân dân cấp cao";
+      return `Người khiếu nại: ${nkn} – Người bị khiếu nại: ${nbkn}`;
+    } else {
+      const biCan = detail?.tenBiCan || detail?.biCan || detail?.biCao || "Phan Văn Thành";
+      return `Bị can/Bị cáo: ${biCan}`;
+    }
+  };
+
   return (
     <div
       style={{
@@ -246,17 +266,23 @@ function XemBieuMauDuThaoModal({
           <div style={{ textAlign: "center", margin: "24px 0 16px" }}>
             <div style={{ fontSize: "15pt", fontWeight: "bold", textTransform: "uppercase" }}>{titleDoc}</div>
             <div style={{ fontSize: "13pt", fontWeight: "bold", marginTop: 4 }}>
-              Đối với {detail?.tenVuAn || "Vụ án hình sự Phan Văn Thành – Bức cung"}
+              Đối với: {detail?.tenVuAn || "Vụ án Phan Văn Thành"}
+            </div>
+            <div style={{ fontSize: "12pt", fontStyle: "italic", marginTop: 2, color: "#374151" }}>
+              ({getDoiTuongText()})
             </div>
           </div>
 
           {/* Content */}
           <div style={{ textAlign: "justify", lineHeight: 1.65 }}>
             <p style={{ margin: "10px 0", textIndent: "1cm" }}>
-              Căn cứ Bộ luật Tố tụng hình sự năm 2015; Luật Tổ chức Tòa án nhân dân năm 2024;
+              Căn cứ Bộ luật Tố tụng hình sự / Tố tụng dân sự / Tố tụng hành chính hiện hành; Luật Tổ chức Tòa án nhân dân năm 2024;
             </p>
             <p style={{ margin: "10px 0", textIndent: "1cm" }}>
-              Sau khi xem xét đơn đề nghị giám đốc thẩm và hồ sơ vụ án liên quan đến Bản án hình sự số 050526_CTH02 ngày 05/05/2026 của Tòa án nhân dân tỉnh Hải Phòng;
+              Sau khi xem xét đơn đề nghị giám đốc thẩm và hồ sơ vụ án liên quan đến Bản án số 050526_CTH02 ngày 05/05/2026 của Tòa án nhân dân tỉnh Hải Phòng;
+            </p>
+            <p style={{ margin: "10px 0", textIndent: "1cm" }}>
+              <b>Thành phần đương sự / Đối tượng:</b> {getDoiTuongText()}
             </p>
             <p style={{ margin: "10px 0", textIndent: "1cm" }}>
               {noiDung ||
@@ -892,7 +918,7 @@ export function TaoDuThaoModal({
                       />
                       <span style={{ fontWeight: ketQuaGQ === "tra-loi" ? 700 : 400 }}>Trả lời đơn</span>
                     </label>
-                    <label style={{ display: "flex", alignItems: "center", gap: 6, cursor: "pointer", fontSize: 13, fontFamily: F, color: "#111827" }}>
+                    {/* <label style={{ display: "flex", alignItems: "center", gap: 6, cursor: "pointer", fontSize: 13, fontFamily: F, color: "#111827" }}>
                       <input
                         type="radio"
                         name="ketQuaGQ"
@@ -901,8 +927,8 @@ export function TaoDuThaoModal({
                         style={{ accentColor: "#800000", cursor: "pointer" }}
                       />
                       <span style={{ fontWeight: ketQuaGQ === "xep-don" ? 700 : 400 }}>Xếp đơn</span>
-                    </label>
-                    <label style={{ display: "flex", alignItems: "center", gap: 6, cursor: "pointer", fontSize: 13, fontFamily: F, color: "#111827" }}>
+                    </label> */}
+                    {/* <label style={{ display: "flex", alignItems: "center", gap: 6, cursor: "pointer", fontSize: 13, fontFamily: F, color: "#111827" }}>
                       <input
                         type="radio"
                         name="ketQuaGQ"
@@ -911,8 +937,8 @@ export function TaoDuThaoModal({
                         style={{ accentColor: "#800000", cursor: "pointer" }}
                       />
                       <span style={{ fontWeight: (ketQuaGQ as any) === "nghien-cuu" ? 700 : 400 }}>Nghiên cứu, xác minh, bổ sung</span>
-                    </label>
-                    <label style={{ display: "flex", alignItems: "center", gap: 6, cursor: "pointer", fontSize: 13, fontFamily: F, color: "#111827" }}>
+                    </label> */}
+                    {/* <label style={{ display: "flex", alignItems: "center", gap: 6, cursor: "pointer", fontSize: 13, fontFamily: F, color: "#111827" }}>
                       <input
                         type="radio"
                         name="ketQuaGQ"
@@ -921,7 +947,7 @@ export function TaoDuThaoModal({
                         style={{ accentColor: "#800000", cursor: "pointer" }}
                       />
                       <span style={{ fontWeight: (ketQuaGQ as any) === "vks" ? 700 : 400 }}>Viện kiểm sát đang giải quyết</span>
-                    </label>
+                    </label> */}
                   </>
                 )}
               </div>

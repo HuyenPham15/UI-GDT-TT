@@ -68,7 +68,7 @@ export function ThemKetQuaModal({ onClose, detail }: { onClose: () => void; deta
     { value: "khang-nghi", label: "Kháng nghị" },
     { value: "tra-loi", label: "Trả lời đơn" },
     { value: "xep-don", label: "Xếp đơn" },
-    { value: "nghien-cuu" as any, label: "Nghiên cứu, xác minh, bổ sung" },
+    // { value: "nghien-cuu" as any, label: "Nghiên cứu, xác minh, bổ sung" },
     { value: "vks", label: "Viện kiểm sát đang giải quyết" },
   ];
 
@@ -87,7 +87,9 @@ export function ThemKetQuaModal({ onClose, detail }: { onClose: () => void; deta
         {/* Header */}
         <div style={{ display: "flex", alignItems: "center", padding: "14px 20px", borderBottom: `1px solid ${BORDER}`, flexShrink: 0 }}>
           <FileText size={16} color={RED} style={{ marginRight: 8 }} />
-          <span style={{ fontSize: 15, fontWeight: 700, color: TEXT, flex: 1 }}>Thêm kết quả giải quyết</span>
+          <span style={{ fontSize: 15, fontWeight: 700, color: TEXT, flex: 1 }}>
+            {detail?.entityWord === "Khiếu nại" ? "Thêm kết quả giải quyết khiếu nại" : "Tạo kết quả giải quyết văn bản đề nghị"}
+          </span>
           <button onClick={onClose} style={{ background: "none", border: "none", cursor: "pointer", fontSize: 20, color: MUTED, lineHeight: 1 }}>×</button>
         </div>
 
@@ -302,7 +304,7 @@ export function ThemKetQuaModal({ onClose, detail }: { onClose: () => void; deta
                 </colgroup>
                 <thead>
                   <tr>
-                    {["STT","NƠI NHẬN","NƠI NHẬN CHI TIẾT","GHI CHÚ","THAO TÁC"].map(h => (
+                    {["STT", "NƠI NHẬN", "NƠI NHẬN CHI TIẾT", "GHI CHÚ", "THAO TÁC"].map(h => (
                       <th key={h} style={{ ...TH_STYLE, fontSize: 10 }}>{h}</th>
                     ))}
                   </tr>
