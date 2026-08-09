@@ -15,7 +15,7 @@ function XemBieuMauDuThaoModal({
 }: {
   onClose: () => void;
   detail?: any;
-  ketQua: "tra-loi" | "khang-nghi" | "xep-don" | "vks-dang-giai-quyet";
+  ketQua: "tra-loi" | "khang-nghi";
   soQuyetDinh: string;
   ngayQuyetDinh: string;
   nguoiKy: string;
@@ -25,14 +25,10 @@ function XemBieuMauDuThaoModal({
   const [fontSize, setFontSize] = useState("13.5pt");
   const [fontFamily, setFontFamily] = useState("Times New Roman");
 
-  const titleDoc =
-    ketQua === "khang-nghi"
-      ? "QUYẾT ĐỊNH KHÁNG NGHỊ GIÁM ĐỐC THẨM"
-      : ketQua === "xep-don"
-      ? "THÔNG BÁO VỀ VIỆC XẾP ĐƠN ĐỀ NGHỊ GIÁM ĐỐC THẨM"
-      : ketQua === "vks-dang-giai-quyet"
-      ? "THÔNG BÁO VỀ VIỆC VIỆN KIỂM SÁT ĐANG GIẢI QUYẾT ĐƠN"
-      : "THÔNG BÁO VỀ VIỆC GIẢI QUYẾT ĐƠN ĐỀ NGHỊ GIÁM ĐỐC THẨM";
+  const isKhangNghi = ketQua === "khang-nghi";
+  const titleDoc = isKhangNghi
+    ? "QUYẾT ĐỊNH KHÁNG NGHỊ GIÁM ĐỐC THẨM"
+    : "THÔNG BÁO VỀ VIỆC GIẢI QUYẾT ĐƠN ĐỀ NGHỊ GIÁM ĐỐC THẨM";
 
   const execCmd = (cmd: string, arg?: string) => {
     document.execCommand(cmd, false, arg);
@@ -264,12 +260,8 @@ function XemBieuMauDuThaoModal({
             </p>
             <p style={{ margin: "10px 0", textIndent: "1cm" }}>
               {noiDung ||
-                (ketQua === "khang-nghi"
+                (isKhangNghi
                   ? "Quyết định kháng nghị toàn bộ bản án phúc thẩm để xét xử lại theo thủ tục giám đốc thẩm theo đúng quy định của pháp luật."
-                  : ketQua === "xep-don"
-                  ? "Xét thấy đơn đề nghị không có tài liệu chứng cứ mới hoặc đã được giải quyết đúng pháp luật. Tòa án nhân dân tối cao quyết định xếp đơn theo quy định."
-                  : ketQua === "vks-dang-giai-quyet"
-                  ? "Hiện tại Viện kiểm sát nhân dân đang thụ lý và xem xét giải quyết hồ sơ vụ án theo thẩm quyền. Tòa án nhân dân tối cao thông báo để quý cơ quan/đương sự được biết."
                   : "Xét thấy không có căn cứ để kháng nghị theo thủ tục giám đốc thẩm đối với bản án nêu trên. Tòa án nhân dân tối cao thông báo để đương sự được biết.")}
             </p>
           </div>
@@ -308,6 +300,9 @@ export function TaoDuThaoModal({
   detail?: any;
   onSave?: (data: any) => void;
 }) {
+  if (detail?.isCongVan || detail?.loai === "cong-van") {
+    return <TaoDuThaoCongVanModal onClose={onClose} onSave={onSave} />;
+  }
   // Top Case Info values (Fallback theo đúng ảnh)
   const maVuAn = detail?.maVuAn || "VA26-00321";
   const tenVuAn = detail?.tenVuAn || "Vụ án Phan Văn Thành – bức cung";
@@ -322,7 +317,7 @@ export function TaoDuThaoModal({
 
   // Section 1: Thông tin đơn
   const [donLienQuan, setDonLienQuan] = useState("2 đơn/người được chọn");
-  const [ketQuaGQ, setKetQuaGQ] = useState<"tra-loi" | "khang-nghi" | "xep-don" | "vks-dang-giai-quyet">("tra-loi");
+  const [ketQuaGQ, setKetQuaGQ] = useState<"tra-loi" | "khang-nghi">("tra-loi");
 
   // Section 2: Thông tin quyết định
   const [ngayQuyetDinh, setNgayQuyetDinh] = useState("09/08/2026");
@@ -625,7 +620,7 @@ export function TaoDuThaoModal({
               <label style={lblSt}>
                 <span style={{ color: "#dc2626", marginRight: 3 }}>*</span>Kết quả giải quyết đơn
               </label>
-              <div style={{ display: "flex", gap: 20, alignItems: "center", marginTop: 4, flexWrap: "wrap" }}>
+              <div style={{ display: "flex", gap: 24, alignItems: "center", marginTop: 4 }}>
                 <label style={{ display: "flex", alignItems: "center", gap: 6, cursor: "pointer", fontSize: 13, fontFamily: F, color: "#111827" }}>
                   <input
                     type="radio"
@@ -660,11 +655,11 @@ export function TaoDuThaoModal({
                   <input
                     type="radio"
                     name="ketQuaGQ"
-                    checked={ketQuaGQ === "vks-dang-giai-quyet"}
-                    onChange={() => setKetQuaGQ("vks-dang-giai-quyet")}
+                    checked={ketQuaGQ === "xep-don"}
+                    onChange={() => setKetQuaGQ("xep-don")}
                     style={{ accentColor: "#800000", cursor: "pointer" }}
                   />
-                  <span style={{ fontWeight: ketQuaGQ === "vks-dang-giai-quyet" ? 700 : 400 }}>Viện kiểm sát đang giải quyết</span>
+                  <span style={{ fontWeight: ketQuaGQ === "xep-don" ? 700 : 400 }}>Xếp đơn</span>
                 </label>
               </div>
             </div>
@@ -736,26 +731,12 @@ export function TaoDuThaoModal({
             <div>
               <label style={lblSt}>
                 <span style={{ color: "#dc2626", marginRight: 3 }}>*</span>
-                {ketQuaGQ === "khang-nghi"
-                  ? "Nội dung quyết định kháng nghị"
-                  : ketQuaGQ === "xep-don"
-                  ? "Nội dung thông báo xếp đơn"
-                  : ketQuaGQ === "vks-dang-giai-quyet"
-                  ? "Nội dung thông báo Viện kiểm sát đang giải quyết"
-                  : "Nội dung trả lời"}
+                {ketQuaGQ === "khang-nghi" ? "Nội dung quyết định kháng nghị" : "Nội dung trả lời"}
               </label>
               <textarea
                 value={noiDung}
                 onChange={e => setNoiDung(e.target.value)}
-                placeholder={
-                  ketQuaGQ === "khang-nghi"
-                    ? "Nhập nội dung quyết định kháng nghị"
-                    : ketQuaGQ === "xep-don"
-                    ? "Nhập lý do và nội dung xếp đơn"
-                    : ketQuaGQ === "vks-dang-giai-quyet"
-                    ? "Nhập thông tin tình trạng xử lý của VKS"
-                    : "Nhập nội dung trả lời"
-                }
+                placeholder="Nhập nội dung trả lời"
                 rows={3}
                 style={{ ...inSt, resize: "vertical", lineHeight: 1.5 }}
               />
@@ -1062,6 +1043,571 @@ export function TaoDuThaoModal({
           >
             Xem biểu mẫu
           </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── Modal Tạo Dự thảo Công văn trao đổi (Theo đúng thiết kế mẫu ảnh) ─────────────────
+export function TaoDuThaoCongVanModal({
+  onClose,
+  onSave,
+}: {
+  onClose: () => void;
+  onSave?: (data: any) => void;
+}) {
+  const [cachGiaiQuyet, setCachGiaiQuyet] = useState<"qua-cong-van">("qua-cong-van");
+  const [ngayTaoCV, setNgayTaoCV] = useState("");
+  const [soCV, setSoCV] = useState("");
+  const [nguoiKy, setNguoiKy] = useState("");
+  const [noiNhan, setNoiNhan] = useState("");
+  const [donViNhan, setDonViNhan] = useState("");
+  const [ngayTraoDoi, setNgayTraoDoi] = useState("");
+  const [noiDung, setNoiDung] = useState("");
+  const [ghiChu, setGhiChu] = useState("");
+
+  const [showTrinhKy, setShowTrinhKy] = useState(false);
+
+  const [noiNhanList, setNoiNhanList] = useState([
+    {
+      id: 1,
+      loaiNoiNhan: "Viện kiểm sát",
+      tenDonViNhan: "Viện kiểm sát nhân dân tối cao",
+      ghiChu: "Kèm hồ sơ vụ án",
+    },
+  ]);
+
+  const [isAdding, setIsAdding] = useState(false);
+  const [editingId, setEditingId] = useState<number | null>(null);
+  const [editLoai, setEditLoai] = useState("");
+  const [editDonVi, setEditDonVi] = useState("");
+  const [editGhiChu, setEditGhiChu] = useState("");
+
+  const [newLoai, setNewLoai] = useState("Viện kiểm sát");
+  const [newDonVi, setNewDonVi] = useState("");
+  const [newGhiChu, setNewGhiChu] = useState("");
+
+  const handleAddNoiNhan = () => {
+    if (!newDonVi.trim()) {
+      alert("Vui lòng nhập tên đơn vị nhận!");
+      return;
+    }
+    setNoiNhanList(prev => [
+      ...prev,
+      {
+        id: Date.now(),
+        loaiNoiNhan: newLoai,
+        tenDonViNhan: newDonVi.trim(),
+        ghiChu: newGhiChu.trim() || "–",
+      },
+    ]);
+    setIsAdding(false);
+    setNewDonVi("");
+    setNewGhiChu("");
+  };
+
+  const handleStartEdit = (item: any) => {
+    setEditingId(item.id);
+    setEditLoai(item.loaiNoiNhan);
+    setEditDonVi(item.tenDonViNhan);
+    setEditGhiChu(item.ghiChu);
+  };
+
+  const handleSaveEdit = (id: number) => {
+    if (!editDonVi.trim()) {
+      alert("Vui lòng nhập tên đơn vị nhận!");
+      return;
+    }
+    setNoiNhanList(prev =>
+      prev.map(item =>
+        item.id === id
+          ? { ...item, loaiNoiNhan: editLoai, tenDonViNhan: editDonVi.trim(), ghiChu: editGhiChu.trim() || "–" }
+          : item
+      )
+    );
+    setEditingId(null);
+  };
+
+  const handleDeleteNoiNhan = (id: number) => {
+    setNoiNhanList(prev => prev.filter(item => item.id !== id));
+  };
+
+  const handleSave = () => {
+    if (onSave) {
+      onSave({
+        cachGiaiQuyet,
+        ngayTaoCV,
+        soCV,
+        nguoiKy,
+        noiNhan,
+        donViNhan,
+        ngayTraoDoi,
+        noiDung,
+        ghiChu,
+        noiNhanList,
+      });
+    }
+    alert("Đã lưu dự thảo công văn trao đổi thành công!");
+    onClose();
+  };
+
+  const inSt: React.CSSProperties = {
+    padding: "7px 10px",
+    fontSize: 12,
+    border: "1px solid #d1d5db",
+    borderRadius: 4,
+    fontFamily: F,
+    outline: "none",
+    width: "100%",
+    background: "#fff",
+    boxSizing: "border-box",
+    color: "#111827",
+  };
+
+  const lblSt: React.CSSProperties = {
+    fontSize: 12,
+    color: "#374151",
+    fontFamily: F,
+    display: "block",
+    marginBottom: 5,
+    fontWeight: 600,
+  };
+
+  return (
+    <div
+      style={{
+        position: "fixed",
+        inset: 0,
+        background: "rgba(0,0,0,0.5)",
+        zIndex: 1400,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: 16,
+      }}
+    >
+      {showTrinhKy && <TrinhKyModal onClose={() => setShowTrinhKy(false)} />}
+
+      <div
+        style={{
+          background: "#fff",
+          borderRadius: 8,
+          width: "min(840px, 95vw)",
+          maxHeight: "92vh",
+          display: "flex",
+          flexDirection: "column",
+          boxShadow: "0 10px 30px rgba(0,0,0,0.2)",
+          fontFamily: F,
+          overflow: "hidden",
+        }}
+      >
+        {/* Header */}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            padding: "14px 20px",
+            borderBottom: "1px solid #e5e7eb",
+            flexShrink: 0,
+          }}
+        >
+          <span style={{ fontSize: 16, fontWeight: 700, color: "#111827", fontFamily: F }}>
+            Tạo dự thảo
+          </span>
+          <button
+            onClick={onClose}
+            style={{
+              background: "none",
+              border: "none",
+              cursor: "pointer",
+              color: "#6b7280",
+              padding: 4,
+              display: "flex",
+              alignItems: "center",
+            }}
+          >
+            <X size={18} />
+          </button>
+        </div>
+
+        {/* Body */}
+        <div
+          style={{
+            flex: 1,
+            overflowY: "auto",
+            padding: "20px 24px",
+            display: "flex",
+            flexDirection: "column",
+            gap: 16,
+          }}
+        >
+          {/* Cách giải quyết */}
+          <div>
+            <label style={lblSt}>Cách giải quyết</label>
+            <div style={{ display: "flex", gap: 24, alignItems: "center", marginTop: 4 }}>
+              {/* <label style={{ display: "flex", alignItems: "center", gap: 6, cursor: "pointer", fontSize: 13, color: "#111827" }}>
+                <input
+                  type="radio"
+                  name="cachGiaiQuyet"
+                  checked={cachGiaiQuyet === "truc-tiep"}
+                  onChange={() => setCachGiaiQuyet("truc-tiep")}
+                  style={{ accentColor: "#800000", cursor: "pointer" }}
+                />
+                Trao đổi trực tiếp
+              </label> */}
+              <label style={{ display: "flex", alignItems: "center", gap: 6, cursor: "pointer", fontSize: 13, color: "#111827" }}>
+                <input
+                  type="radio"
+                  name="cachGiaiQuyet"
+                  checked={cachGiaiQuyet === "qua-cong-van"}
+                  onChange={() => setCachGiaiQuyet("qua-cong-van")}
+                  style={{ accentColor: "#800000", cursor: "pointer" }}
+                />
+                Qua công văn
+              </label>
+            </div>
+          </div>
+
+          {/* Khi chọn Qua công văn */}
+          {cachGiaiQuyet === "qua-cong-van" && (
+            <>
+              {/* Row 1: Ngày tạo CV, Số CV, Người ký */}
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 16 }}>
+                <div>
+                  <label style={lblSt}>
+                    <span style={{ color: "#dc2626", marginRight: 3 }}>*</span>Ngày tạo CV
+                  </label>
+                  <div style={{ position: "relative", display: "flex", alignItems: "center" }}>
+                    <input
+                      type="text"
+                      placeholder="mm/dd/yyyy"
+                      value={ngayTaoCV}
+                      onChange={e => setNgayTaoCV(e.target.value)}
+                      style={{ ...inSt, paddingRight: 32 }}
+                    />
+                    <Calendar size={15} color="#6b7280" style={{ position: "absolute", right: 10, pointerEvents: "none" }} />
+                  </div>
+                </div>
+
+                <div>
+                  <label style={lblSt}>
+                    <span style={{ color: "#dc2626", marginRight: 3 }}>*</span>Số CV
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Nhập số công văn"
+                    value={soCV}
+                    onChange={e => setSoCV(e.target.value)}
+                    style={inSt}
+                  />
+                </div>
+
+                <div>
+                  <label style={lblSt}>Người ký</label>
+                  <input
+                    type="text"
+                    placeholder="Nhập tên người ký"
+                    value={nguoiKy}
+                    onChange={e => setNguoiKy(e.target.value)}
+                    style={inSt}
+                  />
+                </div>
+              </div>
+
+              {/* Row 2: Nơi nhận, Đơn vị nhận */}
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+                <div>
+                  <label style={lblSt}>Nơi nhận</label>
+                  <select
+                    value={noiNhan}
+                    onChange={e => setNoiNhan(e.target.value)}
+                    style={{ ...inSt, cursor: "pointer" }}
+                  >
+                    <option value="">– Vui lòng chọn –</option>
+                    <option value="Viện kiểm sát">Viện kiểm sát</option>
+                    <option value="Tòa án nhân dân">Tòa án nhân dân</option>
+                    <option value="Cơ quan điều tra">Cơ quan điều tra</option>
+                    <option value="Khác">Khác</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label style={lblSt}>Đơn vị nhận</label>
+                  <input
+                    type="text"
+                    placeholder="Chọn nơi nhận trước"
+                    value={donViNhan}
+                    onChange={e => setDonViNhan(e.target.value)}
+                    style={inSt}
+                  />
+                </div>
+              </div>
+            </>
+          )}
+
+          {/* Ngày trao đổi */}
+          <div>
+            <label style={lblSt}>
+              <span style={{ color: "#dc2626", marginRight: 3 }}>*</span>Ngày trao đổi
+            </label>
+            <div style={{ position: "relative", display: "flex", alignItems: "center" }}>
+              <input
+                type="text"
+                placeholder="mm/dd/yyyy"
+                value={ngayTraoDoi}
+                onChange={e => setNgayTraoDoi(e.target.value)}
+                style={{ ...inSt, paddingRight: 32 }}
+              />
+              <Calendar size={15} color="#6b7280" style={{ position: "absolute", right: 10, pointerEvents: "none" }} />
+            </div>
+          </div>
+
+          {/* Textarea: Nội dung */}
+          <div>
+            <label style={lblSt}>Nội dung</label>
+            <textarea
+              placeholder="Nhập nội dung ý kiến"
+              value={noiDung}
+              onChange={e => setNoiDung(e.target.value.slice(0, 1000))}
+              style={{ ...inSt, minHeight: 90, resize: "vertical" }}
+            />
+            <div style={{ textAlign: "right", fontSize: 11, color: "#6b7280", marginTop: 3 }}>
+              {noiDung.length} / 1000
+            </div>
+          </div>
+
+          {/* Textarea: Ghi chú */}
+          <div>
+            <label style={lblSt}>Ghi chú</label>
+            <textarea
+              placeholder="Nhập ghi chú"
+              value={ghiChu}
+              onChange={e => setGhiChu(e.target.value.slice(0, 1000))}
+              style={{ ...inSt, minHeight: 90, resize: "vertical" }}
+            />
+            <div style={{ textAlign: "right", fontSize: 11, color: "#6b7280", marginTop: 3 }}>
+              {ghiChu.length} / 1000
+            </div>
+          </div>
+
+          {/* Table Section: Nơi nhận (chỉ hiển thị khi qua công văn) */}
+          {cachGiaiQuyet === "qua-cong-van" && (
+            <div>
+              <label style={lblSt}>Nơi nhận</label>
+              <div style={{ border: "1px solid #e5e7eb", borderRadius: 4, overflow: "hidden", marginBottom: 8 }}>
+                <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12, fontFamily: F }}>
+                  <thead>
+                    <tr style={{ background: "#f9fafb", borderBottom: "1px solid #e5e7eb" }}>
+                      <th style={{ padding: "8px", width: 45, textAlign: "center", fontWeight: 700, color: "#374151" }}>STT</th>
+                      <th style={{ padding: "8px", textAlign: "left", fontWeight: 700, color: "#374151", width: 160 }}>LOẠI NƠI NHẬN</th>
+                      <th style={{ padding: "8px", textAlign: "left", fontWeight: 700, color: "#374151" }}>TÊN ĐƠN VỊ NHẬN</th>
+                      <th style={{ padding: "8px", textAlign: "left", fontWeight: 700, color: "#374151", width: 180 }}>GHI CHÚ</th>
+                      <th style={{ padding: "8px", textAlign: "center", fontWeight: 700, color: "#374151", width: 110 }}>THAO TÁC</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {noiNhanList.map((item, idx) => {
+                      const isEditing = editingId === item.id;
+                      return (
+                        <tr key={item.id} style={{ borderBottom: "1px solid #f3f4f6", background: "#fff" }}>
+                          <td style={{ padding: "8px", textAlign: "center", color: "#6b7280" }}>{idx + 1}</td>
+                          <td style={{ padding: "8px", color: "#111827" }}>
+                            {isEditing ? (
+                              <select value={editLoai} onChange={e => setEditLoai(e.target.value)} style={{ ...inSt, padding: "3px 6px" }}>
+                                <option value="Viện kiểm sát">Viện kiểm sát</option>
+                                <option value="Tòa án nhân dân">Tòa án nhân dân</option>
+                                <option value="Cơ quan điều tra">Cơ quan điều tra</option>
+                                <option value="Khác">Khác</option>
+                              </select>
+                            ) : item.loaiNoiNhan}
+                          </td>
+                          <td style={{ padding: "8px", color: "#111827" }}>
+                            {isEditing ? (
+                              <input value={editDonVi} onChange={e => setEditDonVi(e.target.value)} style={{ ...inSt, padding: "3px 6px" }} />
+                            ) : item.tenDonViNhan}
+                          </td>
+                          <td style={{ padding: "8px", color: "#6b7280" }}>
+                            {isEditing ? (
+                              <input value={editGhiChu} onChange={e => setEditGhiChu(e.target.value)} style={{ ...inSt, padding: "3px 6px" }} />
+                            ) : item.ghiChu}
+                          </td>
+                          <td style={{ padding: "8px", textAlign: "center" }}>
+                            {isEditing ? (
+                              <div style={{ display: "flex", gap: 6, justifyContent: "center" }}>
+                                <button onClick={() => handleSaveEdit(item.id)} style={{ color: "#16a34a", background: "none", border: "none", cursor: "pointer", fontWeight: 600 }}>Lưu</button>
+                                <button onClick={() => setEditingId(null)} style={{ color: "#6b7280", background: "none", border: "none", cursor: "pointer" }}>Hủy</button>
+                              </div>
+                            ) : (
+                              <div style={{ display: "flex", gap: 8, justifyContent: "center", fontSize: 12 }}>
+                                <button onClick={() => handleStartEdit(item)} style={{ color: "#2563eb", background: "none", border: "none", cursor: "pointer" }}>✎ Sửa</button>
+                                <button onClick={() => handleDeleteNoiNhan(item.id)} style={{ color: "#dc2626", background: "none", border: "none", cursor: "pointer" }}>Xóa</button>
+                              </div>
+                            )}
+                          </td>
+                        </tr>
+                      );
+                    })}
+
+                    {isAdding && (
+                      <tr style={{ background: "#fefce8", borderBottom: "1px solid #fef08a" }}>
+                        <td style={{ padding: "8px", textAlign: "center", color: "#6b7280" }}>+</td>
+                        <td style={{ padding: "6px" }}>
+                          <select value={newLoai} onChange={e => setNewLoai(e.target.value)} style={{ ...inSt, padding: "3px 6px" }}>
+                            <option value="Viện kiểm sát">Viện kiểm sát</option>
+                            <option value="Tòa án nhân dân">Tòa án nhân dân</option>
+                            <option value="Cơ quan điều tra">Cơ quan điều tra</option>
+                            <option value="Khác">Khác</option>
+                          </select>
+                        </td>
+                        <td style={{ padding: "6px" }}>
+                          <input placeholder="Tên đơn vị nhận" value={newDonVi} onChange={e => setNewDonVi(e.target.value)} style={{ ...inSt, padding: "3px 6px" }} />
+                        </td>
+                        <td style={{ padding: "6px" }}>
+                          <input placeholder="Ghi chú" value={newGhiChu} onChange={e => setNewGhiChu(e.target.value)} style={{ ...inSt, padding: "3px 6px" }} />
+                        </td>
+                        <td style={{ padding: "6px", textAlign: "center" }}>
+                          <div style={{ display: "flex", gap: 6, justifyContent: "center" }}>
+                            <button onClick={handleAddNoiNhan} style={{ color: "#16a34a", background: "none", border: "none", cursor: "pointer", fontWeight: 600 }}>Thêm</button>
+                            <button onClick={() => setIsAdding(false)} style={{ color: "#6b7280", background: "none", border: "none", cursor: "pointer" }}>Hủy</button>
+                          </div>
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+
+              {!isAdding && (
+                <button
+                  type="button"
+                  onClick={() => setIsAdding(true)}
+                  style={{
+                    border: "1px dashed #d1d5db",
+                    background: "#fff",
+                    color: "#4b5563",
+                    padding: "6px 14px",
+                    borderRadius: 4,
+                    fontSize: 12,
+                    fontFamily: F,
+                    cursor: "pointer",
+                  }}
+                >
+                  + Thêm nơi nhận
+                </button>
+              )}
+            </div>
+          )}
+        </div>
+
+        {/* Footer Bar */}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            padding: "12px 24px",
+            borderTop: "1px solid #e5e7eb",
+            background: "#fff",
+            flexShrink: 0,
+          }}
+        >
+          <div style={{ display: "flex", gap: 10 }}>
+            <button
+              onClick={onClose}
+              style={{
+                padding: "7px 18px",
+                background: "#fff",
+                border: "1px solid #d1d5db",
+                borderRadius: 4,
+                cursor: "pointer",
+                fontSize: 13,
+                fontFamily: F,
+                color: "#374151",
+              }}
+            >
+              Đóng
+            </button>
+            <button
+              onClick={() => {
+                setNgayTaoCV("");
+                setSoCV("");
+                setNguoiKy("");
+                setNoiNhan("");
+                setDonViNhan("");
+                setNgayTraoDoi("");
+                setNoiDung("");
+                setGhiChu("");
+              }}
+              style={{
+                padding: "7px 18px",
+                background: "#fff",
+                border: "1px solid #d1d5db",
+                borderRadius: 4,
+                cursor: "pointer",
+                fontSize: 13,
+                fontFamily: F,
+                color: "#374151",
+              }}
+            >
+              Làm mới
+            </button>
+          </div>
+
+          <div style={{ display: "flex", gap: 10 }}>
+            {cachGiaiQuyet === "qua-cong-van" && (
+              <>
+                <button
+                  onClick={() => alert("Đang xem biểu mẫu...")}
+                  style={{
+                    padding: "7px 18px",
+                    background: "#fff",
+                    border: "1px solid #d1d5db",
+                    borderRadius: 4,
+                    cursor: "pointer",
+                    fontSize: 13,
+                    fontFamily: F,
+                    color: "#374151",
+                  }}
+                >
+                  Xem biểu mẫu
+                </button>
+                <button
+                  onClick={() => setShowTrinhKy(true)}
+                  style={{
+                    padding: "7px 18px",
+                    background: "#800000",
+                    color: "#fff",
+                    border: "none",
+                    borderRadius: 4,
+                    cursor: "pointer",
+                    fontSize: 13,
+                    fontWeight: 700,
+                    fontFamily: F,
+                  }}
+                >
+                  Trình ký
+                </button>
+              </>
+            )}
+            <button
+              onClick={handleSave}
+              style={{
+                padding: "7px 18px",
+                background: "#800000",
+                color: "#fff",
+                border: "none",
+                borderRadius: 4,
+                cursor: "pointer",
+                fontSize: 13,
+                fontWeight: 700,
+                fontFamily: F,
+              }}
+            >
+              Lưu
+            </button>
+          </div>
         </div>
       </div>
     </div>

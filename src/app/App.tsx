@@ -4484,51 +4484,299 @@ function TabToTrinh({ detail }: { detail?: VuAnDetailData }) {
   );
 }
 
-// ── Tab Giải quyết văn bản ───────────────────────────────────────────────────
-function TabGiaiQuyetVB({ detail }: { detail: VuAnDetailData }) {
-  const vbList = [
-    { stt: 1, soVB: "12/TB-TANDTC", loaiVB: "Thông báo thụ lý đơn đề nghị GĐT", ngayBanHanh: "21/07/2026", nguoiKy: "Phan Văn Nam – Phó Chánh án", trangThai: "Đã ban hành", ghiChu: "Gửi nguyên đơn & VKS" },
-    { stt: 2, soVB: "35/CV-GĐT", loaiVB: "Công văn yêu cầu chuyển hồ sơ vụ án", ngayBanHanh: "15/07/2026", nguoiKy: "Lê Hoàng Nam – Vụ trưởng Vụ 1", trangThai: "Đã gửi", ghiChu: "Yêu cầu TAND tỉnh Bắc Ninh chuyển hồ sơ gốc" },
-    { stt: 3, soVB: "08/QĐ-GĐT", loaiVB: "Quyết định phân công Thẩm tra viên nghiên cứu", ngayBanHanh: "10/07/2026", nguoiKy: "Phan Văn Nam – Phó Chánh án", trangThai: "Đã duyệt", ghiChu: "Phân công TTV Hoàng Ngọc Chiêu" },
+// ── Tab Giải quyết văn bản đề nghị (Kết quả giải quyết đơn theo mẫu ảnh) ─────────────
+function TabGiaiQuyetVB({ detail }: { detail?: VuAnDetailData }) {
+  const [showTaoDuThao, setShowTaoDuThao] = useState(false);
+  const [selectedDetail, setSelectedDetail] = useState<any>(null);
+  const [collapsedGroups, setCollapsedGroups] = useState<Record<string, boolean>>({});
+
+  const toggleGroup = (groupId: string) => {
+    setCollapsedGroups(prev => ({ ...prev, [groupId]: !prev[groupId] }));
+  };
+
+  const groups = [
+    {
+      id: "tra-loi-don",
+      title: "Trả lời đơn",
+      items: [
+        {
+          stt: 1,
+          maDon: "1531",
+          soQuyetDinh: "179/2026/TB-TA",
+          ngayQuyetDinh: "09/07/2026",
+          ngayPhatHanh: "Chưa cập nhật",
+          nguoiDuyet: [
+            { ten: "Nguyễn Thị Bình - Vụ trưởng", status: "Đã duyệt - 10/07/2026" },
+            { ten: "Nguyễn Thị Hoa - TPB3", status: "Đã duyệt - 09/07/2026" },
+          ],
+          nguoiKy: { ten: "Nguyễn Thị Hoa - TPB3", status: "Chưa có hiệu lực", isDone: false },
+          nguoiTao: { ten: "Nguyễn Cao Thắng", thoiGian: "09/07/2026 14:41:00" },
+        },
+        {
+          stt: 2,
+          maDon: "1234",
+          soQuyetDinh: "179/2026/TB-TA",
+          ngayQuyetDinh: "09/07/2026",
+          ngayPhatHanh: "Chưa cập nhật",
+          nguoiDuyet: [
+            { ten: "Nguyễn Thị Bình", status: "Đã duyệt - 10/07/2026" },
+          ],
+          nguoiKy: { ten: "Nguyễn Thị Hoa - TPB3", status: "Đã có hiệu lực - 09/07/2026", isDone: true },
+          nguoiTao: { ten: "Nguyễn Cao Thắng", thoiGian: "09/07/2026 14:00:38" },
+        },
+      ],
+    },
+    {
+      id: "khang-nghi",
+      title: "Kháng nghị",
+      items: [
+        {
+          stt: 1,
+          maDon: "1532, 1432",
+          soQuyetDinh: "179/2026/KN-HS",
+          ngayQuyetDinh: "09/07/2026",
+          ngayPhatHanh: "Chưa cập nhật",
+          nguoiDuyet: [
+            { ten: "Nguyễn Thị Bình - Vụ trưởng", status: "Đã duyệt - 10/07/2026" },
+            { ten: "Nguyễn Thị Hoa - TPTC", status: "Đã duyệt - 09/07/2026" },
+          ],
+          nguoiKy: { ten: "Nguyễn Văn Quảng - Phó CA", status: "Chưa có hiệu lực", isDone: false },
+          nguoiTao: { ten: "Nguyễn Cao Thắng", thoiGian: "09/07/2026 14:43:08" },
+        },
+      ],
+    },
   ];
+
+  const thSt: React.CSSProperties = {
+    padding: "10px 8px",
+    textAlign: "left",
+    fontSize: 12,
+    fontWeight: 700,
+    color: "#374151",
+    fontFamily: F,
+    whiteSpace: "nowrap",
+  };
+
+  const tdSt: React.CSSProperties = {
+    padding: "10px 8px",
+    fontSize: 12,
+    fontFamily: F,
+    verticalAlign: "top",
+  };
+
   return (
-    <div style={{ padding: 20 }}>
-      <div style={{ background: "#fff", borderRadius: 8, border: `1px solid ${BORDER}`, overflow: "hidden" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "12px 16px", borderBottom: `1px solid ${BORDER}` }}>
-          <span style={{ fontSize: 14, fontWeight: 700, color: TEXT, fontFamily: F, flex: 1 }}>Danh sách văn bản giải quyết ({vbList.length})</span>
-          <button style={{ display: "flex", alignItems: "center", gap: 6, padding: "6px 14px", background: RED, color: "#fff", border: "none", borderRadius: 4, cursor: "pointer", fontSize: 12, fontWeight: 600, fontFamily: F }}>
-            + Thêm văn bản mới
+    <div style={{ padding: 20, fontFamily: F }}>
+      {showTaoDuThao && (
+        <TaoDuThaoModal
+          onClose={() => {
+            setShowTaoDuThao(false);
+            setSelectedDetail(null);
+          }}
+          detail={selectedDetail || detail}
+        />
+      )}
+
+      <div style={{ background: "#fff", borderRadius: 8, border: `1px solid ${BORDER}`, padding: "16px 20px", boxShadow: "0 1px 3px rgba(0,0,0,0.05)" }}>
+        {/* Header */}
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
+          <span style={{ fontSize: 15, fontWeight: 700, color: "#111827", fontFamily: F }}>
+            Kết quả giải quyết đơn
+          </span>
+          <button
+            onClick={() => {
+              setSelectedDetail(detail);
+              setShowTaoDuThao(true);
+            }}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 6,
+              padding: "7px 16px",
+              background: "#800000",
+              color: "#fff",
+              border: "none",
+              borderRadius: 4,
+              cursor: "pointer",
+              fontSize: 13,
+              fontWeight: 600,
+              fontFamily: F,
+            }}
+          >
+            + Thêm kết quả giải quyết
           </button>
         </div>
-        <table style={{ width: "100%", borderCollapse: "collapse", tableLayout: "fixed" }}>
-          <thead>
-            <tr>
-              {["STT", "SỐ VĂN BẢN", "LOẠI VĂN BẢN", "NGÀY BAN HÀNH", "NGƯỜI KÝ", "TRẠNG THÁI", "GHI CHÚ", "THAO TÁC"].map(h => (
-                <th key={h} style={TH_STYLE}>{h}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {vbList.map((r, idx) => (
-              <tr key={r.stt} style={{ background: idx % 2 === 0 ? "#fff" : "#fafafa" }}>
-                <td style={{ ...TD_STYLE, textAlign: "center", color: MUTED }}>{r.stt}</td>
-                <td style={{ ...TD_STYLE, color: "#2563eb", fontWeight: 600 }}>{r.soVB}</td>
-                <td style={{ ...TD_STYLE, color: TEXT }}>{r.loaiVB}</td>
-                <td style={{ ...TD_STYLE, textAlign: "center", color: TEXT }}>{r.ngayBanHanh}</td>
-                <td style={{ ...TD_STYLE, color: TEXT }}>{r.nguoiKy}</td>
-                <td style={{ ...TD_STYLE, textAlign: "center" }}><Badge color="#065f46" bg="#d1fae5">{r.trangThai}</Badge></td>
-                <td style={{ ...TD_STYLE, color: MUTED }}>{r.ghiChu}</td>
-                <td style={{ ...TD_STYLE, textAlign: "center" }}>
-                  <button style={{ background: "none", border: "none", cursor: "pointer", padding: 3 }} title="Xem chi tiết"><Eye size={14} color="#0e7490" /></button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+
+        {/* Groups */}
+        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+          {groups.map(g => {
+            const isCollapsed = !!collapsedGroups[g.id];
+            return (
+              <div key={g.id} style={{ display: "flex", flexDirection: "column" }}>
+                {/* Group Section Header */}
+                <div
+                  onClick={() => toggleGroup(g.id)}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    padding: "8px 0",
+                    cursor: "pointer",
+                    userSelect: "none",
+                  }}
+                >
+                  <span style={{ fontSize: 13, fontWeight: 700, color: "#111827", fontFamily: F }}>
+                    {g.title}
+                  </span>
+                  <span style={{ fontSize: 12, color: "#6b7280" }}>
+                    {isCollapsed ? "▼" : "▲"}
+                  </span>
+                </div>
+
+                {/* Group Table */}
+                {!isCollapsed && (
+                  <div style={{ overflowX: "auto" }}>
+                    <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12, fontFamily: F }}>
+                      <thead>
+                        <tr style={{ background: "#fff", borderBottom: "1px solid #e5e7eb" }}>
+                          <th style={{ ...thSt, width: 50, textAlign: "center" }}>STT</th>
+                          <th style={{ ...thSt, width: 100 }}>Mã đơn</th>
+                          <th style={{ ...thSt, width: 140 }}>Số quyết định</th>
+                          <th style={{ ...thSt, width: 120 }}>Ngày quyết định</th>
+                          <th style={{ ...thSt, width: 120 }}>Ngày phát hành</th>
+                          <th style={{ ...thSt, width: 220 }}>Người duyệt</th>
+                          <th style={{ ...thSt, width: 200 }}>Người ký</th>
+                          <th style={{ ...thSt, width: 180 }}>Người tạo</th>
+                          <th style={{ ...thSt, width: 80, textAlign: "center" }}>Thao tác</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {g.items.map((r, idx) => (
+                          <tr key={idx} style={{ borderBottom: "1px solid #f3f4f6", background: "#fff" }}>
+                            <td style={{ ...tdSt, textAlign: "center", color: "#6b7280" }}>{r.stt}</td>
+                            <td style={{ ...tdSt, color: "#111827" }}>{r.maDon}</td>
+                            <td style={{ ...tdSt }}>
+                              <span
+                                onClick={() => {
+                                  setSelectedDetail({ ...detail, soQuyetDinh: r.soQuyetDinh });
+                                  setShowTaoDuThao(true);
+                                }}
+                                style={{ color: "#1d4ed8", fontWeight: 500, cursor: "pointer" }}
+                              >
+                                {r.soQuyetDinh}
+                              </span>
+                            </td>
+                            <td style={{ ...tdSt, color: "#374151" }}>{r.ngayQuyetDinh}</td>
+                            <td style={{ ...tdSt, color: "#6b7280" }}>{r.ngayPhatHanh}</td>
+                            <td style={{ ...tdSt }}>
+                              <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+                                {r.nguoiDuyet.map((nd, i) => (
+                                  <div key={i} style={{ lineHeight: 1.3 }}>
+                                    <div style={{ color: "#111827", fontWeight: 500 }}>{nd.ten}</div>
+                                    <div style={{ color: "#16a34a", fontSize: 11 }}>{nd.status}</div>
+                                  </div>
+                                ))}
+                              </div>
+                            </td>
+                            <td style={{ ...tdSt }}>
+                              <div style={{ lineHeight: 1.3 }}>
+                                <div style={{ color: "#111827", fontWeight: 500 }}>{r.nguoiKy.ten}</div>
+                                <div style={{ color: r.nguoiKy.isDone ? "#16a34a" : "#6b7280", fontSize: 11 }}>
+                                  {r.nguoiKy.status}
+                                </div>
+                              </div>
+                            </td>
+                            <td style={{ ...tdSt }}>
+                              <div style={{ lineHeight: 1.3 }}>
+                                <div style={{ color: "#111827", fontWeight: 500 }}>{r.nguoiTao.ten}</div>
+                                <div style={{ color: "#6b7280", fontSize: 11 }}>{r.nguoiTao.thoiGian}</div>
+                              </div>
+                            </td>
+                            <td style={{ ...tdSt, textAlign: "center" }}>
+                              <button
+                                onClick={() => {
+                                  setSelectedDetail({ ...detail, soQuyetDinh: r.soQuyetDinh });
+                                  setShowTaoDuThao(true);
+                                }}
+                                style={{ background: "none", border: "none", cursor: "pointer", padding: 4 }}
+                                title="Xem chi tiết"
+                              >
+                                <Eye size={15} color="#6b7280" />
+                              </button>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Footer Pagination */}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "flex-end",
+            gap: 12,
+            marginTop: 16,
+            paddingTop: 12,
+            fontSize: 12,
+            color: "#6b7280",
+            fontFamily: F,
+          }}
+        >
+          <span>Hiển thị 1-2 trong tổng 2 bản ghi</span>
+          <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+            <button
+              disabled
+              style={{
+                background: "none",
+                border: "none",
+                color: "#d1d5db",
+                cursor: "not-allowed",
+                padding: "2px 6px",
+              }}
+            >
+              &lt;
+            </button>
+            <span
+              style={{
+                width: 22,
+                height: 22,
+                borderRadius: "50%",
+                background: "#800000",
+                color: "#fff",
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontWeight: 600,
+                fontSize: 11,
+              }}
+            >
+              1
+            </span>
+            <button
+              disabled
+              style={{
+                background: "none",
+                border: "none",
+                color: "#d1d5db",
+                cursor: "not-allowed",
+                padding: "2px 6px",
+              }}
+            >
+              &gt;
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );
 }
+
 
 // ── Tab Tài liệu vụ án / Tài liệu hồ sơ (Theo thiết kế chuẩn Image 1) ──────────
 function TabTaiLieu({ detail }: { detail?: VuAnDetailData }) {

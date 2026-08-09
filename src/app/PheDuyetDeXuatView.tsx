@@ -10,6 +10,7 @@ const TH: React.CSSProperties = { padding: "9px 12px", background: BG, fontWeigh
 const TD: React.CSSProperties = { padding: "10px 12px", fontSize: 12, color: TEXT, fontFamily: F, borderBottom: `1px solid ${BORDER}`, borderRight: `1px solid ${BORDER}`, verticalAlign: "top" as const };
 
 const ROWS = [
+  // ── Đã duyệt – Tờ trình ───────────────────────────
   { id: 1, loaiAn: "hinh-su", tenDA: "Số TB: 10/YCBS – VA26-002012 (Hình sự)\nNgày TB: 9/7/2026", noiDung: "Giấy yêu cầu bổ sung", nguoi: "Vũ Văn Yến", ngay: "21/07/2026\n15:35:41", trangThai: "da-duyet", yKien: "Đã duyệt", uuTien: false },
   { id: 2, loaiAn: "dan-su", tenDA: "VA26-003102: Dương Thu Hằng – Tranh chấp hợp đồng vay tài sản", noiDung: "Tờ trình thẩm tra vụ việc số 1", nguoi: "Vũ Văn Yến", ngay: "21/07/2026\n11:19:29", trangThai: "da-duyet", yKien: "Đã duyệt", uuTien: false },
   { id: 3, loaiAn: "hanh-chinh", tenDA: "VA26-004150: Phạm Văn Cường – Khiếu kiện quyết định thu hồi đất", noiDung: "Công văn gửi nội bộ", nguoi: "Vũ Văn Yến", ngay: "21/07/2026\n11:19:24", trangThai: "da-duyet", yKien: "Đồng ý", uuTien: true },
@@ -17,6 +18,24 @@ const ROWS = [
   { id: 5, loaiAn: "vu-3", tenDA: "VA26-005201: Công ty Á Châu – Tranh chấp hợp đồng mua bán hàng hóa", noiDung: "Dự thảo trả lời đơn 00D9321 – Trần Minh Tuấn", nguoi: "Vũ Văn Yến", ngay: "21/07/2026\n11:19:39", trangThai: "da-duyet", yKien: "Đồng ý", uuTien: false },
   { id: 6, loaiAn: "hanh-chinh", tenDA: "VA26-004155: Nguyễn Văn Tiến – Khiếu kiện quyết định hành chính", noiDung: "Dự thảo trả lời đơn 000D987 – Chu Văn An", nguoi: "Nguyễn Văn Tiến", ngay: "21/07/2026\n09:37:27", trangThai: "da-duyet", yKien: "Đồng ý", uuTien: false },
   { id: 7, loaiAn: "vu-3", tenDA: "VA26-005300: Vụ án Công ty TNHH Delta – Giải quyết phá sản doanh nghiệp", noiDung: "Tờ trình xem xét thủ tục phá sản", nguoi: "Lý Thái Phúc", ngay: "22/07/2026\n14:10:00", trangThai: "da-duyet", yKien: "Đã duyệt", uuTien: true },
+
+  // ── Đã duyệt – Công văn trao đổi ──────────────────
+  { id: 16, loaiAn: "hinh-su", tenDA: "VA26-002190: Trần Thị Lan – Tội vi phạm quy định về điều khiển phương tiện\nTAND tỉnh Vĩnh Phúc", noiDung: "Công văn trao đổi số 02/CV-HS", nguoi: "Vũ Văn Yến", ngay: "15/07/2026\n10:05:00", trangThai: "da-duyet", yKien: "Đồng ý", uuTien: false },
+  { id: 17, loaiAn: "dan-su", tenDA: "VA26-003089: Phạm Thị Nga – Tranh chấp hợp đồng thuê nhà ở\nTAND TP. Cần Thơ", noiDung: "Công văn trao đổi số 07/CV-DS", nguoi: "Phạm Thị Hoa", ngay: "18/07/2026\n14:30:10", trangThai: "da-duyet", yKien: "Đồng ý", uuTien: false },
+  { id: 18, loaiAn: "vu-3", tenDA: "VA26-005188: Công ty TNHH Phú Đông – Tranh chấp thương hiệu\nTAND TP. Hải Phòng", noiDung: "Công văn trao đổi số 11/CV-KDTM", nguoi: "Lý Thái Phúc", ngay: "20/07/2026\n09:00:00", trangThai: "da-duyet", yKien: "Đã duyệt", uuTien: false },
+  { id: 19, loaiAn: "hanh-chinh", tenDA: "VA26-004098: Bùi Văn Nam – Khiếu kiện quyết định hành chính về đất đai\nTAND tỉnh Bắc Giang", noiDung: "Công văn trao đổi số 18/CV-HC", nguoi: "Nguyễn Văn Tiến", ngay: "22/07/2026\n11:45:00", trangThai: "da-duyet", yKien: "Đồng ý", uuTien: false },
+
+  // ── Chờ duyệt – Tờ trình ──────────────────────────
+  { id: 12, loaiAn: "hinh-su", tenDA: "VA26-002415: Nguyễn Văn Bình – Tội trộm cắp tài sản\nTAND tỉnh Nghệ An", noiDung: "Tờ trình thẩm tra vụ việc số 3", nguoi: "Vũ Văn Yến", ngay: "09/08/2026\n08:30:00", trangThai: "cho-duyet", yKien: "–", uuTien: false },
+  { id: 13, loaiAn: "dan-su", tenDA: "VA26-003310: Lê Văn Phúc – Tranh chấp thừa kế tài sản\nTAND TP. Hồ Chí Minh", noiDung: "Tờ trình thẩm tra vụ việc số 2", nguoi: "Phạm Thị Hoa", ngay: "09/08/2026\n09:00:15", trangThai: "cho-duyet", yKien: "–", uuTien: false },
+  { id: 14, loaiAn: "vu-3", tenDA: "VA26-005512: Công ty TNHH Hoàng Gia – Tranh chấp hợp đồng thương mại\nTAND TP. Đà Nẵng", noiDung: "Tờ trình thẩm tra vụ việc số 4", nguoi: "Lý Thái Phúc", ngay: "09/08/2026\n10:45:30", trangThai: "cho-duyet", yKien: "–", uuTien: false },
+  { id: 15, loaiAn: "hanh-chinh", tenDA: "VA26-004418: Hoàng Thị Thu – Khiếu kiện quyết định thu hồi giấy phép kinh doanh\nTAND tỉnh Thanh Hóa", noiDung: "Tờ trình thẩm tra vụ việc số 3", nguoi: "Nguyễn Văn Tiến", ngay: "09/08/2026\n11:20:00", trangThai: "cho-duyet", yKien: "–", uuTien: false },
+
+  // ── Chờ duyệt – Công văn trao đổi ─────────────────
+  { id: 8, loaiAn: "hinh-su", tenDA: "VA26-002301: Lê Thị Mai – Tội lừa đảo chiếm đoạt tài sản\nTAND tỉnh Hà Nam", noiDung: "Công văn trao đổi số 08/CV-TAND", nguoi: "Trần Văn Hùng", ngay: "09/08/2026\n09:15:22", trangThai: "cho-duyet", yKien: "–", uuTien: false },
+  { id: 9, loaiAn: "dan-su", tenDA: "VA26-003258: Nguyễn Thị Lan – Tranh chấp quyền sử dụng đất\nTAND TP. Hà Nội", noiDung: "Công văn trao đổi số 15/CV-DS", nguoi: "Phạm Thị Hoa", ngay: "09/08/2026\n10:20:05", trangThai: "cho-duyet", yKien: "–", uuTien: false },
+  { id: 10, loaiAn: "vu-3", tenDA: "VA26-005410: Công ty CP Minh Phát – Tranh chấp hợp đồng lao động\nTAND tỉnh Bình Dương", noiDung: "Công văn trao đổi số 22/CV-KDTM", nguoi: "Lý Thái Phúc", ngay: "09/08/2026\n11:05:43", trangThai: "cho-duyet", yKien: "–", uuTien: false },
+  { id: 11, loaiAn: "hanh-chinh", tenDA: "VA26-004302: Trần Minh Đức – Khiếu kiện quyết định xử phạt vi phạm hành chính\nTAND tỉnh Đồng Nai", noiDung: "Công văn trao đổi số 31/CV-HC", nguoi: "Nguyễn Văn Tiến", ngay: "09/08/2026\n13:45:10", trangThai: "cho-duyet", yKien: "–", uuTien: false },
 ];
 
 // ── Màn 3: Xem biểu mẫu (Word editor mock) ───────────────────────────────────
@@ -29,8 +48,8 @@ export function XemBieuMauScreen({ onClose, loaiPhieu }: { onClose: () => void; 
   const docTitle = isCongVanXacMinh
     ? "Công văn yêu cầu chuyển hồ sơ vụ án - 527/CV-TANDTC"
     : loaiPhieu
-    ? `${loaiPhieu} hồ sơ vụ án - /2026/${loaiPhieu === "Phiếu trả" ? "PT" : "PM"}-TA`
-    : "Giấy xác nhận - /2026/TB-TA";
+      ? `${loaiPhieu} hồ sơ vụ án - /2026/${loaiPhieu === "Phiếu trả" ? "PT" : "PM"}-TA`
+      : "Giấy xác nhận - /2026/TB-TA";
 
   return (
     <div style={{ position: "fixed", inset: 0, zIndex: 3000, display: "flex", flexDirection: "column", background: "#f3f3f3", fontFamily: F }}>
@@ -82,7 +101,7 @@ export function XemBieuMauScreen({ onClose, loaiPhieu }: { onClose: () => void; 
       <div style={{ flex: 1, overflowY: "auto", display: "flex", justifyContent: "center", padding: "32px 16px", background: "#e8e8e8" }}>
         {/* Side icons */}
         <div style={{ position: "fixed", left: 12, top: "50%", transform: "translateY(-50%)", display: "flex", flexDirection: "column", gap: 12, zIndex: 3100 }}>
-          {["📋","💬","ℹ","🖼"].map((ic, i) => (
+          {["📋", "💬", "ℹ", "🖼"].map((ic, i) => (
             <button key={i} style={{ background: "none", border: "none", cursor: "pointer", fontSize: 18, color: "#555" }}>{ic}</button>
           ))}
         </div>
@@ -291,18 +310,21 @@ export function XemBieuMauScreen({ onClose, loaiPhieu }: { onClose: () => void; 
 // ── Modal: Lịch sử cho ý kiến ────────────────────────────────────────────────
 
 const LICH_SU_DATA = [
-  { don: "TLMT-10", nguoiGui: "Trần Văn Hùng", ngayNhan: "22/05/2026",
+  {
+    don: "TLMT-10", nguoiGui: "Trần Văn Hùng", ngayNhan: "22/05/2026",
     rows: [
       { ngay: "15/05/2026", nguoi: "Nguyễn Văn B (Vụ trưởng)", noiDung: "Trả lời đơn" },
       { ngay: "10/05/2026", nguoi: "Trần Văn C (Thẩm tra viên)", noiDung: "Trả lời đơn" },
     ],
   },
-  { don: "ĐTL", nguoiGui: "Trần Văn Hùng", ngayNhan: "20/05/2026",
+  {
+    don: "ĐTL", nguoiGui: "Trần Văn Hùng", ngayNhan: "20/05/2026",
     rows: [
       { ngay: "18/05/2026", nguoi: "Nguyễn Văn B (Vụ trưởng)", noiDung: "Trả lời đơn" },
     ],
   },
-  { don: "TLMT-09", nguoiGui: "Trần Văn Hùng", ngayNhan: "22/05/2026",
+  {
+    don: "TLMT-09", nguoiGui: "Trần Văn Hùng", ngayNhan: "22/05/2026",
     rows: [
       { ngay: "12/05/2026", nguoi: "Lê Thị D (Thẩm tra viên)", noiDung: "Trả lời đơn" },
     ],
@@ -362,20 +384,35 @@ function LichSuModal({ idx, onClose }: { idx: number; onClose: () => void }) {
 
 // ── Màn 2: Phê duyệt ý kiến (detail) ────────────────────────────────────────
 
-const Y_KIEN_OPTIONS = ["Trả lời đơn", "Kháng nghị", "VKS đang xử lý", "Xếp đơn", "Nghiên cứu, xác minh, bổ sung"];
+const DON_DATA = [
+  { nguoi: "Trần Văn Hùng", loai: "TLM", soTL: "STL: 10", soNTL: "NTL", ngay: "22/05/2026", yKien: "Trả lời đơn" },
+  { nguoi: "Trần Văn Hùng", loai: "TLM", soTL: "STL: 10", soNTL: "NTL", ngay: "22/05/2026", yKien: "Trả lời đơn" },
+  { nguoi: "Trần Văn Hùng", loai: "TLM", soTL: "STL: 09", soNTL: "ĐTL", ngay: "22/05/2026", yKien: "Trả lời đơn" },
+];
 
-function PheDuyetDetail({ onClose, onXemBieuMau }: { onClose: () => void; onXemBieuMau: () => void }) {
+const Y_KIEN_DON_OPTIONS = ["Trả lời đơn", "Kháng nghị", "VKS đang xử lý", "Xếp đơn", "Nghiên cứu, xác minh, bổ sung"];
+
+function PheDuyetDetail({ onClose, onXemBieuMau, userRole, noiDung }: { onClose: () => void; onXemBieuMau: () => void; userRole: UserRoleType; noiDung: string }) {
+  const isVu1 = userRole === "vu-1" || userRole === "hinh-su";
+  const isToTrinh = noiDung.startsWith("Tờ trình");
   const [tab, setTab] = useState<DetailTab>("y-kien");
-  const [yKien, setYKien] = useState("Kháng nghị");
-  const [noiDungYKien, setNoiDungYKien] = useState("");
+  const [yKienCuaLanhDao, setYKienCuaLanhDao] = useState("");
   const [gqRutGon, setGqRutGon] = useState(false);
   const [lichSuIdx, setLichSuIdx] = useState<number | null>(null);
+  const [donYKien, setDonYKien] = useState<string[]>(DON_DATA.map(d => d.yKien));
+  const [yKienOption, setYKienOption] = useState("Kháng nghị");
 
   const tabStyle = (active: boolean): React.CSSProperties => ({
     padding: "10px 20px", fontSize: 13, fontFamily: F, fontWeight: active ? 700 : 400,
     color: active ? RED : TEXT, background: "none", border: "none", cursor: "pointer",
     borderBottom: active ? `2px solid ${RED}` : "2px solid transparent",
   });
+
+  const inSt: React.CSSProperties = {
+    width: "100%", padding: "5px 8px", fontSize: 12, fontFamily: F,
+    border: `1px solid ${BORDER}`, borderRadius: 4, outline: "none",
+    background: "#fff", cursor: "pointer", appearance: "none" as const,
+  };
 
   return (
     <div style={{ display: "flex", flexDirection: "column", flex: 1, minHeight: 0, fontFamily: F }}>
@@ -399,33 +436,89 @@ function PheDuyetDetail({ onClose, onXemBieuMau }: { onClose: () => void; onXemB
 
           {tab === "y-kien" && (
             <div style={{ padding: "16px 20px", display: "flex", flexDirection: "column", gap: 16, flex: 1 }}>
-              {/* Checkbox */}
-              <label style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12, cursor: "pointer" }}>
+              {/* Checkbox rút gọn */}
+              <label style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12, cursor: "pointer", justifyContent: "flex-end" }}>
                 <input type="checkbox" checked={gqRutGon} onChange={e => setGqRutGon(e.target.checked)} style={{ width: 14, height: 14, accentColor: "#1d4ed8" }} />
                 Giải quyết theo thủ tục rút gọn
               </label>
 
-              {/* Ý kiến */}
-              <div>
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
-                  <span style={{ fontSize: 13, fontWeight: 700, color: TEXT }}>Ý kiến</span>
-                  <button onClick={() => setLichSuIdx(0)} style={{ background: "none", border: "none", cursor: "pointer", color: "#2563eb", fontSize: 12, fontFamily: F }}>Lịch sử cho ý kiến</button>
+              {/* ── VỤ 1: Bảng thông tin đơn – chỉ hiển thị với Tờ trình ── */}
+              {isVu1 && isToTrinh && (
+                <div>
+                  <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
+                    <thead>
+                      <tr style={{ background: BG }}>
+                        <th style={{ padding: "8px 10px", textAlign: "left" as const, fontWeight: 700, color: "#374151", borderBottom: `1px solid ${BORDER}`, borderRight: `1px solid ${BORDER}`, fontSize: 11 }}>THÔNG TIN ĐƠN</th>
+                        <th style={{ padding: "8px 10px", textAlign: "left" as const, fontWeight: 700, color: "#374151", borderBottom: `1px solid ${BORDER}`, borderRight: `1px solid ${BORDER}`, fontSize: 11, width: 160 }}>Ý KIẾN</th>
+                        <th style={{ padding: "8px 10px", textAlign: "center" as const, fontWeight: 700, color: "#374151", borderBottom: `1px solid ${BORDER}`, fontSize: 11, width: 80 }}>THAO TÁC</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {DON_DATA.map((don, idx) => (
+                        <tr key={idx} style={{ background: idx % 2 === 0 ? "#fff" : "#fafafa" }}>
+                          <td style={{ padding: "8px 10px", borderBottom: `1px solid ${BORDER}`, borderRight: `1px solid ${BORDER}`, verticalAlign: "top" as const }}>
+                            <div style={{ fontWeight: 600, color: TEXT }}>{don.nguoi} -</div>
+                            <div style={{ color: MUTED, fontSize: 11 }}>{don.loai} - {don.soTL}</div>
+                            <div style={{ color: MUTED, fontSize: 11 }}>{don.soNTL} {don.ngay}</div>
+                          </td>
+                          <td style={{ padding: "6px 8px", borderBottom: `1px solid ${BORDER}`, borderRight: `1px solid ${BORDER}` }}>
+                            <div style={{ position: "relative" as const }}>
+                              <select
+                                value={donYKien[idx]}
+                                onChange={e => setDonYKien(prev => prev.map((v, i) => i === idx ? e.target.value : v))}
+                                style={{ ...inSt, paddingRight: 24 }}
+                              >
+                                {Y_KIEN_DON_OPTIONS.map(o => <option key={o} value={o}>{o}</option>)}
+                              </select>
+                              <ChevronDown size={12} color={MUTED} style={{ position: "absolute", right: 6, top: "50%", transform: "translateY(-50%)", pointerEvents: "none" }} />
+                            </div>
+                          </td>
+                          <td style={{ padding: "6px 8px", borderBottom: `1px solid ${BORDER}`, textAlign: "center" as const }}>
+                            <div style={{ display: "flex", gap: 8, justifyContent: "center" }}>
+                              <button title="Lịch sử" onClick={() => setLichSuIdx(idx)} style={{ background: "none", border: "none", cursor: "pointer", padding: 2 }}>
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={MUTED} strokeWidth="2"><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" /></svg>
+                              </button>
+                              <button title="Lấy số" style={{ background: "none", border: "none", cursor: "pointer", padding: 2 }}>
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke={MUTED} strokeWidth="2"><rect x="9" y="9" width="13" height="13" rx="2" /><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" /></svg>
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
                 </div>
-                <div style={{ display: "flex", flexWrap: "wrap", gap: 16 }}>
-                  {Y_KIEN_OPTIONS.map(opt => (
-                    <label key={opt} style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, cursor: "pointer", color: TEXT }}>
-                      <input type="radio" name="y-kien" checked={yKien === opt} onChange={() => setYKien(opt)} style={{ width: 14, height: 14, accentColor: RED }} />
-                      {opt}
-                    </label>
-                  ))}
-                </div>
-              </div>
+              )}
 
-              {/* Nội dung ý kiến */}
+              {/* Ý KIẾN CỦA LÃNH ĐẠO */}
               <div>
-                <div style={{ fontSize: 12, fontWeight: 600, color: TEXT, marginBottom: 6 }}><span style={{ color: RED }}>*</span> Nội dung ý kiến</div>
-                <textarea value={noiDungYKien} onChange={e => setNoiDungYKien(e.target.value)} placeholder="Vui lòng nhập ý kiến..." rows={7}
-                  style={{ width: "100%", padding: "8px 10px", fontSize: 12, fontFamily: F, border: `1px solid ${BORDER}`, borderRadius: 4, outline: "none", resize: "vertical" as const, boxSizing: "border-box" as const }} />
+                <div style={{ fontSize: 12, fontWeight: 700, color: TEXT, marginBottom: 8, textTransform: "uppercase" as const }}>Ý kiến của lãnh đạo</div>
+
+                {/* Radio buttons: chỉ hiển thị với Tờ trình của Vụ 2, 3, 4 */}
+                {!isVu1 && isToTrinh && (
+                  <div style={{ display: "flex", flexWrap: "wrap" as const, gap: "8px 20px", marginBottom: 10 }}>
+                    {["Kháng nghị", "Không kháng nghị", "Nghiên cứu, xác minh, bổ sung", "Xếp đơn", "VKS đang xử lý"].map(opt => (
+                      <label key={opt} style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, cursor: "pointer", color: TEXT }}>
+                        <input
+                          type="radio"
+                          name="y-kien-ldao"
+                          checked={yKienOption === opt}
+                          onChange={() => setYKienOption(opt)}
+                          style={{ width: 14, height: 14, accentColor: RED, cursor: "pointer" }}
+                        />
+                        {opt}
+                      </label>
+                    ))}
+                  </div>
+                )}
+
+                <textarea
+                  value={yKienCuaLanhDao}
+                  onChange={e => setYKienCuaLanhDao(e.target.value)}
+                  placeholder="Nhập nội dung ý kiến của lãnh đạo..."
+                  rows={isVu1 ? 5 : 6}
+                  style={{ width: "100%", padding: "8px 10px", fontSize: 12, fontFamily: F, border: `1px solid ${BORDER}`, borderRadius: 4, outline: "none", resize: "vertical" as const, boxSizing: "border-box" as const }}
+                />
               </div>
 
               {/* Đề xuất trình tiếp */}
@@ -467,7 +560,7 @@ function PheDuyetDetail({ onClose, onXemBieuMau }: { onClose: () => void; onXemB
             <button style={{ padding: "6px 18px", background: RED, color: "#fff", border: `2px solid ${RED}`, borderRadius: 4, cursor: "pointer", fontSize: 12, fontWeight: 700, fontFamily: F }}>Lưu</button>
             <button style={{ padding: "6px 18px", background: "#fff", color: RED, border: `2px dashed ${RED}`, borderRadius: 4, cursor: "pointer", fontSize: 12, fontWeight: 600, fontFamily: F }}>Sửa biểu mẫu</button>
             <button style={{ padding: "6px 18px", background: RED, color: "#fff", border: `2px solid ${RED}`, borderRadius: 4, cursor: "pointer", fontSize: 12, fontWeight: 700, fontFamily: F }}>Lưu và ký</button>
-            <button style={{ padding: "6px 18px", background: "#fff", color: TEXT, border: `2px solid ${BORDER}`, borderRadius: 4, cursor: "pointer", fontSize: 12, fontFamily: F }}>Từ chối</button>
+            <button style={{ padding: "6px 18px", background: "#fff", color: TEXT, border: `2px solid ${BORDER}`, borderRadius: 4, cursor: "pointer", fontSize: 12, fontFamily: F }}>Trả lại</button>
             <button onClick={onClose} style={{ padding: "6px 18px", background: "#fff", color: TEXT, border: `2px dashed ${BORDER}`, borderRadius: 4, cursor: "pointer", fontSize: 12, fontFamily: F }}>Đóng</button>
           </div>
         </div>
@@ -541,7 +634,11 @@ export default function PheDuyetDeXuatView({
   const [selectedRow, setSelectedRow] = useState<number | null>(null);
 
   if (screen === "bieu-mau") return <XemBieuMauScreen onClose={() => setScreen("detail")} />;
-  if (screen === "detail") return <PheDuyetDetail onClose={() => setScreen("list")} onXemBieuMau={() => setScreen("bieu-mau")} />;
+  if (screen === "detail") {
+    const selRow = ROWS.find(r => r.id === selectedRow);
+    const noiDungSel = selRow?.noiDung ?? "Tờ trình";
+    return <PheDuyetDetail onClose={() => setScreen("list")} onXemBieuMau={() => setScreen("bieu-mau")} userRole={userRole} noiDung={noiDungSel} />;
+  }
 
   const filteredByRole = ROWS.filter(r => {
     if (userRole === "vu-1" || userRole === "hinh-su") return r.loaiAn === "vu-1" || r.loaiAn === "hinh-su";
@@ -568,7 +665,7 @@ export default function PheDuyetDeXuatView({
 
   const filteredRows = activeTab === "tat-ca" ? filteredByRole
     : activeTab === "da-duyet" ? filteredByRole.filter(r => r.trangThai === "da-duyet")
-    : filteredByRole.filter(r => r.trangThai === activeTab);
+      : filteredByRole.filter(r => r.trangThai === activeTab);
 
   return (
     <div style={{ padding: "20px 24px", fontFamily: F, overflowY: "auto", height: "100%" }}>
@@ -665,12 +762,24 @@ export default function PheDuyetDeXuatView({
                   <td style={TD}>{r.nguoi}</td>
                   <td style={{ ...TD, whiteSpace: "pre-line" as const, fontSize: 11 }}>{r.ngay}</td>
                   <td style={TD}>
-                    <div style={{ display: "inline-flex", alignItems: "center", gap: 5, padding: "3px 10px", background: "#dcfce7", borderRadius: 12, fontSize: 11, fontWeight: 600, color: "#15803d" }}>
-                      <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#16a34a", display: "inline-block" }} />
-                      Đã duyệt
-                    </div>
+                    {r.trangThai === "da-duyet" ? (
+                      <div style={{ display: "inline-flex", alignItems: "center", gap: 5, padding: "3px 10px", background: "#dcfce7", borderRadius: 12, fontSize: 11, fontWeight: 600, color: "#15803d" }}>
+                        <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#16a34a", display: "inline-block" }} />
+                        Đã duyệt
+                      </div>
+                    ) : r.trangThai === "cho-duyet" ? (
+                      <div style={{ display: "inline-flex", alignItems: "center", gap: 5, padding: "3px 10px", background: "#fef3c7", borderRadius: 12, fontSize: 11, fontWeight: 600, color: "#92400e" }}>
+                        <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#d97706", display: "inline-block" }} />
+                        Chờ duyệt
+                      </div>
+                    ) : (
+                      <div style={{ display: "inline-flex", alignItems: "center", gap: 5, padding: "3px 10px", background: "#fee2e2", borderRadius: 12, fontSize: 11, fontWeight: 600, color: "#991b1b" }}>
+                        <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#dc2626", display: "inline-block" }} />
+                        Từ chối
+                      </div>
+                    )}
                   </td>
-                  <td style={{ ...TD, color: "#16a34a", fontWeight: 600 }}>{r.yKien}</td>
+                  <td style={{ ...TD, color: r.yKien === "–" ? MUTED : "#16a34a", fontWeight: r.yKien === "–" ? 400 : 600 }}>{r.yKien}</td>
                   <td style={{ ...TD, textAlign: "center" as const }}>
                     <button onClick={e => { e.stopPropagation(); setScreen("detail"); }}
                       style={{ background: "none", border: selectedRow === r.id ? `1px dashed #2563eb` : "none", borderRadius: 4, cursor: "pointer", padding: "4px 8px" }}>
