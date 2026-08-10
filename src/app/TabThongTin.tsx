@@ -671,6 +671,7 @@ export function TabThongTin({ detail, userRole }: { detail?: VuAnDetailData; use
 
   // Lấy dữ liệu mock phù hợp cho Loại án hiện tại
   const mock = MOCK_DATA_BY_LOAI_AN[selectedLoaiAn] || MOCK_DATA_BY_LOAI_AN["Hình sự"];
+  const isVu1 = userRole === "vu-1" || userRole === "hinh-su" || selectedLoaiAn === "Hình sự";
 
   // States hỗ trợ xem / chỉnh sửa thông tin thêm
   const [thoiHieu, setThoiHieu] = useState(mock.thongTinThem.thoiHieuDefault);
@@ -828,27 +829,29 @@ export function TabThongTin({ detail, userRole }: { detail?: VuAnDetailData; use
                 </label>
               ))}
             </div>
-            <div style={{ display: "flex", gap: 20, marginTop: 12 }}>
-              <div style={{ display: "flex", flexDirection: "column", gap: 4, flex: 1 }}>
-                <label style={{ fontSize: 11, color: TEXT, fontFamily: F }}><span style={{ color: RED }}>*</span> Quan hệ pháp luật</label>
-                <input
-                  value={quanHePL}
-                  onChange={e => setQuanHePL(e.target.value)}
-                  style={{ padding: "7px 10px", fontSize: 12, border: `1px solid ${BORDER}`, borderRadius: 4, fontFamily: F, outline: "none", width: "100%", background: "#fff", boxSizing: "border-box" }}
-                />
+            {!isVu1 && (
+              <div style={{ display: "flex", gap: 20, marginTop: 12 }}>
+                <div style={{ display: "flex", flexDirection: "column", gap: 4, flex: 1 }}>
+                  <label style={{ fontSize: 11, color: TEXT, fontFamily: F }}><span style={{ color: RED }}>*</span> Quan hệ pháp luật</label>
+                  <input
+                    value={quanHePL}
+                    onChange={e => setQuanHePL(e.target.value)}
+                    style={{ padding: "7px 10px", fontSize: 12, border: `1px solid ${BORDER}`, borderRadius: 4, fontFamily: F, outline: "none", width: "100%", background: "#fff", boxSizing: "border-box" }}
+                  />
+                </div>
+                <div style={{ display: "flex", flexDirection: "column", gap: 4, flex: 1 }}>
+                  <label style={{ fontSize: 11, color: TEXT, fontFamily: F }}><span style={{ color: RED }}>*</span> Quan hệ pháp luật thống kê</label>
+                  <select
+                    value={quanHePLThongKe}
+                    onChange={e => setQuanHePLThongKe(e.target.value)}
+                    style={{ padding: "7px 10px", fontSize: 12, border: `1px solid ${BORDER}`, borderRadius: 4, fontFamily: F, outline: "none", width: "100%", background: "#fff", boxSizing: "border-box", cursor: "pointer" }}>
+                    {mock.thongTinThem.quanHePLThongKeOptions.map(opt => (
+                      <option key={opt} value={opt}>{opt}</option>
+                    ))}
+                  </select>
+                </div>
               </div>
-              <div style={{ display: "flex", flexDirection: "column", gap: 4, flex: 1 }}>
-                <label style={{ fontSize: 11, color: TEXT, fontFamily: F }}><span style={{ color: RED }}>*</span> Quan hệ pháp luật thống kê</label>
-                <select
-                  value={quanHePLThongKe}
-                  onChange={e => setQuanHePLThongKe(e.target.value)}
-                  style={{ padding: "7px 10px", fontSize: 12, border: `1px solid ${BORDER}`, borderRadius: 4, fontFamily: F, outline: "none", width: "100%", background: "#fff", boxSizing: "border-box", cursor: "pointer" }}>
-                  {mock.thongTinThem.quanHePLThongKeOptions.map(opt => (
-                    <option key={opt} value={opt}>{opt}</option>
-                  ))}
-                </select>
-              </div>
-            </div>
+            )}
           </div>
         </div>
       </div>

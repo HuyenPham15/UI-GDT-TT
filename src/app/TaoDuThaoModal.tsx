@@ -4,7 +4,7 @@ import { F, BORDER, TEXT, MUTED } from "./shared";
 import { TrinhKyModal } from "./TrinhKyModal";
 
 // ── Word preview / editor modal cho Dự thảo văn bản giải quyết ─────────────────
-function XemBieuMauDuThaoModal({
+export function XemBieuMauDuThaoModal({
   onClose,
   detail,
   ketQua,
@@ -15,7 +15,7 @@ function XemBieuMauDuThaoModal({
 }: {
   onClose: () => void;
   detail?: any;
-  ketQua: "tra-loi" | "khang-nghi";
+  ketQua: "tra-loi" | "khang-nghi" | "tam-hoan";
   soQuyetDinh: string;
   ngayQuyetDinh: string;
   nguoiKy: string;
@@ -26,8 +26,11 @@ function XemBieuMauDuThaoModal({
   const [fontFamily, setFontFamily] = useState("Times New Roman");
 
   const isKhangNghi = ketQua === "khang-nghi";
+  const isTamHoan = ketQua === "tam-hoan";
   const titleDoc = isKhangNghi
     ? "QUYẾT ĐỊNH KHÁNG NGHỊ GIÁM ĐỐC THẨM"
+    : isTamHoan
+    ? "QUYẾT ĐỊNH TẠM HOÃN THI HÀNH ÁN"
     : "THÔNG BÁO VỀ VIỆC GIẢI QUYẾT ĐƠN ĐỀ NGHỊ GIÁM ĐỐC THẨM";
 
   const execCmd = (cmd: string, arg?: string) => {
@@ -351,7 +354,7 @@ export function TaoDuThaoModal({
 
   // Section 1: Thông tin đơn
   const [donLienQuan, setDonLienQuan] = useState("2 đơn/người được chọn");
-  const [ketQuaGQ, setKetQuaGQ] = useState<"tra-loi" | "khang-nghi">("tra-loi");
+  const [ketQuaGQ, setKetQuaGQ] = useState<"tra-loi" | "khang-nghi" | "chap-nhan" | "khong-chap-nhan">("tra-loi");
 
   // Multi-select & Thêm người đứng đơn
   const [donDataList, setDonDataList] = useState([
@@ -448,6 +451,18 @@ export function TaoDuThaoModal({
   };
 
   // Section 2: Thông tin quyết định
+  const biCaoOptions = Array.from(
+    new Set([
+      detail?.biCao,
+      detail?.tenBiCan,
+      "Phan Văn Thành (Bị cáo đầu vụ)",
+      "Nguyễn Văn Minh (Bị cáo)",
+      "Trần Đình Trọng (Bị cáo)",
+      "Lê Văn Hùng (Bị cáo)",
+    ].filter(Boolean))
+  ) as string[];
+  const [selectedBiCao, setSelectedBiCao] = useState(biCaoOptions[0] || "Phan Văn Thành (Bị cáo đầu vụ)");
+
   const [ngayQuyetDinh, setNgayQuyetDinh] = useState("09/08/2026");
   const [soQuyetDinh, setSoQuyetDinh] = useState("");
   const [nguoiKy, setNguoiKy] = useState("Nguyễn Biên Thuỳ - Thẩm phán TANDTC");
@@ -952,6 +967,25 @@ export function TaoDuThaoModal({
                 )}
               </div>
             </div>
+
+            {ketQuaGQ === "khang-nghi" && (
+              <div style={{ marginTop: 4 }}>
+                <label style={lblSt}>
+                  <span style={{ color: "#dc2626", marginRight: 3 }}>*</span>
+                  Chọn Bị cáo
+                </label>
+                <select
+                  value={selectedBiCao}
+                  onChange={e => setSelectedBiCao(e.target.value)}
+                  style={{ ...inSt, cursor: "pointer", maxWidth: 380 }}
+                >
+                  <option value="">-- Chọn bị cáo --</option>
+                  {biCaoOptions.map(bc => (
+                    <option key={bc} value={bc}>{bc}</option>
+                  ))}
+                </select>
+              </div>
+            )}
           </div>
 
           {/* Section 2: Thông tin quyết định */}
@@ -1020,7 +1054,9 @@ export function TaoDuThaoModal({
             <div>
               <label style={lblSt}>
                 <span style={{ color: "#dc2626", marginRight: 3 }}>*</span>
-                {ketQuaGQ === "khang-nghi" ? "Nội dung quyết định kháng nghị" : "Nội dung trả lời"}
+                {ketQuaGQ === "khang-nghi"
+                  ? "Nội dung quyết định kháng nghị"
+                  : "Nội dung trả lời"}
               </label>
               <textarea
                 value={noiDung}

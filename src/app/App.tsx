@@ -16,7 +16,7 @@ import { formatSoBA } from "./AppHelpers";
 import { SectionCard, InfoGrid, TabThongTin } from "./TabThongTin";
 import { HoSoToTrinhModal, TrinhKyModal } from "./TrinhKyModal";
 import { TaoDuThaoModal } from "./TaoDuThaoModal";
-import { ThemKetQuaModal } from "./ThemKetQuaModal";
+import { ThemKetQuaModal, ThemQuyetDinhHoanModal } from "./ThemKetQuaModal";
 import PhanCongHDXXView from "./PhanCongHDXXView";
 import CongVanTraoDoiView, { XemBieuMauCongVanModal } from "./CongVanTraoDoiView";
 import QuanLyVuXetXuView from "./QuanLyVuXetXuView";
@@ -33,6 +33,7 @@ import { QuanLyKhieuNaiView } from "./QuanLyKhieuNaiView";
 import { VuAnSearchFilterPanel } from "./VuAnSearchFilterPanel";
 import HoSoKhangNghiView, { WordEditorView } from "./HoSoKhangNghiView";
 import QuanLyVuAnView, { ChiTietVuAnView, filterVuAnListByRole, type ChiTietTab } from "./QuanLyVuAnView";
+import NhanDonTLVuAnView from "./NhanDonTLVuAnView";
 
 // ── Thông tin đơn cell ───────────────────────────────────────────────────────
 
@@ -1440,7 +1441,7 @@ function TaoPhieuModal({ onClose }: { onClose: () => void }) {
 
 
 // ── Tab Tờ trình trong Chi tiết vụ án ──────────────────────────────────────────
-function TabToTrinh({ detail }: { detail?: VuAnDetailData }) {
+function TabToTrinh({ detail, userRole }: { detail?: VuAnDetailData; userRole?: UserRoleType }) {
   const [showTaoTT, setShowTaoTT] = useState(false);
   const [showTrinhKy, setShowTrinhKy] = useState(false);
   const [showHoSo, setShowHoSo] = useState(false);
@@ -1752,11 +1753,13 @@ function TabToTrinh({ detail }: { detail?: VuAnDetailData }) {
         <div style={{ display: "flex", alignItems: "center", padding: "12px 16px", borderBottom: `1px solid ${BORDER}`, gap: 8, flexWrap: "wrap" }}>
           <span style={{ fontSize: 14, fontWeight: 700, color: TEXT, fontFamily: F, flex: 1 }}>Lịch sử trình ký</span>
           {/* Filter by đơn */}
-          <select value={filterDon} onChange={e => setFilterDon(e.target.value)}
-            style={{ padding: "5px 8px", fontSize: 12, border: `1px solid ${BORDER}`, borderRadius: 4, fontFamily: F, background: "#fff", color: TEXT }}>
-            <option value="">Lọc theo đơn</option>
-            {allDonOptions.map(o => <option key={o} value={o}>{o}</option>)}
-          </select>
+          {!isVu234(userRole, detail?.loaiAn) && (
+            <select value={filterDon} onChange={e => setFilterDon(e.target.value)}
+              style={{ padding: "5px 8px", fontSize: 12, border: `1px solid ${BORDER}`, borderRadius: 4, fontFamily: F, background: "#fff", color: TEXT }}>
+              <option value="">Lọc theo đơn</option>
+              {allDonOptions.map(o => <option key={o} value={o}>{o}</option>)}
+            </select>
+          )}
           {/* Filter by văn bản */}
           <select value={filterVanBan} onChange={e => setFilterVanBan(e.target.value)}
             style={{ padding: "5px 8px", fontSize: 12, border: `1px solid ${BORDER}`, borderRadius: 4, fontFamily: F, background: "#fff", color: TEXT }}>
@@ -1864,11 +1867,34 @@ function TabToTrinh({ detail }: { detail?: VuAnDetailData }) {
 // ── Tab Giải quyết văn bản đề nghị (Kết quả giải quyết đơn theo mẫu ảnh) ─────────────
 function TabGiaiQuyetVB({ detail }: { detail?: VuAnDetailData }) {
   const [showThemKetQua, setShowThemKetQua] = useState(false);
+  const [showThemHoan, setShowThemHoan] = useState(false);
+  const [searchHoan, setSearchHoan] = useState("");
+  const [isHoanChecked, setIsHoanChecked] = useState(true);
+  const [quyetDinhHoanList, setQuyetDinhHoanList] = useState<Array<{
+    stt: number;
+    biCao: string;
+    tenQuyetDinh: string;
+    soQuyetDinh: string;
+    ngayQuyetDinh: string;
+    nguoiKy: string;
+    nguoiTao: string;
+  }>>([]);
+
   const [selectedDetail, setSelectedDetail] = useState<any>(null);
   const [collapsedGroups, setCollapsedGroups] = useState<Record<string, boolean>>({});
 
   const toggleGroup = (groupId: string) => {
     setCollapsedGroups(prev => ({ ...prev, [groupId]: !prev[groupId] }));
+  };
+
+  const handleAddQuyetDinhHoan = (newItem: any) => {
+    setQuyetDinhHoanList(prev => [
+      ...prev,
+      {
+        stt: prev.length + 1,
+        ...newItem,
+      },
+    ]);
   };
 
   const isKhieuNai = detail?.isKhieuNai || detail?.entityWord === "Khiếu nại" || detail?.moduleLabel === "Quản lý khiếu nại";
@@ -2188,6 +2214,126 @@ function TabGiaiQuyetVB({ detail }: { detail?: VuAnDetailData }) {
               &gt;
             </button>
           </div>
+        </div>
+      </div>
+
+      {showThemHoan && (
+        <ThemQuyetDinhHoanModal
+          onClose={() => setShowThemHoan(false)}
+          detail={detail}
+          onSave={handleAddQuyetDinhHoan}
+        />
+      )}
+
+      {/* Thông tin quyết định hoãn thi hành án */}
+      <div style={{ background: "#fff", borderRadius: 8, border: `1px solid ${BORDER}`, padding: "16px 20px", boxShadow: "0 1px 3px rgba(0,0,0,0.05)", marginTop: 16 }}>
+        <div style={{ marginBottom: 12 }}>
+          <span style={{ fontSize: 14, fontWeight: 700, color: "#111827", fontFamily: F }}>
+            Thông tin quyết định hoãn thi hành án
+          </span>
+        </div>
+
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12, flexWrap: "wrap", gap: 10 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+            <label style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 13, color: TEXT, cursor: "pointer", fontFamily: F }}>
+              <input
+                type="checkbox"
+                checked={isHoanChecked}
+                onChange={e => setIsHoanChecked(e.target.checked)}
+                style={{ accentColor: "#800000", cursor: "pointer" }}
+              />
+              <span>Quyết định hoãn thi hành án</span>
+            </label>
+            <div style={{ position: "relative", width: 220 }}>
+              <input
+                type="text"
+                placeholder="Tìm kiếm..."
+                value={searchHoan}
+                onChange={e => setSearchHoan(e.target.value)}
+                style={{
+                  width: "100%",
+                  padding: "5px 10px 5px 28px",
+                  fontSize: 12,
+                  border: `1px solid ${BORDER}`,
+                  borderRadius: 4,
+                  fontFamily: F,
+                  outline: "none",
+                  boxSizing: "border-box",
+                }}
+              />
+              <Search size={13} color={MUTED} style={{ position: "absolute", left: 8, top: 7, pointerEvents: "none" }} />
+            </div>
+          </div>
+
+          <button
+            onClick={() => setShowThemHoan(true)}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 6,
+              padding: "6px 14px",
+              background: "#800000",
+              color: "#fff",
+              border: "none",
+              borderRadius: 4,
+              cursor: "pointer",
+              fontSize: 12,
+              fontWeight: 700,
+              fontFamily: F,
+            }}
+          >
+            + Thêm mới
+          </button>
+        </div>
+
+        <div style={{ overflowX: "auto" }}>
+          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12, fontFamily: F }}>
+            <thead>
+              <tr style={{ background: "#f8fafc", borderBottom: "1px solid #e5e7eb" }}>
+                <th style={{ ...thSt, width: 50, textAlign: "center" }}>STT</th>
+                <th style={{ ...thSt, width: 140 }}>Tên Bị cáo</th>
+                <th style={{ ...thSt }}>Tên quyết định</th>
+                <th style={{ ...thSt, width: 120 }}>Số QĐ</th>
+                <th style={{ ...thSt, width: 110 }}>Ngày ra QĐ</th>
+                <th style={{ ...thSt, width: 160 }}>Người ký</th>
+                <th style={{ ...thSt, width: 140 }}>Người tạo</th>
+                <th style={{ ...thSt, width: 80, textAlign: "center" }}>Thao tác</th>
+              </tr>
+            </thead>
+            <tbody>
+              {quyetDinhHoanList.length === 0 ? (
+                <tr>
+                  <td colSpan={8} style={{ textAlign: "center", padding: "28px 16px", color: MUTED, fontSize: 13, fontStyle: "italic", borderBottom: "1px solid #f3f4f6" }}>
+                    Chưa có quyết định hoãn thi hành án
+                  </td>
+                </tr>
+              ) : (
+                quyetDinhHoanList
+                  .filter(r => !searchHoan || r.tenQuyetDinh.toLowerCase().includes(searchHoan.toLowerCase()) || r.biCao.toLowerCase().includes(searchHoan.toLowerCase()) || r.soQuyetDinh.toLowerCase().includes(searchHoan.toLowerCase()))
+                  .map((r, idx) => (
+                    <tr key={idx} style={{ borderBottom: "1px solid #f3f4f6", background: "#fff" }}>
+                      <td style={{ ...tdSt, textAlign: "center", color: "#6b7280" }}>{r.stt}</td>
+                      <td style={{ ...tdSt, color: "#111827", fontWeight: 600 }}>{r.biCao}</td>
+                      <td style={{ ...tdSt, color: "#2563eb", fontWeight: 500 }}>{r.tenQuyetDinh}</td>
+                      <td style={{ ...tdSt, fontWeight: 500 }}>{r.soQuyetDinh}</td>
+                      <td style={{ ...tdSt, color: "#374151" }}>{r.ngayQuyetDinh}</td>
+                      <td style={{ ...tdSt, color: "#374151" }}>{r.nguoiKy}</td>
+                      <td style={{ ...tdSt, color: "#6b7280" }}>{r.nguoiTao}</td>
+                      <td style={{ ...tdSt, textAlign: "center" }}>
+                        <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 6 }}>
+                          <button style={{ background: "none", border: "none", cursor: "pointer", padding: 2 }} title="Xem chi tiết">
+                            <Eye size={14} color="#0e7490" />
+                          </button>
+                          <button onClick={() => setQuyetDinhHoanList(prev => prev.filter((_, i) => i !== idx))} style={{ background: "none", border: "none", cursor: "pointer", padding: 2 }} title="Xóa">
+                            <Trash2 size={14} color="#dc2626" />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+              )}
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
@@ -2896,7 +3042,7 @@ export default function App() {
         ) : appView === "an-thoi-hieu" ? (
           <AnThoiHieuView />
         ) : appView === "tao-cong-van" ? (
-          <WordEditorView record={activeCongVanConfig} onBack={() => setAppView("ho-so-khang-nghi")} />
+          <WordEditorView record={activeCongVanConfig} onBack={() => setAppView(activeCongVanConfig?.returnView || "ho-so-khang-nghi")} />
         ) : appView === "giao-tieu-ho-so" ? (
           <GiaoTieuHoSoView onClose={() => setAppView("list")} userRole={globalUserRole} />
         ) : appView === "them-ho-so" ? (
@@ -2916,13 +3062,27 @@ export default function App() {
             <ThemHoSoScreen />
           </div>
         ) : (
-          <>
-            <Breadcrumb />
-            <TabBar activeTab={activeTab} userRole={globalUserRole} onTabChange={setActiveTab} />
-            <SearchFilterPanel expanded={filterExpanded} userRole={globalUserRole} onToggle={() => setFilterExpanded((v) => !v)} />
-            <ActionBar tab={activeTab} onGiaoTieuHoSo={() => setAppView("giao-tieu-ho-so")} />
-            <CaseTable tab={activeTab} userRole={globalUserRole} onGiaoTieuHoSo={() => setAppView("giao-tieu-ho-so")} onThemHoSo={() => setAppView("them-ho-so")} />
-          </>
+          <NhanDonTLVuAnView
+            userRole={globalUserRole}
+            activeTab={activeTab}
+            setActiveTab={setActiveTab}
+            filterExpanded={filterExpanded}
+            setFilterExpanded={setFilterExpanded}
+            onGiaoTieuHoSo={() => setAppView("giao-tieu-ho-so")}
+            onThemHoSo={() => setAppView("them-ho-so")}
+            onInBaoCao={(tabId) => {
+              const tabObj = TAB_CONFIG.find((t) => t.id === tabId);
+              setActiveCongVanConfig({
+                isBaoCao: true,
+                tabId: tabId,
+                tabLabel: tabObj?.label || "Báo cáo danh sách đơn",
+                cases: getCasesByTab(tabId, globalUserRole),
+                userRole: globalUserRole,
+                returnView: "list",
+              });
+              setAppView("tao-cong-van");
+            }}
+          />
         )}
       </div>
     </div>

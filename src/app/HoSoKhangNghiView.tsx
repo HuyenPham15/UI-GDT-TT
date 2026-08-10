@@ -574,7 +574,7 @@ function ModalNhanHoSoKhangNghi({
 export function WordEditorView({ onBack, record }: { onBack: () => void; record?: any }) {
   const [fontSize, setFontSize] = useState("13pt");
   const [zoom, setZoom] = useState(100);
-  const [activeDocType, setActiveDocType] = useState<"quyet-dinh-khang-nghi" | "cong-van-chuyen">("cong-van-chuyen");
+  const [activeDocType, setActiveDocType] = useState<"bao-cao-danh-sach" | "quyet-dinh-khang-nghi" | "cong-van-chuyen">(record?.isBaoCao ? "bao-cao-danh-sach" : "cong-van-chuyen");
 
   const [isSaved, setIsSaved] = useState(false);
   const [hasNumber, setHasNumber] = useState(false);
@@ -778,6 +778,25 @@ export function WordEditorView({ onBack, record }: { onBack: () => void; record?
           </div>
 
           <div style={{ padding: 12, display: "flex", flexDirection: "column", gap: 10 }}>
+            {record?.isBaoCao && (
+              <div
+                onClick={() => setActiveDocType("bao-cao-danh-sach")}
+                style={{
+                  padding: "12px 14px", borderRadius: 6, cursor: "pointer",
+                  background: activeDocType === "bao-cao-danh-sach" ? "#e0f2fe" : "#fff",
+                  border: activeDocType === "bao-cao-danh-sach" ? "1px solid #0284c7" : `1px solid ${BORDER}`,
+                  boxShadow: activeDocType === "bao-cao-danh-sach" ? "0 2px 4px rgba(0,0,0,0.08)" : "none",
+                  transition: "all 0.15s"
+                }}>
+                <div style={{ fontSize: 13, fontWeight: 700, color: activeDocType === "bao-cao-danh-sach" ? "#0369a1" : TEXT, display: "flex", alignItems: "center", gap: 6 }}>
+                  📊 Báo cáo danh sách
+                </div>
+                <div style={{ fontSize: 11, color: MUTED, marginTop: 4 }}>
+                  {record?.tabLabel || "Danh sách vụ án / đơn"}
+                </div>
+              </div>
+            )}
+
             <div
               onClick={() => setActiveDocType("quyet-dinh-khang-nghi")}
               style={{
@@ -817,7 +836,109 @@ export function WordEditorView({ onBack, record }: { onBack: () => void; record?
         {/* Right Editable Word Canvas Container */}
         <div style={{ flex: 1, overflowY: "auto", display: "flex", flexDirection: "column", alignItems: "center", padding: "30px 20px 60px 20px", gap: 32 }}>
 
-          {activeDocType === "cong-van-chuyen" ? (
+          {activeDocType === "bao-cao-danh-sach" ? (
+            <div
+              contentEditable
+              suppressContentEditableWarning
+              style={{
+                background: "#fff",
+                width: "100%",
+                maxWidth: 820,
+                minHeight: 1100,
+                padding: "50px 60px 60px 60px",
+                boxShadow: "0 8px 30px rgba(0,0,0,0.18)",
+                fontFamily: "'Times New Roman', Times, serif",
+                fontSize: fontSize,
+                color: "#000",
+                lineHeight: 1.5,
+                outline: "none",
+                transform: `scale(${zoom / 100})`,
+                transformOrigin: "top center",
+                position: "relative",
+                boxSizing: "border-box",
+              }}>
+              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 20 }}>
+                <div style={{ textAlign: "center", width: "46%" }}>
+                  <div style={{ fontWeight: 700, fontSize: 13 }}>TÒA ÁN NHÂN DÂN TỐI CAO</div>
+                  <div style={{ fontWeight: 700, fontSize: 12 }}>VỤ GIÁM ĐỐC KIỂM TRA</div>
+                  <div style={{ width: 90, height: 1, background: "#000", margin: "4px auto" }} />
+                </div>
+
+                <div style={{ textAlign: "center", width: "52%" }}>
+                  <div style={{ fontWeight: 700, fontSize: 13 }}>CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</div>
+                  <div style={{ fontWeight: 700, fontSize: 13 }}>Độc lập - Tự do - Hạnh phúc</div>
+                  <div style={{ width: 150, height: 1, background: "#000", margin: "4px auto" }} />
+                  <div style={{ fontStyle: "italic", fontSize: 12, marginTop: 4 }}>
+                    Hà Nội, ngày {new Date().getDate()} tháng {new Date().getMonth() + 1} năm {new Date().getFullYear()}
+                  </div>
+                </div>
+              </div>
+
+              <div style={{ textAlign: "center", fontWeight: 700, fontSize: 16, margin: "24px 0 6px 0", letterSpacing: 0.5 }}>
+                BÁO CÁO DANH SÁCH {record?.tabLabel?.toUpperCase() || "ĐƠN VÀ THỤ LÝ VỤ ÁN"}
+              </div>
+              <div style={{ textAlign: "center", fontStyle: "italic", fontSize: 12, marginBottom: 20 }}>
+                (Thời gian xuất báo cáo: {new Date().toLocaleDateString("vi-VN")})
+              </div>
+
+              <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12, marginTop: 16 }}>
+                <thead>
+                  <tr style={{ background: "#f1f5f9" }}>
+                    <th style={{ border: "1px solid #000", padding: "6px 8px", width: 36, textAlign: "center" }}>STT</th>
+                    <th style={{ border: "1px solid #000", padding: "6px 8px", textAlign: "left" }}>Thông tin đơn / Thụ lý</th>
+                    <th style={{ border: "1px solid #000", padding: "6px 8px", textAlign: "left" }}>Đương sự</th>
+                    <th style={{ border: "1px solid #000", padding: "6px 8px", textAlign: "left" }}>Bản án / Quyết định</th>
+                    <th style={{ border: "1px solid #000", padding: "6px 8px", textAlign: "left" }}>Thẩm phán / TTV</th>
+                    <th style={{ border: "1px solid #000", padding: "6px 8px", textAlign: "left" }}>Ghi chú / Kết quả</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {(record?.cases && record.cases.length > 0 ? record.cases : [
+                    { maDon: "6966", nguoiKhieuNai: "Đỗ Tất Đạt", biCao: "Vũ Hoa Hảo", soBA: "CVKN_GDT", ngayBA: "20/07/2026", toa: "TAND CC Hà Nội", thamPhan: "Nguyễn Biên Thùy", ttv: "Lý Thái Phúc" },
+                    { maDon: "6967", nguoiKhieuNai: "Trần Văn Hòa", biCao: "Nguyễn Thị Lan", soBA: "123/2026/DS-ST", ngayBA: "21/07/2026", toa: "TAND tỉnh Hà Nam", thamPhan: "Trần Minh Đức", ttv: "Vũ Diệu Thúy" }
+                  ]).map((c: any, idx: number) => (
+                    <tr key={idx}>
+                      <td style={{ border: "1px solid #000", padding: "6px 8px", textAlign: "center" }}>{idx + 1}</td>
+                      <td style={{ border: "1px solid #000", padding: "6px 8px" }}>
+                        <b>Mã đơn:</b> {c.maDon || c.maVanThuDen || c.id}<br />
+                        {c.soCV && <span>CV: {c.soCV}<br /></span>}
+                        {c.thuLyMoi && <span>TL mới: {c.thuLyMoi}</span>}
+                      </td>
+                      <td style={{ border: "1px solid #000", padding: "6px 8px" }}>
+                        {c.nguoiKhieuNai && <div><b>NKN/NĐ:</b> {c.nguoiKhieuNai}</div>}
+                        {c.biCao && <div><b>Bị cáo/BĐ:</b> {c.biCao}</div>}
+                      </td>
+                      <td style={{ border: "1px solid #000", padding: "6px 8px" }}>
+                        {c.soBA && <div><b>Số BA:</b> {c.soBA}</div>}
+                        {c.ngayBA && <div><b>Ngày:</b> {c.ngayBA}</div>}
+                        {c.toa && <div><b>Tòa:</b> {c.toa}</div>}
+                      </td>
+                      <td style={{ border: "1px solid #000", padding: "6px 8px" }}>
+                        {c.thamPhan && <div><b>TP:</b> {c.thamPhan}</div>}
+                        {c.ttv && <div><b>TTV:</b> {c.ttv}</div>}
+                      </td>
+                      <td style={{ border: "1px solid #000", padding: "6px 8px" }}>
+                        {c.lyDoTraLai || c.yKienLD?.[0]?.name || "Đã lưu hồ sơ"}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+
+              <div style={{ display: "flex", justifyContent: "space-between", marginTop: 40, pageBreakInside: "avoid" }}>
+                <div style={{ textAlign: "center", width: "45%" }}>
+                  <div style={{ fontWeight: 700 }}>NGƯỜI LẬP BÁO CÁO</div>
+                  <div style={{ fontStyle: "italic", fontSize: 11 }}>(Ký, ghi rõ họ tên)</div>
+                  <div style={{ height: 60 }} />
+                </div>
+                <div style={{ textAlign: "center", width: "45%" }}>
+                  <div style={{ fontWeight: 700 }}>LÃNH ĐẠO VỤ PHÊ DUYỆT</div>
+                  <div style={{ fontStyle: "italic", fontSize: 11 }}>(Ký, đóng dấu)</div>
+                  <div style={{ height: 60 }} />
+                </div>
+              </div>
+            </div>
+          ) : activeDocType === "cong-van-chuyen" ? (
             <div
               contentEditable
               suppressContentEditableWarning
