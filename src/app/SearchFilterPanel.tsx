@@ -59,14 +59,49 @@ const SEARCH_ROWS: RowCell[][] = [
   ],
 ];
 
+const SEARCH_ROWS_KHANG_NGHI: RowCell[][] = [
+  [
+    { label: "Mã văn thư đến", type: "input", placeholder: "Mã văn thư đến" },
+    { label: "Số kháng nghị", type: "input", placeholder: "Số kháng nghị" },
+    { label: "Ngày kháng nghị", type: "dateRange" },
+    { label: "Số BA/QĐ", type: "input", placeholder: "Số BA/QĐ" },
+  ],
+  [
+    { label: "Ngày BA/QĐ", type: "date" },
+    { label: "Tòa ra BA/QĐ", type: "select", placeholder: "-- Chọn --" },
+    { label: "Khoảng thời gian văn thư đến", type: "dateRange", placeholder: "Chọn khoảng ngày" },
+    { label: "Thẩm phán", type: "select", placeholder: "-- Tất cả --" },
+  ],
+  [
+    "anDacThu",
+    { label: "Người gửi đơn", type: "input", placeholder: "Người gửi đơn" },
+    { label: "Số thụ lý xét xử", type: "input", placeholder: "Số thụ lý xét xử" },
+    { label: "Khoảng thời gian thụ lý xét xử", type: "dateRange" },
+  ],
+  [
+    { label: "Số CV chuyển", type: "input", placeholder: "Số CV chuyển" },
+    { label: "Ngày CV chuyển", type: "date" },
+    { label: "TTV giải quyết", type: "select", placeholder: "-- Tất cả --" },
+    { label: "Loại án", type: "select", placeholder: "-- Tất cả --", options: [...LOAI_AN_OPTIONS] },
+  ],
+  [
+    { label: "Nơi chuyển", type: "select", placeholder: "-- Tất cả --" },
+    "thoiHieu",
+    null,
+    null,
+  ],
+];
+
 export function SearchFilterPanel({
   expanded,
   onToggle,
   userRole,
+  isHoSoKhangNghi,
 }: {
   expanded: boolean;
   onToggle: () => void;
   userRole?: UserRoleType;
+  isHoSoKhangNghi?: boolean;
 }) {
   const [selectedLoaiAn, setSelectedLoaiAn] = React.useState<string>("");
 
@@ -149,7 +184,8 @@ export function SearchFilterPanel({
     </div>
   );
 
-  const visibleRows = expanded ? SEARCH_ROWS : SEARCH_ROWS.slice(0, 1);
+  const targetRows = isHoSoKhangNghi ? SEARCH_ROWS_KHANG_NGHI : SEARCH_ROWS;
+  const visibleRows = expanded ? targetRows : targetRows.slice(0, 1);
 
   return (
     <div style={{ background: "#fff", borderBottom: `1px solid ${BORDER}`, padding: "14px 20px" }}>

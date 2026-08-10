@@ -466,6 +466,8 @@ function buildCase(loaiIdx: number, recIdx: number, globalId: number): DonCase {
 
   const ttvList = ["Nguyễn Văn A", "Phạm Thị Minh", "Lê Văn Hùng", "Trịnh Đức Minh", "Hoàng Văn Tuấn"];
 
+  const tpBac3List = ["Nguyễn Biên Thuỳ", "Trần Minh Đức", "Lê Văn Minh", "Chu Thị Thu Hiền", "Nguyễn Thị Hoa"];
+
   switch (recIdx % 5) {
     case 0:
       return {
@@ -479,6 +481,8 @@ function buildCase(loaiIdx: number, recIdx: number, globalId: number): DonCase {
         hinhThuc: "Đơn đề nghị GĐT/TT",
         maVuAn,
         tenVuAn,
+        thamPhan: tpBac3List[recIdx % tpBac3List.length],
+        capThamPhan: "TPB3",
         ttv: ttvList[0],
         trangThai: statusOptions[0],
         yKienLD: [leadershipOptions[0], leadershipOptions[1]],
@@ -495,6 +499,8 @@ function buildCase(loaiIdx: number, recIdx: number, globalId: number): DonCase {
         hinhThuc: "Đơn khiếu nại tư pháp tố tụng",
         maVuAn,
         tenVuAn,
+        thamPhan: tpBac3List[(recIdx + 1) % tpBac3List.length],
+        capThamPhan: "TPB3",
         ttv: ttvList[1],
         trangThai: statusOptions[1],
         vuAnActions: ["ghep-vu-an", "them-vu-an"],
@@ -513,6 +519,8 @@ function buildCase(loaiIdx: number, recIdx: number, globalId: number): DonCase {
         hinhThuc: "Đơn đề nghị GĐT/TT",
         maVuAn,
         tenVuAn,
+        thamPhan: tpBac3List[(recIdx + 2) % tpBac3List.length],
+        capThamPhan: "TPB3",
         ttv: ttvList[2],
         trangThai: statusOptions[2],
         vuAnActions: ["chuyen-vu-an", "huy-ghep"],
@@ -529,9 +537,11 @@ function buildCase(loaiIdx: number, recIdx: number, globalId: number): DonCase {
         soCV,
         ngayCV,
         thuLyMoi,
-        hinhThuc: "Hồ sơ kháng nghị GĐT",
+        hinhThuc: "CV kiến nghị GĐT/TT",
         maVuAn,
         tenVuAn,
+        thamPhan: tpBac3List[(recIdx + 3) % tpBac3List.length],
+        capThamPhan: "TPB3",
         ttv: ttvList[3],
         trangThai: statusOptions[3],
         yKienLD: [leadershipOptions[3]],

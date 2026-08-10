@@ -16,7 +16,18 @@ import { SearchFilterPanel } from "./SearchFilterPanel";
 
 function CellThongTinDon({ c, tab }: { c: DonCase; tab?: TabId }) {
   const isDaCoVuAn = tab === "da-co-vu-an" || c.tabs?.includes("da-co-vu-an") || c.daThuLy;
+  const isDonChoPheDuyet = tab === "don-cho-phe-duyet" || c.tabs?.includes("don-cho-phe-duyet");
+  const isBac3Tab = tab === "da-co-vu-an" || isDonChoPheDuyet;
   const showDuKien = !isDaCoVuAn;
+
+  const capThamPhanText = isBac3Tab ? "TPB3" : c.capThamPhan;
+  const tpBac3List = ["Nguyễn Biên Thuỳ", "Trần Minh Đức", "Lê Văn Minh", "Chu Thị Thu Hiền", "Nguyễn Thị Hoa"];
+  const thamPhanText = isBac3Tab ? (tpBac3List[c.id % tpBac3List.length] || c.thamPhan) : c.thamPhan;
+
+  let hinhThucText = c.hinhThuc;
+  if (tab === "da-co-vu-an" && (hinhThucText.toLowerCase().includes("kháng nghị") || hinhThucText.toLowerCase().includes("hồ sơ"))) {
+    hinhThucText = c.soCV ? "CV kiến nghị GĐT/TT" : "Đơn đề nghị GĐT/TT";
+  }
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
@@ -42,10 +53,10 @@ function CellThongTinDon({ c, tab }: { c: DonCase; tab?: TabId }) {
             </>
           )}
           <span style={{ fontSize: 11, color: TEXT, fontFamily: F }}>
-            Thẩm phán{showDuKien ? " (Dự kiến)" : ""}: {c.thamPhan} ({c.capThamPhan})
+            Thẩm phán{showDuKien ? " (Dự kiến)" : ""}: {thamPhanText} ({capThamPhanText})
           </span>
           <span style={{ fontSize: 11, color: TEXT, fontFamily: F }}>
-            Hình thức: {c.hinhThuc}
+            Hình thức: {hinhThucText}
           </span>
         </>
       ) : (
@@ -64,10 +75,10 @@ function CellThongTinDon({ c, tab }: { c: DonCase; tab?: TabId }) {
             </span>
           )}
           <span style={{ fontSize: 11, color: TEXT, fontFamily: F }}>
-            Thẩm phán{showDuKien ? " (Dự kiến)" : ""}: {c.thamPhan} ({c.capThamPhan})
+            Thẩm phán{showDuKien ? " (Dự kiến)" : ""}: {thamPhanText} ({capThamPhanText})
           </span>
           <span style={{ fontSize: 11, color: TEXT, fontFamily: F }}>
-            Hình thức: {c.hinhThuc}
+            Hình thức: {hinhThucText}
           </span>
         </>
       )}

@@ -1858,7 +1858,7 @@ export function HoSoKhangNghiView({ userRole, onTaoCongVan }: { userRole?: UserR
       </div>
 
       {/* Search filter panel */}
-      <SearchFilterPanel expanded={filterExpanded} onToggle={() => setFilterExpanded(v => !v)} />
+      <SearchFilterPanel expanded={filterExpanded} isHoSoKhangNghi={true} onToggle={() => setFilterExpanded(v => !v)} />
 
       {/* Action Bar */}
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "10px 20px", background: "#f8fafc", borderBottom: `1px solid ${BORDER}`, flexShrink: 0 }}>
