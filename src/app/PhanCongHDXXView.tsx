@@ -78,7 +78,7 @@ const ROWS: HDXXRow[] = [
     thanhPhanHDXX: ["Trần Hồng Hà", "Ngô Hồng Phúc", "Lê Thanh Phong", "Nguyễn Văn Cường"],
     hdxxSub: "Chờ ký",
     trangThaiXX: "chua-xx",
-    trangThaiSub: "Chưa lên lịch xét xử",
+    trangThaiSub: "Đã lên lịch xét xử",
     danhSachVuAn: [
       {
         id: 1,
@@ -97,7 +97,7 @@ const ROWS: HDXXRow[] = [
         ldv: "Lê Thị Thu Hiền",
         tp: "Phạm Thị Bích Ngọc",
         trangThai: "Chưa xét xử",
-        sub: "Chưa lên lịch xét xử",
+        sub: "Đã lên lịch xét xử",
       },
       {
         id: 2,
@@ -116,7 +116,7 @@ const ROWS: HDXXRow[] = [
         ldv: "Nguyễn Như Thắng",
         tp: "Lê Thị Thu Hiền",
         trangThai: "Chưa xét xử",
-        sub: "Chưa lên lịch xét xử",
+        sub: "Hoãn lên lịch xét xử",
       },
       {
         id: 3,
@@ -135,7 +135,7 @@ const ROWS: HDXXRow[] = [
         ldv: "Phạm Thị Bích Ngọc",
         tp: "Nguyễn Như Thắng",
         trangThai: "Chưa xét xử",
-        sub: "Chưa lên lịch xét xử",
+        sub: "Đã lên lịch xét xử",
       },
     ],
   },
@@ -314,7 +314,7 @@ const ROWS: HDXXRow[] = [
     thanhPhanHDXX: ["Trần Hồng Hà", "Ngô Hồng Phúc", "Lê Thanh Phong", "Nguyễn Văn Cường"],
     hdxxSub: "Chờ ký duyệt",
     trangThaiXX: "cho-ky-duyet",
-    trangThaiSub: "Đã lên lịch xét xử",
+    trangThaiSub: "Chưa lên lịch xét xử",
     trangThaiExtra: "Thời hạn xét xử: 22 ngày",
     danhSachVuAn: [
       {
@@ -334,7 +334,7 @@ const ROWS: HDXXRow[] = [
         ldv: "Lê Thị Thu Hiền",
         tp: "Nguyễn Như Thắng",
         trangThai: "Chưa xét xử",
-        sub: "Chưa lên lịch xét xử",
+        sub: "Đã lên lịch xét xử",
         extra: "",
       },
       {
@@ -354,7 +354,7 @@ const ROWS: HDXXRow[] = [
         ldv: "Nguyễn Như Thắng",
         tp: "Lê Thị Thu Hiền",
         trangThai: "Chưa xét xử",
-        sub: "Chưa lên lịch xét xử",
+        sub: "Đã lên lịch xét xử",
         extra: "Thời hạn xét xử: 22 ngày",
       },
     ],
@@ -381,7 +381,7 @@ const ROWS: HDXXRow[] = [
     thanhPhanHDXX: ["Nguyễn Biên Thùy", "Trần Hồng Hà", "Ngô Hồng Phúc", "Lê Thanh Phong", "Lê Văn Minh"],
     hdxxSub: "Chờ ký duyệt",
     trangThaiXX: "cho-ky-duyet",
-    trangThaiSub: "Đã lên lịch xét xử",
+    trangThaiSub: "Chưa lên lịch xét xử",
     trangThaiExtra: "Thời hạn xét xử: 10 ngày",
     danhSachVuAn: [
       {
@@ -465,7 +465,7 @@ const ROWS: HDXXRow[] = [
     thanhPhanHDXX: ["Nguyễn Biên Thùy", "Trần Hồng Hà", "Ngô Hồng Phúc", "Lê Thanh Phong"],
     hdxxSub: "Chờ ký duyệt",
     trangThaiXX: "cho-ky-duyet",
-    trangThaiSub: "Đã lên lịch xét xử",
+    trangThaiSub: "Chưa lên lịch xét xử",
     trangThaiExtra: "Thời hạn xét xử: 18 ngày",
     danhSachVuAn: [
       {
@@ -529,7 +529,7 @@ const ROWS: HDXXRow[] = [
     thanhPhanHDXX: ["Nguyễn Biên Thùy", "Trần Hồng Hà", "Ngô Hồng Phúc", "Lê Thanh Phong"],
     hdxxSub: "Chờ ký duyệt",
     trangThaiXX: "cho-ky-duyet",
-    trangThaiSub: "Đã lên lịch xét xử",
+    trangThaiSub: "Chưa lên lịch xét xử",
     trangThaiExtra: "Thời hạn xét xử: 14 ngày",
     danhSachVuAn: [
       {
@@ -1198,7 +1198,7 @@ function ThemBieuMauModal({
           ldv: "Lê Thị Thu Hiền",
           tp: "Nguyễn Như Thắng",
           trangThai: "Chưa xét xử",
-          sub: "Chưa lên lịch xét xử",
+          sub: "Hoãn xét xử",
         },
       ]
       : isHanhChinh
@@ -1261,7 +1261,7 @@ function ThemBieuMauModal({
               ldv: "Nguyễn Như Thắng",
               tp: "Trần Hồng Hà",
               trangThai: "Chưa xét xử",
-              sub: "Chưa lên lịch xét xử",
+              sub: "Đã lên lịch xét xử",
             },
             {
               id: 2,
@@ -1301,7 +1301,7 @@ function ThemBieuMauModal({
               ldv: "Lê Thị Thu Hiền",
               tp: "Phạm Thị Bích Ngọc",
               trangThai: "Chưa xét xử",
-              sub: "Chưa lên lịch xét xử",
+              sub: "Hoãn xét xử",
             },
             {
               id: 2,
@@ -1320,7 +1320,7 @@ function ThemBieuMauModal({
               ldv: "Nguyễn Như Thắng",
               tp: "Lê Thị Thu Hiền",
               trangThai: "Chưa xét xử",
-              sub: "Chưa lên lịch xét xử",
+              sub: "Đã lên lịch xét xử",
             },
             {
               id: 3,
@@ -1339,7 +1339,7 @@ function ThemBieuMauModal({
               ldv: "Phạm Thị Bích Ngọc",
               tp: "Nguyễn Như Thắng",
               trangThai: "Chưa xét xử",
-              sub: "Chưa lên lịch xét xử",
+              sub: "Hoãn xét xử",
             },
           ]
   );
@@ -3144,6 +3144,277 @@ function SuaDanhSachModal({
   );
 }
 
+// ── Component Modal Thay đổi Thẩm phán, Hội thẩm, Thư ký trước khi mở phiên tòa ──────────
+
+export function ThayTheThamPhanModal({
+  row,
+  onClose,
+  onSave,
+}: {
+  row?: any;
+  onClose: () => void;
+  onSave?: (data: any) => void;
+}) {
+  const [ngayQD, setNgayQD] = useState("");
+  const [soQD, setSoQD] = useState("");
+  const [nguoiKy, setNguoiKy] = useState("");
+  const [xetThay, setXetThay] = useState("");
+  const [vksNhan, setVksNhan] = useState("Viện kiểm sát nhân dân tối cao - Hà Nội");
+  const [noiNhanKhac, setNoiNhanKhac] = useState("");
+  const [thayTheTheoQD, setThayTheTheoQD] = useState("");
+  const [thayTheCho, setThayTheCho] = useState("");
+  const [vaiTro, setVaiTro] = useState("");
+  const [nguoiDuocPhanCong, setNguoiDuocPhanCong] = useState("");
+
+  const [assignmentList, setAssignmentList] = useState<
+    Array<{ id: number; vaiTro: string; nguoiPhanCong: string; nguoiThayThe: string }>
+  >([]);
+
+  const handleAddAssignment = () => {
+    if (!vaiTro && !nguoiDuocPhanCong) return;
+    setAssignmentList(prev => [
+      ...prev,
+      {
+        id: Date.now(),
+        vaiTro: vaiTro || "Thẩm phán",
+        nguoiPhanCong: nguoiDuocPhanCong || "Nguyễn Văn C",
+        nguoiThayThe: thayTheCho || "Nguyễn Văn A",
+      },
+    ]);
+    setVaiTro("");
+    setNguoiDuocPhanCong("");
+  };
+
+  const handleSave = () => {
+    if (onSave) {
+      onSave({
+        ngayQD,
+        soQD,
+        nguoiKy,
+        xetThay,
+        vksNhan,
+        noiNhanKhac,
+        thayTheTheoQD,
+        thayTheCho,
+        assignmentList,
+      });
+    }
+    onClose();
+  };
+
+  return (
+    <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)", zIndex: 1300, display: "flex", alignItems: "center", justifyContent: "center", padding: 20 }}>
+      <div style={{ background: "#fff", borderRadius: 8, width: 900, maxWidth: "96vw", maxHeight: "92vh", overflowY: "auto", boxShadow: "0 12px 48px rgba(0,0,0,0.25)", display: "flex", flexDirection: "column" as const, fontFamily: F }}>
+        {/* Header */}
+        <div style={{ padding: "14px 20px", borderBottom: `1px solid ${BORDER}`, display: "flex", alignItems: "center", justifyContent: "space-between", background: "#fff", position: "sticky", top: 0, zIndex: 10 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <span style={{ fontSize: 16 }}>⚖️</span>
+            <span style={{ fontSize: 15, fontWeight: 700, color: TEXT, fontFamily: F }}>
+              Thay đổi Thẩm phán, Hội thẩm, Thư ký trước khi mở phiên tòa
+            </span>
+          </div>
+          <button onClick={onClose} style={{ background: "none", border: "none", cursor: "pointer", color: MUTED, padding: 4 }}><X size={18} /></button>
+        </div>
+
+        {/* Info Card */}
+        <div style={{ margin: "16px 20px 0", padding: "14px 18px", background: "#f8fafc", borderRadius: 6, border: `1px solid ${BORDER}`, fontSize: 12, fontFamily: F }}>
+          <div style={{ display: "grid", gridTemplateColumns: "1.3fr 1.3fr 1fr", gap: "6px 24px" }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+              <div><span style={{ color: MUTED }}>Mã vụ án : </span><b style={{ color: "#16a34a" }}>{row?.maVuAn || "VA26-001388"}</b></div>
+              <div><span style={{ color: MUTED }}>Tên vụ án : </span><b style={{ color: "#16a34a" }}>{row?.tenVuAn || "Vụ án Nguyễn Minh Châu - giết người"}</b></div>
+              <div><span style={{ color: MUTED }}>Tên bị can đầu vụ : </span><b style={{ color: "#16a34a" }}>{row?.biCao || "Nguyễn Minh Châu"}</b></div>
+            </div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+              <div><span style={{ color: MUTED }}>Giai đoạn : </span><span style={{ color: "#059669" }}>{row?.giaiDoan || "Sơ thẩm"}</span></div>
+              <div><span style={{ color: MUTED }}>Số thụ lý : </span><b>{row?.soThuLy || "54680390/2026/TLST-HS ngày 06/01/2026"}</b></div>
+              <div><span style={{ color: MUTED }}>Tòa án giải quyết : </span><span style={{ color: "#059669" }}>{row?.toaAnGiaiQuyet || "Tòa án nhân dân tối cao"}</span></div>
+              <div><span style={{ color: MUTED }}>Tội danh : </span><span>{row?.toiDanh || "Tội giết người (123-BLHS)"}</span></div>
+            </div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+              <div><span style={{ color: MUTED }}>Trạng thái : </span><span style={{ color: "#2563eb", fontWeight: 600 }}>{row?.trangThai || "Chưa giải quyết xong"}</span></div>
+            </div>
+          </div>
+        </div>
+
+        {/* Content Form */}
+        <div style={{ padding: "16px 20px", display: "flex", flexDirection: "column" as const, gap: 14 }}>
+          {/* Row 1: Ngày QD, Số QD, Người ký */}
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 14 }}>
+            <div>
+              <label style={{ display: "block", fontSize: 11, color: MUTED, marginBottom: 4 }}>Ngày quyết định</label>
+              <input type="date" value={ngayQD} onChange={e => setNgayQD(e.target.value)} placeholder="Chọn ngày" style={{ width: "100%", padding: "7px 10px", fontSize: 12, border: `1px solid ${BORDER}`, borderRadius: 4, outline: "none", fontFamily: F, background: "#fff", boxSizing: "border-box" }} />
+            </div>
+            <div>
+              <label style={{ display: "block", fontSize: 11, color: MUTED, marginBottom: 4 }}>Số quyết định</label>
+              <input placeholder="Nhập số quyết định" value={soQD} onChange={e => setSoQD(e.target.value)} style={{ width: "100%", padding: "7px 10px", fontSize: 12, border: `1px solid ${BORDER}`, borderRadius: 4, outline: "none", fontFamily: F, background: "#fff", boxSizing: "border-box" }} />
+            </div>
+            <div>
+              <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: TEXT, marginBottom: 4 }}>
+                <span style={{ color: RED }}>* </span>Người ký ban hành
+              </label>
+              <select value={nguoiKy} onChange={e => setNguoiKy(e.target.value)} style={{ width: "100%", padding: "7px 10px", fontSize: 12, border: `1px solid ${BORDER}`, borderRadius: 4, outline: "none", fontFamily: F, cursor: "pointer", background: "#fff", boxSizing: "border-box" }}>
+                <option value="">Người ký</option>
+                <option value="Lê Thị Thu Hiển">Lê Thị Thu Hiển - Chánh án</option>
+                <option value="Nguyễn Biên Thùy">Nguyễn Biên Thùy - Thẩm phán</option>
+                <option value="Trần Hồng Hà">Trần Hồng Hà - Thẩm phán</option>
+              </select>
+            </div>
+          </div>
+
+          {/* Row 2: Xét thấy */}
+          <div>
+            <label style={{ display: "block", fontSize: 11, color: MUTED, marginBottom: 4 }}>Xét thấy</label>
+            <textarea
+              placeholder="Xét thấy"
+              value={xetThay}
+              onChange={e => setXetThay(e.target.value)}
+              style={{ width: "100%", minHeight: 70, padding: "8px 12px", fontSize: 12, border: `1px solid ${BORDER}`, borderRadius: 4, outline: "none", fontFamily: F, resize: "vertical", boxSizing: "border-box" }}
+            />
+          </div>
+
+          {/* Row 3: Viện kiểm sát nhận, Nơi nhận khác */}
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
+            <div>
+              <label style={{ display: "block", fontSize: 11, color: MUTED, marginBottom: 4 }}>Viện kiểm sát nhận</label>
+              <select value={vksNhan} onChange={e => setVksNhan(e.target.value)} style={{ width: "100%", padding: "7px 10px", fontSize: 12, border: `1px solid ${BORDER}`, borderRadius: 4, outline: "none", fontFamily: F, cursor: "pointer", background: "#fff", boxSizing: "border-box" }}>
+                <option value="Viện kiểm sát nhân dân tối cao - Hà Nội">Viện kiểm sát nhân dân tối cao - Hà Nội</option>
+                <option value="VKSND tỉnh Long An">VKSND tỉnh Long An</option>
+              </select>
+            </div>
+            <div>
+              <label style={{ display: "block", fontSize: 11, color: MUTED, marginBottom: 4 }}>Nơi nhận khác</label>
+              <input placeholder="Nhập nơi nhận khác" value={noiNhanKhac} onChange={e => setNoiNhanKhac(e.target.value)} style={{ width: "100%", padding: "7px 10px", fontSize: 12, border: `1px solid ${BORDER}`, borderRadius: 4, outline: "none", fontFamily: F, background: "#fff", boxSizing: "border-box" }} />
+            </div>
+          </div>
+
+          {/* Row 4: Thay thế theo quyết định, Thay thế cho Ông/Bà */}
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
+            <div>
+              <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: TEXT, marginBottom: 4 }}>
+                <span style={{ color: RED }}>* </span>Thay thế theo quyết định
+              </label>
+              <select value={thayTheTheoQD} onChange={e => setThayTheTheoQD(e.target.value)} style={{ width: "100%", padding: "7px 10px", fontSize: 12, border: `1px solid ${BORDER}`, borderRadius: 4, outline: "none", fontFamily: F, cursor: "pointer", background: "#fff", boxSizing: "border-box" }}>
+                <option value="">Thay thế theo quyết định</option>
+                <option value="QĐ 01/2026/QĐ-HDXX">QĐ 01/2026/QĐ-HDXX - Phân công HĐXX</option>
+                <option value="QĐ 02/2026/QĐ-TTTP">QĐ 02/2026/QĐ-TTTP - Thay thế Thẩm phán</option>
+              </select>
+            </div>
+            <div>
+              <label style={{ display: "block", fontSize: 11, color: MUTED, marginBottom: 4 }}>Thay thế cho Ông/Bà</label>
+              <select value={thayTheCho} onChange={e => setThayTheCho(e.target.value)} style={{ width: "100%", padding: "7px 10px", fontSize: 12, border: `1px solid ${BORDER}`, borderRadius: 4, outline: "none", fontFamily: F, cursor: "pointer", background: "#fff", boxSizing: "border-box" }}>
+                <option value="">Thay thế cho Ông/Bà</option>
+                <option value="Nguyễn Văn A">Nguyễn Văn A - Thẩm phán chủ tọa</option>
+                <option value="Trần Thị B">Trần Thị B - Hội thẩm nhân dân</option>
+              </select>
+            </div>
+          </div>
+
+          {/* Row 5: Vai trò, Tên người được phân công + Button thêm */}
+          <div style={{ display: "flex", gap: 10, alignItems: "flex-end" }}>
+            <div style={{ width: "35%" }}>
+              <label style={{ display: "block", fontSize: 11, color: MUTED, marginBottom: 4 }}>Vai trò</label>
+              <select value={vaiTro} onChange={e => setVaiTro(e.target.value)} style={{ width: "100%", padding: "7px 10px", fontSize: 12, border: `1px solid ${BORDER}`, borderRadius: 4, outline: "none", fontFamily: F, cursor: "pointer", background: "#fff", boxSizing: "border-box" }}>
+                <option value="">Vai trò</option>
+                <option value="Thẩm phán - Chủ tọa phiên tòa">Thẩm phán - Chủ tọa phiên tòa</option>
+                <option value="Thẩm phán">Thẩm phán</option>
+                <option value="Hội thẩm nhân dân">Hội thẩm nhân dân</option>
+                <option value="Thư ký phiên tòa">Thư ký phiên tòa</option>
+              </select>
+            </div>
+            <div style={{ flex: 1 }}>
+              <label style={{ display: "block", fontSize: 11, color: MUTED, marginBottom: 4 }}>Tên người được phân công</label>
+              <select value={nguoiDuocPhanCong} onChange={e => setNguoiDuocPhanCong(e.target.value)} style={{ width: "100%", padding: "7px 10px", fontSize: 12, border: `1px solid ${BORDER}`, borderRadius: 4, outline: "none", fontFamily: F, cursor: "pointer", background: "#fff", boxSizing: "border-box" }}>
+                <option value="">Chọn người được phân công</option>
+                <option value="Nguyễn Văn C">Nguyễn Văn C</option>
+                <option value="Lê Văn D">Lê Văn D</option>
+                <option value="Trần Thị E">Trần Thị E</option>
+              </select>
+            </div>
+            <button
+              type="button"
+              onClick={handleAddAssignment}
+              style={{
+                width: 34,
+                height: 34,
+                background: "#800000",
+                color: "#fff",
+                border: "none",
+                borderRadius: 4,
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                flexShrink: 0,
+              }}
+            >
+              ↓
+            </button>
+          </div>
+
+          {/* Table: Danh sách phân công thay thế */}
+          <div style={{ border: `1px solid ${BORDER}`, borderRadius: 6, overflow: "hidden", marginTop: 4 }}>
+            <table style={{ width: "100%", borderCollapse: "collapse", tableLayout: "fixed" }}>
+              <colgroup>
+                <col style={{ width: 50 }} />
+                <col style={{ width: "25%" }} />
+                <col style={{ width: "30%" }} />
+                <col style={{ width: "30%" }} />
+                <col style={{ width: 80 }} />
+              </colgroup>
+              <thead>
+                <tr style={{ background: "#f8fafc", borderBottom: `1px solid ${BORDER}` }}>
+                  <th style={{ ...TH_STYLE, fontSize: 11, textAlign: "center" }}>STT</th>
+                  <th style={{ ...TH_STYLE, fontSize: 11 }}>Vai trò</th>
+                  <th style={{ ...TH_STYLE, fontSize: 11 }}>Người được phân công</th>
+                  <th style={{ ...TH_STYLE, fontSize: 11 }}>Người được thay thế</th>
+                  <th style={{ ...TH_STYLE, fontSize: 11, textAlign: "center" }}>Thao tác</th>
+                </tr>
+              </thead>
+              <tbody>
+                {assignmentList.length === 0 ? (
+                  <tr>
+                    <td colSpan={5} style={{ padding: "20px 0", textAlign: "center", color: MUTED, fontSize: 12 }}>
+                      Không có dữ liệu
+                    </td>
+                  </tr>
+                ) : (
+                  assignmentList.map((item, idx) => (
+                    <tr key={item.id} style={{ background: idx % 2 === 0 ? "#fff" : "#fafafa", borderBottom: `1px solid ${BORDER}` }}>
+                      <td style={{ ...TD_STYLE, textAlign: "center", color: MUTED }}>{idx + 1}</td>
+                      <td style={{ ...TD_STYLE, fontWeight: 500 }}>{item.vaiTro}</td>
+                      <td style={{ ...TD_STYLE, color: TEXT }}>{item.nguoiPhanCong}</td>
+                      <td style={{ ...TD_STYLE, color: MUTED }}>{item.nguoiThayThe}</td>
+                      <td style={{ ...TD_STYLE, textAlign: "center" }}>
+                        <button
+                          type="button"
+                          onClick={() => setAssignmentList(prev => prev.filter(x => x.id !== item.id))}
+                          style={{ background: "none", border: "none", cursor: "pointer", color: "#ef4444", fontSize: 11 }}
+                        >
+                          Xóa
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        {/* Footer */}
+        <div style={{ padding: "14px 20px", borderTop: `1px solid ${BORDER}`, display: "flex", justifyContent: "center", gap: 12, background: "#fff" }}>
+          <button onClick={onClose} style={{ padding: "7px 24px", background: "#fff", border: `1px solid ${BORDER}`, borderRadius: 4, cursor: "pointer", fontSize: 12, fontFamily: F, color: TEXT }}>
+            Đóng
+          </button>
+          <button onClick={handleSave} style={{ padding: "7px 24px", background: "#800000", color: "#fff", border: "none", borderRadius: 4, cursor: "pointer", fontSize: 12, fontWeight: 700, fontFamily: F }}>
+            Lưu
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function HDXXDetailView({
   row,
   onBack,
@@ -3159,6 +3430,8 @@ function HDXXDetailView({
   const [showLichXX, setShowLichXX] = useState(false);
   const [showKySuccess, setShowKySuccess] = useState(false);
   const [showThemBM, setShowThemBM] = useState(false);
+  const [showThayTheThamPhanModal, setShowThayTheThamPhanModal] = useState(false);
+  const [selectedQuyetDinhType, setSelectedQuyetDinhType] = useState("thanh-lap-hdxx");
   const [showSuaDSModal, setShowSuaDSModal] = useState(false);
   const [isSigned, setIsSigned] = useState(row.hdxxSub === "Đã có hiệu lực");
   const [editChuToa, setEditChuToa] = useState(row.chuToa);
@@ -3213,6 +3486,25 @@ function HDXXDetailView({
         />
       )}
       {showLichXX && <LichXetXuModal onClose={() => setShowLichXX(false)} />}
+      {showThayTheThamPhanModal && (
+        <ThayTheThamPhanModal
+          row={row}
+          onClose={() => setShowThayTheThamPhanModal(false)}
+          onSave={newBm =>
+            setQdRows(prev => [
+              {
+                id: prev.length + 1,
+                tenQD: "Quyết định thay thế thẩm phán",
+                soQD: newBm.soQD || "QĐ-02/2026",
+                ngayKy: newBm.ngayQD || "10/08/2026",
+                nguoiKy: newBm.nguoiKy || "Lê Thị Thu Hiển",
+                trangThai: "Khởi tạo",
+              },
+              ...prev,
+            ])
+          }
+        />
+      )}
       {showThemBM && (
         <ThemBieuMauModal
           row={row}
@@ -3622,7 +3914,7 @@ function HDXXDetailView({
                       ldv: "Lê Thị Thu Hiền",
                       tp: "Nguyễn Như Thắng",
                       trangThai: "Chưa xét xử",
-                      sub: "Chưa lên lịch xét xử",
+                      sub: "Đã lên lịch xét xử",
                     },
                   ]
                   : isHanhChinh
@@ -3899,25 +4191,53 @@ function HDXXDetailView({
                   <span style={{ fontSize: 14, fontWeight: 700, color: TEXT, fontFamily: F, flex: 1 }}>
                     Quyết định phân công hội đồng xét xử
                   </span>
-                  <button
-                    onClick={() => setShowThemBM(true)}
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 6,
-                      padding: "6px 14px",
-                      background: RED,
-                      color: "#fff",
-                      border: "none",
-                      borderRadius: 4,
-                      cursor: "pointer",
-                      fontSize: 12,
-                      fontWeight: 600,
-                      fontFamily: F,
-                    }}
-                  >
-                    + Thêm biểu mẫu
-                  </button>
+                  <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                    <select
+                      value={selectedQuyetDinhType}
+                      onChange={e => setSelectedQuyetDinhType(e.target.value)}
+                      style={{
+                        padding: "6px 10px",
+                        border: `1px solid ${BORDER}`,
+                        borderRadius: 4,
+                        fontSize: 12,
+                        fontFamily: F,
+                        color: TEXT,
+                        background: "#fff",
+                        cursor: "pointer",
+                        outline: "none",
+                        minWidth: 260,
+                      }}
+                    >
+                      <option value="thanh-lap-hdxx">Quyết định thành lập hội đồng xét xử</option>
+                      <option value="thay-the-tham-phan">Quyết định thay thế thẩm phán</option>
+                    </select>
+                    <button
+                      onClick={() => {
+                        if (selectedQuyetDinhType === "thay-the-tham-phan") {
+                          setShowThayTheThamPhanModal(true);
+                        } else {
+                          setShowThemBM(true);
+                        }
+                      }}
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 6,
+                        padding: "6px 14px",
+                        background: RED,
+                        color: "#fff",
+                        border: "none",
+                        borderRadius: 4,
+                        cursor: "pointer",
+                        fontSize: 12,
+                        fontWeight: 600,
+                        fontFamily: F,
+                        whiteSpace: "nowrap",
+                      }}
+                    >
+                      + Thêm biểu mẫu
+                    </button>
+                  </div>
                 </div>
                 <table style={{ width: "100%", borderCollapse: "collapse", tableLayout: "fixed" }}>
                   <colgroup>
@@ -4147,7 +4467,7 @@ function FilterPanel({ open, onToggle, userRole }: { open: boolean; onToggle: ()
               {col("Số thụ lý XX", <input placeholder="Số thụ lý" style={inSt} />)}
               {rangeRow("Thụ lý XX")}
               {rangeRow("Xét xử")}
-              {col("Trạng thái xét xử", <select style={inSt}><option value="">– Tất cả –</option><option>Chưa xét xử</option><option>Đã xét xử</option><option>Chưa phân công HĐXX</option></select>)}
+              {col("Trạng thái xét xử", <select style={inSt}><option value="">– Tất cả –</option><option>Chưa xét xử</option><option>Đã xét xử</option></select>)}
               {col("Thẩm tra viên/Thư ký", <select style={inSt}><option value="">– Tất cả –</option><option>Nguyễn Thu Hằng</option><option>Lý Văn An</option></select>)}
             </div>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 12 }}>
@@ -4314,24 +4634,20 @@ export default function PhanCongHDXXView({
                     <div style={{ fontSize: 11, color: MUTED, fontFamily: F, marginTop: 2 }}>Trình Phó Chánh án phê duyệt</div>
                   </td>
                   <td style={TD} onClick={e => e.stopPropagation()}>
-                    {r.trangThaiXX === "chua-phan-cong" ? (
-                      <span style={{ color: MUTED, fontFamily: F }}>Chưa phân công HĐXX</span>
-                    ) : (
-                      <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
-                        <div style={{ fontWeight: 700, color: TEXT, fontSize: 12, fontFamily: F }}>{r.hdxx}</div>
-                        <div style={{ fontSize: 12, color: MUTED, fontFamily: F }}>
-                          <span style={{ fontWeight: 600 }}>Chủ tọa:</span> <span style={{ color: TEXT }}>{r.chuToa}</span>
-                        </div>
-                        {r.thanhPhanHDXX && r.thanhPhanHDXX.length > 0 && (
-                          <div style={{ fontSize: 11, color: TEXT, fontFamily: F, lineHeight: 1.45 }}>
-                            <b style={{ color: MUTED }}>Thành phần:</b> {r.thanhPhanHDXX.join(", ")}
-                          </div>
-                        )}
-                        <button onClick={() => openDetail(r)} style={{ background: "none", border: "none", cursor: "pointer", color: "#2563eb", fontFamily: F, fontSize: 11, padding: 0, textAlign: "left", textDecoration: "underline", marginTop: 2 }}>
-                          Thông tin phân công HĐXX
-                        </button>
+                    <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
+                      <div style={{ fontWeight: 700, color: TEXT, fontSize: 12, fontFamily: F }}>{r.hdxx}</div>
+                      <div style={{ fontSize: 12, color: MUTED, fontFamily: F }}>
+                        <span style={{ fontWeight: 600 }}>Chủ tọa:</span> <span style={{ color: TEXT }}>{r.chuToa}</span>
                       </div>
-                    )}
+                      {r.thanhPhanHDXX && r.thanhPhanHDXX.length > 0 && (
+                        <div style={{ fontSize: 11, color: TEXT, fontFamily: F, lineHeight: 1.45 }}>
+                          <b style={{ color: MUTED }}>Thành phần:</b> {r.thanhPhanHDXX.join(", ")}
+                        </div>
+                      )}
+                      <button onClick={() => openDetail(r)} style={{ background: "none", border: "none", cursor: "pointer", color: "#2563eb", fontFamily: F, fontSize: 11, padding: 0, textAlign: "left", textDecoration: "underline", marginTop: 2 }}>
+                        Thông tin phân công HĐXX
+                      </button>
+                    </div>
                   </td>
                   <td style={TD}>
                     <div style={{ marginBottom: 5 }}><TrangThaiBadge type={r.trangThaiXX} /></div>

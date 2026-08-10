@@ -15,7 +15,7 @@ export function XemBieuMauDuThaoModal({
 }: {
   onClose: () => void;
   detail?: any;
-  ketQua: "tra-loi" | "khang-nghi" | "tam-hoan";
+  ketQua: string;
   soQuyetDinh: string;
   ngayQuyetDinh: string;
   nguoiKy: string;
@@ -25,12 +25,35 @@ export function XemBieuMauDuThaoModal({
   const [fontSize, setFontSize] = useState("13.5pt");
   const [fontFamily, setFontFamily] = useState("Times New Roman");
 
+  const isKhieuNai = Boolean(
+    detail?.isKhieuNai ||
+    detail?.entityWord === "Khiếu nại" ||
+    detail?.moduleLabel === "Quản lý khiếu nại" ||
+    (typeof detail?.maVuAn === "string" && (detail.maVuAn.startsWith("KN") || detail.maVuAn.includes("KN"))) ||
+    (typeof detail?.id === "string" && detail.id.includes("KN")) ||
+    (typeof detail?.tenVuAn === "string" && detail.tenVuAn.toLowerCase().includes("khiếu nại"))
+  );
+
   const isKhangNghi = ketQua === "khang-nghi";
   const isTamHoan = ketQua === "tam-hoan";
-  const titleDoc = isKhangNghi
+  const isChapNhan = ketQua === "chap-nhan";
+  const isKhongChapNhan = ketQua === "khong-chap-nhan";
+  const isXepDon = ketQua === "xep-don";
+
+  const titleDoc = isKhieuNai
+    ? isChapNhan
+      ? "QUYẾT ĐỊNH GIẢI QUYẾT KHIẾU NẠI (CHẤP NHẬN KHIẾU NẠI)"
+      : isKhongChapNhan
+      ? "QUYẾT ĐỊNH GIẢI QUYẾT KHIẾU NẠI (KHÔNG CHẤP NHẬN KHIẾU NẠI)"
+      : isXepDon
+      ? "THÔNG BÁO XẾP ĐƠN KHIẾU NẠI"
+      : "QUYẾT ĐỊNH GIẢI QUYẾT KHIẾU NẠI"
+    : isKhangNghi
     ? "QUYẾT ĐỊNH KHÁNG NGHỊ GIÁM ĐỐC THẨM"
     : isTamHoan
     ? "QUYẾT ĐỊNH TẠM HOÃN THI HÀNH ÁN"
+    : isXepDon
+    ? "THÔNG BÁO XẾP ĐƠN"
     : "THÔNG BÁO VỀ VIỆC GIẢI QUYẾT ĐƠN ĐỀ NGHỊ GIÁM ĐỐC THẨM";
 
   const execCmd = (cmd: string, arg?: string) => {
@@ -354,7 +377,7 @@ export function TaoDuThaoModal({
 
   // Section 1: Thông tin đơn
   const [donLienQuan, setDonLienQuan] = useState("2 đơn/người được chọn");
-  const [ketQuaGQ, setKetQuaGQ] = useState<"tra-loi" | "khang-nghi" | "chap-nhan" | "khong-chap-nhan">("tra-loi");
+  const [ketQuaGQ, setKetQuaGQ] = useState<"tra-loi" | "khang-nghi" | "chap-nhan" | "khong-chap-nhan" | "xep-don">("tra-loi");
 
   // Multi-select & Thêm người đứng đơn
   const [donDataList, setDonDataList] = useState([
@@ -898,7 +921,7 @@ export function TaoDuThaoModal({
                         onChange={() => setKetQuaGQ("chap-nhan")}
                         style={{ accentColor: "#800000", cursor: "pointer" }}
                       />
-                      <span style={{ fontWeight: (ketQuaGQ === "chap-nhan" || ketQuaGQ === "tra-loi") ? 700 : 400 }}>Chấp nhận kháng nghị</span>
+                      <span style={{ fontWeight: (ketQuaGQ === "chap-nhan" || ketQuaGQ === "tra-loi") ? 700 : 400 }}>Chấp nhận khiếu nại</span>
                     </label>
                     <label style={{ display: "flex", alignItems: "center", gap: 6, cursor: "pointer", fontSize: 13, fontFamily: F, color: "#111827" }}>
                       <input
@@ -908,7 +931,17 @@ export function TaoDuThaoModal({
                         onChange={() => setKetQuaGQ("khong-chap-nhan")}
                         style={{ accentColor: "#800000", cursor: "pointer" }}
                       />
-                      <span style={{ fontWeight: ketQuaGQ === "khong-chap-nhan" ? 700 : 400 }}>Không chấp nhận kháng nghị</span>
+                      <span style={{ fontWeight: ketQuaGQ === "khong-chap-nhan" ? 700 : 400 }}>Không chấp nhận khiếu nại</span>
+                    </label>
+                    <label style={{ display: "flex", alignItems: "center", gap: 6, cursor: "pointer", fontSize: 13, fontFamily: F, color: "#111827" }}>
+                      <input
+                        type="radio"
+                        name="ketQuaGQ"
+                        checked={ketQuaGQ === "xep-don"}
+                        onChange={() => setKetQuaGQ("xep-don")}
+                        style={{ accentColor: "#800000", cursor: "pointer" }}
+                      />
+                      <span style={{ fontWeight: ketQuaGQ === "xep-don" ? 700 : 400 }}>Xếp đơn</span>
                     </label>
                   </>
                 ) : (
@@ -933,7 +966,7 @@ export function TaoDuThaoModal({
                       />
                       <span style={{ fontWeight: ketQuaGQ === "tra-loi" ? 700 : 400 }}>Trả lời đơn</span>
                     </label>
-                    {/* <label style={{ display: "flex", alignItems: "center", gap: 6, cursor: "pointer", fontSize: 13, fontFamily: F, color: "#111827" }}>
+                    <label style={{ display: "flex", alignItems: "center", gap: 6, cursor: "pointer", fontSize: 13, fontFamily: F, color: "#111827" }}>
                       <input
                         type="radio"
                         name="ketQuaGQ"
@@ -942,27 +975,7 @@ export function TaoDuThaoModal({
                         style={{ accentColor: "#800000", cursor: "pointer" }}
                       />
                       <span style={{ fontWeight: ketQuaGQ === "xep-don" ? 700 : 400 }}>Xếp đơn</span>
-                    </label> */}
-                    {/* <label style={{ display: "flex", alignItems: "center", gap: 6, cursor: "pointer", fontSize: 13, fontFamily: F, color: "#111827" }}>
-                      <input
-                        type="radio"
-                        name="ketQuaGQ"
-                        checked={ketQuaGQ === "nghien-cuu"}
-                        onChange={() => setKetQuaGQ("nghien-cuu" as any)}
-                        style={{ accentColor: "#800000", cursor: "pointer" }}
-                      />
-                      <span style={{ fontWeight: (ketQuaGQ as any) === "nghien-cuu" ? 700 : 400 }}>Nghiên cứu, xác minh, bổ sung</span>
-                    </label> */}
-                    {/* <label style={{ display: "flex", alignItems: "center", gap: 6, cursor: "pointer", fontSize: 13, fontFamily: F, color: "#111827" }}>
-                      <input
-                        type="radio"
-                        name="ketQuaGQ"
-                        checked={ketQuaGQ === "vks"}
-                        onChange={() => setKetQuaGQ("vks" as any)}
-                        style={{ accentColor: "#800000", cursor: "pointer" }}
-                      />
-                      <span style={{ fontWeight: (ketQuaGQ as any) === "vks" ? 700 : 400 }}>Viện kiểm sát đang giải quyết</span>
-                    </label> */}
+                    </label>
                   </>
                 )}
               </div>

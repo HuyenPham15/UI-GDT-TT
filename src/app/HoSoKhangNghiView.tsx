@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import {
   Search, Eye, ChevronDown, RotateCcw, X, Save,
-  FileText, CheckCircle2, Send, FileSpreadsheet,
+  FileText, CheckCircle2, Send, FileSpreadsheet, FolderCheck,
 } from "lucide-react";
 import { F, RED, BORDER, TEXT, MUTED, BG, TH_STYLE, TD_STYLE, Badge, type UserRoleType } from "./shared";
 import { SearchFilterPanel } from "./SearchFilterPanel";
+import { TaiLieuHoSoView } from "./TaiLieuHoSoView";
 
 // ── Modal Trả hồ sơ ───────────────────────────────────────────────────────────
 function ModalTraHoSo({ onClose, onConfirm }: { onClose: () => void; onConfirm: (lyDo: string) => void }) {
@@ -1300,6 +1301,44 @@ export function WordEditorView({ onBack, record }: { onBack: () => void; record?
   );
 }
 
+// ── Modal Chọn hồ sơ kháng nghị để chuyển đi ─────────────────────────────
+export function ChonHoSoModal({
+  onClose,
+  onSelect,
+  listHoSo,
+}: {
+  onClose: () => void;
+  onSelect: (selectedIds: number[]) => void;
+  listHoSo: any[];
+}) {
+  return (
+    <div style={{ position: "fixed", inset: 0, zIndex: 2000, background: "#fff", display: "flex", flexDirection: "column" }}>
+      <div style={{ padding: "8px 16px", background: "#800000", color: "#fff", display: "flex", alignItems: "center", justifyContent: "space-between", flexShrink: 0 }}>
+        <span style={{ fontSize: 13, fontWeight: 700, fontFamily: F }}>📁 Quản lý & Chọn tài liệu hồ sơ số hóa vụ án</span>
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <button
+            type="button"
+            onClick={() => {
+              const selectedIds = listHoSo.length > 0 ? [listHoSo[0].id] : [101];
+              onSelect(selectedIds);
+              onClose();
+            }}
+            style={{ padding: "5px 16px", background: "#16a34a", color: "#fff", border: "none", borderRadius: 4, fontSize: 12, fontWeight: 700, cursor: "pointer", fontFamily: F }}
+          >
+            ✓ Xác nhận chọn hồ sơ
+          </button>
+          <button onClick={onClose} style={{ background: "none", border: "none", color: "#fff", cursor: "pointer", display: "flex", alignItems: "center", gap: 4, fontSize: 12, fontWeight: 600, fontFamily: F }}>
+            <X size={16} /> Đóng
+          </button>
+        </div>
+      </div>
+      <div style={{ flex: 1, overflow: "hidden" }}>
+        <TaiLieuHoSoView vuAnId="VA26-002621" tenVuAn="Hồ sơ kháng nghị vụ án" onBack={onClose} />
+      </div>
+    </div>
+  );
+}
+
 // ── Component Hồ sơ kháng nghị View ──────────────────────────────────────────
 export function HoSoKhangNghiView({ userRole, onTaoCongVan }: { userRole?: UserRoleType; onTaoCongVan?: (config?: any) => void }) {
   const [activeSubTab, setActiveSubTab] = useState<"di" | "den">("di");
@@ -1308,6 +1347,7 @@ export function HoSoKhangNghiView({ userRole, onTaoCongVan }: { userRole?: UserR
   const [showTraHoSoModal, setShowTraHoSoModal] = useState(false);
   const [showNhanHoSoModal, setShowNhanHoSoModal] = useState(false);
   const [showTaoCongVanModal, setShowTaoCongVanModal] = useState(false);
+  const [showChonHoSoModal, setShowChonHoSoModal] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState<any>(null);
   const [selectedItems, setSelectedItems] = useState<number[]>([]);
 
@@ -1833,6 +1873,18 @@ export function HoSoKhangNghiView({ userRole, onTaoCongVan }: { userRole?: UserR
           {activeSubTab === "di" && (
             <>
               <button
+                onClick={() => setShowChonHoSoModal(true)}
+                style={{
+                  display: "flex", alignItems: "center", gap: 6,
+                  padding: "7px 16px", background: "#16a34a", color: "#fff",
+                  border: "none", borderRadius: 4, cursor: "pointer",
+                  fontSize: 12, fontWeight: 700, fontFamily: F,
+                  boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+                }}>
+                <FolderCheck size={14} /> Chọn hồ sơ
+              </button>
+
+              <button
                 onClick={() => handleOpenTaoCongVan()}
                 style={{
                   display: "flex", alignItems: "center", gap: 6,
@@ -2055,6 +2107,18 @@ export function HoSoKhangNghiView({ userRole, onTaoCongVan }: { userRole?: UserR
 
       {/* Modal Trả lại hồ sơ */}
       {showTraHoSoModal && <ModalTraHoSo onClose={() => setShowTraHoSoModal(false)} onConfirm={handleConfirmTraHoSo} />}
+
+      {/* Modal Chọn hồ sơ kháng nghị để chuyển đi */}
+      {showChonHoSoModal && (
+        <ChonHoSoModal
+          listHoSo={filteredDi}
+          onClose={() => setShowChonHoSoModal(false)}
+          onSelect={ids => {
+            setSelectedItems(ids);
+            alert(`Đã chọn thành công ${ids.length} hồ sơ kháng nghị để xử lý/chuyển!`);
+          }}
+        />
+      )}
     </div>
   );
 }

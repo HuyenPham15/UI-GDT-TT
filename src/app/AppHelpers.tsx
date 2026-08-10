@@ -10,9 +10,17 @@ export function formatSoBA(raw?: string | null, loaiAn?: string): string {
   // Bảng viết tắt 8 loại án chuẩn tố tụng
   const SHORT_MAP: Record<string, string> = {
     "Hình sự": "HS",
+    "hinh-su": "HS",
+    "vu-1": "HS",
     "Dân sự": "DS",
+    "dan-su": "DS",
+    "vu-2": "DS",
     "Hành chính": "HC",
+    "hanh-chinh": "HC",
+    "vu-4": "HC",
     "Kinh doanh thương mại": "KDTM",
+    "kdtm": "KDTM",
+    "vu-3": "KDTM",
     "Hôn nhân gia đình": "HNGĐ",
     "Lao động": "LĐ",
     "Sở hữu trí tuệ": "SHTT",
@@ -31,20 +39,20 @@ export function formatSoBA(raw?: string | null, loaiAn?: string): string {
   let code = loaiAn && SHORT_MAP[loaiAn] ? SHORT_MAP[loaiAn] : "";
 
   if (!code) {
-    if (raw.includes("KDTM") || raw.includes("_04") || raw.includes("_4")) code = "KDTM";
+    if (raw.includes("HS") || raw.includes("_01") || raw.includes("_1") || raw.toLowerCase().includes("hình sự")) code = "HS";
+    else if (raw.includes("KDTM") || raw.includes("_04") || raw.includes("_4")) code = "KDTM";
     else if (raw.includes("HNGĐ") || raw.includes("_05") || raw.includes("_5")) code = "HNGĐ";
     else if (raw.includes("SHTT") || raw.includes("_07") || raw.includes("_7")) code = "SHTT";
-    else if (raw.includes("DS") || raw.includes("_02") || raw.includes("_2")) code = "DS";
     else if (raw.includes("HC") || raw.includes("_03") || raw.includes("_3")) code = "HC";
     else if (raw.includes("LĐ") || raw.includes("_06") || raw.includes("_6")) code = "LĐ";
     else if (raw.includes("PS") || raw.includes("_08") || raw.includes("_8")) code = "PS";
-    else if (raw.includes("HS")) code = "HS";
-    else code = "DS";
+    else if (raw.includes("DS") || raw.includes("_02") || raw.includes("_2")) code = "DS";
+    else code = "HS"; // Mặc định là HS cho Vụ 1 - Án hình sự
   }
 
   const digits = raw.match(/\d+/g);
-  const num = digits ? digits[0] : (raw.replace(/\D/g, '') || raw);
-  const cap = raw.includes("PT") ? "PT" : "ST";
+  const num = digits ? digits[0] : (raw.replace(/\D/g, '') || "12");
+  const cap = raw.includes("PT") || raw.includes("Phúc thẩm") ? "PT" : "ST";
 
   return `${num}/2026/${code}-${cap}`;
 }

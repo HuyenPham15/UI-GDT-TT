@@ -26,6 +26,8 @@ import {
   KHIEU_NAI_LIST,
   filterVuAnListByRole,
   type ChiTietTab,
+  type VuAnGroup,
+  QuickViewDanhSachDonModal,
 } from "./QuanLyVuAnView";
 import { VuAnSearchFilterPanel } from "./VuAnSearchFilterPanel";
 
@@ -52,6 +54,7 @@ export function QuanLyKhieuNaiView({
   onSelectKhieuNai: (id: string, tab?: ChiTietTab) => void;
 }) {
   const [activeTab, setActiveTab] = useState<KhieuNaiTabId>("dang-giai-quyet");
+  const [quickViewDonGroup, setQuickViewDonGroup] = useState<VuAnGroup | null>(null);
 
   const filteredGroups = filterVuAnListByRole(KHIEU_NAI_LIST, userRole);
 
@@ -187,7 +190,7 @@ export function QuanLyKhieuNaiView({
               <th style={TH_STYLE}>STT</th>
               <th style={TH_STYLE}>SỐ & NGÀY THỤ LÝ</th>
               <th style={TH_STYLE}>THÔNG TIN BẢN ÁN/QĐ & QHPL</th>
-              <th style={TH_STYLE}>ĐƯƠNG SỰ & NGƯỜI ĐỀ NGHỊ</th>
+              <th style={TH_STYLE}>NGƯỜI ĐỨNG ĐƠN</th>
               <th style={TH_STYLE}>PHÂN CÔNG</th>
               <th style={TH_STYLE}>TRẠNG THÁI</th>
               <th style={{ ...TH_STYLE, textAlign: "center" }}>THAO TÁC</th>
@@ -196,7 +199,6 @@ export function QuanLyKhieuNaiView({
           <tbody>
             {filteredGroups.flatMap((group, groupIdx) =>
               group.rows.map((row, idx) => {
-                const { label1, label2 } = getPartyLabels(row.loaiAn, userRole);
                 const rowKey = `${group.id}-${row.stt}`;
                 const globalIdx = groupIdx * group.rows.length + idx;
                 return (
@@ -224,7 +226,10 @@ export function QuanLyKhieuNaiView({
                         </span>
                         <span style={{ fontSize: 11, color: MUTED, fontFamily: F }}>Ngày TL: {row.ngayThuLy}</span>
                         <button
-                          onClick={() => onSelectKhieuNai(group.id)}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setQuickViewDonGroup(group);
+                          }}
                           style={{
                             background: "none",
                             border: "none",
@@ -235,14 +240,12 @@ export function QuanLyKhieuNaiView({
                             fontFamily: F,
                             textDecoration: "underline",
                             textAlign: "left",
+                            fontWeight: 600,
                           }}
+                          title="Xem nhanh danh sách đơn và thông tin trình"
                         >
                           Số đơn {group.rows.length}
                         </button>
-                        <span style={{ fontSize: 10, color: MUTED, fontFamily: F }}>({group.rows.length} đơn TLM)</span>
-                        {row.extraTags?.map((t) => (
-                          <Badge key={t} color="#1e40af" bg="#dbeafe">{t}</Badge>
-                        ))}
                       </div>
                     </td>
 
@@ -262,7 +265,7 @@ export function QuanLyKhieuNaiView({
                         <span style={{ fontSize: 11, color: TEXT, fontFamily: F }}>
                           <span style={{ color: TEXT }}>Tại: </span>{row.toa}
                         </span>
-                        <CapXetXu label={row.capXetXu} />
+                        {/* <CapXetXu label={row.capXetXu} /> */}
                         {row.thoiHieu && (
                           <span style={{ fontSize: 11, color: TEXT, fontFamily: F }}>
                             <span style={{ color: TEXT }}>Thời hiệu: </span>
@@ -285,22 +288,12 @@ export function QuanLyKhieuNaiView({
                       </div>
                     </td>
 
-                    {/* Đương sự & Người đề nghị */}
+                    {/* Người khiếu nại & NĐĐ */}
                     <td style={TD_STYLE}>
                       <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
-                        <span style={{ fontSize: 11, fontFamily: F }}>
-                          <span style={{ color: TEXT, fontWeight: 600 }}>{label1}:</span>{" "}
-                          <span style={{ fontWeight: 600, color: TEXT }}>{row.nkn}</span>
-                        </span>
-                        {row.biCao && (
-                          <span style={{ fontSize: 11, fontFamily: F }}>
-                            <span style={{ color: TEXT, fontWeight: 600 }}>{label2}:</span>{" "}
-                            <span style={{ fontWeight: 600, color: TEXT }}>{row.biCao}</span>
-                          </span>
-                        )}
                         {row.ndd && (
                           <span style={{ fontSize: 11, fontFamily: F }}>
-                            <span style={{ color: TEXT, fontWeight: 600 }}>NĐĐ:</span>{" "}
+                            <span style={{ color: TEXT, fontWeight: 600 }}>Người đứng đơn:</span>{" "}
                             <span style={{ color: TEXT }}>{row.ndd}</span>
                           </span>
                         )}
@@ -368,34 +361,10 @@ export function QuanLyKhieuNaiView({
                           {row.kqGiaiQuyet === "xep-don" && (
                             <Badge color="#4b5563" bg="#f3f4f6">Xếp đơn</Badge>
                           )}
-                          {row.kqGiaiQuyet === "xac-minh" && (
-                            <Badge color="#92400e" bg="#fef3c7">Nghiên cứu, xác minh, bổ sung</Badge>
-                          )}
+
                         </div>
 
-                        {/* — Tờ trình — */}
-                        <div style={{ display: "flex", flexDirection: "column", gap: 2, borderTop: `1px dashed #e5e7eb`, paddingTop: 4 }}>
-                          <span style={{ fontSize: 10, color: MUTED, fontFamily: F, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.04em" }}>Tờ trình</span>
-                          {row.trangThaiToTrinh === "chua-co" && (
-                            <span style={{ fontSize: 11, color: "#6b7280", fontFamily: F }}>Chưa có tờ trình</span>
-                          )}
-                          {row.trangThaiToTrinh === "dang-trinh" && (
-                            <Badge color="#1e40af" bg="#dbeafe">Đang trình</Badge>
-                          )}
-                          {row.trangThaiToTrinh === "da-duyet" && (
-                            <Badge color="#065f46" bg="#d1fae5">Đã duyệt</Badge>
-                          )}
-                          {row.trangThaiToTrinh === "bi-tra-lai" && (
-                            <Badge color="#991b1b" bg="#fee2e2">Bị trả lại</Badge>
-                          )}
-                          <button
-                            onClick={(e) => { e.stopPropagation(); onSelectKhieuNai(group.id, "to-trinh"); }}
-                            style={{ display: "inline-flex", alignItems: "center", gap: 4, padding: "2px 0", background: "none", border: "none", cursor: "pointer", fontSize: 11, color: "#2563eb", fontFamily: F, textDecoration: "underline", textUnderlineOffset: 2, alignSelf: "flex-start" }}
-                          >
-                            <FileText size={11} />
-                            Danh sách Tờ trình
-                          </button>
-                        </div>
+
                       </div>
                     </td>
 
@@ -435,6 +404,16 @@ export function QuanLyKhieuNaiView({
           <select style={{ padding: "3px 8px", border: `1px solid ${BORDER}`, borderRadius: 4, fontFamily: F, fontSize: 12 }}><option>10 / trang</option></select>
         </div>
       </div>
+
+      {quickViewDonGroup && (
+        <QuickViewDanhSachDonModal
+          group={quickViewDonGroup}
+          onClose={() => setQuickViewDonGroup(null)}
+          onSelectVuAn={(id, tab) => onSelectKhieuNai(id, tab)}
+          userRole={userRole}
+          isKhieuNai={true}
+        />
+      )}
     </div>
   );
 }

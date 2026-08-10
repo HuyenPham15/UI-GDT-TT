@@ -1076,9 +1076,24 @@ function QDModal({ title, onClose }: { title: string; onClose: () => void }) {
   const [noiNhanRows, setNoiNhanRows] = useState<QDNoiNhanRow[]>([
     { id: 1, noiNhan: "Viện kiểm sát", chiTiet: "VKSNDTC", ghiChu: "Kèm hồ sơ vụ án", editing: false },
   ]);
+  const [soQuyetDinh, setSoQuyetDinh] = useState("");
+  const [daLaySo, setDaLaySo] = useState(false);
+  const [showTrinhKyModal, setShowTrinhKyModal] = useState(false);
+
   const inp: React.CSSProperties = { padding: "7px 10px", fontSize: 12, border: `1px solid ${BORDER}`, borderRadius: 4, fontFamily: F, outline: "none", width: "100%", boxSizing: "border-box", background: "#fff" };
   const lbl: React.CSSProperties = { fontSize: 11, color: MUTED, fontFamily: F, display: "block", marginBottom: 3 };
   const req = <span style={{ color: RED }}>* </span>;
+
+  const handleLaySo = () => {
+    if (daLaySo) {
+      setDaLaySo(false);
+      setSoQuyetDinh("");
+    } else {
+      setDaLaySo(true);
+      setSoQuyetDinh("128/2026/QĐ-TANDTC");
+    }
+  };
+
   return (
     <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.45)", zIndex: 1100, display: "flex", alignItems: "flex-start", justifyContent: "center", overflowY: "auto", padding: "24px 16px" }}>
       <div style={{ background: "#fff", borderRadius: 10, width: "100%", maxWidth: 860, boxShadow: "0 20px 60px rgba(0,0,0,0.2)", marginBottom: 24 }}>
@@ -1122,7 +1137,19 @@ function QDModal({ title, onClose }: { title: string; onClose: () => void }) {
             </div>
             <div>
               <label style={lbl}>Số quyết định</label>
-              <input placeholder="Nhập số quyết định" style={inp} />
+              <input
+                placeholder="Nhập số quyết định"
+                style={{
+                  ...inp,
+                  fontWeight: daLaySo ? 700 : 400,
+                  color: daLaySo ? "#1e40af" : TEXT,
+                }}
+                value={soQuyetDinh}
+                onChange={(e) => {
+                  setSoQuyetDinh(e.target.value);
+                  if (!e.target.value) setDaLaySo(false);
+                }}
+              />
             </div>
             <div>
               <label style={lbl}>{req}Người ký ban hành</label>
@@ -1173,13 +1200,35 @@ function QDModal({ title, onClose }: { title: string; onClose: () => void }) {
           <div style={{ display: "flex", gap: 8, justifyContent: "center", borderTop: `1px solid ${BORDER}`, marginTop: 16, paddingTop: 14, flexWrap: "wrap" }}>
             <button onClick={onClose} style={{ padding: "6px 18px", background: "#fff", color: TEXT, border: `2px dashed ${BORDER}`, borderRadius: 4, cursor: "pointer", fontSize: 12, fontFamily: F }}>Đóng</button>
             <button style={{ padding: "6px 18px", background: RED, color: "#fff", border: `2px solid ${RED}`, borderRadius: 4, cursor: "pointer", fontSize: 12, fontWeight: 700, fontFamily: F }}>Lưu</button>
-            <button style={{ padding: "6px 18px", background: "#fff", color: RED, border: `2px dashed ${RED}`, borderRadius: 4, cursor: "pointer", fontSize: 12, fontFamily: F }}>Lập số</button>
-            <button style={{ padding: "6px 18px", background: RED, color: "#fff", border: `2px solid ${RED}`, borderRadius: 4, cursor: "pointer", fontSize: 12, fontWeight: 700, fontFamily: F }}>Trình duyệt</button>
-            <button style={{ padding: "6px 18px", background: RED, color: "#fff", border: `2px solid ${RED}`, borderRadius: 4, cursor: "pointer", fontSize: 12, fontWeight: 700, fontFamily: F }}>Trình ký</button>
+            <button
+              onClick={handleLaySo}
+              style={{
+                padding: "6px 18px",
+                background: daLaySo ? "#fee2e2" : "#fff",
+                color: RED,
+                border: `2px dashed ${RED}`,
+                borderRadius: 4,
+                cursor: "pointer",
+                fontSize: 12,
+                fontWeight: 600,
+                fontFamily: F,
+              }}
+            >
+              {daLaySo ? "Hủy lấy số" : "Lấy số"}
+            </button>
+            <button
+              onClick={() => setShowTrinhKyModal(true)}
+              style={{ padding: "6px 18px", background: RED, color: "#fff", border: `2px solid ${RED}`, borderRadius: 4, cursor: "pointer", fontSize: 12, fontWeight: 700, fontFamily: F }}
+            >
+              Trình ký
+            </button>
             <button style={{ padding: "6px 18px", background: "#fff", color: TEXT, border: `2px solid ${BORDER}`, borderRadius: 4, cursor: "pointer", fontSize: 12, fontFamily: F }}>Xem biểu mẫu</button>
           </div>
         </div>
       </div>
+      {showTrinhKyModal && (
+        <TrinhKyModal onClose={() => setShowTrinhKyModal(false)} />
+      )}
     </div>
   );
 }

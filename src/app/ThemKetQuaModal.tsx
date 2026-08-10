@@ -3,11 +3,13 @@ import { FileText, Calendar, X } from "lucide-react";
 import { F, RED, BORDER, TEXT, MUTED, TH_STYLE, TD_STYLE } from "./shared";
 import { TrinhKyModal } from "./TrinhKyModal";
 import { XemBieuMauDuThaoModal } from "./TaoDuThaoModal";
+import { TaiLieuHoSoView } from "./TaiLieuHoSoView";
 
 export function ThemKetQuaModal({ onClose, detail }: { onClose: () => void; detail?: any }) {
   const isKhieuNai = detail?.isKhieuNai || detail?.entityWord === "Khiếu nại" || detail?.moduleLabel === "Quản lý khiếu nại" || (typeof detail?.maVuAn === "string" && detail.maVuAn.includes("KN")) || (typeof detail?.id === "string" && detail.id.includes("KN")) || (typeof detail?.tenVuAn === "string" && detail.tenVuAn.toLowerCase().includes("khiếu nại"));
   type KetQua = "tra-loi" | "khang-nghi" | "xep-don" | "vks" | "chap-nhan" | "khong-chap-nhan";
   const [ketQua, setKetQua] = useState<KetQua>(isKhieuNai ? "chap-nhan" : "tra-loi");
+  const [showTaiLieuHoSoModal, setShowTaiLieuHoSoModal] = useState(false);
 
   // Vụ án info summary
   const maVuAn = detail?.maVuAn || "VA26-00321";
@@ -128,6 +130,96 @@ export function ThemKetQuaModal({ onClose, detail }: { onClose: () => void; deta
   ) as string[];
   const [selectedBiCao, setSelectedBiCao] = useState(biCaoOptions[0] || "Phan Văn Thành (Bị cáo đầu vụ)");
 
+  const DEFAULT_HOSO_DATA = [
+    {
+      id: "HS01",
+      label: "📁 Hồ sơ vụ án sơ thẩm (Số 125/2023/HS-ST)",
+      files: [
+        "Bản án sơ thẩm số 125/2023/HS-ST ngày 15/10/2023",
+        "Cáo trạng số 42/CT-VKSNDTC ngày 20/08/2023",
+        "Biên bản lấy lời khai bị cáo Phan Văn Thành",
+        "Kết luận giám định pháp y thương tích số 88/GĐPY",
+      ],
+    },
+    {
+      id: "HS02",
+      label: "📁 Hồ sơ chứng cứ & tài liệu bổ sung (Năm 2026)",
+      files: [
+        "Văn bản kiến nghị xem xét GĐT của Luật sư bào chữa",
+        "Chứng cứ mới về thời điểm xảy ra sự việc (Video/Ảnh)",
+        "Đơn trình bày bổ sung tình tiết giảm nhẹ của gia đình",
+      ],
+    },
+    {
+      id: "HS03",
+      label: "📁 Hồ sơ mượn từ TAND tỉnh Long An (Mã mượn HS-LA/2026)",
+      files: [
+        "Quyết định cho mượn hồ sơ gốc số 14/QĐ-TANDLA",
+        "Biên bản giao nhận hồ sơ ngày 10/01/2026",
+      ],
+    },
+    {
+      id: "HS04",
+      label: "📁 Tiểu hồ sơ nghiên cứu của Thẩm tra viên",
+      files: [
+        "Báo cáo nghiên cứu hồ sơ của TTV Lý Thái Phúc",
+        "Phiếu đề xuất hướng giải quyết kháng nghị GĐT",
+      ],
+    },
+  ];
+
+  const [hoSoOpen, setHoSoOpen] = useState(false);
+  const [hoSoExpanded, setHoSoExpanded] = useState<Record<string, boolean>>({ HS01: true });
+  const [hoSoCheckedList, setHoSoCheckedList] = useState<Record<string, boolean>>({
+    HS01: true,
+    "HS01::Bản án sơ thẩm số 125/2023/HS-ST ngày 15/10/2023": true,
+    "HS01::Cáo trạng số 42/CT-VKSNDTC ngày 20/08/2023": true,
+  });
+
+  const toggleHoSoCheck = (hoSoId: string) => {
+    setHoSoCheckedList(prev => {
+      const isChecked = !prev[hoSoId];
+      const next = { ...prev, [hoSoId]: isChecked };
+      const targetHoSo = DEFAULT_HOSO_DATA.find(h => h.id === hoSoId);
+      if (targetHoSo) {
+        targetHoSo.files.forEach(f => {
+          next[`${hoSoId}::${f}`] = isChecked;
+        });
+      }
+      return next;
+    });
+  };
+
+  const toggleFileCheck = (hoSoId: string, fileName: string) => {
+    setHoSoCheckedList(prev => {
+      const key = `${hoSoId}::${fileName}`;
+      const isChecked = !prev[key];
+      const next = { ...prev, [key]: isChecked };
+      const targetHoSo = DEFAULT_HOSO_DATA.find(h => h.id === hoSoId);
+      if (targetHoSo) {
+        const allChecked = targetHoSo.files.every(f => next[`${hoSoId}::${f}`]);
+        next[hoSoId] = allChecked;
+      }
+      return next;
+    });
+  };
+
+  const getSelectedHoSoSummary = () => {
+    const selectedLabels: string[] = [];
+    DEFAULT_HOSO_DATA.forEach(h => {
+      if (hoSoCheckedList[h.id]) {
+        selectedLabels.push(h.label.replace("📁 ", ""));
+      } else {
+        const checkedFiles = h.files.filter(f => hoSoCheckedList[`${h.id}::${f}`]);
+        if (checkedFiles.length > 0) {
+          selectedLabels.push(`${h.label.replace("📁 ", "")} (${checkedFiles.length} tài liệu)`);
+        }
+      }
+    });
+    if (selectedLabels.length === 0) return "-- Chọn hồ sơ kháng nghị --";
+    return selectedLabels.join("; ");
+  };
+
   const [ngayQuyetDinh, setNgayQuyetDinh] = useState("09/08/2026");
   const [soQuyetDinh, setSoQuyetDinh] = useState("");
   const [nguoiKy, setNguoiKy] = useState("Nguyễn Biên Thuỳ - Thẩm phán TANDTC");
@@ -242,8 +334,9 @@ export function ThemKetQuaModal({ onClose, detail }: { onClose: () => void; deta
   };
 
   const RADIO_OPTIONS: { value: KetQua; label: string }[] = isKhieuNai ? [
-    { value: "chap-nhan", label: "Chấp nhận kháng nghị" },
-    { value: "khong-chap-nhan", label: "Không chấp nhận kháng nghị" },
+    { value: "chap-nhan", label: "Chấp nhận khiếu nại" },
+    { value: "khong-chap-nhan", label: "Không chấp nhận khiếu nại" },
+    { value: "xep-don", label: "Xếp đơn" },
   ] : [
     { value: "khang-nghi", label: "Kháng nghị" },
     { value: "tra-loi", label: "Trả lời đơn" },
@@ -355,7 +448,7 @@ export function ThemKetQuaModal({ onClose, detail }: { onClose: () => void; deta
 
               {!isKhieuNai && (
                 <div>
-                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 5 }}>
+                  {/* <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 5 }}>
                     <label style={lblSt}>
                       <span style={{ color: "#dc2626", marginRight: 3 }}>*</span>Đơn liên quan / Người đứng đơn
                     </label>
@@ -377,7 +470,7 @@ export function ThemKetQuaModal({ onClose, detail }: { onClose: () => void; deta
                     >
                       + Thêm người đứng đơn
                     </button>
-                  </div>
+                  </div> */}
 
                   <div style={{ position: "relative" }}>
                     <div
@@ -517,20 +610,25 @@ export function ThemKetQuaModal({ onClose, detail }: { onClose: () => void; deta
               </div>
 
               {isKhangNghi && (
-                <div style={{ marginTop: 4 }}>
-                  <label style={lblSt}>
-                    <span style={{ color: "#dc2626", marginRight: 3 }}>*</span>Chọn Bị cáo
-                  </label>
-                  <select
-                    value={selectedBiCao}
-                    onChange={e => setSelectedBiCao(e.target.value)}
-                    style={{ ...inSt, cursor: "pointer", maxWidth: 380 }}
-                  >
-                    <option value="">-- Chọn bị cáo --</option>
-                    {biCaoOptions.map(bc => (
-                      <option key={bc} value={bc}>{bc}</option>
-                    ))}
-                  </select>
+                <div style={{ display: "flex", flexDirection: "column", gap: 10, marginTop: 4 }}>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
+                    <div>
+                      <label style={lblSt}>
+                        <span style={{ color: "#dc2626", marginRight: 3 }}>*</span>Chọn Bị cáo
+                      </label>
+                      <select
+                        value={selectedBiCao}
+                        onChange={e => setSelectedBiCao(e.target.value)}
+                        style={{ ...inSt, cursor: "pointer" }}
+                      >
+                        <option value="">-- Chọn bị cáo --</option>
+                        {biCaoOptions.map(bc => (
+                          <option key={bc} value={bc}>{bc}</option>
+                        ))}
+                      </select>
+                    </div>
+
+                  </div>
                 </div>
               )}
             </div>
@@ -623,8 +721,8 @@ export function ThemKetQuaModal({ onClose, detail }: { onClose: () => void; deta
                       {isKhangNghi
                         ? "Nội dung quyết định kháng nghị"
                         : isVks
-                        ? "Nội dung chuyển Viện kiểm sát giải quyết"
-                        : "Nội dung trả lời"}
+                          ? "Nội dung chuyển Viện kiểm sát giải quyết"
+                          : "Nội dung trả lời"}
                     </label>
                     <textarea
                       value={noiDung}
@@ -925,8 +1023,23 @@ export function ThemKetQuaModal({ onClose, detail }: { onClose: () => void; deta
         </div>
       </div>
 
+      {/* Modal Xem / Quản lý tài liệu hồ sơ số hóa */}
+      {showTaiLieuHoSoModal && (
+        <div style={{ position: "fixed", inset: 0, zIndex: 2000, background: "#fff", display: "flex", flexDirection: "column" }}>
+          <div style={{ padding: "8px 16px", background: "#800000", color: "#fff", display: "flex", alignItems: "center", justifyContent: "space-between", flexShrink: 0 }}>
+            <span style={{ fontSize: 13, fontWeight: 700, fontFamily: F }}>📁 Quản lý tài liệu hồ sơ số hóa - Vụ án {maVuAn}</span>
+            <button onClick={() => setShowTaiLieuHoSoModal(false)} style={{ background: "none", border: "none", color: "#fff", cursor: "pointer", display: "flex", alignItems: "center", gap: 4, fontSize: 12, fontWeight: 600, fontFamily: F }}>
+              <X size={16} /> Đóng xem hồ sơ
+            </button>
+          </div>
+          <div style={{ flex: 1, overflow: "hidden" }}>
+            <TaiLieuHoSoView vuAnId={maVuAn} tenVuAn={tenVuAn} onBack={() => setShowTaiLieuHoSoModal(false)} />
+          </div>
+        </div>
+      )}
+
       {/* Modal Thêm người đứng đơn */}
-      {showAddNguoiModal && (
+      {/* {showAddNguoiModal && (
         <div style={{ position: "fixed", inset: 0, zIndex: 1200, background: "rgba(0,0,0,0.5)", display: "flex", alignItems: "center", justifyContent: "center" }}>
           <div style={{ background: "#fff", borderRadius: 8, width: 440, padding: 20, boxShadow: "0 8px 30px rgba(0,0,0,0.2)", fontFamily: F }}>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
@@ -961,7 +1074,7 @@ export function ThemKetQuaModal({ onClose, detail }: { onClose: () => void; deta
             </div>
           </div>
         </div>
-      )}
+      )} */}
 
       {/* Modal Trình ký */}
       {showTrinhKy && (

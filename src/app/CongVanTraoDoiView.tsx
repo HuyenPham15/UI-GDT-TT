@@ -71,7 +71,7 @@ export const CV_ROWS: CVRow[] = [
     ngayThuLy: "05/08/2026",
     donViGui: "TAND TP. Hà Nội",
     donViNhan: "Tòa án nhân dân tối cao",
-    phanHoi: "–",
+    phanHoi: "Số CV: CV-TR-05\nNgày: 10/08/2026",
     phanCong: "TTV: Trần Minh Đức",
     coKQGG: true,
   },
@@ -87,9 +87,9 @@ export const CV_ROWS: CVRow[] = [
     ngayThuLy: "12/08/2026",
     donViGui: "Tòa án nhân dân tối cao",
     donViNhan: "Bộ Tư Pháp",
-    phanHoi: "–",
+    phanHoi: "Số CV: 215/BTP-V1\nNgày: 18/08/2026",
     phanCong: "TTV: Nguyễn Văn An",
-    coKQGG: false,
+    coKQGG: true,
   },
   {
     stt: "05",
@@ -105,6 +105,118 @@ export const CV_ROWS: CVRow[] = [
     donViNhan: "Tòa án nhân dân tối cao",
     phanHoi: "–",
     phanCong: "TTV: Hoàng Quỳnh Trang",
+    coKQGG: true,
+  },
+  {
+    stt: "06",
+    soCV: "Số CV: 156/CV-VKS",
+    ngayCV: "18/08/2026",
+    loai: "den",
+    soBA: "12/2026/HS-PT",
+    ngayBA: "20/07/2026",
+    toaRaBA: "TAND Cấp cao tại Hà Nội",
+    soThuLy: "204",
+    ngayThuLy: "20/08/2026",
+    donViGui: "VKSND Tối cao",
+    donViNhan: "Tòa án nhân dân tối cao",
+    phanHoi: "Số CV: CV-TR-08\nNgày: 25/08/2026",
+    phanCong: "TTV: Vũ Biêu Thư",
+    coKQGG: true,
+  },
+  {
+    stt: "07",
+    soCV: "Số CV: 210/CV-TANDTC",
+    ngayCV: "22/08/2026",
+    loai: "di",
+    soBA: "56/2026/HS-ST",
+    ngayBA: "14/06/2026",
+    toaRaBA: "TAND tỉnh Long An",
+    soThuLy: "212",
+    ngayThuLy: "23/08/2026",
+    donViGui: "Tòa án nhân dân tối cao",
+    donViNhan: "Bộ Công An",
+    phanHoi: "–",
+    phanCong: "TTV: Lý Thái Phúc",
+    coKQGG: false,
+  },
+  {
+    stt: "08",
+    soCV: "Số CV: 89/CV-TAND",
+    ngayCV: "25/08/2026",
+    loai: "den",
+    soBA: "34/2026/LĐ-PT",
+    ngayBA: "18/05/2026",
+    toaRaBA: "TAND TP. Hải Phòng",
+    soThuLy: "220",
+    ngayThuLy: "26/08/2026",
+    donViGui: "TAND TP. Hải Phòng",
+    donViNhan: "Tòa án nhân dân tối cao",
+    phanHoi: "–",
+    phanCong: "TTV: Nguyễn Văn An",
+    coKQGG: true,
+  },
+  {
+    stt: "09",
+    soCV: "Số CV: 312/CV-V1",
+    ngayCV: "28/08/2026",
+    loai: "di",
+    soBA: "78/2026/DS-ST",
+    ngayBA: "05/04/2026",
+    toaRaBA: "TAND Cấp cao tại Đà Nẵng",
+    soThuLy: "235",
+    ngayThuLy: "29/08/2026",
+    donViGui: "Tòa án nhân dân tối cao",
+    donViNhan: "TAND Cấp cao tại Đà Nẵng",
+    phanHoi: "Số CV: 410/ĐN\nNgày: 02/09/2026",
+    phanCong: "TTV: Trần Minh Đức",
+    coKQGG: true,
+  },
+  {
+    stt: "10",
+    soCV: "Số CV: 99/CV-VKS-DN",
+    ngayCV: "01/09/2026",
+    loai: "den",
+    soBA: "99/2026/HS-PT",
+    ngayBA: "12/07/2026",
+    toaRaBA: "TAND tỉnh Đồng Nai",
+    soThuLy: "248",
+    ngayThuLy: "03/09/2026",
+    donViGui: "VKSND tỉnh Đồng Nai",
+    donViNhan: "Tòa án nhân dân tối cao",
+    phanHoi: "–",
+    phanCong: "TTV: Lê Thị Bình",
+    coKQGG: false,
+  },
+  {
+    stt: "11",
+    soCV: "Số CV: 405/CV-TANDTC",
+    ngayCV: "05/09/2026",
+    loai: "di",
+    soBA: "112/2026/HC-ST",
+    ngayBA: "22/06/2026",
+    toaRaBA: "TAND TP. Hồ Chí Minh",
+    soThuLy: "260",
+    ngayThuLy: "06/09/2026",
+    donViGui: "Tòa án nhân dân tối cao",
+    donViNhan: "Ủy ban Nhân dân TP.HCM",
+    phanHoi: "–",
+    phanCong: "TTV: Hoàng Quỳnh Trang",
+    coKQGG: true,
+  },
+  {
+    stt: "12",
+    soCV: "Số CV: 67/CV-TAND-BD",
+    ngayCV: "08/09/2026",
+    loai: "den",
+    soBA: "23/2026/KDTM-PT",
+    ngayBA: "30/05/2026",
+    toaRaBA: "TAND tỉnh Bình Dương",
+    soThuLy: "275",
+    ngayThuLy: "09/09/2026",
+    donViGui: "TAND tỉnh Bình Dương",
+    donViNhan: "Tòa án nhân dân tối cao",
+    phanHoi: "Số CV: CV-TR-12\nNgày: 12/09/2026",
+    phanCong: "TTV: Vũ Biêu Thư",
     coKQGG: true,
   },
 ];
@@ -418,6 +530,10 @@ export function TaoCongVanModal({ onClose }: { onClose: () => void }) {
   const [loaiCV, setLoaiCV] = useState<"den" | "di">("den");
   const [noiGuiLoai, setNoiGuiLoai] = useState("");
   const [attachments, setAttachments] = useState<File[]>([]);
+  const [noiNhanList, setNoiNhanList] = useState<Array<{ id: number; phanLoai: string; donVi: string; kinhGui: string; soBan: string }>>([
+    { id: 1, phanLoai: "vien-kiem-sat", donVi: "Viện kiểm sát nhân dân tối cao", kinhGui: "Kính gửi Lãnh đạo VKSNDTC", soBan: "02" },
+    { id: 2, phanLoai: "toa-an", donVi: "Tòa án nhân dân tỉnh Hà Nam", kinhGui: "Như kính gửi; Lưu VP", soBan: "01" },
+  ]);
   const [traLoiSoCV, setTraLoiSoCV] = useState("");
   const [traLoiNgayCV, setTraLoiNgayCV] = useState("");
   const [isSaved, setIsSaved] = useState(false);
@@ -582,45 +698,148 @@ export function TaoCongVanModal({ onClose }: { onClose: () => void }) {
             </div>
           </div>
 
-          {/* Khung: Đính kèm tệp */}
-          <div>
-            <div style={{ fontSize: 13, fontWeight: 700, color: TEXT, fontFamily: F, marginBottom: 8 }}>Đính kèm tệp</div>
-            <label style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 8, border: `1px dashed ${BORDER}`, borderRadius: 6, padding: "24px 10px", cursor: "pointer", background: "#fff" }}>
-              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke={MUTED} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                <polyline points="14 2 14 8 20 8" />
-                <line x1="12" y1="18" x2="12" y2="12" />
-                <line x1="9" y1="15" x2="15" y2="15" />
-              </svg>
-              <div style={{ fontSize: 12, fontFamily: F, color: MUTED }}>
-                Kéo thả tệp vào đây hoặc <span style={{ color: "#7f1d1d", fontWeight: 600 }}>chọn tệp</span>
+          {/* Phần Đính kèm tệp (Công văn đến) hoặc Cấu hình nơi nhận (Công văn đi) */}
+          {loaiCV === "di" ? (
+            <div style={{ border: `1px solid ${BORDER}`, borderRadius: 6, padding: 16, background: "#fff" }}>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
+                <div style={{ fontSize: 13, fontWeight: 700, color: TEXT, fontFamily: F }}>
+                  Cấu hình nơi nhận công văn đi
+                </div>
+                <button
+                  onClick={() => setNoiNhanList(prev => [...prev, { id: Date.now(), phanLoai: "toa-an", donVi: "", kinhGui: "", soBan: "01" }])}
+                  style={{
+                    padding: "6px 14px",
+                    background: RED,
+                    color: "#fff",
+                    border: "none",
+                    borderRadius: 4,
+                    cursor: "pointer",
+                    fontSize: 12,
+                    fontWeight: 600,
+                    fontFamily: F,
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: 4,
+                  }}
+                >
+                  + Thêm nơi nhận
+                </button>
               </div>
-              <input
-                type="file"
-                multiple
-                onChange={e => {
-                  const files = Array.from(e.target.files ?? []);
-                  if (files.length) setAttachments(p => [...p, ...files]);
-                  e.target.value = "";
-                }}
-                style={{ display: "none" }}
-              />
-            </label>
-            {attachments.length > 0 && (
-              <div style={{ display: "flex", flexDirection: "column", gap: 6, marginTop: 8 }}>
-                {attachments.map((file, idx) => (
-                  <div key={`${file.name}-${idx}`} style={{ display: "flex", alignItems: "center", gap: 8, border: `1px solid ${BORDER}`, borderRadius: 5, padding: "6px 10px" }}>
-                    <FileText size={14} color={MUTED} />
-                    <span style={{ flex: 1, fontSize: 12, color: TEXT, fontFamily: F, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{file.name}</span>
-                    <span style={{ fontSize: 11, color: MUTED, fontFamily: F }}>{(file.size / 1024).toFixed(0)} KB</span>
-                    <button onClick={() => setAttachments(p => p.filter((_, i) => i !== idx))} style={{ background: "none", border: "none", cursor: "pointer", color: "#ef4444", display: "flex" }}>
-                      <Trash2 size={14} />
-                    </button>
-                  </div>
-                ))}
+
+              <div style={{ overflowX: "auto" }}>
+                <table style={{ width: "100%", borderCollapse: "collapse", tableLayout: "fixed", border: `1px solid ${BORDER}` }}>
+                  <colgroup>
+                    <col style={{ width: 40 }} />
+                    <col style={{ width: "22%" }} />
+                    <col style={{ width: "32%" }} />
+                    <col style={{ width: "28%" }} />
+                    <col style={{ width: "10%" }} />
+                    <col style={{ width: 45 }} />
+                  </colgroup>
+                  <thead>
+                    <tr style={{ background: "#f8fafc" }}>
+                      {["STT", "Phân loại nơi nhận", "Đơn vị nhận chi tiết", "Trích yếu / Kính gửi", "Số bản", ""].map((h, i) => (
+                        <th key={i} style={{ ...TH_STYLE, fontSize: 11, padding: "8px 10px", borderRight: `1px solid ${BORDER}` }}>{h}</th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {noiNhanList.map((row, idx) => (
+                      <tr key={row.id} style={{ background: idx % 2 === 0 ? "#fff" : "#fafafa" }}>
+                        <td style={{ ...TD_STYLE, textAlign: "center", fontSize: 12, color: MUTED, borderRight: `1px solid ${BORDER}` }}>{idx + 1}</td>
+                        <td style={{ ...TD_STYLE, padding: "6px 8px", borderRight: `1px solid ${BORDER}` }}>
+                          <select
+                            value={row.phanLoai}
+                            onChange={e => setNoiNhanList(prev => prev.map(x => x.id === row.id ? { ...x, phanLoai: e.target.value } : x))}
+                            style={{ ...inSt, padding: "4px 6px", fontSize: 11 }}
+                          >
+                            <option value="toa-an">Tòa án</option>
+                            <option value="vien-kiem-sat">Viện kiểm sát</option>
+                            <option value="cong-an">Cơ quan Công an</option>
+                            <option value="bo-tu-phap">Bộ Tư Pháp</option>
+                            <option value="khac">Khác</option>
+                          </select>
+                        </td>
+                        <td style={{ ...TD_STYLE, padding: "6px 8px", borderRight: `1px solid ${BORDER}` }}>
+                          <input
+                            placeholder="Nhập tên đơn vị nhận"
+                            value={row.donVi}
+                            onChange={e => setNoiNhanList(prev => prev.map(x => x.id === row.id ? { ...x, donVi: e.target.value } : x))}
+                            style={{ ...inSt, padding: "4px 6px", fontSize: 11 }}
+                          />
+                        </td>
+                        <td style={{ ...TD_STYLE, padding: "6px 8px", borderRight: `1px solid ${BORDER}` }}>
+                          <input
+                            placeholder="Kính gửi / Nội dung lưu"
+                            value={row.kinhGui}
+                            onChange={e => setNoiNhanList(prev => prev.map(x => x.id === row.id ? { ...x, kinhGui: e.target.value } : x))}
+                            style={{ ...inSt, padding: "4px 6px", fontSize: 11 }}
+                          />
+                        </td>
+                        <td style={{ ...TD_STYLE, padding: "6px 8px", borderRight: `1px solid ${BORDER}` }}>
+                          <input
+                            type="number"
+                            min={1}
+                            value={row.soBan}
+                            onChange={e => setNoiNhanList(prev => prev.map(x => x.id === row.id ? { ...x, soBan: e.target.value } : x))}
+                            style={{ ...inSt, padding: "4px 6px", fontSize: 11, textAlign: "center" }}
+                          />
+                        </td>
+                        <td style={{ ...TD_STYLE, textAlign: "center" }}>
+                          <button
+                            onClick={() => setNoiNhanList(prev => prev.filter(x => x.id !== row.id))}
+                            style={{ background: "none", border: "none", cursor: "pointer", color: "#ef4444", padding: 2 }}
+                            title="Xóa nơi nhận"
+                          >
+                            <Trash2 size={14} />
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
-            )}
-          </div>
+            </div>
+          ) : (
+            <div>
+              <div style={{ fontSize: 13, fontWeight: 700, color: TEXT, fontFamily: F, marginBottom: 8 }}>Đính kèm tệp</div>
+              <label style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 8, border: `1px dashed ${BORDER}`, borderRadius: 6, padding: "24px 10px", cursor: "pointer", background: "#fff" }}>
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke={MUTED} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                  <polyline points="14 2 14 8 20 8" />
+                  <line x1="12" y1="18" x2="12" y2="12" />
+                  <line x1="9" y1="15" x2="15" y2="15" />
+                </svg>
+                <div style={{ fontSize: 12, fontFamily: F, color: MUTED }}>
+                  Kéo thả tệp vào đây hoặc <span style={{ color: "#7f1d1d", fontWeight: 600 }}>chọn tệp</span>
+                </div>
+                <input
+                  type="file"
+                  multiple
+                  onChange={e => {
+                    const files = Array.from(e.target.files ?? []);
+                    if (files.length) setAttachments(p => [...p, ...files]);
+                    e.target.value = "";
+                  }}
+                  style={{ display: "none" }}
+                />
+              </label>
+              {attachments.length > 0 && (
+                <div style={{ display: "flex", flexDirection: "column", gap: 6, marginTop: 8 }}>
+                  {attachments.map((file, idx) => (
+                    <div key={`${file.name}-${idx}`} style={{ display: "flex", alignItems: "center", gap: 8, border: `1px solid ${BORDER}`, borderRadius: 5, padding: "6px 10px" }}>
+                      <FileText size={14} color={MUTED} />
+                      <span style={{ flex: 1, fontSize: 12, color: TEXT, fontFamily: F, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{file.name}</span>
+                      <span style={{ fontSize: 11, color: MUTED, fontFamily: F }}>{(file.size / 1024).toFixed(0)} KB</span>
+                      <button onClick={() => setAttachments(p => p.filter((_, i) => i !== idx))} style={{ background: "none", border: "none", cursor: "pointer", color: "#ef4444", display: "flex" }}>
+                        <Trash2 size={14} />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
         </div>
 
         {/* Footer */}

@@ -32,7 +32,7 @@ export function InfoGrid({ rows }: { rows: Array<[string, React.ReactNode]> }) {
   );
 }
 
-export type NguoiLienQuanRow = { stt: number; hoTen: string; ngaySinh: string; cccd: string; diaChi: string };
+export type NguoiLienQuanRow = { stt: number; hoTen: string; ngaySinh: string; cccd: string; diaChi: string; toiDanh?: string };
 
 export interface QuaTrinhGiaiQuyetRow {
   stt: number;
@@ -92,7 +92,7 @@ export const MOCK_DATA_BY_LOAI_AN: Record<LoaiAn, TabThongTinMockData> = {
       thuTucGiaiQuyet: "Giám đốc thẩm",
       soNgayBanAn: "124/2026/HS-ST – 20/07/2026",
       loaiAn: "Hình sự",
-      toaRaBanAn: "Tòa án nhân dân cấp cao tại Hà Nội",
+      toaRaBanAn: "Tòa án nhân dân khu vực 5 - Bắc Ninh",
       congVan: {
         soNgay: "Số 124/CV-VKSTC – 15/07/2026",
         donVi: "Viện kiểm sát nhân dân tối cao",
@@ -117,7 +117,7 @@ export const MOCK_DATA_BY_LOAI_AN: Record<LoaiAn, TabThongTinMockData> = {
         vuAn: "VA26-002012: ĐẶNG THỊ DƯƠNG – Tội cố ý gây thương tích",
         loai: "Bản án", giai: "Sơ thẩm",
         soBA: "124/2026/HS-ST", ngayBA: "20/07/2026",
-        toa: "Tòa án nhân dân cấp cao tại Hà Nội",
+        toa: "Tòa án nhân dân khu vực 5 - Bắc Ninh",
         thamPhans: ["Nguyễn Văn A", "Thẩm phán Bậc 1"],
       },
       {
@@ -148,7 +148,7 @@ export const MOCK_DATA_BY_LOAI_AN: Record<LoaiAn, TabThongTinMockData> = {
       nhom1: {
         title: "* Bị cáo",
         required: true,
-        rows: [{ stt: 1, hoTen: "Đặng Thị Dương", ngaySinh: "1995", cccd: "036302091038", diaChi: "Số nhà 7, Xã Trường Sơn, Tỉnh Bắc Ninh" }],
+        rows: [{ stt: 1, hoTen: "Đặng Thị Dương", ngaySinh: "1995", cccd: "036302091038", toiDanh: "Cố ý gây thương tích (Khoản 2 Điều 134 BLHS)", diaChi: "Số nhà 7, Xã Trường Sơn, Tỉnh Bắc Ninh" }],
       },
       nhom2: {
         title: "* Bị hại",
@@ -156,7 +156,7 @@ export const MOCK_DATA_BY_LOAI_AN: Record<LoaiAn, TabThongTinMockData> = {
         rows: [{ stt: 1, hoTen: "Nguyễn Văn Bình", ngaySinh: "1992", cccd: "091310391131", diaChi: "Số nhà 10, Phường Chũ, Tỉnh Bắc Ninh" }],
       },
       nhom3: {
-        title: "Người có quyền lợi, nghĩa vụ liên quan",
+        title: "Người khiếu nại",
         hasCheckbox: true,
         rows: [{ stt: 1, hoTen: "Trần Anh Tuấn", ngaySinh: "1988", cccd: "018210921313", diaChi: "Xã Vân Sơn, Tỉnh Bắc Ninh" }],
       },
@@ -600,20 +600,34 @@ export const MOCK_DATA_BY_LOAI_AN: Record<LoaiAn, TabThongTinMockData> = {
   },
 };
 
-function NguoiLienQuanTable({ rows, noMarginBottom = false }: { rows: NguoiLienQuanRow[]; noMarginBottom?: boolean }) {
+function NguoiLienQuanTable({ rows, noMarginBottom = false, showToiDanh = false }: { rows: NguoiLienQuanRow[]; noMarginBottom?: boolean; showToiDanh?: boolean }) {
+  const headers = showToiDanh
+    ? ["STT", "Họ và tên / Đơn vị", "Ngày sinh / MSDN", "Tội danh", "Địa chỉ", "Thao tác"]
+    : ["STT", "Họ và tên / Đơn vị", "Ngày sinh / MSDN", "Địa chỉ", "Thao tác"];
+
   return (
     <table style={{ width: "100%", borderCollapse: "collapse", tableLayout: "fixed", marginBottom: noMarginBottom ? 0 : 16 }}>
-      <colgroup>
-        <col style={{ width: 40 }} />
-        <col style={{ width: "22%" }} />
-        <col style={{ width: "13%" }} />
-        <col style={{ width: "16%" }} />
-        <col style={{ width: "33%" }} />
-        <col style={{ width: 70 }} />
-      </colgroup>
+      {showToiDanh ? (
+        <colgroup>
+          <col style={{ width: 40 }} />
+          <col style={{ width: "22%" }} />
+          <col style={{ width: "13%" }} />
+          <col style={{ width: "18%" }} />
+          <col style={{ width: "31%" }} />
+          <col style={{ width: 70 }} />
+        </colgroup>
+      ) : (
+        <colgroup>
+          <col style={{ width: 40 }} />
+          <col style={{ width: "26%" }} />
+          <col style={{ width: "15%" }} />
+          <col style={{ width: "45%" }} />
+          <col style={{ width: 70 }} />
+        </colgroup>
+      )}
       <thead>
         <tr>
-          {["STT", "Họ và tên / Đơn vị", "Ngày sinh / MSDN", "CCCD / Mã số", "Địa chỉ", "Thao tác"].map(h => (
+          {headers.map(h => (
             <th key={h} style={TH_STYLE}>{h}</th>
           ))}
         </tr>
@@ -624,7 +638,9 @@ function NguoiLienQuanTable({ rows, noMarginBottom = false }: { rows: NguoiLienQ
             <td style={{ ...TD_STYLE, textAlign: "center", color: MUTED, fontSize: 12 }}>{r.stt}</td>
             <td style={{ ...TD_STYLE, fontSize: 12, color: TEXT }}>{r.hoTen}</td>
             <td style={{ ...TD_STYLE, fontSize: 12, color: TEXT, textAlign: "center" }}>{r.ngaySinh}</td>
-            <td style={{ ...TD_STYLE, fontSize: 12, color: TEXT, textAlign: "center" }}>{r.cccd}</td>
+            {showToiDanh && (
+              <td style={{ ...TD_STYLE, fontSize: 12, color: TEXT, textAlign: "center" }}>{r.toiDanh || "-"}</td>
+            )}
             <td style={{ ...TD_STYLE, fontSize: 12, color: TEXT }}>{r.diaChi}</td>
             <td style={{ ...TD_STYLE, textAlign: "center" }}>
               <div style={{ display: "flex", gap: 10, justifyContent: "center" }}>
@@ -653,6 +669,7 @@ export function TabThongTin({ detail, userRole }: { detail?: VuAnDetailData; use
   };
 
   const [selectedLoaiAn, setSelectedLoaiAn] = useState<LoaiAn>(getInitialLoaiAn());
+  const subHdr: React.CSSProperties = { display: "flex", alignItems: "center", padding: "10px 0 8px", borderBottom: `1px solid ${BORDER}`, marginBottom: 10 };
 
   // Cập nhật selectedLoaiAn khi userRole thay đổi
   useEffect(() => {
@@ -694,7 +711,14 @@ export function TabThongTin({ detail, userRole }: { detail?: VuAnDetailData; use
   const displaySoNgayBA = detail?.soNgayBanAn || mock.thongTinChung.soNgayBanAn;
   const displayToa = detail?.toaXetXu || mock.thongTinChung.toaRaBanAn;
 
-  const subHdr: React.CSSProperties = { display: "flex", alignItems: "center", padding: "10px 0 8px", borderBottom: `1px solid ${BORDER}`, marginBottom: 10 };
+  const isKhieuNai = Boolean(
+    (detail as any)?.isKhieuNai ||
+    (detail as any)?.entityWord === "Khiếu nại" ||
+    (detail as any)?.moduleLabel === "Quản lý khiếu nại" ||
+    (typeof (detail as any)?.maVuAn === "string" && ((detail as any).maVuAn.startsWith("KN") || (detail as any).maVuAn.includes("KN"))) ||
+    (typeof (detail as any)?.id === "string" && (detail as any).id.includes("KN")) ||
+    (typeof (detail as any)?.tenVuAn === "string" && (detail as any).tenVuAn.toLowerCase().includes("khiếu nại"))
+  );
 
   return (
     <div style={{ padding: 20 }}>
@@ -702,7 +726,7 @@ export function TabThongTin({ detail, userRole }: { detail?: VuAnDetailData; use
       {/* ── THÔNG TIN CHUNG ── */}
       <div style={{ background: "#fff", borderRadius: 8, border: `1px solid ${BORDER}`, marginBottom: 16, overflow: "hidden" }}>
         <div style={{ padding: "11px 16px", borderBottom: `1px solid ${BORDER}` }}>
-          <span style={{ fontSize: 13, fontWeight: 700, color: TEXT, fontFamily: F }}>THÔNG TIN CHUNG CỦA VỤ ÁN</span>
+          <span style={{ fontSize: 13, fontWeight: 700, color: TEXT, fontFamily: F }}>{isKhieuNai ? "THÔNG TIN CHUNG CỦA VỤ VIỆC KHIẾU NẠI" : "THÔNG TIN CHUNG CỦA VỤ ÁN"}</span>
         </div>
         {/* badges */}
         {mock.thongTinChung.badges && mock.thongTinChung.badges.length > 0 && (
@@ -860,33 +884,41 @@ export function TabThongTin({ detail, userRole }: { detail?: VuAnDetailData; use
       <div style={{ background: "#fff", borderRadius: 8, border: `1px solid ${BORDER}`, marginBottom: 16, overflow: "hidden" }}>
         <div style={{ padding: "11px 16px", borderBottom: `1px solid ${BORDER}` }}>
           <span style={{ color: RED, marginRight: 6 }}>⊟</span>
-          <span style={{ fontSize: 13, fontWeight: 700, color: TEXT, fontFamily: F }}>NGƯỜI THAM GIA TỐ TỤNG</span>
+          <span style={{ fontSize: 13, fontWeight: 700, color: TEXT, fontFamily: F }}>
+            {isKhieuNai ? "NGƯỜI ĐỨNG ĐƠN" : "NGƯỜI THAM GIA TỐ TỤNG"}
+          </span>
         </div>
         <div style={{ padding: "0 16px 16px" }}>
 
-          {/* Nhóm 1: Bị cáo / Nguyên đơn / Người khởi kiện / Người yêu cầu */}
+          {/* Nhóm 1: Người khiếu nại / Bị cáo (Hình sự) / Nguyên đơn / Người khởi kiện */}
           <div style={{ ...subHdr, marginTop: 12 }}>
-            <span style={{ fontSize: 12, fontWeight: 700, color: RED, fontFamily: F, flex: 1 }}>{mock.nguoiThamGiaToTung.nhom1.title}</span>
+            <span style={{ fontSize: 12, fontWeight: 700, color: RED, fontFamily: F, flex: 1 }}>
+              {isKhieuNai ? "* Người đứng đơn" : mock.nguoiThamGiaToTung.nhom1.title}
+            </span>
             <button style={{ padding: "3px 10px", background: "none", color: "#374151", border: `1px solid ${BORDER}`, borderRadius: 4, cursor: "pointer", fontSize: 11, fontFamily: F }}>+ Thêm mới</button>
           </div>
-          <NguoiLienQuanTable rows={mock.nguoiThamGiaToTung.nhom1.rows} />
+          <NguoiLienQuanTable rows={mock.nguoiThamGiaToTung.nhom1.rows} noMarginBottom={isKhieuNai} showToiDanh={isVu1} />
 
-          {/* Nhóm 2: Bị hại / Bị đơn / Người bị kiện / Doanh nghiệp bị yêu cầu */}
-          <div style={{ ...subHdr, borderTop: `1px solid ${BORDER}`, paddingTop: 12, marginTop: 4 }}>
-            <span style={{ fontSize: 12, fontWeight: 700, color: RED, fontFamily: F, flex: 1 }}>{mock.nguoiThamGiaToTung.nhom2.title}</span>
-            <button style={{ padding: "3px 10px", background: "none", color: "#374151", border: `1px solid ${BORDER}`, borderRadius: 4, cursor: "pointer", fontSize: 11, fontFamily: F }}>+ Thêm mới</button>
-          </div>
-          <NguoiLienQuanTable rows={mock.nguoiThamGiaToTung.nhom2.rows} />
+          {!isKhieuNai && (
+            <>
+              {/* Nhóm 2: Bị hại (Hình sự) / Bị đơn (Dân sự/KDTM) / Người bị kiện (Hành chính) */}
+              <div style={{ ...subHdr, borderTop: `1px solid ${BORDER}`, paddingTop: 12, marginTop: 4 }}>
+                <span style={{ fontSize: 12, fontWeight: 700, color: RED, fontFamily: F, flex: 1 }}>{mock.nguoiThamGiaToTung.nhom2.title}</span>
+                <button style={{ padding: "3px 10px", background: "none", color: "#374151", border: `1px solid ${BORDER}`, borderRadius: 4, cursor: "pointer", fontSize: 11, fontFamily: F }}>+ Thêm mới</button>
+              </div>
+              <NguoiLienQuanTable rows={mock.nguoiThamGiaToTung.nhom2.rows} showToiDanh={!isVu1} />
 
-          {/* Nhóm 3: Người có quyền lợi, nghĩa vụ liên quan */}
-          <div style={{ ...subHdr, borderTop: `1px solid ${BORDER}`, paddingTop: 12, marginTop: 4 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 6, flex: 1 }}>
-              <span style={{ fontSize: 12, fontWeight: 700, color: TEXT, fontFamily: F }}>{mock.nguoiThamGiaToTung.nhom3.title}</span>
-              {mock.nguoiThamGiaToTung.nhom3.hasCheckbox && <input type="checkbox" style={{ cursor: "pointer" }} defaultChecked />}
-            </div>
-            <button style={{ padding: "3px 10px", background: "none", color: "#374151", border: `1px solid ${BORDER}`, borderRadius: 4, cursor: "pointer", fontSize: 11, fontFamily: F }}>+ Thêm mới</button>
-          </div>
-          <NguoiLienQuanTable rows={mock.nguoiThamGiaToTung.nhom3.rows} noMarginBottom />
+              {/* Nhóm 3: Người có quyền lợi, nghĩa vụ liên quan */}
+              <div style={{ ...subHdr, borderTop: `1px solid ${BORDER}`, paddingTop: 12, marginTop: 4 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 6, flex: 1 }}>
+                  <span style={{ fontSize: 12, fontWeight: 700, color: TEXT, fontFamily: F }}>{mock.nguoiThamGiaToTung.nhom3.title}</span>
+                  {mock.nguoiThamGiaToTung.nhom3.hasCheckbox && <input type="checkbox" style={{ cursor: "pointer" }} defaultChecked />}
+                </div>
+                <button style={{ padding: "3px 10px", background: "none", color: "#374151", border: `1px solid ${BORDER}`, borderRadius: 4, cursor: "pointer", fontSize: 11, fontFamily: F }}>+ Thêm mới</button>
+              </div>
+              <NguoiLienQuanTable rows={mock.nguoiThamGiaToTung.nhom3.rows} noMarginBottom showToiDanh={false} />
+            </>
+          )}
         </div>
       </div>
 
