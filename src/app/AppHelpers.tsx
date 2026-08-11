@@ -56,6 +56,18 @@ export function formatSoBA(raw?: string | null, loaiAn?: string): string {
 
   return `${num}/2026/${code}-${cap}`;
 }
+
+export function getSoBALabel(raw?: string | null, loaiAn?: string, capXetXu?: string): string {
+  const text = `${raw || ""} ${loaiAn || ""} ${capXetXu || ""}`.toLowerCase();
+  
+  const isQuyetDinh = text.includes("quyết định") || text.includes("quết định") || text.includes("qd") || text.includes("qđ");
+  const docCode = isQuyetDinh ? "QD" : "BA";
+
+  const isPhucTham = text.includes("phúc thẩm") || text.includes("pt") || text.includes("hs-pt") || text.includes("ds-pt") || text.includes("hc-pt");
+  const capCode = isPhucTham ? "PT" : "ST";
+
+  return `Số ${docCode}${capCode}:`;
+}
 export function TaoToTrinhModal({
   onClose,
   onSave,

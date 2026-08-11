@@ -11,6 +11,7 @@ import {
   CheckCircle2,
 } from "lucide-react";
 import { F, RED, BORDER, TEXT, MUTED, TH_STYLE, TD_STYLE } from "./shared";
+import { getSoBALabel } from "./AppHelpers";
 import { LOAI_AN_OPTIONS } from "./data";
 
 const DANH_SACH_TPB3 = [
@@ -715,7 +716,7 @@ export function PhanCongTPTCView() {
                         {/* Thông tin bản án / quyết định */}
                         <td style={{ ...TD_STYLE, borderRight: `1px solid ${BORDER}`, verticalAlign: "top" }}>
                           <div>
-                            <div><b>Số BA:</b> {r.soBA} &nbsp; <b>Ngày:</b> {r.ngayBA}</div>
+                            <div><b>{getSoBALabel(r.soBA, r.loaiAn, r.capXetXu)}</b> {r.soBA} &nbsp; <b>Ngày:</b> {r.ngayBA}</div>
                             <div style={{ color: MUTED, marginTop: 2, fontSize: 11 }}><b>Tại:</b> {r.toaBA}</div>
                             {r.capXetXu && (
                               <div style={{ marginTop: 4 }}>

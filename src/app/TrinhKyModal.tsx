@@ -163,7 +163,7 @@ export function HoSoToTrinhModal({
                   fontFamily: F,
                 }}
               >
-                + Thêm tài liệu
+                + Thêm tài liệu vào THS
               </button>
             </div>
           </div>
@@ -207,7 +207,7 @@ export function HoSoToTrinhModal({
                     <input
                       type="checkbox"
                       checked={isChecked}
-                      onChange={() => {}}
+                      onChange={() => { }}
                       onClick={e => toggleCheck(doc.id, e)}
                       style={{ cursor: "pointer", accentColor: RED, width: 15, height: 15 }}
                     />
@@ -321,7 +321,7 @@ export function HoSoToTrinhModal({
                 <input
                   type="text"
                   value={currentPage}
-                  onChange={() => {}}
+                  onChange={() => { }}
                   style={{
                     width: 28,
                     textAlign: "center",
@@ -458,9 +458,7 @@ function ChonTaiLieuBoSungModal({
   onAddDocs: (docs: Array<{ id: string; ten: string; loai: string; ngay: string; size?: string }>) => void;
   tenVuAn?: string;
 }) {
-  const [phamViTai, setPhamViTai] = useState<"hien-tai" | "tat-ca">("hien-tai");
-  const [hienThiTheo, setHienThiTheo] = useState<"but-luc" | "tai-lieu">("but-luc");
-  const [hasData, setHasData] = useState<boolean>(true); // Có sẵn dữ liệu hồ sơ để chọn
+  const [hasData, setHasData] = useState<boolean>(true);
   const [selectedDocKey, setSelectedDocKey] = useState<string | null>("bl-01");
   const [selectedKeys, setSelectedKeys] = useState<Record<string, boolean>>({
     "bl-01": true,
@@ -468,7 +466,27 @@ function ChonTaiLieuBoSungModal({
   });
   const [showHistory, setShowHistory] = useState(false);
 
+  const [openFolders, setOpenFolders] = useState<Record<string, boolean>>({
+    "hien-tai": true,
+    "so-tham": true,
+    "phuc-tham": true,
+  });
+
+  const toggleFolder = (folderId: string) => {
+    setOpenFolders(prev => ({
+      ...prev,
+      [folderId]: !prev[folderId],
+    }));
+  };
+
+  const FOLDERS = [
+    { id: "hien-tai", name: "Giai đoạn hiện tại" },
+    { id: "so-tham", name: "Sơ thẩm" },
+    { id: "phuc-tham", name: "Phúc thẩm" },
+  ] as const;
+
   const sampleItems = [
+    // Giai đoạn hiện tại
     {
       id: "bl-01",
       soButLuc: "01 - 15",
@@ -477,54 +495,61 @@ function ChonTaiLieuBoSungModal({
       ngay: "20/07/2026",
       soTrang: 15,
       size: "1.2 MB",
-      giaiDoan: "hien-tai",
+      giaiDoanId: "hien-tai",
     },
     {
       id: "bl-02",
+      soButLuc: "81 - 150",
+      ten: "Báo cáo thẩm tra vụ án và Tờ trình đề xuất Kháng nghị GĐT",
+      loai: "PDF",
+      ngay: "22/07/2026",
+      soTrang: 70,
+      size: "3.5 MB",
+      giaiDoanId: "hien-tai",
+    },
+    // Sơ thẩm
+    {
+      id: "bl-03",
       soButLuc: "16 - 45",
       ten: "Bản án hình sự sơ thẩm số 124/2026/HS-ST",
       loai: "PDF",
       ngay: "20/07/2026",
       soTrang: 30,
       size: "2.4 MB",
-      giaiDoan: "hien-tai",
+      giaiDoanId: "so-tham",
     },
     {
-      id: "bl-03",
+      id: "bl-04",
+      soButLuc: "151 - 220",
+      ten: "Biên bản hỏi cung bị can và kết luận giám định pháp y sơ thẩm",
+      loai: "FILE",
+      ngay: "22/07/2026",
+      soTrang: 70,
+      size: "4.5 MB",
+      giaiDoanId: "so-tham",
+    },
+    // Phúc thẩm
+    {
+      id: "bl-05",
       soButLuc: "46 - 80",
       ten: "Bản án hình sự phúc thẩm số 89/2026/HS-PT",
       loai: "PDF",
       ngay: "20/07/2026",
       soTrang: 35,
       size: "2.8 MB",
-      giaiDoan: "hien-tai",
+      giaiDoanId: "phuc-tham",
     },
     {
-      id: "bl-04",
-      soButLuc: "81 - 150",
-      ten: "Biên bản hỏi cung bị can, biên bản lấy lời khai người làm chứng",
-      loai: "FILE",
-      ngay: "22/07/2026",
-      soTrang: 70,
-      size: "4.5 MB",
-      giaiDoan: "tat-ca",
-    },
-    {
-      id: "bl-05",
-      soButLuc: "151 - 220",
-      ten: "Kết luận giám định pháp y và tài liệu chứng cứ hiện trường",
+      id: "bl-06",
+      soButLuc: "221 - 280",
+      ten: "Đơn kháng cáo của bị cáo và biên bản phiên tòa phúc thẩm",
       loai: "PDF",
-      ngay: "22/07/2026",
-      soTrang: 70,
-      size: "5.1 MB",
-      giaiDoan: "tat-ca",
+      ngay: "25/07/2026",
+      soTrang: 60,
+      size: "3.2 MB",
+      giaiDoanId: "phuc-tham",
     },
   ];
-
-  const filteredItems = sampleItems.filter(item => {
-    if (phamViTai === "hien-tai") return item.giaiDoan === "hien-tai";
-    return true;
-  });
 
   const toggleSelect = (id: string, e: React.MouseEvent) => {
     e.stopPropagation();
@@ -574,7 +599,7 @@ function ChonTaiLieuBoSungModal({
           overflow: "hidden",
         }}
       >
-        {/* ── Top Header Bar (Hồ sơ lưu trữ - Vụ án: Nguyễn Văn Minh - Tội cướp tài sản) ── */}
+        {/* ── Top Header Bar ── */}
         <div
           style={{
             height: 48,
@@ -632,7 +657,7 @@ function ChonTaiLieuBoSungModal({
           </div>
         </div>
 
-        {/* ── Sub-Header Bar (Hồ sơ lưu trữ / Chưa chọn tài liệu / Lịch sử) ── */}
+        {/* ── Sub-Header Bar ── */}
         <div
           style={{
             height: 38,
@@ -691,102 +716,17 @@ function ChonTaiLieuBoSungModal({
               flexShrink: 0,
             }}
           >
-            {/* Filter 1: Phạm vi tải */}
-            <div style={{ padding: "12px 14px 6px" }}>
-              <div style={{ fontSize: 11, color: MUTED, fontWeight: 600, marginBottom: 5 }}>Phạm vi tải</div>
-              <div
-                style={{
-                  display: "flex",
-                  background: "#f1f5f9",
-                  borderRadius: 6,
-                  padding: 2,
-                  gap: 2,
-                }}
-              >
-                {(
-                  [
-                    { id: "hien-tai", label: "Giai đoạn hiện tại" },
-                    { id: "tat-ca", label: "Tất cả giai đoạn" },
-                  ] as const
-                ).map(tab => {
-                  const active = phamViTai === tab.id;
-                  return (
-                    <button
-                      key={tab.id}
-                      onClick={() => setPhamViTai(tab.id)}
-                      style={{
-                        flex: 1,
-                        padding: "5px 4px",
-                        fontSize: 11,
-                        fontWeight: active ? 700 : 500,
-                        color: active ? TEXT : MUTED,
-                        background: active ? "#fff" : "transparent",
-                        border: "none",
-                        borderRadius: 4,
-                        cursor: "pointer",
-                        boxShadow: active ? "0 1px 3px rgba(0,0,0,0.08)" : "none",
-                        fontFamily: F,
-                        transition: "all 0.15s",
-                        textAlign: "center",
-                      }}
-                    >
-                      {tab.label}
-                    </button>
-                  );
-                })}
-              </div>
+            {/* Label Header for Documents */}
+            <div style={{ padding: "10px 14px 6px", borderBottom: `1px solid ${BORDER}`, background: "#fafafa" }}>
+              <span style={{ fontSize: 11, fontWeight: 700, color: MUTED, textTransform: "uppercase", letterSpacing: 0.5 }}>
+                DANH SÁCH TÀI LIỆU ({hasData ? sampleItems.length : 0})
+              </span>
             </div>
 
-            {/* Filter 2: Hiển thị theo */}
-            <div style={{ padding: "6px 14px 10px" }}>
-              <div style={{ fontSize: 11, color: MUTED, fontWeight: 600, marginBottom: 5 }}>Hiển thị theo</div>
-              <div
-                style={{
-                  display: "flex",
-                  background: "#f1f5f9",
-                  borderRadius: 6,
-                  padding: 2,
-                  gap: 2,
-                }}
-              >
-                {(
-                  [
-                    { id: "but-luc", label: "Bút lục" },
-                    { id: "tai-lieu", label: "Tài liệu" },
-                  ] as const
-                ).map(tab => {
-                  const active = hienThiTheo === tab.id;
-                  return (
-                    <button
-                      key={tab.id}
-                      onClick={() => setHienThiTheo(tab.id)}
-                      style={{
-                        flex: 1,
-                        padding: "5px 4px",
-                        fontSize: 11,
-                        fontWeight: active ? 700 : 500,
-                        color: active ? TEXT : MUTED,
-                        background: active ? "#fff" : "transparent",
-                        border: "none",
-                        borderRadius: 4,
-                        cursor: "pointer",
-                        boxShadow: active ? "0 1px 3px rgba(0,0,0,0.08)" : "none",
-                        fontFamily: F,
-                        transition: "all 0.15s",
-                        textAlign: "center",
-                      }}
-                    >
-                      {tab.label}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* Content Area: Empty State OR Document List with Checkboxes */}
-            <div style={{ flex: 1, overflowY: "auto", padding: "10px 14px" }}>
+            {/* Content Area: Folders & Files Tree */}
+            <div style={{ flex: 1, overflowY: "auto", padding: "10px 12px" }}>
               {!hasData ? (
-                /* Empty State matching Screenshot */
+                /* Empty State */
                 <div
                   style={{
                     display: "flex",
@@ -819,54 +759,98 @@ function ChonTaiLieuBoSungModal({
                   </span>
                 </div>
               ) : (
-                /* Populated List */
-                <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-                  <div style={{ fontSize: 11, fontWeight: 600, color: MUTED, textTransform: "uppercase", marginBottom: 4 }}>
-                    Danh sách tài liệu ({filteredItems.length})
-                  </div>
-                  {filteredItems.map(item => {
-                    const isSelected = item.id === selectedDocKey;
-                    const isChecked = !!selectedKeys[item.id];
+                /* Folder Accordion List */
+                <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                  {FOLDERS.map(folder => {
+                    const folderItems = sampleItems.filter(item => item.giaiDoanId === folder.id);
+                    const isOpen = openFolders[folder.id] ?? true;
+
                     return (
-                      <div
-                        key={item.id}
-                        onClick={() => setSelectedDocKey(item.id)}
-                        style={{
-                          display: "flex",
-                          alignItems: "flex-start",
-                          gap: 8,
-                          padding: "8px 10px",
-                          borderRadius: 6,
-                          border: isSelected ? "1px solid #991b1b" : "1px solid #e2e8f0",
-                          background: isSelected ? "#fff5f5" : "#fff",
-                          cursor: "pointer",
-                          transition: "all 0.15s",
-                        }}
-                      >
-                        <input
-                          type="checkbox"
-                          checked={isChecked}
-                          onChange={() => {}}
-                          onClick={e => toggleSelect(item.id, e)}
-                          style={{ marginTop: 2, cursor: "pointer", accentColor: RED }}
-                        />
-                        <FileText size={15} color="#dc2626" style={{ marginTop: 2, flexShrink: 0 }} />
-                        <div style={{ flex: 1, minWidth: 0 }}>
-                          <div
+                      <div key={folder.id} style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+                        {/* Folder Header */}
+                        <div
+                          onClick={() => toggleFolder(folder.id)}
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: 6,
+                            padding: "7px 10px",
+                            borderRadius: 6,
+                            background: "#f1f5f9",
+                            border: "1px solid #e2e8f0",
+                            cursor: "pointer",
+                            userSelect: "none",
+                          }}
+                        >
+                          {isOpen ? <ChevronDown size={14} color="#64748b" /> : <ChevronRight size={14} color="#64748b" />}
+                          <Folder size={15} color="#d97706" fill="#fef3c7" />
+                          <span style={{ fontSize: 12, fontWeight: 700, color: "#1e293b", flex: 1, fontFamily: F }}>
+                            {folder.name}
+                          </span>
+                          <span
                             style={{
-                              fontSize: 12,
-                              fontWeight: isSelected ? 700 : 500,
-                              color: isSelected ? "#991b1b" : "#1e293b",
-                              lineHeight: 1.3,
+                              fontSize: 10,
+                              fontWeight: 700,
+                              color: "#475569",
+                              background: "#e2e8f0",
+                              padding: "1px 7px",
+                              borderRadius: 10,
                             }}
                           >
-                            {hienThiTheo === "but-luc" ? `[BL ${item.soButLuc}] ` : ""}
-                            {item.ten}
-                          </div>
-                          <div style={{ fontSize: 11, color: MUTED, marginTop: 2 }}>
-                            {item.loai} · {item.soTrang} trang · {item.size}
-                          </div>
+                            {folderItems.length}
+                          </span>
                         </div>
+
+                        {/* Items inside folder */}
+                        {isOpen && (
+                          <div style={{ display: "flex", flexDirection: "column", gap: 6, paddingLeft: 8, marginTop: 2 }}>
+                            {folderItems.map(item => {
+                              const isSelected = item.id === selectedDocKey;
+                              const isChecked = !!selectedKeys[item.id];
+                              return (
+                                <div
+                                  key={item.id}
+                                  onClick={() => setSelectedDocKey(item.id)}
+                                  style={{
+                                    display: "flex",
+                                    alignItems: "flex-start",
+                                    gap: 8,
+                                    padding: "8px 10px",
+                                    borderRadius: 6,
+                                    border: isSelected ? "1px solid #991b1b" : "1px solid #e2e8f0",
+                                    background: isSelected ? "#fff5f5" : "#fff",
+                                    cursor: "pointer",
+                                    transition: "all 0.15s",
+                                  }}
+                                >
+                                  <input
+                                    type="checkbox"
+                                    checked={isChecked}
+                                    onChange={() => { }}
+                                    onClick={e => toggleSelect(item.id, e)}
+                                    style={{ marginTop: 2, cursor: "pointer", accentColor: RED }}
+                                  />
+                                  <FileText size={15} color="#dc2626" style={{ marginTop: 2, flexShrink: 0 }} />
+                                  <div style={{ flex: 1, minWidth: 0 }}>
+                                    <div
+                                      style={{
+                                        fontSize: 12,
+                                        fontWeight: isSelected ? 700 : 500,
+                                        color: isSelected ? "#991b1b" : "#1e293b",
+                                        lineHeight: 1.3,
+                                      }}
+                                    >
+                                      [BL {item.soButLuc}] {item.ten}
+                                    </div>
+                                    <div style={{ fontSize: 11, color: MUTED, marginTop: 2 }}>
+                                      {item.loai} · {item.soTrang} trang · {item.size}
+                                    </div>
+                                  </div>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        )}
                       </div>
                     );
                   })}
@@ -1009,7 +993,7 @@ function ChonTaiLieuBoSungModal({
             padding: "0 20px",
             display: "flex",
             alignItems: "center",
-            justifyContent: "flex-end",
+            justifyContent: "flex-start",
             gap: 12,
             flexShrink: 0,
           }}
@@ -1043,7 +1027,7 @@ function ChonTaiLieuBoSungModal({
               fontFamily: F,
             }}
           >
-            Xác nhận bổ sung tài liệu
+            Thêm
           </button>
         </div>
       </div>

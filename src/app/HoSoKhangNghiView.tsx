@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import {
   Search, Eye, ChevronDown, RotateCcw, X, Save,
-  FileText, CheckCircle2, Send, FileSpreadsheet, FolderCheck,
+  FileText, CheckCircle2, Send, FileSpreadsheet, FolderCheck, Edit3,
 } from "lucide-react";
 import { F, RED, BORDER, TEXT, MUTED, BG, TH_STYLE, TD_STYLE, Badge, type UserRoleType } from "./shared";
 import { SearchFilterPanel } from "./SearchFilterPanel";
 import { TaiLieuHoSoView } from "./TaiLieuHoSoView";
+import { formatSoBA, getSoBALabel } from "./AppHelpers";
 
 // ── Modal Trả hồ sơ ───────────────────────────────────────────────────────────
 function ModalTraHoSo({ onClose, onConfirm }: { onClose: () => void; onConfirm: (lyDo: string) => void }) {
@@ -487,9 +488,11 @@ function ModalNhanHoSoKhangNghi({
                   <td style={{ padding: "9px 12px", fontSize: 12, color: TEXT, fontWeight: 600, borderBottom: `1px solid ${BORDER}` }}>{rec.nguoiKhangNghi || "---"}</td>
                 </tr>
                 <tr>
-                  <td style={{ padding: "9px 12px", background: BG, fontSize: 11, color: MUTED, fontWeight: 600, borderRight: `1px solid ${BORDER}`, borderBottom: `1px solid ${BORDER}` }}>Thông tin bản án</td>
+                  <td style={{ padding: "9px 12px", background: BG, fontSize: 11, color: MUTED, fontWeight: 600, borderRight: `1px solid ${BORDER}`, borderBottom: `1px solid ${BORDER}` }}>
+                    {getSoBALabel(rec.soBA, rec.loaiAn)}
+                  </td>
                   <td style={{ padding: "9px 12px", fontSize: 12, color: "#2563eb", fontWeight: 600, borderBottom: `1px solid ${BORDER}` }}>
-                    {rec.soBA || "---"} <span style={{ color: MUTED, fontWeight: 400 }}>(Ngày {rec.ngayBA || "---"})</span>
+                    {formatSoBA(rec.soBA, rec.loaiAn) || "---"} <span style={{ color: MUTED, fontWeight: 400 }}>(Ngày {rec.ngayBA || "---"})</span>
                   </td>
                 </tr>
                 <tr>
@@ -564,6 +567,92 @@ function ModalNhanHoSoKhangNghi({
             style={{ padding: "7px 24px", background: "#0f766e", color: "#fff", border: "none", borderRadius: 4, cursor: "pointer", fontSize: 12, fontWeight: 700, fontFamily: F, display: "flex", alignItems: "center", gap: 6, boxShadow: "0 1px 3px rgba(0,0,0,0.1)" }}
           >
             <CheckCircle2 size={14} /> Xác nhận nhận hồ sơ
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── Modal Chỉnh sửa Số bản án / Quyết định ────────────────────────────────────
+function ModalSuaSoBA({
+  record,
+  onClose,
+  onSave,
+}: {
+  record: any;
+  onClose: () => void;
+  onSave: (soBA: string, ngayBA: string, toaRaBanAn: string) => void;
+}) {
+  const [soBA, setSoBA] = useState(record?.soBA || "");
+  const [ngayBA, setNgayBA] = useState(record?.ngayBA || "");
+  const [toaRaBanAn, setToaRaBanAn] = useState(record?.toaRaBanAn || "");
+
+  const handleSave = () => {
+    if (!soBA.trim()) {
+      alert("Vui lòng nhập Số bản án / Quyết định!");
+      return;
+    }
+    onSave(soBA.trim(), ngayBA.trim(), toaRaBanAn.trim());
+  };
+
+  return (
+    <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)", zIndex: 1500, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: F }}>
+      <div style={{ background: "#fff", borderRadius: 8, width: 460, padding: 22, boxShadow: "0 10px 30px rgba(0,0,0,0.25)", fontFamily: F }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16, borderBottom: `1px solid ${BORDER}`, paddingBottom: 10 }}>
+          <span style={{ fontSize: 15, fontWeight: 700, color: TEXT, fontFamily: F, display: "flex", alignItems: "center", gap: 6 }}>
+            <Edit3 size={16} color={RED} /> Chỉnh sửa Số bản án / Quyết định
+          </span>
+          <button onClick={onClose} style={{ background: "none", border: "none", cursor: "pointer" }}><X size={18} color={MUTED} /></button>
+        </div>
+
+        <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+          <div>
+            <label style={{ fontSize: 12, fontWeight: 600, color: TEXT, fontFamily: F, display: "block", marginBottom: 4 }}>
+              Số bản án / Quyết định *
+            </label>
+            <input
+              type="text"
+              value={soBA}
+              onChange={e => setSoBA(e.target.value)}
+              placeholder="VD: 124/2026/HS-ST"
+              style={{ width: "100%", padding: "8px 12px", fontSize: 13, border: `1px solid ${BORDER}`, borderRadius: 4, fontFamily: F, boxSizing: "border-box" }}
+            />
+          </div>
+
+          <div>
+            <label style={{ fontSize: 12, fontWeight: 600, color: TEXT, fontFamily: F, display: "block", marginBottom: 4 }}>
+              Ngày ban hành bản án / QĐ
+            </label>
+            <input
+              type="text"
+              value={ngayBA}
+              onChange={e => setNgayBA(e.target.value)}
+              placeholder="VD: 20/07/2026"
+              style={{ width: "100%", padding: "8px 12px", fontSize: 13, border: `1px solid ${BORDER}`, borderRadius: 4, fontFamily: F, boxSizing: "border-box" }}
+            />
+          </div>
+
+          <div>
+            <label style={{ fontSize: 12, fontWeight: 600, color: TEXT, fontFamily: F, display: "block", marginBottom: 4 }}>
+              Tòa án ra bản án / QĐ
+            </label>
+            <input
+              type="text"
+              value={toaRaBanAn}
+              onChange={e => setToaRaBanAn(e.target.value)}
+              placeholder="VD: TAND tỉnh Hà Nam"
+              style={{ width: "100%", padding: "8px 12px", fontSize: 13, border: `1px solid ${BORDER}`, borderRadius: 4, fontFamily: F, boxSizing: "border-box" }}
+            />
+          </div>
+        </div>
+
+        <div style={{ display: "flex", justifyContent: "flex-end", gap: 10, marginTop: 20 }}>
+          <button onClick={onClose} style={{ padding: "7px 16px", background: "#fff", color: TEXT, border: `1px solid ${BORDER}`, borderRadius: 4, cursor: "pointer", fontSize: 12, fontFamily: F }}>
+            Hủy
+          </button>
+          <button onClick={handleSave} style={{ padding: "7px 20px", background: "#16a34a", color: "#fff", border: "none", borderRadius: 4, cursor: "pointer", fontSize: 12, fontWeight: 700, fontFamily: F, display: "flex", alignItems: "center", gap: 6 }}>
+            <Save size={14} /> Lưu thay đổi
           </button>
         </div>
       </div>
@@ -1348,8 +1437,30 @@ export function HoSoKhangNghiView({ userRole, onTaoCongVan }: { userRole?: UserR
   const [showNhanHoSoModal, setShowNhanHoSoModal] = useState(false);
   const [showTaoCongVanModal, setShowTaoCongVanModal] = useState(false);
   const [showChonHoSoModal, setShowChonHoSoModal] = useState(false);
+  const [showSuaSoBAModal, setShowSuaSoBAModal] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState<any>(null);
   const [selectedItems, setSelectedItems] = useState<number[]>([]);
+
+  const handleOpenSuaSoBA = (rowTarget: any) => {
+    setSelectedRecord(rowTarget);
+    setShowSuaSoBAModal(true);
+  };
+
+  const handleSaveSuaSoBA = (soBA: string, ngayBA: string, toaRaBanAn: string) => {
+    if (!selectedRecord) return;
+    const updater = (item: any) =>
+      item.id === selectedRecord.id
+        ? { ...item, soBA, ngayBA, toaRaBanAn }
+        : item;
+
+    if (activeSubTab === "di") {
+      setListDi(prev => prev.map(updater));
+    } else {
+      setListDen(prev => prev.map(updater));
+    }
+    setShowSuaSoBAModal(false);
+    alert(`Đã cập nhật thành công Số BA / QĐ: "${formatSoBA(soBA, selectedRecord.loaiAn)}"!`);
+  };
 
   const [listDi, setListDi] = useState([
     {
@@ -1994,7 +2105,19 @@ export function HoSoKhangNghiView({ userRole, onTaoCongVan }: { userRole?: UserR
                   <div style={{ fontSize: 11, color: TEXT, fontFamily: F, marginTop: 2 }}><span style={{ color: MUTED }}>Thẩm quyền xét xử: </span>{(row as any).thamquyenxx}</div>
                 </td>
                 <td style={{ ...TD_STYLE, fontFamily: F, fontSize: 12 }}>
-                  <div style={{ color: "#2563eb", fontWeight: 600 }}><span style={{ color: MUTED, fontWeight: 400 }}>Số BA/QĐ: </span>{row.soBA}</div>
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                    <div style={{ color: "#2563eb", fontWeight: 600 }}>
+                      <span style={{ color: MUTED, fontWeight: 400 }}>{getSoBALabel(row.soBA, row.loaiAn)} </span>
+                      {formatSoBA(row.soBA, row.loaiAn)}
+                    </div>
+                    {/* <button
+                      onClick={() => handleOpenSuaSoBA(row)}
+                      style={{ background: "none", border: "none", cursor: "pointer", color: "#2563eb", padding: "2px 4px", display: "inline-flex", alignItems: "center" }}
+                      title="Chỉnh sửa Số BA / QĐ"
+                    >
+                      <Edit3 size={13} color="#2563eb" />
+                    </button> */}
+                  </div>
                   <div style={{ fontSize: 11, color: TEXT, fontFamily: F, marginTop: 2 }}><span style={{ color: MUTED }}>Ngày bản án: </span>{row.ngayBA}</div>
                   <div style={{ fontSize: 11, color: TEXT, fontFamily: F, marginTop: 2 }}><span style={{ color: MUTED }}>Tòa ra bản án: </span>{(row as any).toaRaBanAn}</div>
                 </td>
@@ -2041,7 +2164,8 @@ export function HoSoKhangNghiView({ userRole, onTaoCongVan }: { userRole?: UserR
                   </Badge>
                 </td>
                 <td style={{ ...TD_STYLE, textAlign: "center" }}>
-                  <div style={{ display: "flex", gap: 8, justifyContent: "center" }}>
+                  <div style={{ display: "flex", gap: 6, justifyContent: "center" }}>
+                    <button onClick={() => handleOpenSuaSoBA(row)} style={{ background: "none", border: "none", cursor: "pointer", padding: 2 }} title="Chỉnh sửa Số BA / QĐ"><Edit3 size={14} color="#2563eb" /></button>
                     {activeSubTab === "di" ? (
                       <>
                         <button onClick={() => onTaoCongVan?.(row)} style={{ background: "none", border: "none", cursor: "pointer", padding: 2 }} title="Xem biểu mẫu"><FileText size={14} color="#0284c7" /></button>
@@ -2117,6 +2241,15 @@ export function HoSoKhangNghiView({ userRole, onTaoCongVan }: { userRole?: UserR
             setSelectedItems(ids);
             alert(`Đã chọn thành công ${ids.length} hồ sơ kháng nghị để xử lý/chuyển!`);
           }}
+        />
+      )}
+
+      {/* Modal Chỉnh sửa Số BA / QĐ */}
+      {showSuaSoBAModal && (
+        <ModalSuaSoBA
+          record={selectedRecord}
+          onClose={() => setShowSuaSoBAModal(false)}
+          onSave={handleSaveSuaSoBA}
         />
       )}
     </div>

@@ -2263,7 +2263,7 @@ function Container83() {
     <div className="content-stretch flex flex-col items-start relative shrink-0 w-full" data-name="Container">
       <div className="[word-break:break-word] flex flex-col font-['Be_Vietnam_Pro:Bold',sans-serif] justify-center leading-[0] not-italic relative shrink-0 text-[12px] text-black w-full">
         <p>
-          <span className="leading-[16px]">Số BA:</span>
+          <span className="leading-[16px]">Số BAST:</span>
           <span className="[word-break:break-word] font-['Be_Vietnam_Pro:Regular',sans-serif] leading-[16px] not-italic">{` HKTT_0506_05 `}</span>
           <span className="leading-[16px]">{`Ngày: `}</span>
           <span className="[word-break:break-word] font-['Be_Vietnam_Pro:Regular',sans-serif] leading-[16px] not-italic">04/06/2026</span>
@@ -2532,7 +2532,7 @@ function Container93() {
     <div className="content-stretch flex flex-col items-start relative shrink-0 w-full" data-name="Container">
       <div className="[word-break:break-word] flex flex-col font-['Be_Vietnam_Pro:Bold',sans-serif] justify-center leading-[0] not-italic relative shrink-0 text-[12px] text-black w-full">
         <p>
-          <span className="leading-[16px]">Số BA:</span>
+          <span className="leading-[16px]">Số BAST:</span>
           <span className="[word-break:break-word] font-['Be_Vietnam_Pro:Regular',sans-serif] leading-[16px] not-italic">{` HKTT_0506_05 `}</span>
           <span className="leading-[16px]">{`Ngày: `}</span>
           <span className="[word-break:break-word] font-['Be_Vietnam_Pro:Regular',sans-serif] leading-[16px] not-italic">04/06/2026</span>
@@ -2887,7 +2887,7 @@ function Container103() {
     <div className="content-stretch flex flex-col items-start relative shrink-0 w-full" data-name="Container">
       <div className="[word-break:break-word] flex flex-col font-['Be_Vietnam_Pro:Bold',sans-serif] justify-center leading-[0] not-italic relative shrink-0 text-[12px] text-black w-full">
         <p>
-          <span className="leading-[16px]">Số BA:</span>
+          <span className="leading-[16px]">Số BAST:</span>
           <span className="[word-break:break-word] font-['Be_Vietnam_Pro:Regular',sans-serif] leading-[16px] not-italic">{` HKTT_0506_05 `}</span>
           <span className="leading-[16px]">{`Ngày: `}</span>
           <span className="[word-break:break-word] font-['Be_Vietnam_Pro:Regular',sans-serif] leading-[16px] not-italic">04/06/2026</span>
@@ -3132,7 +3132,7 @@ function Container112() {
     <div className="content-stretch flex flex-col items-start relative shrink-0 w-full" data-name="Container">
       <div className="[word-break:break-word] flex flex-col font-['Be_Vietnam_Pro:Bold',sans-serif] justify-center leading-[0] not-italic relative shrink-0 text-[12px] text-black w-full">
         <p>
-          <span className="leading-[16px]">Số BA:</span>
+          <span className="leading-[16px]">Số BAST:</span>
           <span className="[word-break:break-word] font-['Be_Vietnam_Pro:Regular',sans-serif] leading-[16px] not-italic">{` HKTT_0506_05 `}</span>
           <span className="leading-[16px]">{`Ngày: `}</span>
           <span className="[word-break:break-word] font-['Be_Vietnam_Pro:Regular',sans-serif] leading-[16px] not-italic">01/06/2026</span>
@@ -3365,7 +3365,7 @@ function Container120() {
     <div className="content-stretch flex flex-col items-start relative shrink-0 w-full" data-name="Container">
       <div className="[word-break:break-word] flex flex-col font-['Be_Vietnam_Pro:Bold',sans-serif] justify-center leading-[0] not-italic relative shrink-0 text-[12px] text-black w-full">
         <p>
-          <span className="leading-[16px]">Số BA:</span>
+          <span className="leading-[16px]">Số BAST:</span>
           <span className="[word-break:break-word] font-['Be_Vietnam_Pro:Regular',sans-serif] leading-[16px] not-italic">{` 99 `}</span>
           <span className="leading-[16px]">Ngày:</span>
           <span className="[word-break:break-word] font-['Be_Vietnam_Pro:Regular',sans-serif] leading-[16px] not-italic">{` `}</span>
@@ -3636,7 +3636,7 @@ function Container128() {
     <div className="content-stretch flex flex-col items-start relative shrink-0 w-full" data-name="Container">
       <div className="[word-break:break-word] flex flex-col font-['Be_Vietnam_Pro:Bold',sans-serif] justify-center leading-[0] not-italic relative shrink-0 text-[12px] text-black w-full">
         <p>
-          <span className="leading-[16px]">Số BA:</span>
+          <span className="leading-[16px]">Số BAST:</span>
           <span className="[word-break:break-word] font-['Be_Vietnam_Pro:Regular',sans-serif] leading-[16px] not-italic">{` 99 `}</span>
           <span className="leading-[16px]">Ngày:</span>
           <span className="[word-break:break-word] font-['Be_Vietnam_Pro:Regular',sans-serif] leading-[16px] not-italic">{` `}</span>

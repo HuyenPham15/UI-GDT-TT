@@ -203,7 +203,7 @@ function CellBA({ c, userRole }: { c: DonCase; userRole?: UserRoleType }) {
     <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
       {c.soBA && (
         <span style={{ fontSize: 11, fontFamily: F }}>
-          <span style={{ color: TEXT }}>Số BA: </span>
+          <span style={{ color: TEXT }}>{getSoBALabel(c.soBA, c.loaiAn, c.capXetXu)} </span>
           <span style={{ color: "#2563eb", fontWeight: 600 }}>{formatSoBA(c.soBA, c.loaiAn)}</span>
           {c.ngayBA && (
             <>
@@ -1078,7 +1078,7 @@ function GiaoTieuHoSoView({ onClose, userRole }: { onClose: () => void; userRole
                   <td style={TD_STYLE}>
                     <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
                       <span style={{ fontSize: 11, color: TEXT, fontFamily: F }}>
-                        Số BA: <span style={{ color: "#2563eb", fontWeight: 600 }}>{formatSoBA(gc.soBA, gc.loaiAn)}</span>
+                        {getSoBALabel(gc.soBA, gc.loaiAn)} <span style={{ color: "#2563eb", fontWeight: 600 }}>{formatSoBA(gc.soBA, gc.loaiAn)}</span>
                       </span>
                       <span style={{ fontSize: 11, color: TEXT, fontFamily: F }}>
                         Ngày: <span style={{ color: "#2563eb" }}>{gc.ngayBA}</span>

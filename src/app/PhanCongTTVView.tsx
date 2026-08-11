@@ -11,6 +11,7 @@ import {
   UserCheck,
 } from "lucide-react";
 import { F, RED, BORDER, TEXT, MUTED, TH_STYLE, TD_STYLE } from "./shared";
+import { getSoBALabel } from "./AppHelpers";
 import { LOAI_AN_OPTIONS } from "./data";
 
 const DANH_SACH_TTV = [
@@ -1006,15 +1007,9 @@ export function PhanCongTTVView() {
                         </td>
                         <td style={TD_CUSTOM}>
                           <div>
-                            <div><b>Số BA:</b> {r.soBA} &nbsp; <b>Ngày:</b> {r.ngayBA}</div>
+                            <div><b>{getSoBALabel(r.soBA, r.loaiAn, r.giaiDoan)}</b> {r.soBA} &nbsp; <b>Ngày:</b> {r.ngayBA}</div>
                             <div style={{ color: MUTED, marginTop: 2, fontSize: 11 }}><b>Tại:</b> {r.toaAn}</div>
-                            {r.giaiDoan && (
-                              <div style={{ marginTop: 4 }}>
-                                <span style={{ background: "#fef3c7", color: "#d97706", border: "1px solid #fde68a", padding: "1px 6px", borderRadius: 3, fontSize: 10, fontWeight: 700 }}>
-                                  Giai đoạn: {r.giaiDoan}
-                                </span>
-                              </div>
-                            )}
+
                             {r.qhpl && (
                               <div style={{ color: "#2563eb", marginTop: 4, fontSize: 11, fontWeight: 500 }}>
                                 <b>QHPL:</b> {r.qhpl}

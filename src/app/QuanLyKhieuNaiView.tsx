@@ -16,7 +16,7 @@ import {
   CapXetXu,
   TaiKhoanPhanQuyenBar,
 } from "./shared";
-import { formatSoBA } from "./AppHelpers";
+import { formatSoBA, getSoBALabel } from "./AppHelpers";
 import {
   isVu234,
   getQuanHePhapLuat,
@@ -268,7 +268,7 @@ export function QuanLyKhieuNaiView({
                     <td style={TD_STYLE}>
                       <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
                         <span style={{ fontSize: 11, fontFamily: F }}>
-                          <span style={{ color: TEXT }}>Số BA: </span>
+                          <span style={{ color: TEXT }}>{getSoBALabel(row.soBA, row.loaiAn, row.capXetXu)} </span>
                           <span style={{ color: "#2563eb", fontWeight: 600 }}>{formatSoBA(row.soBA, row.loaiAn)}</span>
                           {row.ngayBA && (
                             <>

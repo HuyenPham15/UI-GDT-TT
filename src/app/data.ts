@@ -84,6 +84,7 @@ export interface DonCase {
   soCV?: string;
   ngayCV?: string;
   thuLyMoi?: string;
+  ngaythuly?: string;
   daThuLy?: boolean;
 
   // Thông tin đơn (type=hskn)
@@ -423,6 +424,7 @@ function buildCase(loaiIdx: number, recIdx: number, globalId: number): DonCase {
   const soBA = `${pad2(recIdx + 1)}06/${shortCode}-${capCode}`;
   const ngayBA = `${pad2((recIdx % 28) + 1)}/06/2026`;
   const thuLyMoi = String(2330000 + globalId);
+  const ngaythuly = `${pad2((recIdx % 28) + 1)}/06/2026`;
 
   // Phân bổ số lượng tag linh hoạt (1, 2-3, 4 label)
   let caseTags: string[] = [];
@@ -518,6 +520,7 @@ function buildCase(loaiIdx: number, recIdx: number, globalId: number): DonCase {
         soCV,
         ngayCV,
         thuLyMoi,
+        ngaythuly,
         hinhThuc: "Đơn đề nghị GĐT/TT",
         maVuAn,
         tenVuAn,
@@ -536,6 +539,7 @@ function buildCase(loaiIdx: number, recIdx: number, globalId: number): DonCase {
         soCV,
         ngayCV,
         thuLyMoi,
+        ngaythuly,
         hinhThuc: "Đơn khiếu nại tư pháp tố tụng",
         maVuAn,
         tenVuAn,
@@ -555,6 +559,7 @@ function buildCase(loaiIdx: number, recIdx: number, globalId: number): DonCase {
         soCV,
         ngayCV,
         thuLyMoi,
+        ngaythuly,
         hinhThuc: "Đơn đề nghị GĐT/TT",
         maVuAn,
         tenVuAn,
@@ -578,6 +583,7 @@ function buildCase(loaiIdx: number, recIdx: number, globalId: number): DonCase {
         soCV,
         ngayCV,
         thuLyMoi,
+        ngaythuly,
         hinhThuc: "CV kiến nghị GĐT/TT",
         maVuAn,
         tenVuAn,
@@ -606,6 +612,7 @@ function buildCase(loaiIdx: number, recIdx: number, globalId: number): DonCase {
         soCV,
         ngayCV,
         thuLyMoi,
+        ngaythuly,
         hinhThuc: "Đơn báo phát hiện vi phạm PL",
         maVuAn,
         tenVuAn,

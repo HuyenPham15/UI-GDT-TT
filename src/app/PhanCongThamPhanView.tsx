@@ -10,6 +10,7 @@ import {
   Users,
 } from "lucide-react";
 import { F, RED, BORDER, TEXT, MUTED, BG, TH_STYLE, TD_STYLE } from "./shared";
+import { getSoBALabel } from "./AppHelpers";
 
 const DANH_SACH_THAM_PHAN = [
   "Lê Thị Thu Hiền",
@@ -713,7 +714,7 @@ export function PhanCongThamPhanView() {
 
                         {/* Thông tin BA/QĐ */}
                         <td style={{ ...TD_STYLE, fontSize: 12, fontFamily: F, borderRight: `1px solid ${BORDER}`, verticalAlign: "top" }}>
-                          <div><b>Số BA:</b> {r.soBA}</div>
+                          <div><b>{getSoBALabel(r.soBA, r.loaiAn, r.giaiDoan)}</b> {r.soBA}</div>
                           <div style={{ marginTop: 2 }}>
                             <b>Ngày:</b> {r.ngayBA}
                           </div>

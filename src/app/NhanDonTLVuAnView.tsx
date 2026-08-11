@@ -55,7 +55,7 @@ function CellThongTinDon({ c, tab }: { c: DonCase; tab?: TabId }) {
                 )}
                 {c.thuLyMoi && (
                   <span style={{ fontSize: 11, color: TEXT, fontFamily: F }}>
-                    Thụ lý mới: {c.thuLyMoi}
+                    Thụ lý mới: {c.thuLyMoi} - {c.ngaythuly}
                   </span>
                 )}
               </>
@@ -169,7 +169,7 @@ function CellBA({ c, userRole }: { c: DonCase; userRole?: UserRoleType }) {
   const ngayST = c.ngayBASoTham || (c.soBA?.includes("ST") ? c.ngayBA : "15/08/2025");
   const toaST = c.toaSoTham || (c.toa && !c.toa.includes("cấp cao") && !c.toa.includes("tối cao") ? c.toa : "TAND tỉnh Bắc Ninh");
   const isQD_ST = soST.toUpperCase().includes("QĐ") || soST.toUpperCase().includes("QD");
-  const prefixST = isQD_ST ? "Số QĐ" : "Số BA";
+  const prefixST = isQD_ST ? "Số QDST" : "Số BAST";
 
   // Phúc thẩm - Bản án bị đề nghị GĐT/TT
   const soPT = c.soBAPhucTham || (c.soBA?.includes("PT") ? c.soBA : c.id % 2 === 0 ? "58/2025/HSPT-QĐ" : `45/2023/${shortCode}-PT`);
@@ -183,7 +183,7 @@ function CellBA({ c, userRole }: { c: DonCase; userRole?: UserRoleType }) {
   else if (!rawToaPT.includes("-PT)")) toaPTFormatted = `${rawToaPT}(${shortCode}-PT)`;
 
   const isQD_PT = soPT.toUpperCase().includes("QĐ") || soPT.toUpperCase().includes("QD");
-  const prefixPT = isQD_PT ? "Số QĐ" : "Số BA";
+  const prefixPT = isQD_PT ? "Số QDPT" : "Số BAPT";
 
   // Xác định cấp bản án bị đề nghị GĐT/TT (Sơ thẩm hay Phúc thẩm)
   const isHighlightST = c.capDeNghi === "so-tham" || (c.capDeNghi === undefined && c.id % 2 === 1);
@@ -195,7 +195,7 @@ function CellBA({ c, userRole }: { c: DonCase; userRole?: UserRoleType }) {
   const ngayGDT = c.ngayBAGDT || "20/05/2026";
   const toaGDT = c.toaGDT || "TAND tối cao (Hội đồng Thẩm phán)";
   const isQD_GDT = soGDT.toUpperCase().includes("QĐ") || soGDT.toUpperCase().includes("QD");
-  const prefixGDT = isQD_GDT ? "Số QĐ" : "Số BA";
+  const prefixGDT = isQD_GDT ? "Số QDGĐT" : "Số BAGĐT";
 
   const highlightContainerStyle: React.CSSProperties = {
     background: "#fefce8",
@@ -777,6 +777,7 @@ export function GiaoTieuHoSoView({ onClose, userRole }: { onClose: () => void; u
       maDon: "6966/2026/GĐT",
       soCV: "514 - 20/07/2026",
       thuLyMoi: "54682424",
+      ngaythuly: "22/07/2026",
       hinhThuc: "CV kiến nghị GĐT, TT",
       nguoiKhieuNai: "Đỗ Tất Đạt",
       biCao: "Vũ Hòa Hảo",
@@ -801,6 +802,7 @@ export function GiaoTieuHoSoView({ onClose, userRole }: { onClose: () => void; u
       maDon: "6965/2026/GĐT",
       soCV: "513 - 20/07/2026",
       thuLyMoi: "54682425",
+      ngaythuly: "22/07/2026",
       hinhThuc: "CV kiến nghị GĐT, TT",
       nguoiKhieuNai: "Trần Thị Hồng",
       biCao: "Lê Văn Tùng",
@@ -825,6 +827,7 @@ export function GiaoTieuHoSoView({ onClose, userRole }: { onClose: () => void; u
       maDon: "6988/2026/GĐT",
       soCV: "520 - 22/07/2026",
       thuLyMoi: "54682490",
+      ngaythuly: "22/07/2026",
       hinhThuc: "Đơn đề nghị GĐT, TT",
       nguoiKhieuNai: "Hoàng Đức Nam",
       biCao: "Nguyễn Văn Cường",
@@ -849,6 +852,7 @@ export function GiaoTieuHoSoView({ onClose, userRole }: { onClose: () => void; u
       maDon: "7012/2026/GĐT",
       soCV: "535 - 24/07/2026",
       thuLyMoi: "54682510",
+      ngaythuly: "24/07/2026",
       hinhThuc: "CV kiến nghị GĐT, TT",
       nguoiKhieuNai: "Công ty TNHH Á Châu",
       biCao: "Ngân hàng TMCP Sài Gòn",
@@ -1517,7 +1521,7 @@ export function GiaoTieuHoSoView({ onClose, userRole }: { onClose: () => void; u
                           CV chuyển: {gc.soCV}
                         </span>
                         <span style={{ fontSize: 11, color: TEXT, fontFamily: F }}>
-                          Thụ lý mới: <b>{gc.thuLyMoi}</b>
+                          Thụ lý mới: <b>{gc.thuLyMoi} - {gc.ngaythuly}</b>
                         </span>
                         <span style={{ fontSize: 11, color: MUTED, fontFamily: F }}>
                           Hình thức: {gc.hinhThuc}

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { X, FileText, Calendar } from "lucide-react";
 import { F, BORDER, TEXT, MUTED } from "./shared";
 import { TrinhKyModal } from "./TrinhKyModal";
+import { getQuanHePhapLuat } from "./App";
 
 // ── Word preview / editor modal cho Dự thảo văn bản giải quyết ─────────────────
 export function XemBieuMauDuThaoModal({
@@ -44,17 +45,17 @@ export function XemBieuMauDuThaoModal({
     ? isChapNhan
       ? "QUYẾT ĐỊNH GIẢI QUYẾT KHIẾU NẠI (CHẤP NHẬN KHIẾU NẠI)"
       : isKhongChapNhan
-      ? "QUYẾT ĐỊNH GIẢI QUYẾT KHIẾU NẠI (KHÔNG CHẤP NHẬN KHIẾU NẠI)"
-      : isXepDon
-      ? "THÔNG BÁO XẾP ĐƠN KHIẾU NẠI"
-      : "QUYẾT ĐỊNH GIẢI QUYẾT KHIẾU NẠI"
+        ? "QUYẾT ĐỊNH GIẢI QUYẾT KHIẾU NẠI (KHÔNG CHẤP NHẬN KHIẾU NẠI)"
+        : isXepDon
+          ? "THÔNG BÁO XẾP ĐƠN KHIẾU NẠI"
+          : "QUYẾT ĐỊNH GIẢI QUYẾT KHIẾU NẠI"
     : isKhangNghi
-    ? "QUYẾT ĐỊNH KHÁNG NGHỊ GIÁM ĐỐC THẨM"
-    : isTamHoan
-    ? "QUYẾT ĐỊNH TẠM HOÃN THI HÀNH ÁN"
-    : isXepDon
-    ? "THÔNG BÁO XẾP ĐƠN"
-    : "THÔNG BÁO VỀ VIỆC GIẢI QUYẾT ĐƠN ĐỀ NGHỊ GIÁM ĐỐC THẨM";
+      ? "QUYẾT ĐỊNH KHÁNG NGHỊ GIÁM ĐỐC THẨM"
+      : isTamHoan
+        ? "QUYẾT ĐỊNH TẠM HOÃN THI HÀNH ÁN"
+        : isXepDon
+          ? "THÔNG BÁO XẾP ĐƠN"
+          : "THÔNG BÁO VỀ VIỆC GIẢI QUYẾT ĐƠN ĐỀ NGHỊ GIÁM ĐỐC THẨM";
 
   const execCmd = (cmd: string, arg?: string) => {
     document.execCommand(cmd, false, arg);
@@ -364,8 +365,12 @@ export function TaoDuThaoModal({
     (typeof detail?.tenVuAn === "string" && detail.tenVuAn.toLowerCase().includes("khiếu nại"))
   );
 
+  const loaiAn = detail?.loaiAn || "Hình sự";
+  const isHanhChinh = loaiAn === "Hành chính" || detail?.isHanhChinh || detail?.userRole === "vu-4" || detail?.userRole === "hanh-chinh";
+  const isVu23 = loaiAn === "Dân sự" || loaiAn === "Hôn nhân gia đình" || loaiAn === "Kinh doanh thương mại" || loaiAn === "Lao động" || detail?.isDanSu || detail?.isVu23 || detail?.userRole === "vu-2" || detail?.userRole === "vu-3";
+
   const maVuAn = detail?.maVuAn || (isKhieuNai ? "KN26-004128" : "VA26-00321");
-  const tenVuAn = detail?.tenVuAn || (isKhieuNai ? "Vụ khiếu nại Quyết định giải quyết đơn số 45/QĐ-TANDTC" : "Vụ án Phan Văn Thành – bức cung");
+  const tenVuAn = detail?.tenVuAn || (isKhieuNai ? "Vụ khiếu nại Quyết định giải quyết đơn số 45/QĐ-TANDTC" : isHanhChinh ? "Vụ án khiếu kiện Quyết định hành chính số 12/QĐ-UBND" : isVu23 ? "Vụ án tranh chấp hợp đồng mua bán nhà đất" : "Vụ án Phan Văn Thành – bức cung");
   const tenBiCan = isKhieuNai ? "Nguyễn Thị Lan" : "Phan Văn Thành";
   const toiDanh = isKhieuNai ? "Khiếu nại tố tụng" : "Bức cung";
   const soBA = "050526_CTH02";
@@ -377,7 +382,7 @@ export function TaoDuThaoModal({
 
   // Section 1: Thông tin đơn
   const [donLienQuan, setDonLienQuan] = useState("2 đơn/người được chọn");
-  const [ketQuaGQ, setKetQuaGQ] = useState<"tra-loi" | "khang-nghi" | "chap-nhan" | "khong-chap-nhan" | "xep-don">("tra-loi");
+  const [ketQuaGQ, setKetQuaGQ] = useState<"tra-loi" | "khang-nghi" | "chap-nhan" | "khong-chap-nhan">("tra-loi");
 
   // Multi-select & Thêm người đứng đơn
   const [donDataList, setDonDataList] = useState([
@@ -717,14 +722,48 @@ export function TaoDuThaoModal({
                   <span style={{ color: "#374151" }}>Tên vụ án: </span>
                   <span style={{ color: "#0f766e", fontWeight: 600 }}>{tenVuAn}</span>
                 </div>
-                <div>
-                  <span style={{ color: "#374151" }}>Tên bị can đầu vụ: </span>
-                  <span style={{ color: "#0f766e", fontWeight: 600 }}>{tenBiCan}</span>
-                </div>
-                <div>
-                  <span style={{ color: "#374151" }}>Tội danh chính: </span>
-                  <span style={{ color: "#0f766e", fontWeight: 600 }}>{toiDanh}</span>
-                </div>
+                {isHanhChinh ? (
+                  <>
+                    <div>
+                      <span style={{ color: "#374151" }}>Người khởi kiện: </span>
+                      <span style={{ color: "#0f766e", fontWeight: 600 }}>{detail?.nguoiKhoiKien || detail?.nkn || "Đặng Thị Dương"}</span>
+                    </div>
+                    <div>
+                      <span style={{ color: "#374151" }}>Người bị kiện: </span>
+                      <span style={{ color: "#0f766e", fontWeight: 600 }}>{detail?.nguoiBiKien || detail?.biCao || "Ủy ban nhân dân huyện Thuận Thành"}</span>
+                    </div>
+                    <div>
+                      <span style={{ color: "#374151" }}>Quan hệ pháp luật: </span>
+                      <span style={{ color: "#0f766e", fontWeight: 600 }}>{detail?.quanHePhapLuat || getQuanHePhapLuat(detail) || "Khiếu kiện Quyết định hành chính trong quản lý đất đai"}</span>
+                    </div>
+                  </>
+                ) : isVu23 ? (
+                  <>
+                    <div>
+                      <span style={{ color: "#374151" }}>Nguyên đơn: </span>
+                      <span style={{ color: "#0f766e", fontWeight: 600 }}>{detail?.nguyenDon || detail?.nkn || "Nguyễn Văn A"}</span>
+                    </div>
+                    <div>
+                      <span style={{ color: "#374151" }}>Bị đơn: </span>
+                      <span style={{ color: "#0f766e", fontWeight: 600 }}>{detail?.biDon || detail?.biCao || "Công ty Cổ phần XNK Hà Nội"}</span>
+                    </div>
+                    <div>
+                      <span style={{ color: "#374151" }}>Quan hệ pháp luật: </span>
+                      <span style={{ color: "#0f766e", fontWeight: 600 }}>{detail?.quanHePhapLuat || getQuanHePhapLuat(detail) || "Tranh chấp hợp đồng mua bán tài sản"}</span>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div>
+                      <span style={{ color: "#374151" }}>Tên bị can đầu vụ: </span>
+                      <span style={{ color: "#0f766e", fontWeight: 600 }}>{tenBiCan}</span>
+                    </div>
+                    <div>
+                      <span style={{ color: "#374151" }}>Tội danh chính: </span>
+                      <span style={{ color: "#0f766e", fontWeight: 600 }}>{toiDanh}</span>
+                    </div>
+                  </>
+                )}
               </div>
 
               {/* Col 2 */}
@@ -966,7 +1005,7 @@ export function TaoDuThaoModal({
                       />
                       <span style={{ fontWeight: ketQuaGQ === "tra-loi" ? 700 : 400 }}>Trả lời đơn</span>
                     </label>
-                    <label style={{ display: "flex", alignItems: "center", gap: 6, cursor: "pointer", fontSize: 13, fontFamily: F, color: "#111827" }}>
+                    {/* <label style={{ display: "flex", alignItems: "center", gap: 6, cursor: "pointer", fontSize: 13, fontFamily: F, color: "#111827" }}>
                       <input
                         type="radio"
                         name="ketQuaGQ"
@@ -975,7 +1014,7 @@ export function TaoDuThaoModal({
                         style={{ accentColor: "#800000", cursor: "pointer" }}
                       />
                       <span style={{ fontWeight: ketQuaGQ === "xep-don" ? 700 : 400 }}>Xếp đơn</span>
-                    </label>
+                    </label> */}
                   </>
                 )}
               </div>
@@ -1042,10 +1081,24 @@ export function TaoDuThaoModal({
                   onChange={e => setNguoiKy(e.target.value)}
                   style={{ ...inSt, cursor: "pointer" }}
                 >
-                  <option value="Nguyễn Biên Thuỳ - Thẩm phán TANDTC">Nguyễn Biên Thuỳ - Thẩm phán TANDTC</option>
-                  <option value="Phan Văn Nam - Phó Chánh án TANDTC">Phan Văn Nam - Phó Chánh án TANDTC</option>
-                  <option value="Lê Hoàng Nam - Vụ trưởng Vụ 1">Lê Hoàng Nam - Vụ trưởng Vụ 1</option>
-                  <option value="Lý Thái Phúc - Thẩm tra viên">Lý Thái Phúc - Thẩm tra viên</option>
+                  {ketQuaGQ === "khang-nghi" ? (
+                    <>
+                      <option value="Nguyễn Biên Thuỳ - Chánh án">Nguyễn Biên Thuỳ - Chánh án</option>
+                      <option value="Phan Văn Nam - Phó Chánh án">Phan Văn Nam - Phó Chánh án</option>
+                      <option value="Lê Hoàng Nam - Phó Chánh án">Lê Hoàng Nam - Phó Chánh án</option>
+                      <option value="Lý Thái Phúc - Phó Chánh án">Lý Thái Phúc - Phó Chánh án</option>
+                    </>
+                  ) : (
+                    <>
+                      <option value="Nguyễn Biên Thuỳ - Chánh án">Nguyễn Biên Thuỳ - Chánh án</option>
+                      <option value="Phan Văn Nam - Phó Chánh án">Phan Văn Nam - Phó Chánh án</option>
+                      <option value="Lê Hoàng Nam - Phó Chánh án">Lê Hoàng Nam - Phó Chánh án</option>
+                      <option value="Lý Thái Phúc - Phó Chánh án">Lý Thái Phúc - Phó Chánh án</option>
+                      <option value="Trần Văn Hùng - Thẩm phán TANDTC">Trần Văn Hùng - Thẩm phán TANDTC</option>
+                      <option value="Nguyễn Thị Mai - Thẩm phán Bậc 3">Nguyễn Thị Mai - Thẩm phán Bậc 3</option>
+                      <option value="Phạm Văn Dũng - Thẩm phán TANDTC">Phạm Văn Dũng - Thẩm phán TANDTC</option>
+                    </>
+                  )}
                 </select>
               </div>
 

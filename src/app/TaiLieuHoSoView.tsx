@@ -9,47 +9,69 @@ import { F, RED, BORDER, TEXT, MUTED, BG, Badge } from "./shared";
 
 export type TaiLieuItem = {
   id: string;
+  soButLuc: string;
   name: string;
   type: "pdf" | "docx" | "zip" | "image";
   size: string;
   date: string;
-  category: "all" | "personal" | "shared";
-  isFavorite?: boolean;
-  folderDate: string;
+  giaiDoanId: "hien-tai" | "so-tham" | "phuc-tham";
   pageCount?: number;
   contentTitle?: string;
   contentSub?: string;
   paragraphs?: string[];
 };
 
+const FOLDERS = [
+  { id: "hien-tai", name: "Giai đoạn hiện tại" },
+  { id: "so-tham", name: "Sơ thẩm" },
+  { id: "phuc-tham", name: "Phúc thẩm" },
+] as const;
+
 const SAMPLE_DOCS: TaiLieuItem[] = [
+  // Giai đoạn hiện tại
   {
     id: "sample",
-    name: "sample",
+    soButLuc: "01 - 15",
+    name: "Don_de_nghi_giam_doc_tham_nguyen_don",
     type: "pdf",
-    size: "18.4 KB",
+    size: "1.8 MB",
     date: "28/07/2026",
-    folderDate: "28/07/2026",
-    category: "all",
-    isFavorite: false,
-    pageCount: 1,
-    contentTitle: "Sample PDF",
-    contentSub: "This is a simple PDF file. Fun fun fun.",
+    giaiDoanId: "hien-tai",
+    pageCount: 15,
+    contentTitle: "ĐƠN ĐỀ NGHỊ XEM XẾT THEO THỦ TỤC GIÁM ĐỐC THẨM",
+    contentSub: "Kính gửi: Chánh án TAND Tối cao - Viện trưởng VKSND Tối cao",
     paragraphs: [
-      "Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Phasellus facilisis odio sed mi. Curabitur suscipit. Nullam vel nisi. Etiam semper ipsum ut lectus. Proin aliquam, erat eget pharetra commodo, eros mi condimentum quam, sed commodo justo quam ut velit. Integer a erat. Cras laoreet ligula cursus enim. Aenean scelerisque velit et tellus. Vestibulum dictum aliquet sem. Nulla facilisi. Vestibulum accumsan ante vitae elit. Nulla erat dolor, blandit in, rutrum quis, semper pulvinar, enim. Nullam varius congue risus. Vivamus sollicitudin, metus ut interdum eleifend, nisi tellus pellentesque elit, tristique accumsan eros quam et risus. Suspendisse libero odio, mattis sit amet, aliquet eget, hendrerit vel, nulla. Sed vitae augue. Aliquam erat volutpat. Aliquam feugiat vulputate nisl. Suspendisse quis nulla pretium ante pretium mollis. Proin velit ligula, sagittis at, egestas a, pulvinar quis, nisl.",
-      "Pellentesque sit amet lectus. Praesent pulvinar, nunc quis iaculis sagittis, justo quam lobortis tortor, sed vestibulum dui metus venenatis est. Nunc cursus ligula. Nulla facilisi. Phasellus ullamcorper consectetuer ante. Duis tincidunt, urna id condimentum luctus, nibh ante vulputate sapien, id sagittis massa orci ut enim. Pellentesque vestibulum convallis"
+      "Tôi là người đại diện hợp pháp của người bị hại làm đơn này đề nghị xem xét lại toàn bộ bản án phúc thẩm đã có hiệu lực pháp luật do có tình tiết mới làm thay đổi bản chất vụ án.",
+      "Kính đề nghị Quý cấp xem xét kháng nghị theo thẩm quyền đúng quy định pháp luật."
     ]
   },
   {
+    id: "to-trinh-gdt",
+    soButLuc: "81 - 150",
+    name: "To_trinh_de_xuat_khang_nghi_giam_doc_tham",
+    type: "pdf",
+    size: "3.5 MB",
+    date: "22/07/2026",
+    giaiDoanId: "hien-tai",
+    pageCount: 70,
+    contentTitle: "TỜ TRÌNH ĐỀ XUẤT KHÁNG NGHỊ GIÁM ĐỐC THẨM",
+    contentSub: "Thẩm tra viên thụ lý báo cáo Lãnh đạo Vụ Giám đốc kiểm tra",
+    paragraphs: [
+      "Kính trình Lãnh đạo Vụ xem xét phê duyệt Quyết định Kháng nghị Giám đốc thẩm đối với Bản án phúc thẩm số 89/2026/HS-PT.",
+      "Hồ sơ vụ án đủ căn cứ kháng nghị theo quy định tại Điều 373 Bộ luật Tố tụng hình sự."
+    ]
+  },
+
+  // Sơ thẩm
+  {
     id: "ban-an-st",
+    soButLuc: "16 - 45",
     name: "Ban_an_hinh_su_so_tham_124_HSST",
     type: "pdf",
     size: "4.2 MB",
     date: "20/07/2026",
-    folderDate: "20/07/2026",
-    category: "all",
-    isFavorite: true,
-    pageCount: 14,
+    giaiDoanId: "so-tham",
+    pageCount: 30,
     contentTitle: "BẢN ÁN HÌNH SỰ SƠ THẨM",
     contentSub: "Số: 124/2026/HS-ST - Ngày 20/07/2026 - TAND Tỉnh",
     paragraphs: [
@@ -58,37 +80,51 @@ const SAMPLE_DOCS: TaiLieuItem[] = [
     ]
   },
   {
-    id: "don-gdt",
-    name: "Don_de_nghi_giam_doc_tham_nguyen_don",
-    type: "pdf",
-    size: "1.8 MB",
-    date: "20/07/2026",
-    folderDate: "20/07/2026",
-    category: "personal",
-    isFavorite: false,
-    pageCount: 3,
-    contentTitle: "ĐƠN ĐỀ NGHỊ XEM XÉT THEO THỦ TỤC GIÁM ĐỐC THẨM",
-    contentSub: "Kính gửi: Chánh án TAND Tối cao - Viện trưởng VKSND Tối cao",
-    paragraphs: [
-      "Tôi là người đại diện hợp pháp của người bị hại làm đơn này đề nghị xem xét lại toàn bộ bản án phúc thẩm đã có hiệu lực pháp luật do có tình tiết mới làm thay đổi bản chất vụ án.",
-      "Kính đề nghị Quý cấp xem xét kháng nghị theo thẩm quyền đúng quy định pháp luật."
-    ]
-  },
-  {
     id: "kham-nghiem",
+    soButLuc: "151 - 220",
     name: "Bien_ban_kham_nghiem_hien_truong_bo_sung",
     type: "pdf",
     size: "3.1 MB",
     date: "15/07/2026",
-    folderDate: "15/07/2026",
-    category: "shared",
-    isFavorite: false,
-    pageCount: 5,
-    contentTitle: "BIÊN BẢN KHÁM NGHIỆM HIỆN TRƯỜNG",
+    giaiDoanId: "so-tham",
+    pageCount: 70,
+    contentTitle: "BIÊN BẢN KHÁM NGHIỆM HIỆN TRƯỜNG SƠ THẨM",
     contentSub: "Cơ quan CSĐT Công an Tỉnh phối hợp Viện kiểm sát nhân dân",
     paragraphs: [
       "Hồi 08 giờ 30 phút ngày 15/07/2026 tiến hành khám nghiệm hiện trường tại khu vực xảy ra vụ việc.",
       "Có sự chứng kiến của người làm chứng và các bên liên quan, sơ đồ hiện trường và các dấu vết vật chứng được ghi nhận đầy đủ theo phụ lục đính kèm."
+    ]
+  },
+
+  // Phúc thẩm
+  {
+    id: "ban-an-pt",
+    soButLuc: "46 - 80",
+    name: "Ban_an_hinh_su_phuc_tham_89_HSPT",
+    type: "pdf",
+    size: "2.8 MB",
+    date: "20/07/2026",
+    giaiDoanId: "phuc-tham",
+    pageCount: 35,
+    contentTitle: "BẢN ÁN HÌNH SỰ PHÚC THẨM",
+    contentSub: "Số: 89/2026/HS-PT - Ngày 20/07/2026 - TAND Cấp cao",
+    paragraphs: [
+      "TÒA ÁN NHÂN DÂN CẤP CAO TẠI HÀ NỘI\nNHÂN DANH NƯỚC CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM\n\nHội đồng xét xử phúc thẩm quyết định giữ nguyên bản án sơ thẩm."
+    ]
+  },
+  {
+    id: "khang-cao",
+    soButLuc: "221 - 280",
+    name: "Don_khang_cao_phien_toa_phuc_tham",
+    type: "pdf",
+    size: "3.2 MB",
+    date: "25/07/2026",
+    giaiDoanId: "phuc-tham",
+    pageCount: 60,
+    contentTitle: "ĐƠN KHÁNG CÁO CỦA BỊ CÁO",
+    contentSub: "Nộp tại Tòa án nhân dân Cấp cao",
+    paragraphs: [
+      "Tôi xin kháng cáo toàn bộ bản án phúc thẩm và đề nghị xét xử lại theo trình tự Giám đốc thẩm."
     ]
   }
 ];
@@ -102,15 +138,16 @@ export function TaiLieuHoSoView({
   tenVuAn?: string;
   onBack?: () => void;
 }) {
-  // Filters & State
-  const [phamVi, setPhamVi] = useState<"all" | "personal" | "shared">("all");
-  const [sapXep, setSapXep] = useState<"date" | "type">("date");
   const [selectedDocId, setSelectedDocId] = useState<string>("sample");
-  const [expandedFolders, setExpandedFolders] = useState<Record<string, boolean>>({
-    "28/07/2026": true,
-    "20/07/2026": true,
-    "15/07/2026": false,
+  const [openFolders, setOpenFolders] = useState<Record<string, boolean>>({
+    "hien-tai": true,
+    "so-tham": true,
+    "phuc-tham": true,
   });
+
+  const toggleFolder = (folderId: string) => {
+    setOpenFolders(prev => ({ ...prev, [folderId]: !prev[folderId] }));
+  };
 
   // Viewer Controls
   const [zoom, setZoom] = useState<number>(210);
@@ -124,7 +161,6 @@ export function TaiLieuHoSoView({
 
   // Modal states
   const [showUploadModal, setShowUploadModal] = useState(false);
-  const [showSyncModal, setShowSyncModal] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   const showToast = (msg: string) => {
@@ -132,29 +168,12 @@ export function TaiLieuHoSoView({
     setTimeout(() => setToastMessage(null), 3000);
   };
 
-  const toggleFolder = (folderKey: string) => {
-    setExpandedFolders(prev => ({ ...prev, [folderKey]: !prev[folderKey] }));
-  };
-
   const toggleFavorite = (docId: string, e: React.MouseEvent) => {
     e.stopPropagation();
     setFavorites(prev => ({ ...prev, [docId]: !prev[docId] }));
   };
 
-  const filteredDocs = SAMPLE_DOCS.filter(d => {
-    if (phamVi === "all") return true;
-    return d.category === phamVi;
-  });
-
-  // Group docs by date
-  const groupedByDate: Record<string, TaiLieuItem[]> = {};
-  filteredDocs.forEach(d => {
-    if (!groupedByDate[d.folderDate]) groupedByDate[d.folderDate] = [];
-    groupedByDate[d.folderDate].push(d);
-  });
-
   const selectedDoc = SAMPLE_DOCS.find(d => d.id === selectedDocId) || SAMPLE_DOCS[0];
-  const favoriteCount = Object.values(favorites).filter(Boolean).length;
 
   const handleAddNote = () => {
     if (!newNoteText.trim()) return;
@@ -245,226 +264,59 @@ export function TaiLieuHoSoView({
           </div>
         </div>
 
-        {/* Filter Section: Phạm vi */}
-        <div style={{ padding: "10px 14px 6px" }}>
-          <div style={{ fontSize: 11, color: MUTED, fontWeight: 600, marginBottom: 5 }}>Phạm vi</div>
-          <div
-            style={{
-              display: "flex",
-              background: "#f1f5f9",
-              borderRadius: 6,
-              padding: 2,
-              gap: 2,
-            }}
-          >
-            {(
-              [
-                { id: "all", label: "Tất cả" },
-                { id: "personal", label: "Cá nhân" },
-                { id: "shared", label: "Được chia sẻ" },
-              ] as const
-            ).map(tab => {
-              const active = phamVi === tab.id;
-              return (
-                <button
-                  key={tab.id}
-                  onClick={() => setPhamVi(tab.id)}
-                  style={{
-                    flex: 1,
-                    padding: "5px 4px",
-                    fontSize: 11,
-                    fontWeight: active ? 700 : 500,
-                    color: active ? TEXT : MUTED,
-                    background: active ? "#fff" : "transparent",
-                    border: "none",
-                    borderRadius: 4,
-                    cursor: "pointer",
-                    boxShadow: active ? "0 1px 3px rgba(0,0,0,0.08)" : "none",
-                    fontFamily: F,
-                    transition: "all 0.15s",
-                    textAlign: "center",
-                    whiteSpace: "nowrap",
-                  }}
-                >
-                  {tab.label}
-                </button>
-              );
-            })}
-          </div>
+        {/* Label Header for Documents */}
+        <div style={{ padding: "10px 14px 6px", borderBottom: `1px solid ${BORDER}`, background: "#fafafa" }}>
+          <span style={{ fontSize: 11, fontWeight: 700, color: MUTED, textTransform: "uppercase", letterSpacing: 0.5 }}>
+            DANH SÁCH TÀI LIỆU ({SAMPLE_DOCS.length})
+          </span>
         </div>
 
-        {/* Filter Section: Sắp xếp theo */}
-        <div style={{ padding: "6px 14px 10px" }}>
-          <div style={{ fontSize: 11, color: MUTED, fontWeight: 600, marginBottom: 5 }}>Sắp xếp theo</div>
-          <div
-            style={{
-              display: "flex",
-              background: "#f1f5f9",
-              borderRadius: 6,
-              padding: 2,
-              gap: 2,
-            }}
-          >
-            {(
-              [
-                { id: "date", label: "Ngày" },
-                { id: "type", label: "Loại tài liệu" },
-              ] as const
-            ).map(tab => {
-              const active = sapXep === tab.id;
-              return (
-                <button
-                  key={tab.id}
-                  onClick={() => setSapXep(tab.id)}
-                  style={{
-                    flex: 1,
-                    padding: "5px 4px",
-                    fontSize: 11,
-                    fontWeight: active ? 700 : 500,
-                    color: active ? TEXT : MUTED,
-                    background: active ? "#fff" : "transparent",
-                    border: "none",
-                    borderRadius: 4,
-                    cursor: "pointer",
-                    boxShadow: active ? "0 1px 3px rgba(0,0,0,0.08)" : "none",
-                    fontFamily: F,
-                    transition: "all 0.15s",
-                    textAlign: "center",
-                  }}
-                >
-                  {tab.label}
-                </button>
-              );
-            })}
-          </div>
-        </div>
+        {/* Folder Accordion Tree */}
+        <div style={{ flex: 1, overflowY: "auto", padding: "10px 12px", display: "flex", flexDirection: "column", gap: 10 }}>
+          {FOLDERS.map(folder => {
+            const folderDocs = SAMPLE_DOCS.filter(d => d.giaiDoanId === folder.id);
+            const isOpen = openFolders[folder.id] ?? true;
 
-        {/* Tree & Document List (Scrollable) */}
-        <div style={{ flex: 1, overflowY: "auto", padding: "4px 8px 12px" }}>
-          {/* Item: Tài liệu đánh dấu */}
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              padding: "7px 10px",
-              borderRadius: 5,
-              fontSize: 12,
-              color: TEXT,
-              cursor: "pointer",
-              marginBottom: 2,
-            }}
-          >
-            <div style={{ display: "flex", alignItems: "center", gap: 7 }}>
-              <ChevronRight size={13} color={MUTED} />
-              <Folder size={15} color="#eab308" />
-              <span style={{ fontWeight: 500 }}>Tài liệu đánh dấu</span>
-            </div>
-            <span
-              style={{
-                fontSize: 10,
-                color: MUTED,
-                background: "#f1f5f9",
-                padding: "1px 6px",
-                borderRadius: 10,
-                fontWeight: 600,
-              }}
-            >
-              {favoriteCount}
-            </span>
-          </div>
-
-          {/* Item: Tiểu hồ sơ */}
-          {/* <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              padding: "7px 10px",
-              borderRadius: 5,
-              fontSize: 12,
-              color: TEXT,
-              cursor: "pointer",
-              marginBottom: 2,
-            }}
-          >
-            <div style={{ display: "flex", alignItems: "center", gap: 7 }}>
-              <ChevronRight size={13} color={MUTED} />
-              <Folder size={15} color="#eab308" />
-              <span style={{ fontWeight: 500 }}>Tiểu hồ sơ</span>
-            </div>
-            <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
-              <span
-                style={{
-                  fontSize: 10,
-                  color: MUTED,
-                  background: "#f1f5f9",
-                  padding: "1px 6px",
-                  borderRadius: 10,
-                  fontWeight: 600,
-                }}
-              >
-                0
-              </span>
-              <button
-                style={{ background: "none", border: "none", cursor: "pointer", color: MUTED, padding: 1 }}
-              >
-                <MoreVertical size={13} />
-              </button>
-            </div>
-          </div> */}
-
-          {/* Date Folders list */}
-          {Object.entries(groupedByDate).map(([folderDate, docs]) => {
-            const isExpanded = expandedFolders[folderDate] ?? true;
             return (
-              <div key={folderDate} style={{ marginBottom: 4 }}>
+              <div key={folder.id} style={{ display: "flex", flexDirection: "column", gap: 4 }}>
                 {/* Folder Header */}
                 <div
-                  onClick={() => toggleFolder(folderDate)}
+                  onClick={() => toggleFolder(folder.id)}
                   style={{
                     display: "flex",
                     alignItems: "center",
-                    justifyContent: "space-between",
+                    gap: 6,
                     padding: "7px 10px",
-                    borderRadius: 5,
-                    fontSize: 12,
-                    color: TEXT,
+                    borderRadius: 6,
+                    background: "#f1f5f9",
+                    border: "1px solid #e2e8f0",
                     cursor: "pointer",
-                    background: isExpanded ? "#f8fafc" : "transparent",
+                    userSelect: "none",
                   }}
                 >
-                  <div style={{ display: "flex", alignItems: "center", gap: 7 }}>
-                    {isExpanded ? (
-                      <ChevronDown size={13} color={MUTED} />
-                    ) : (
-                      <ChevronRight size={13} color={MUTED} />
-                    )}
-                    {isExpanded ? (
-                      <FolderOpen size={15} color="#eab308" />
-                    ) : (
-                      <Folder size={15} color="#eab308" />
-                    )}
-                    <span style={{ fontWeight: 600 }}>{folderDate}</span>
-                  </div>
+                  {isOpen ? <ChevronDown size={14} color="#64748b" /> : <ChevronRight size={14} color="#64748b" />}
+                  <Folder size={15} color="#d97706" fill="#fef3c7" />
+                  <span style={{ fontSize: 12, fontWeight: 700, color: "#1e293b", flex: 1, fontFamily: F }}>
+                    {folder.name}
+                  </span>
                   <span
                     style={{
                       fontSize: 10,
-                      color: MUTED,
-                      background: "#f1f5f9",
-                      padding: "1px 6px",
+                      fontWeight: 700,
+                      color: "#475569",
+                      background: "#e2e8f0",
+                      padding: "1px 7px",
                       borderRadius: 10,
-                      fontWeight: 600,
                     }}
                   >
-                    {docs.length}
+                    {folderDocs.length}
                   </span>
                 </div>
 
-                {/* Sub items inside folder */}
-                {isExpanded && (
-                  <div style={{ paddingLeft: 22, marginTop: 2, display: "flex", flexDirection: "column", gap: 2 }}>
-                    {docs.map(doc => {
+                {/* Docs inside folder */}
+                {isOpen && (
+                  <div style={{ display: "flex", flexDirection: "column", gap: 6, paddingLeft: 8, marginTop: 2 }}>
+                    {folderDocs.map(doc => {
                       const isSelected = selectedDocId === doc.id;
                       const isFav = favorites[doc.id];
                       return (
@@ -472,66 +324,52 @@ export function TaiLieuHoSoView({
                           key={doc.id}
                           onClick={() => setSelectedDocId(doc.id)}
                           style={{
-                            padding: "8px 10px",
+                            padding: "9px 11px",
                             borderRadius: 6,
-                            cursor: "pointer",
+                            border: `1px solid ${isSelected ? "#fecaca" : BORDER}`,
                             background: isSelected ? "#fef2f2" : "#fff",
-                            border: isSelected ? `1px solid #fecaca` : "1px solid transparent",
+                            cursor: "pointer",
                             display: "flex",
                             flexDirection: "column",
-                            gap: 3,
+                            gap: 4,
                             transition: "all 0.15s",
                           }}
                         >
-                          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                            <span
-                              style={{
-                                fontSize: 12,
-                                fontWeight: isSelected ? 700 : 500,
-                                color: isSelected ? RED : TEXT,
-                                overflow: "hidden",
-                                textOverflow: "ellipsis",
-                                whiteSpace: "nowrap",
-                              }}
-                            >
-                              {doc.name}
-                            </span>
-                            <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
-                              <button
-                                onClick={e => toggleFavorite(doc.id, e)}
+                          <div style={{ display: "flex", alignItems: "flex-start", gap: 6 }}>
+                            <FileText size={15} color={isSelected ? RED : "#dc2626"} style={{ marginTop: 2, flexShrink: 0 }} />
+                            <div style={{ flex: 1, minWidth: 0 }}>
+                              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                                <span style={{ fontSize: 11, fontWeight: 700, color: RED, marginBottom: 2 }}>
+                                  [BL {doc.soButLuc}]
+                                </span>
+                                <button
+                                  onClick={e => toggleFavorite(doc.id, e)}
+                                  style={{
+                                    background: "none",
+                                    border: "none",
+                                    cursor: "pointer",
+                                    padding: 1,
+                                    color: isFav ? "#eab308" : "#94a3b8",
+                                  }}
+                                >
+                                  <Star size={13} fill={isFav ? "#eab308" : "none"} />
+                                </button>
+                              </div>
+                              <div
                                 style={{
-                                  background: "none",
-                                  border: "none",
-                                  cursor: "pointer",
-                                  padding: 1,
-                                  color: isFav ? "#eab308" : "#94a3b8",
+                                  fontSize: 12,
+                                  fontWeight: isSelected ? 700 : 500,
+                                  color: isSelected ? RED : TEXT,
+                                  lineHeight: 1.35,
+                                  wordBreak: "break-word",
                                 }}
                               >
-                                <Star size={13} fill={isFav ? "#eab308" : "none"} />
-                              </button>
-                              <button
-                                onClick={e => e.stopPropagation()}
-                                style={{ background: "none", border: "none", cursor: "pointer", padding: 1, color: MUTED }}
-                              >
-                                <MoreVertical size={13} />
-                              </button>
+                                {doc.name}
+                              </div>
+                              <div style={{ fontSize: 10.5, color: MUTED, marginTop: 4 }}>
+                                PDF · {doc.pageCount || 1} trang · {doc.size}
+                              </div>
                             </div>
-                          </div>
-
-                          <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 10, color: MUTED }}>
-                            <span
-                              style={{
-                                background: "#fee2e2",
-                                color: "#991b1b",
-                                padding: "0 4px",
-                                borderRadius: 3,
-                                fontWeight: 700,
-                                fontSize: 9,
-                              }}
-                            >
-                              PDF
-                            </span>
-                            <span>{doc.size}</span>
                           </div>
                         </div>
                       );
@@ -648,7 +486,7 @@ export function TaiLieuHoSoView({
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
             <FileText size={15} color={RED} />
             <span style={{ fontSize: 13, fontWeight: 700, color: TEXT, fontFamily: F }}>
-              {selectedDoc.name}
+              [BL {selectedDoc.soButLuc}] {selectedDoc.name}
             </span>
           </div>
 
@@ -785,11 +623,11 @@ export function TaiLieuHoSoView({
               }}
             >
               {/* Document Title Header */}
-              <div style={{ fontSize: "28pt", fontWeight: "300", color: "#1f2937", marginBottom: 8, letterSpacing: "-0.5px" }}>
-                {selectedDoc.contentTitle || "Sample PDF"}
+              <div style={{ fontSize: "24pt", fontWeight: "700", color: "#1f2937", marginBottom: 8, textAlign: "center" }}>
+                {selectedDoc.contentTitle || selectedDoc.name}
               </div>
-              <div style={{ fontSize: "16pt", fontStyle: "italic", color: "#4b5563", marginBottom: 32 }}>
-                {selectedDoc.contentSub || "This is a simple PDF file. Fun fun fun."}
+              <div style={{ fontSize: "14pt", fontStyle: "italic", color: "#4b5563", marginBottom: 32, textAlign: "center" }}>
+                {selectedDoc.contentSub || "Tài liệu hồ sơ vụ án số hóa"}
               </div>
 
               {/* Document Paragraphs */}
@@ -802,6 +640,7 @@ export function TaiLieuHoSoView({
                     lineHeight: 1.65,
                     color: "#374151",
                     fontSize: "12pt",
+                    textIndent: 24,
                   }}
                 >
                   {p}
