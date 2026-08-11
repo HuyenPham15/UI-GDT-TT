@@ -809,6 +809,116 @@ export function QuickViewDanhSachDonModal({
   );
 }
 
+function getSoBALabel(soBAStr: string, isST: boolean) {
+  const isQuyetDinh = soBAStr.toUpperCase().includes("QĐ") || soBAStr.toUpperCase().includes("QD");
+  if (isQuyetDinh) {
+    return isST ? "Số QDST" : "Số QDPT";
+  } else {
+    return isST ? "Số BAST" : "Số BAPT";
+  }
+}
+
+// ── Render Cell Thông Tin Bản Án Đề Nghị & Giai đoạn còn lại ─────────────────────
+export function renderThongTinBanAnCell(
+  row: VuAnRow,
+  effectiveLoaiAn: string,
+  showQHPL: boolean = false
+) {
+  const isDeNghiPT = row.soBA.includes("PT") || row.capXetXu?.includes("Phúc") || row.capXetXu?.includes("Tái");
+
+  const soBA_DeNghi = formatSoBA(row.soBA, effectiveLoaiAn);
+  const ngayBA_DeNghi = row.ngayBA || "20/07/2026";
+  const toa_DeNghi = row.toa || "Tòa án nhân dân cấp cao";
+  const label_DeNghi = getSoBALabel(row.soBA, !isDeNghiPT);
+
+  // Derive remaining stage info (giai đoạn còn lại)
+  let rawConLai = isDeNghiPT
+    ? row.soBA.replace("HS-PT", "HS-ST").replace("DS-PT", "DS-ST").replace("KDTM-PT", "KDTM-ST").replace("HC-PT", "HC-ST")
+    : row.soBA.replace("HS-ST", "HS-PT").replace("DS-ST", "DS-PT").replace("KDTM-ST", "KDTM-PT").replace("HC-ST", "HC-PT");
+
+  if (rawConLai === row.soBA) {
+    rawConLai = isDeNghiPT ? "08/2026/HS-ST" : "18/2026/HS-PT";
+  }
+  const soBA_ConLai = formatSoBA(rawConLai, effectiveLoaiAn);
+  const ngayBA_ConLai = isDeNghiPT ? "15/03/2026" : "20/08/2026";
+  const toa_ConLai = isDeNghiPT ? "TAND tỉnh/thành phố" : "TAND cấp cao";
+  const label_ConLai = getSoBALabel(rawConLai, isDeNghiPT);
+
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 4, lineHeight: 1.35, fontFamily: F }}>
+      {/* 1. Bản án ĐỀ NGHỊ GĐT (HIGHLIGHTED, KHÔNG BORDER) */}
+      <div style={{ display: "flex", flexDirection: "column", gap: 1 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 4, flexWrap: "wrap" }}>
+          <span style={{ fontSize: 11, fontWeight: 700, color: "#1e40af" }}>
+            {label_DeNghi}:
+          </span>
+          <strong style={{ fontSize: 11.5, color: "#1e40af" }}>
+            {soBA_DeNghi}
+          </strong>
+          {ngayBA_DeNghi && (
+            <span style={{ fontSize: 11, color: "#2563eb", fontWeight: 600 }}>
+              ({ngayBA_DeNghi})
+            </span>
+          )}
+          <span style={{ background: "#fef08a", color: "#854d0e", fontSize: 10, fontWeight: 700, padding: "1px 5px", borderRadius: 3, marginLeft: 2 }}>
+            Đề nghị GĐT
+          </span>
+        </div>
+        <span style={{ fontSize: 10.5, color: "#475569" }}>
+          Tại: {toa_DeNghi}
+        </span>
+      </div>
+
+      {/* 2. Bản án Giai đoạn còn lại (KHÔNG BORDER) */}
+      <div style={{ display: "flex", flexDirection: "column", gap: 1, marginTop: 2 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 4, flexWrap: "wrap" }}>
+          <span style={{ fontSize: 11, fontWeight: 600, color: TEXT }}>
+            {label_ConLai}:
+          </span>
+          <span style={{ fontSize: 11, color: TEXT, fontWeight: 600 }}>
+            {soBA_ConLai}
+          </span>
+          {ngayBA_ConLai && (
+            <span style={{ fontSize: 11, color: MUTED }}>
+              ({ngayBA_ConLai})
+            </span>
+          )}
+        </div>
+        <span style={{ fontSize: 10.5, color: MUTED }}>
+          Tại: {toa_ConLai}
+        </span>
+      </div>
+
+      {/* Thời hiệu */}
+      {row.thoiHieu && (
+        <div style={{ marginTop: 2 }}>
+          <span style={{ fontSize: 10.5, color: TEXT }}>
+            <span style={{ color: MUTED }}>Thời hiệu: </span>
+            <span style={{ color: row.thoiHieu === "Không xác định thời hiệu" || row.thoiHieu === "Không có thời hiệu giải quyết" ? "#047857" : "#c2410c", fontWeight: 600 }}>
+              {row.thoiHieu}
+            </span>
+          </span>
+        </div>
+      )}
+
+      {/* QHPL cho Vụ 2, 3, 4 */}
+      {showQHPL && (
+        <span style={{ fontSize: 10.5, color: "#047857", fontWeight: 500 }}>
+          <span style={{ color: TEXT, fontWeight: 400 }}>QHPL: </span>{getQuanHePhapLuat(row)}
+        </span>
+      )}
+
+      {/* Badges */}
+      <div style={{ display: "flex", gap: 4, flexWrap: "wrap", marginTop: 2 }}>
+        {row.anLoai === "chi-dao" && <Badge color="#92400e" bg="#fef3c7">Án chỉ đạo</Badge>}
+        {row.anLoai === "quoc-hoi" && <Badge color="#3730a3" bg="#e0e7ff">Án Quốc hội</Badge>}
+        {row.anLoai === "tvtn" && <Badge color="#065f46" bg="#d1fae5">Án TVTN</Badge>}
+        {row.anLoai === "tu-hinh" && <Badge color="#991b1b" bg="#fee2e2">Án tử hình</Badge>}
+      </div>
+    </div>
+  );
+}
+
 // ── Render Cell Trạng Thái (Cấp trình & Kết quả trả lời đơn của từng đơn) ─────
 export function renderCellTrangThaiDon(
   row: VuAnRow,
@@ -935,7 +1045,7 @@ export function renderCellTrangThaiDon(
       </div>
 
       {/* 4. Link xem danh sách đơn */}
-      {onQuickView && (
+      {/* {onQuickView && (
         <div style={{ borderTop: `1px dashed #e5e7eb`, paddingTop: 4 }}>
           <button
             onClick={(e) => {
@@ -959,7 +1069,7 @@ export function renderCellTrangThaiDon(
             📄 Danh sách đơn ({group.rows.length})
           </button>
         </div>
-      )}
+      )} */}
     </div>
   );
 }
@@ -1079,7 +1189,7 @@ export default function QuanLyVuAnView({
                 <tr>
                   <th style={TH_STYLE}><input type="checkbox" /></th>
                   <th style={TH_STYLE}>THÔNG TIN ĐƠN & THỤ LÝ</th>
-                  <th style={TH_STYLE}>THÔNG TIN BẢN ÁN/QĐ & QHPL</th>
+                  <th style={TH_STYLE}>THÔNG TIN BẢN ÁN ĐỀ NGHỊ</th>
                   <th style={TH_STYLE}>ĐƯƠNG SỰ & NGƯỜI ĐỀ NGHỊ</th>
                   <th style={TH_STYLE}>PHÂN CÔNG</th>
                   <th style={TH_STYLE}>TRẠNG THÁI</th>
@@ -1190,26 +1300,9 @@ export default function QuanLyVuAnView({
                             {/* 3 Cột chung (Thông tin bản án, Đương sự, Phân công) gộp ô theo rowSpan */}
                             {isFirst && (
                               <>
-                                {/* Cột 2: Thông tin Bản án / QĐ & QHPL */}
-                                <td rowSpan={totalRows} style={{ ...TD_STYLE, verticalAlign: "middle", background: "#ffffff", padding: "6px 10px", lineHeight: 1.35 }}>
-                                  <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
-                                    <span style={{ fontSize: 11, fontFamily: F }}>
-                                      <span style={{ color: TEXT }}>Số BA: </span>
-                                      <span style={{ color: "#2563eb", fontWeight: 600 }}>{formatSoBA(row.soBA, effectiveLoaiAn)}</span>
-                                      {row.ngayBA && (
-                                        <>
-                                          <span style={{ color: TEXT }}> Ngày: </span>
-                                          <span style={{ color: "#2563eb" }}>{row.ngayBA}</span>
-                                        </>
-                                      )}
-                                    </span>
-                                    <span style={{ fontSize: 11, color: TEXT, fontFamily: F }}>
-                                      <span style={{ color: TEXT }}>Tại: </span>{row.toa}
-                                    </span>
-                                    {/* <div style={{ display: "inline-block", background: "#fef9c3", border: "1px solid #fef08a", borderRadius: 3, padding: "0px 6px", width: "fit-content", fontSize: 10.5, color: "#854d0e", fontWeight: 600 }}>
-                                      Cấp xét xử: {row.capXetXu || "Tái thẩm"}
-                                    </div> */}
-                                  </div>
+                                {/* Cột 2: Thông tin Bản án Đề nghị & Giai đoạn còn lại */}
+                                <td rowSpan={totalRows} style={{ ...TD_STYLE, verticalAlign: "top", background: "#ffffff", padding: "6px 10px", lineHeight: 1.35 }}>
+                                  {renderThongTinBanAnCell(row, effectiveLoaiAn, false)}
                                 </td>
 
                                 {/* Cột 3: Đương sự & Người đứng đơn */}
@@ -1321,41 +1414,8 @@ export default function QuanLyVuAnView({
                           </button>
                         </div>
                       </td>
-                      <td style={TD_STYLE}>
-                        <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
-                          <span style={{ fontSize: 11, fontFamily: F }}>
-                            <span style={{ color: TEXT }}>Số BA: </span>
-                            <span style={{ color: "#2563eb", fontWeight: 600 }}>{formatSoBA(row.soBA, effectiveLoaiAn)}</span>
-                            {row.ngayBA && (
-                              <>
-                                <span style={{ color: TEXT }}> Ngày: </span>
-                                <span style={{ color: "#2563eb" }}>{row.ngayBA}</span>
-                              </>
-                            )}
-                          </span>
-                          <span style={{ fontSize: 11, color: TEXT, fontFamily: F }}>
-                            <span style={{ color: TEXT }}>Tại: </span>{row.toa}
-                          </span>
-                          {row.thoiHieu && (
-                            <span style={{ fontSize: 11, color: TEXT, fontFamily: F }}>
-                              <span style={{ color: TEXT }}>Thời hiệu: </span>
-                              <span style={{ color: row.thoiHieu === "Không xác định thời hiệu" || row.thoiHieu === "Không có thời hiệu giải quyết" ? "#047857" : "#c2410c", fontWeight: 600 }}>
-                                {row.thoiHieu}
-                              </span>
-                            </span>
-                          )}
-                          {isVu234(userRole, row.loaiAn) && (
-                            <span style={{ fontSize: 11, color: "#047857", fontFamily: F, fontWeight: 500 }}>
-                              <span style={{ color: TEXT, fontWeight: 400 }}>QHPL: </span>{getQuanHePhapLuat(row)}
-                            </span>
-                          )}
-                          <div style={{ display: "flex", gap: 4, flexWrap: "wrap", marginTop: 2 }}>
-                            {row.anLoai === "chi-dao" && <Badge color="#92400e" bg="#fef3c7">Án chỉ đạo</Badge>}
-                            {row.anLoai === "quoc-hoi" && <Badge color="#3730a3" bg="#e0e7ff">Án Quốc hội</Badge>}
-                            {row.anLoai === "tvtn" && <Badge color="#065f46" bg="#d1fae5">Án TVTN</Badge>}
-                            {row.anLoai === "tu-hinh" && <Badge color="#991b1b" bg="#fee2e2">Án tử hình</Badge>}
-                          </div>
-                        </div>
+                      <td style={{ ...TD_STYLE, verticalAlign: "top", padding: "6px 10px" }}>
+                        {renderThongTinBanAnCell(row, effectiveLoaiAn, isVu234(userRole, row.loaiAn))}
                       </td>
                       <td style={TD_STYLE}>
                         <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
