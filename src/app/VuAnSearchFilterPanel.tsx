@@ -53,7 +53,6 @@ export const DANH_SACH_THAM_PHAN_FILTER = [
 ];
 
 export interface VuAnFilterValues {
-  // 12 tiêu chí cơ bản (Grid 4 cột)
   loaiAn: string;
   toaRaBA: string;
   soBA: string;
@@ -66,28 +65,33 @@ export interface VuAnFilterValues {
   thuocAn: string;
   thoiHieu: string;
   hoanTHA: string;
-
-  // Tiêu chí mở rộng (Grid phẳng 4 cột)
   trangThaiHoSo: string;
   thuLyTuNgay: string;
   thuLyDenNgay: string;
-
   toTrinhLanhDao: string;
   toTrinhTuNgay: string;
   toTrinhDenNgay: string;
   yeuCauTrinhTiep: string;
   yKienToTrinh: string;
-
   ketQuaGiaiQuyet: string;
   hinhThucDon: string;
   phanLoaiDon: string;
-
   capXetXu: string;
   ketQuaXetXu: string;
   ngayTuyenAn: string;
-
   rutKhangNghi: string;
   ngayRutKhangNghi: string;
+
+  // Tiêu chí mới bổ sung
+  soKhangNghi: string;
+  ngayKhangNghi: string;
+  nguoiKhangNghi: string;
+  thamQuyenXX: string;
+  apDungAnLe: string;
+
+  // Loại công văn & thông báo
+  loaiCongVan: string;
+  thongBao: string;
 }
 
 export const INITIAL_FILTER_VALUES: VuAnFilterValues = {
@@ -119,6 +123,13 @@ export const INITIAL_FILTER_VALUES: VuAnFilterValues = {
   ngayTuyenAn: "",
   rutKhangNghi: "",
   ngayRutKhangNghi: "",
+  // soKhangNghi: "",
+  // ngayKhangNghi: "",
+  // nguoiKhangNghi: "",
+  // thamQuyenXX: "",
+  // apDungAnLe: "",
+  loaiCongVan: "",
+  thongBao: "",
 };
 
 export const FILTER_LABELS: Record<keyof VuAnFilterValues, string> = {
@@ -127,14 +138,14 @@ export const FILTER_LABELS: Record<keyof VuAnFilterValues, string> = {
   soBA: "Số BA/QĐ",
   ngayBA: "Ngày BA/QĐ",
   biCao: "Bị cáo/Đương sự",
-  soThuLy: "Số thụ lý",
+  thamPhan: "Thẩm phán",
   lanhDaoVu: "Lãnh đạo phụ trách",
   thamTraVien: "Cán bộ giải quyết",
-  thamPhan: "Thẩm phán",
   thuocAn: "Thuộc án",
   thoiHieu: "Án thời hiệu",
   hoanTHA: "Hoãn thi hành án",
   trangThaiHoSo: "Trạng thái hồ sơ",
+  soThuLy: "Số thụ lý",
   thuLyTuNgay: "Thụ lý từ ngày",
   thuLyDenNgay: "Thụ lý đến ngày",
   toTrinhLanhDao: "Tờ trình lãnh đạo",
@@ -144,12 +155,19 @@ export const FILTER_LABELS: Record<keyof VuAnFilterValues, string> = {
   yKienToTrinh: "Ý kiến tờ trình",
   ketQuaGiaiQuyet: "Kết quả giải quyết",
   hinhThucDon: "Hình thức đơn",
-  phanLoaiDon: "Phân loại đơn",
+  phanLoaiDon: "Loại BA GDT",
   capXetXu: "Cấp xét xử",
   ketQuaXetXu: "Kết quả xét xử",
   ngayTuyenAn: "Ngày tuyên án",
   rutKhangNghi: "Rút kháng nghị",
   ngayRutKhangNghi: "Ngày rút KN",
+  // soKhangNghi: "Số kháng nghị",
+  // ngayKhangNghi: "Ngày kháng nghị",
+  // nguoiKhangNghi: "Người kháng nghị",
+  // thamQuyenXX: "Thẩm quyền xét xử",
+  // apDungAnLe: "Áp dụng án lệ",
+  loaiCongVan: "Loại công văn",
+  thongBao: "Thông báo",
 };
 
 export function VuAnSearchFilterPanel({
@@ -272,8 +290,13 @@ export function VuAnSearchFilterPanel({
 
           {/* 6. Số thụ lý */}
           <div>
-            <label style={labelStyle}>Số thụ lý</label>
-            <input placeholder="Nhập số thụ lý" value={filters.soThuLy} onChange={(e) => handleChange("soThuLy", e.target.value)} style={inputStyle} />
+            <label style={labelStyle}>Thẩm phán</label>
+            <select value={filters.thamPhan} onChange={(e) => handleChange("thamPhan", e.target.value)} style={selectStyle}>
+              <option value="">– Tất cả –</option>
+              {DANH_SACH_THAM_PHAN_FILTER.map((tp) => (
+                <option key={tp} value={tp}>{tp}</option>
+              ))}
+            </select>
           </div>
 
           {/* 7. Lãnh đạo phụ trách */}
@@ -299,47 +322,35 @@ export function VuAnSearchFilterPanel({
           </div>
 
           {/* 9. Thẩm phán */}
-          <div>
-            <label style={labelStyle}>Thẩm phán</label>
-            <select value={filters.thamPhan} onChange={(e) => handleChange("thamPhan", e.target.value)} style={selectStyle}>
-              <option value="">– Tất cả –</option>
-              {DANH_SACH_THAM_PHAN_FILTER.map((tp) => (
-                <option key={tp} value={tp}>{tp}</option>
-              ))}
-            </select>
-          </div>
+
 
           {/* 10. Thuộc án */}
-          <div>
-            <label style={labelStyle}>Thuộc án</label>
-            <select value={filters.thuocAn} onChange={(e) => handleChange("thuocAn", e.target.value)} style={selectStyle}>
-              <option value="">– Tất cả –</option>
-              <option value="Án Quốc hội">Án Quốc hội</option>
-              <option value="Án chỉ đạo">Án chỉ đạo</option>
-              <option value="Án TVTN">Án TVTN</option>
-              <option value="Án tử hình">Án tử hình</option>
-            </select>
-          </div>
-
-          {/* 11. Án thời hiệu */}
-          <div>
-            <label style={labelStyle}>Án thời hiệu</label>
-            <select value={filters.thoiHieu} onChange={(e) => handleChange("thoiHieu", e.target.value)} style={selectStyle}>
-              <option value="">– Tất cả –</option>
-              <option value="Không có thời hiệu giải quyết">Không có thời hiệu giải quyết</option>
-              <option value="Còn thời hiệu">Còn thời hiệu</option>
-              <option value="Hết thời hiệu">Hết thời hiệu</option>
-            </select>
-          </div>
 
           {/* 12. Hoãn thi hành án */}
           <div>
-            <label style={labelStyle}>Hoãn thi hành án</label>
-            <select value={filters.hoanTHA} onChange={(e) => handleChange("hoanTHA", e.target.value)} style={selectStyle}>
-              <option value="">– Tất cả –</option>
-              <option value="Có">Có</option>
-              <option value="Không">Không</option>
-            </select>
+            <label style={labelStyle}>Số thụ lý</label>
+            <input placeholder="Nhập số thụ lý" value={filters.soThuLy} onChange={(e) => handleChange("soThuLy", e.target.value)} style={inputStyle} />
+          </div>
+          <div>
+            <label style={labelStyle}>Thụ lý từ ngày – Đến ngày</label>
+            <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+              <input
+                placeholder="Từ ngày"
+                value={filters.thuLyTuNgay}
+                onChange={(e) => handleChange("thuLyTuNgay", e.target.value)}
+                style={{ ...inputStyle, flex: 1 }}
+              />
+              <span style={{ color: MUTED, fontSize: 11 }}>→</span>
+              <div style={{ position: "relative", flex: 1 }}>
+                <input
+                  placeholder="Đến ngày"
+                  value={filters.thuLyDenNgay}
+                  onChange={(e) => handleChange("thuLyDenNgay", e.target.value)}
+                  style={inputStyle}
+                />
+                <Calendar size={13} color={MUTED} style={{ position: "absolute", right: 6, top: "50%", transform: "translateY(-50%)", pointerEvents: "none" }} />
+              </div>
+            </div>
           </div>
         </div>
 
@@ -358,9 +369,8 @@ export function VuAnSearchFilterPanel({
                 <option value="Đã chuyển hồ sơ">Đã chuyển hồ sơ</option>
               </select>
             </div>
-            {/* Thụ lý từ ngày – Đến ngày (Gộp 2 cột thành 1 ô khoảng thời gian) */}
             <div>
-              <label style={labelStyle}>Thụ lý từ ngày – Đến ngày</label>
+              <label style={labelStyle}>Hồ sơ từ ngày – Đến ngày</label>
               <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
                 <input
                   placeholder="Từ ngày"
@@ -379,6 +389,24 @@ export function VuAnSearchFilterPanel({
                   <Calendar size={13} color={MUTED} style={{ position: "absolute", right: 6, top: "50%", transform: "translateY(-50%)", pointerEvents: "none" }} />
                 </div>
               </div>
+            </div>
+            {/* Thụ lý từ ngày – Đến ngày (Gộp 2 cột thành 1 ô khoảng thời gian) */}
+            <div>
+              <label style={labelStyle}>Hình thức đơn</label>
+              <select value={filters.hinhThucDon} onChange={(e) => handleChange("hinhThucDon", e.target.value)} style={selectStyle}>
+                <option value="">– Tất cả –</option>
+                <option value="GDT">GĐT</option>
+                <option value="CV">Công văn</option>
+              </select>
+            </div>
+            <div>
+              <label style={labelStyle}>Loại BA GDT</label>
+              <select value={filters.phanLoaiDon} onChange={(e) => handleChange("phanLoaiDon", e.target.value)} style={selectStyle}>
+                <option value="">– Tất cả –</option>
+                <option value="Đơn đề nghị">Đơn đề nghị GDT</option>
+                <option value="Công văn kiến nghị">Rút hồ sơ đoàn kiểm tra</option>
+                <option value="Công văn kiến nghị">Chủ động GDT qua bản án</option>
+              </select>
             </div>
 
             {/* Tờ trình */}
@@ -446,22 +474,52 @@ export function VuAnSearchFilterPanel({
               </select>
             </div>
             <div>
-              <label style={labelStyle}>Hình thức đơn</label>
-              <select value={filters.hinhThucDon} onChange={(e) => handleChange("hinhThucDon", e.target.value)} style={selectStyle}>
-                <option value="">– Tất cả –</option>
-                <option value="GDT">GĐT</option>
-                <option value="CV">Công văn</option>
-              </select>
-            </div>
-            <div>
-              <label style={labelStyle}>Phân loại đơn</label>
-              <select value={filters.phanLoaiDon} onChange={(e) => handleChange("phanLoaiDon", e.target.value)} style={selectStyle}>
-                <option value="">– Tất cả –</option>
-                <option value="Đơn đề nghị">Đơn đề nghị</option>
-                <option value="Công văn kiến nghị">Công văn kiến nghị</option>
-              </select>
+              <label style={labelStyle}>Kết quả từ ngày – Đến ngày</label>
+              <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+                <input
+                  placeholder="Từ ngày"
+                  value={filters.thuLyTuNgay}
+                  onChange={(e) => handleChange("thuLyTuNgay", e.target.value)}
+                  style={{ ...inputStyle, flex: 1 }}
+                />
+                <span style={{ color: MUTED, fontSize: 11 }}>→</span>
+                <div style={{ position: "relative", flex: 1 }}>
+                  <input
+                    placeholder="Đến ngày"
+                    value={filters.thuLyDenNgay}
+                    onChange={(e) => handleChange("thuLyDenNgay", e.target.value)}
+                    style={inputStyle}
+                  />
+                  <Calendar size={13} color={MUTED} style={{ position: "absolute", right: 6, top: "50%", transform: "translateY(-50%)", pointerEvents: "none" }} />
+                </div>
+              </div>
             </div>
 
+            <div>
+              <label style={labelStyle}>Kết quả xét xử</label>
+              <input placeholder="Nhập kết quả xét xử" value={filters.ketQuaXetXu} onChange={(e) => handleChange("ketQuaXetXu", e.target.value)} style={inputStyle} />
+            </div>
+            <div>
+              <label style={labelStyle}>Kết quả xét xử từ ngày – Đến ngày</label>
+              <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+                <input
+                  placeholder="Từ ngày"
+                  value={filters.thuLyTuNgay}
+                  onChange={(e) => handleChange("thuLyTuNgay", e.target.value)}
+                  style={{ ...inputStyle, flex: 1 }}
+                />
+                <span style={{ color: MUTED, fontSize: 11 }}>→</span>
+                <div style={{ position: "relative", flex: 1 }}>
+                  <input
+                    placeholder="Đến ngày"
+                    value={filters.thuLyDenNgay}
+                    onChange={(e) => handleChange("thuLyDenNgay", e.target.value)}
+                    style={inputStyle}
+                  />
+                  <Calendar size={13} color={MUTED} style={{ position: "absolute", right: 6, top: "50%", transform: "translateY(-50%)", pointerEvents: "none" }} />
+                </div>
+              </div>
+            </div>
             {/* Xét xử */}
             <div>
               <label style={labelStyle}>Cấp xét xử</label>
@@ -471,14 +529,11 @@ export function VuAnSearchFilterPanel({
                 <option value="Tái thẩm">Tái thẩm</option>
               </select>
             </div>
-            <div>
-              <label style={labelStyle}>Kết quả xét xử</label>
-              <input placeholder="Nhập kết quả xét xử" value={filters.ketQuaXetXu} onChange={(e) => handleChange("ketQuaXetXu", e.target.value)} style={inputStyle} />
-            </div>
+            {/* 
             <div>
               <label style={labelStyle}>Ngày tuyên án</label>
               <input placeholder="dd/mm/yyyy" value={filters.ngayTuyenAn} onChange={(e) => handleChange("ngayTuyenAn", e.target.value)} style={inputStyle} />
-            </div>
+            </div> */}
 
             {/* Rút kháng nghị */}
             <div>
@@ -490,16 +545,113 @@ export function VuAnSearchFilterPanel({
               </select>
             </div>
             <div>
-              <label style={labelStyle}>Ngày rút kháng nghị</label>
-              <input placeholder="dd/mm/yyyy" value={filters.ngayRutKhangNghi} onChange={(e) => handleChange("ngayRutKhangNghi", e.target.value)} style={inputStyle} />
+              <label style={labelStyle}>Rút kháng nghị từ ngày – Đến ngày</label>
+              <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+                <input
+                  placeholder="Từ ngày"
+                  value={filters.thuLyTuNgay}
+                  onChange={(e) => handleChange("thuLyTuNgay", e.target.value)}
+                  style={{ ...inputStyle, flex: 1 }}
+                />
+                <span style={{ color: MUTED, fontSize: 11 }}>→</span>
+                <div style={{ position: "relative", flex: 1 }}>
+                  <input
+                    placeholder="Đến ngày"
+                    value={filters.thuLyDenNgay}
+                    onChange={(e) => handleChange("thuLyDenNgay", e.target.value)}
+                    style={inputStyle}
+                  />
+                  <Calendar size={13} color={MUTED} style={{ position: "absolute", right: 6, top: "50%", transform: "translateY(-50%)", pointerEvents: "none" }} />
+                </div>
+              </div>
             </div>
+            <div>
+              <label style={labelStyle}>Hoãn thi hành án</label>
+              <select value={filters.hoanTHA} onChange={(e) => handleChange("hoanTHA", e.target.value)} style={selectStyle}>
+                <option value="">– Tất cả –</option>
+                <option value="Có">Có</option>
+                <option value="Không">Không</option>
+              </select>
+            </div>
+            <div>
+              <label style={labelStyle}>Thuộc án</label>
+              <select value={filters.thuocAn} onChange={(e) => handleChange("thuocAn", e.target.value)} style={selectStyle}>
+                <option value="">– Tất cả –</option>
+                <option value="Án Quốc hội">Án Quốc hội</option>
+                <option value="Án chỉ đạo">Án chỉ đạo</option>
+                <option value="Án TVTN">Án TVTN</option>
+                <option value="Án tử hình">Án tử hình</option>
+              </select>
+            </div>
+            <div>
+              <label style={labelStyle}>Thông báo</label>
+              <select value={filters.thongBao} onChange={(e) => handleChange("thongBao", e.target.value)} style={selectStyle}>
+                <option value="">– Tất cả –</option>
+                <option value="Không có thông báo TT">Chưa có thông báo TT</option>
+                <option value="Có thông báo TT">Có thông báo TT</option>
+                <option value="Chưa có thông báo KQ">Chưa có thông báo KQ</option>
+                <option value="Có thông báo KQ">Có thông báo KQ</option>
+              </select>
+            </div>
+
+            <div>
+              <label style={labelStyle}>Án thời hiệu</label>
+              <select value={filters.thoiHieu} onChange={(e) => handleChange("thoiHieu", e.target.value)} style={selectStyle}>
+                <option value="">– Tất cả –</option>
+                <option value="Không có thời hiệu giải quyết">Không có thời hiệu giải quyết</option>
+                <option value="Còn thời hiệu">Còn thời hiệu</option>
+                <option value="Hết thời hiệu">Hết thời hiệu</option>
+              </select>
+            </div>
+
+            <div>
+              <label style={labelStyle}>Loại công văn</label>
+              <select value={filters.loaiCongVan} onChange={(e) => handleChange("loaiCongVan", e.target.value)} style={selectStyle}>
+                <option value="">– Loại công văn –</option>
+              </select>
+            </div>
+
+            {/* <div>
+              <label style={labelStyle}>Số kháng nghị</label>
+              <input placeholder="Nhập số kháng nghị" value={filters.soKhangNghi} onChange={(e) => handleChange("soKhangNghi", e.target.value)} style={inputStyle} />
+            </div>
+
+            <div>
+              <label style={labelStyle}>Ngày kháng nghị</label>
+              <div style={{ position: "relative" }}>
+                <input placeholder="dd/mm/yyyy" value={filters.ngayKhangNghi} onChange={(e) => handleChange("ngayKhangNghi", e.target.value)} style={inputStyle} />
+                <Calendar size={13} color={MUTED} style={{ position: "absolute", right: 6, top: "50%", transform: "translateY(-50%)", pointerEvents: "none" }} />
+              </div>
+            </div>
+
+            <div>
+              <label style={labelStyle}>Người kháng nghị</label>
+              <input placeholder="Nhập người kháng nghị" value={filters.nguoiKhangNghi} onChange={(e) => handleChange("nguoiKhangNghi", e.target.value)} style={inputStyle} />
+            </div>
+
+            <div>
+              <label style={labelStyle}>Thẩm quyền xét xử</label>
+              <select value={filters.thamQuyenXX} onChange={(e) => handleChange("thamQuyenXX", e.target.value)} style={selectStyle}>
+                <option value="">– Tất cả –</option>
+                <option value="Hội đồng Thẩm phán TANDTC">Hội đồng Thẩm phán TANDTC</option>
+                <option value="Ủy ban Thẩm phán TAND cấp cao">Ủy ban Thẩm phán TAND cấp cao</option>
+              </select>
+            </div>
+
+            <div>
+              <label style={labelStyle}>Án lệ áp dụng</label>
+              <select value={filters.apDungAnLe} onChange={(e) => handleChange("apDungAnLe", e.target.value)} style={selectStyle}>
+                <option value="">– Tất cả –</option>
+                <option value="Có">Có áp dụng</option>
+                <option value="Không">Không áp dụng</option>
+              </select>
+            </div> */}
           </div>
         )}
 
-        {/* ── ACTIVE FILTER TAGS VỚI NÚT XÓA TỪNG TAG ── */}
+        {/* ── ACTIVE FILTER TAGS VỚI NÚT XÓA TỪNG TAG (NẰM NGOÀI BLOCK MỞ RỘNG) ── */}
         {activeTags.length > 0 && (
-          <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 6, paddingTop: 4 }}>
-            <span style={{ fontSize: 11, fontWeight: 600, color: "#64748b" }}>Đang lọc:</span>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 10 }}>
             {activeTags.map(([key, val]) => (
               <span
                 key={key}

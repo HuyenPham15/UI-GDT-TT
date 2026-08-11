@@ -237,6 +237,12 @@ export function SearchFilterPanel({
                   <span style={labelStyle}>Thời hiệu</span>
                   <select style={selectStyle} defaultValue="">
                     <option value="">-- Tất cả --</option>
+                    <option value="15">Đã hết thời hiệu</option>
+                    <option value="30">Còn thời hiệu dưới một tháng</option>
+                    <option value="45">Còn thời hiệu dưới hai tháng</option>
+                    <option value="60">Còn thời hiệu dưới ba tháng</option>
+                    <option value="90">Còn thời hiệu dưới sáu tháng</option>
+                    <option value="120">Còn thời hiệu dưới 1 năm</option>
                     {options.map((o) => (
                       <option key={o.val} value={o.val}>{o.label}</option>
                     ))}

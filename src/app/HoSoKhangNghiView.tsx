@@ -447,6 +447,11 @@ function ModalNhanHoSoKhangNghi({
     { stt: 5, ten: "Hồ sơ, chứng cứ đính kèm quyết định kháng nghị", loai: "Chứng cứ", ngay: "03/07/2026", soTrang: 52, ghiChu: "Tệp đính kèm" },
   ];
 
+  const butLuc = rec.butLuc || `Bút lục hồ sơ kháng nghị số ${rec.soKhangNghi || "08/2026/QĐKN"}`;
+  const ngayChuyen = rec.ngayChuyen || rec.ngayVanThuDen || "—";
+  const ngayNhan = rec.ngayNhan || "—";
+  const ngayTra = rec.ngayTra || "—";
+
   return (
     <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.45)", zIndex: 1400, display: "flex", alignItems: "center", justifyContent: "center", padding: "20px" }}>
       <div style={{ background: "#fff", borderRadius: 8, width: "100%", maxWidth: 860, maxHeight: "90vh", display: "flex", flexDirection: "column", boxShadow: "0 10px 40px rgba(0,0,0,0.2)", overflow: "hidden", fontFamily: F }}>
@@ -463,12 +468,35 @@ function ModalNhanHoSoKhangNghi({
 
         {/* Content - Chia 2 cột */}
         <div style={{ flex: 1, overflowY: "auto", padding: "20px", display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+          <div style={{ gridColumn: "1 / -1", border: `1px solid ${BORDER}`, borderRadius: 6, overflow: "hidden" }}>
+            <div style={{ padding: "9px 14px", background: BG, borderBottom: `1px solid ${BORDER}`, fontSize: 12, fontWeight: 700, color: TEXT, fontFamily: F }}>
+              🗂 Thông tin bút lục & xử lý hồ sơ
+            </div>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(4, minmax(0, 1fr))", gap: 0 }}>
+              <div style={{ padding: "10px 12px", borderRight: `1px solid ${BORDER}`, borderBottom: `1px solid ${BORDER}` }}>
+                <div style={{ fontSize: 11, color: MUTED, marginBottom: 4, fontWeight: 600 }}>Bút lục hồ sơ</div>
+                <div style={{ fontSize: 12, color: TEXT, fontWeight: 600 }}>{butLuc}</div>
+              </div>
+              <div style={{ padding: "10px 12px", borderRight: `1px solid ${BORDER}`, borderBottom: `1px solid ${BORDER}` }}>
+                <div style={{ fontSize: 11, color: MUTED, marginBottom: 4, fontWeight: 600 }}>Ngày chuyển</div>
+                <div style={{ fontSize: 12, color: TEXT }}>{ngayChuyen}</div>
+              </div>
+              <div style={{ padding: "10px 12px", borderRight: `1px solid ${BORDER}`, borderBottom: `1px solid ${BORDER}` }}>
+                <div style={{ fontSize: 11, color: MUTED, marginBottom: 4, fontWeight: 600 }}>Ngày nhận</div>
+                <div style={{ fontSize: 12, color: TEXT }}>{ngayNhan}</div>
+              </div>
+              <div style={{ padding: "10px 12px", borderBottom: `1px solid ${BORDER}` }}>
+                <div style={{ fontSize: 11, color: MUTED, marginBottom: 4, fontWeight: 600 }}>Ngày trả</div>
+                <div style={{ fontSize: 12, color: TEXT }}>{ngayTra}</div>
+              </div>
+            </div>
+          </div>
 
-          {/* CỘT TRÁI: Thông tin chính hồ sơ kháng nghị */}
+          {/* CỘT TRÁI: Thông tin kháng nghị */}
           <div style={{ border: `1px solid ${BORDER}`, borderRadius: 6, overflow: "hidden", height: "fit-content" }}>
             <div style={{ padding: "9px 14px", background: BG, borderBottom: `1px solid ${BORDER}`, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
               <span style={{ fontSize: 12, fontWeight: 700, color: RED, textTransform: "uppercase", fontFamily: F }}>
-                📌 Thông tin hồ sơ kháng nghị
+                📌 Thông tin kháng nghị
               </span>
               <Badge color={rec.trangThai?.includes("Đã") ? "#065f46" : "#92400e"} bg={rec.trangThai?.includes("Đã") ? "#d1fae5" : "#fef3c7"}>
                 {rec.trangThai || "Chờ nhận"}
@@ -487,10 +515,22 @@ function ModalNhanHoSoKhangNghi({
                   <td style={{ padding: "9px 12px", background: BG, fontSize: 11, color: MUTED, fontWeight: 600, borderRight: `1px solid ${BORDER}`, borderBottom: `1px solid ${BORDER}` }}>Người kháng nghị</td>
                   <td style={{ padding: "9px 12px", fontSize: 12, color: TEXT, fontWeight: 600, borderBottom: `1px solid ${BORDER}` }}>{rec.nguoiKhangNghi || "---"}</td>
                 </tr>
+              
+              </tbody>
+            </table>
+          </div>
+
+          {/* CỘT PHẢI: Thông tin vụ án / bản án */}
+          <div style={{ border: `1px solid ${BORDER}`, borderRadius: 6, overflow: "hidden", display: "flex", flexDirection: "column" }}>
+            <div style={{ padding: "9px 14px", background: BG, borderBottom: `1px solid ${BORDER}`, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+              <span style={{ fontSize: 12, fontWeight: 700, color: TEXT, fontFamily: F }}>
+                📄 Thông tin vụ án / bản án
+              </span>
+            </div>
+            <table style={{ width: "100%", borderCollapse: "collapse" }}>
+              <tbody>
                 <tr>
-                  <td style={{ padding: "9px 12px", background: BG, fontSize: 11, color: MUTED, fontWeight: 600, borderRight: `1px solid ${BORDER}`, borderBottom: `1px solid ${BORDER}` }}>
-                    {getSoBALabel(rec.soBA, rec.loaiAn)}
-                  </td>
+                  <td style={{ padding: "9px 12px", background: BG, fontSize: 11, color: MUTED, fontWeight: 600, borderRight: `1px solid ${BORDER}`, borderBottom: `1px solid ${BORDER}`, width: "38%" }}>{getSoBALabel(rec.soBA, rec.loaiAn)}</td>
                   <td style={{ padding: "9px 12px", fontSize: 12, color: "#2563eb", fontWeight: 600, borderBottom: `1px solid ${BORDER}` }}>
                     {formatSoBA(rec.soBA, rec.loaiAn) || "---"} <span style={{ color: MUTED, fontWeight: 400 }}>(Ngày {rec.ngayBA || "---"})</span>
                   </td>
@@ -499,24 +539,12 @@ function ModalNhanHoSoKhangNghi({
                   <td style={{ padding: "9px 12px", background: BG, fontSize: 11, color: MUTED, fontWeight: 600, borderRight: `1px solid ${BORDER}`, borderBottom: `1px solid ${BORDER}` }}>Tòa ra bản án</td>
                   <td style={{ padding: "9px 12px", fontSize: 12, color: TEXT, borderBottom: `1px solid ${BORDER}` }}>{rec.toaRaBanAn || "---"}</td>
                 </tr>
-                <tr>
-                  <td style={{ padding: "9px 12px", background: BG, fontSize: 11, color: MUTED, fontWeight: 600, borderRight: `1px solid ${BORDER}`, borderBottom: `1px solid ${BORDER}` }}>Loại án</td>
-                  <td style={{ padding: "9px 12px", fontSize: 12, color: TEXT, borderBottom: `1px solid ${BORDER}` }}>{rec.loaiAn || "Hình sự"}</td>
-                </tr>
-                <tr>
-                  <td style={{ padding: "9px 12px", background: BG, fontSize: 11, color: MUTED, fontWeight: 600, borderRight: `1px solid ${BORDER}`, borderBottom: `1px solid ${BORDER}` }}>Đương sự / Người KN</td>
-                  <td style={{ padding: "9px 12px", fontSize: 12, color: TEXT, borderBottom: `1px solid ${BORDER}` }}>{rec.nguoiKhieuNai || "---"}</td>
-                </tr>
-                <tr>
-                  <td style={{ padding: "9px 12px", background: BG, fontSize: 11, color: MUTED, fontWeight: 600, borderRight: `1px solid ${BORDER}` }}>Đơn vị gửi</td>
-                  <td style={{ padding: "9px 12px", fontSize: 12, color: TEXT }}>{rec.donViGui || "---"}</td>
-                </tr>
               </tbody>
             </table>
           </div>
 
-          {/* CỘT PHẢI: Bảng danh sách tài liệu của hồ sơ kháng nghị */}
-          <div style={{ border: `1px solid ${BORDER}`, borderRadius: 6, overflow: "hidden", display: "flex", flexDirection: "column" }}>
+          {/* CỘT PHÍA DƯỚI: Bảng danh sách tài liệu của hồ sơ kháng nghị */}
+          <div style={{ gridColumn: "1 / -1", border: `1px solid ${BORDER}`, borderRadius: 6, overflow: "hidden", display: "flex", flexDirection: "column" }}>
             <div style={{ padding: "9px 14px", background: BG, borderBottom: `1px solid ${BORDER}`, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
               <span style={{ fontSize: 12, fontWeight: 700, color: TEXT, fontFamily: F }}>
                 📑 Danh sách tài liệu kèm theo ({taiLieuList.length})
@@ -1851,36 +1879,23 @@ export function HoSoKhangNghiView({ userRole, onTaoCongVan }: { userRole?: UserR
   ]);
 
   const handleOpenNhanHoSo = (rowTarget?: any) => {
-    let targetIds: number[] = [];
+    let target = rowTarget;
 
-    if (rowTarget && rowTarget.id) {
-      targetIds = [rowTarget.id];
-    } else if (selectedItems.length > 0) {
-      targetIds = selectedItems;
-    } else {
-      const choNhan = listDen.find(item => item.trangThai === "Chờ nhận");
-      if (choNhan) {
-        targetIds = [choNhan.id];
+    if (!target) {
+      if (selectedItems.length > 0) {
+        target = listDen.find(item => selectedItems.includes(item.id));
       } else {
-        alert("Tất cả các hồ sơ kháng nghị đến đều đã được nhận!");
-        return;
+        target = listDen.find(item => item.trangThai === "Chờ nhận");
       }
     }
 
-    setListDen(prevList =>
-      prevList.map(item =>
-        targetIds.includes(item.id)
-          ? {
-            ...item,
-            trangThai: "Đã nhận",
-            nguoiNhan: item.nguoiNhan === "--" || !item.nguoiNhan ? "Lý Thái Phúc" : item.nguoiNhan,
-            ngayNhan: item.ngayNhan === "--" || !item.ngayNhan ? "07/08/2026" : item.ngayNhan,
-          }
-          : item
-      )
-    );
+    if (!target) {
+      alert("Tất cả các hồ sơ kháng nghị đến đều đã được nhận!");
+      return;
+    }
 
-    alert("Đã nhận hồ sơ kháng nghị thành công!");
+    setSelectedRecord(target);
+    setShowNhanHoSoModal(true);
   };
 
   const handleConfirmTraHoSo = (lyDo: string) => {
@@ -1968,6 +1983,28 @@ export function HoSoKhangNghiView({ userRole, onTaoCongVan }: { userRole?: UserR
         </button>
       </div>
 
+      {showNhanHoSoModal && selectedRecord && (
+        <ModalNhanHoSoKhangNghi
+          record={selectedRecord}
+          onClose={() => setShowNhanHoSoModal(false)}
+          onConfirm={() => {
+            const targetId = selectedRecord.id;
+            setListDen(prev => prev.map(item =>
+              item.id === targetId
+                ? {
+                    ...item,
+                    trangThai: "Đã nhận",
+                    nguoiNhan: item.nguoiNhan === "--" || !item.nguoiNhan ? "Lý Thái Phúc" : item.nguoiNhan,
+                    ngayNhan: item.ngayNhan === "--" || !item.ngayNhan ? "07/08/2026" : item.ngayNhan,
+                  }
+                : item
+            ));
+            setShowNhanHoSoModal(false);
+            alert("Đã nhận hồ sơ kháng nghị thành công!");
+          }}
+        />
+      )}
+
       {/* Search filter panel */}
       <SearchFilterPanel expanded={filterExpanded} isHoSoKhangNghi={true} onToggle={() => setFilterExpanded(v => !v)} />
 
@@ -1995,7 +2032,7 @@ export function HoSoKhangNghiView({ userRole, onTaoCongVan }: { userRole?: UserR
                 <FolderCheck size={14} /> Chọn hồ sơ
               </button>
 
-              <button
+              {/* <button
                 onClick={() => handleOpenTaoCongVan()}
                 style={{
                   display: "flex", alignItems: "center", gap: 6,
@@ -2005,7 +2042,7 @@ export function HoSoKhangNghiView({ userRole, onTaoCongVan }: { userRole?: UserR
                   boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
                 }}>
                 Tạo công văn
-              </button>
+              </button> */}
 
               <button
                 onClick={handleChuyenHoSoDi}
