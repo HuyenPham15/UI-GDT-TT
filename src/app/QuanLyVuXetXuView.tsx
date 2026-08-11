@@ -516,24 +516,74 @@ function InfoGrid({ rows }: { rows: [string, string, string, string][] }) {
 
 function ThongTinChungBlock({ row }: { row: VuXetXuRow }) {
   const [open, setOpen] = useState(true);
+
+  // Tag badges
+  const tagBadges: React.ReactNode[] = [];
+  if (row.tag === "an-chi-dao") tagBadges.push(<span key="cd" style={{ display: "inline-flex", alignItems: "center", gap: 4, padding: "3px 10px", background: "#fef9c3", border: "1px solid #ca8a04", borderRadius: 4, fontSize: 11, fontWeight: 700, color: "#92400e", fontFamily: F }}>⭐ Án chỉ đạo</span>);
+  if (row.tag === "an-qh") tagBadges.push(<span key="qh" style={{ display: "inline-flex", alignItems: "center", gap: 4, padding: "3px 10px", background: "#dbeafe", border: "1px solid #3b82f6", borderRadius: 4, fontSize: 11, fontWeight: 700, color: "#1e40af", fontFamily: F }}>🏛 Án QH</span>);
+  if (row.tag === "an-tu-hinh") tagBadges.push(<span key="th" style={{ display: "inline-flex", alignItems: "center", gap: 4, padding: "3px 10px", background: "#fee2e2", border: "1px solid #ef4444", borderRadius: 4, fontSize: 11, fontWeight: 700, color: "#991b1b", fontFamily: F }}>⚠ Án tử hình</span>);
+  if (row.tag === "an-tvtn") tagBadges.push(<span key="tvtn" style={{ display: "inline-flex", alignItems: "center", gap: 4, padding: "3px 10px", background: "#d1fae5", border: "1px solid #10b981", borderRadius: 4, fontSize: 11, fontWeight: 700, color: "#065f46", fontFamily: F }}>🔒 Án TVTN</span>);
+
+  const congVanNode = (
+    <div style={{ display: "flex", flexDirection: "column", gap: 2, fontSize: 12, fontFamily: F, color: TEXT }}>
+      <span>Số 124/CV-VKSTC – 15/07/2026</span>
+      <span style={{ color: MUTED, fontSize: 11 }}>Viện kiểm sát nhân dân tối cao</span>
+      <span style={{ color: MUTED, fontSize: 11, fontStyle: "italic" }}>(Công văn kiến nghị GĐT)</span>
+    </div>
+  );
+
+  const chiDaoNode = (
+    <div style={{ display: "flex", flexDirection: "column", gap: 2, fontSize: 12, fontFamily: F }}>
+      <span style={{ color: RED, fontWeight: 700 }}>Nguyễn Văn A</span>
+      <span style={{ color: MUTED, fontSize: 11 }}>Phó Chánh án TANDTC</span>
+      <span style={{ color: TEXT, fontSize: 11 }}>Xem xét ký hồ sơ đánh giá thương tích và yếu tố phòng vệ chính đáng</span>
+    </div>
+  );
+
   return (
     <div style={{ marginBottom: 16 }}>
-      <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
-        <button onClick={() => setOpen(v => !v)} style={{ background: "none", border: "none", cursor: "pointer", fontFamily: F, fontSize: 14, color: TEXT, padding: 0 }}>—</button>
-        <span style={{ fontSize: 12, fontWeight: 700, color: RED, textTransform: "uppercase" as const, letterSpacing: "0.3px", fontFamily: F }}>Thông tin chung của vụ án</span>
-      </div>
-      {open && (
-        <div style={{ border: `1px solid ${BORDER}`, borderRadius: 6, overflow: "hidden", marginBottom: 12 }}>
-          <div style={{ padding: "8px 14px", background: BG, borderBottom: `1px solid ${BORDER}` }}>
-            <span style={{ fontSize: 12, fontWeight: 600, color: TEXT, fontFamily: F }}>Thông tin chung của vụ án</span>
+      <div style={{ border: `1px solid ${BORDER}`, borderRadius: 6, overflow: "hidden", background: "#fff" }}>
+        {/* Header */}
+        <div style={{ padding: "10px 16px", background: BG, borderBottom: `1px solid ${BORDER}`, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            <button onClick={() => setOpen(v => !v)} style={{ background: "none", border: "none", cursor: "pointer", fontSize: 13, fontWeight: 700, color: RED, textTransform: "uppercase" as const, letterSpacing: "0.3px", fontFamily: F, padding: 0 }}>
+              THÔNG TIN CHUNG CỦA VỤ ÁN
+            </button>
+            {tagBadges.length > 0 && <div style={{ display: "flex", gap: 6 }}>{tagBadges}</div>}
           </div>
-          <InfoGrid rows={[
-            ["Mã vụ án – Tên vụ án", row.maVuAn, "Số – Ngày Kháng nghị", row.soNgayKhangNghi],
-            ["Số – Ngày BA/QĐ", row.soNgayBAQD, "Người kháng nghị", row.nguoiKhangNghi || "Viện trưởng Viện kiểm sát nhân dân tối cao"],
-            ["Tòa ra BA/QĐ", row.toaRABAQD, "Tòa án giải quyết", row.toaAnGiaiQuyet],
-          ]} />
+          <button onClick={() => setOpen(v => !v)} style={{ background: "none", border: "none", cursor: "pointer", color: MUTED, padding: 2 }}>
+            {open ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+          </button>
         </div>
-      )}
+        {/* Grid */}
+        {open && (
+          <table style={{ width: "100%", borderCollapse: "collapse" }}>
+            <tbody>
+              <tr>
+                <td style={{ padding: "9px 14px", fontSize: 12, color: MUTED, fontFamily: F, background: BG, border: `1px solid ${BORDER}`, width: "16%", whiteSpace: "nowrap" as const }}>Mã vụ án</td>
+                <td style={{ padding: "9px 14px", fontSize: 12, color: TEXT, fontFamily: F, border: `1px solid ${BORDER}`, width: "34%" }}>
+                  <span style={{ fontWeight: 600, color: "#800000" }}>{row.maVuAn}</span>
+                  {row.tenVuAn && <span style={{ color: MUTED, marginLeft: 6 }}>– {row.tenVuAn}</span>}
+                </td>
+                <td style={{ padding: "9px 14px", fontSize: 12, color: MUTED, fontFamily: F, background: BG, border: `1px solid ${BORDER}`, width: "16%", whiteSpace: "nowrap" as const }}>Số – Ngày bản án</td>
+                <td style={{ padding: "9px 14px", fontSize: 12, color: TEXT, fontFamily: F, border: `1px solid ${BORDER}` }}>{row.soNgayBAQD}</td>
+              </tr>
+              <tr>
+                <td style={{ padding: "9px 14px", fontSize: 12, color: MUTED, fontFamily: F, background: BG, border: `1px solid ${BORDER}`, whiteSpace: "nowrap" as const }}>Loại án</td>
+                <td style={{ padding: "9px 14px", fontSize: 12, color: TEXT, fontFamily: F, border: `1px solid ${BORDER}` }}>{row.loaiAn || "Hình sự"}</td>
+                <td style={{ padding: "9px 14px", fontSize: 12, color: MUTED, fontFamily: F, background: BG, border: `1px solid ${BORDER}`, whiteSpace: "nowrap" as const }}>Tòa ra bản án</td>
+                <td style={{ padding: "9px 14px", fontSize: 12, color: TEXT, fontFamily: F, border: `1px solid ${BORDER}` }}>{row.toaRABAQD}</td>
+              </tr>
+              <tr>
+                <td style={{ padding: "9px 14px", fontSize: 12, color: MUTED, fontFamily: F, background: BG, border: `1px solid ${BORDER}`, whiteSpace: "nowrap" as const }}>Công văn</td>
+                <td style={{ padding: "9px 14px", border: `1px solid ${BORDER}` }}>{congVanNode}</td>
+                <td style={{ padding: "9px 14px", fontSize: 12, color: MUTED, fontFamily: F, background: BG, border: `1px solid ${BORDER}`, whiteSpace: "nowrap" as const }}>Chỉ đạo</td>
+                <td style={{ padding: "9px 14px", border: `1px solid ${BORDER}` }}>{chiDaoNode}</td>
+              </tr>
+            </tbody>
+          </table>
+        )}
+      </div>
     </div>
   );
 }
@@ -570,58 +620,7 @@ function TabThongTin({ row, userRole }: { row: VuXetXuRow; userRole?: UserRoleTy
           <button onClick={() => setSec1Open(v => !v)} style={{ background: "none", border: "none", cursor: "pointer", fontFamily: F, fontSize: 14, color: TEXT, padding: 0 }}>—</button>
           <span style={{ fontSize: 12, fontWeight: 700, color: RED, textTransform: "uppercase" as const, letterSpacing: "0.3px", fontFamily: F }}>Thông tin đề nghị Giám đốc thẩm / Tái thẩm</span>
         </div>
-        {sec1Open && (
-          <>
-            <div style={{ border: `1px solid ${BORDER}`, borderRadius: 6, overflow: "hidden", marginBottom: 12 }}>
-              <div style={{ padding: "8px 14px", background: BG, borderBottom: `1px solid ${BORDER}` }}>
-                <span style={{ fontSize: 12, fontWeight: 600, color: TEXT, fontFamily: F }}>Thông tin chung của vụ án</span>
-              </div>
-              <InfoGrid rows={[
-                ["Mã vụ án – Tên vụ án", row.maVuAn, "Số – Ngày Kháng nghị", row.soNgayKhangNghi],
-                ["Số – Ngày BA/QĐ", row.soNgayBAQD, "Người kháng nghị", row.nguoiKhangNghi],
-                ["Tòa ra BA/QĐ", row.toaRABAQD, "Tòa án giải quyết", row.toaAnGiaiQuyet],
-                // ["Viện kiểm sát giải quyết", row.vienKiemSat, ],
-              ]} />
-            </div>
-            <div style={{ border: `1px solid ${BORDER}`, borderRadius: 6, overflow: "hidden", marginBottom: 12 }}>
-              <div style={{ padding: "10px 14px", background: BG, borderBottom: `1px solid ${BORDER}`, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                <span style={{ fontSize: 12, fontWeight: 600, color: TEXT, fontFamily: F }}>Thông tin Hồ sơ Kháng nghị</span>
-                <button onClick={() => setKSuaOpen(v => !v)} style={{ display: "flex", alignItems: "center", gap: 5, padding: "5px 12px", background: kSuaOpen ? "#fee2e2" : "#fff", border: `1px solid ${kSuaOpen ? RED : BORDER}`, borderRadius: 4, cursor: "pointer", fontSize: 12, fontFamily: F, color: kSuaOpen ? RED : TEXT }}>
-                  <Pencil size={12} /> Sửa
-                </button>
-              </div>
-              <div style={{ padding: "14px 16px" }}>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "12px 16px" }}>
-                  <div>
-                    <label style={{ fontSize: 11, color: MUTED, fontFamily: F, display: "block", marginBottom: 5 }}>Ngày VKS chuyển hồ sơ:</label>
-                    <input style={inp} defaultValue="27/07/2026" readOnly={!kSuaOpen} />
-                  </div>
-                  <div>
-                    <label style={{ fontSize: 11, color: MUTED, fontFamily: F, display: "block", marginBottom: 5 }}>Số bút lục VKS chuyển HS:</label>
-                    <input style={inp} defaultValue="BL-2026/05" placeholder="Nhập số bút lục chuyển" readOnly={!kSuaOpen} />
-                  </div>
-                  <div>
-                    <label style={{ fontSize: 11, color: MUTED, fontFamily: F, display: "block", marginBottom: 5 }}>Ghi chú chuyển HS:</label>
-                    <input style={inp} placeholder="Nhập ghi chú" readOnly={!kSuaOpen} />
-                  </div>
 
-                  <div>
-                    <label style={{ fontSize: 11, color: MUTED, fontFamily: F, display: "block", marginBottom: 5 }}>Ngày VKS trả hồ sơ:</label>
-                    <input style={inp} defaultValue="05/08/2026" readOnly={!kSuaOpen} />
-                  </div>
-                  <div>
-                    <label style={{ fontSize: 11, color: MUTED, fontFamily: F, display: "block", marginBottom: 5 }}>Số bút lục VKS trả HS:</label>
-                    <input style={inp} defaultValue="BL-2026/18" placeholder="Nhập số bút lục trả" readOnly={!kSuaOpen} />
-                  </div>
-                  <div>
-                    <label style={{ fontSize: 11, color: MUTED, fontFamily: F, display: "block", marginBottom: 5 }}>Ghi chú trả HS:</label>
-                    <input style={inp} placeholder="Nhập ghi chú" readOnly={!kSuaOpen} />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </>
-        )}
       </div>
       {/* Section 2 */}
       <div>
@@ -2628,7 +2627,7 @@ export function TaoQuyetDinhDinhChiDoRutKNModal({
                           <div style={{ display: "flex", gap: 8, justifyContent: "center" }}>
                             <button
                               type="button"
-                              onClick={() => {}}
+                              onClick={() => { }}
                               style={{ background: "none", border: "none", cursor: "pointer", color: "#2563eb", fontSize: 11, fontFamily: F }}
                             >
                               Sửa
@@ -4406,6 +4405,8 @@ function ChiTietVuXetXuView({ row, userRole, onBack }: { row: VuXetXuRow; userRo
         </div>
       </div>
       <div style={{ flex: 1, overflow: "auto", padding: 20 }}>
+        {/* ── Thông tin chung – hiển thị ở tất cả các tab ── */}
+        <ThongTinChungBlock row={row} />
         {tab === "thong-tin" && <TabThongTin row={row} userRole={userRole} />}
         {tab === "thu-ly" && <TabThuLy row={row} />}
         {tab === "to-trinh" && <TabToTrinhXX row={row} />}

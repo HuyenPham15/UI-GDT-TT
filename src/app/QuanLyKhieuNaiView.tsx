@@ -25,10 +25,9 @@ import {
 import {
   KHIEU_NAI_LIST,
   filterVuAnListByRole,
-  type ChiTietTab,
   type VuAnGroup,
-  QuickViewDanhSachDonModal,
-} from "./QuanLyVuAnView";
+} from "./VuAnData";
+import { QuickViewDanhSachDonModal, type ChiTietTab } from "./QuanLyVuAnView";
 import { VuAnSearchFilterPanel } from "./VuAnSearchFilterPanel";
 
 const paginBtn: React.CSSProperties = {

@@ -117,8 +117,6 @@ export function getThoiHieuOptions(userRole?: UserRoleType, loaiAnStr?: string) 
   if (loai.includes("hình sự")) {
     return [
       { val: "1 năm", label: "1 năm" },
-      { val: "3 năm", label: "3 năm" },
-      { val: "5 năm", label: "5 năm" },
       { val: "Không xác định thời hiệu", label: "Không xác định thời hiệu" },
     ];
   }

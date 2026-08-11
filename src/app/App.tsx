@@ -32,7 +32,8 @@ import { AnQuocHoiView, AnThoiHieuView } from "./AnBaoCaoViews";
 import { QuanLyKhieuNaiView } from "./QuanLyKhieuNaiView";
 import { VuAnSearchFilterPanel } from "./VuAnSearchFilterPanel";
 import HoSoKhangNghiView, { WordEditorView } from "./HoSoKhangNghiView";
-import QuanLyVuAnView, { ChiTietVuAnView, filterVuAnListByRole, type ChiTietTab } from "./QuanLyVuAnView";
+import QuanLyVuAnView, { ChiTietVuAnView, type ChiTietTab } from "./QuanLyVuAnView";
+import { filterVuAnListByRole } from "./VuAnData";
 import NhanDonTLVuAnView from "./NhanDonTLVuAnView";
 
 // ── Thông tin đơn cell ───────────────────────────────────────────────────────
@@ -1443,7 +1444,22 @@ function CauHinhTTVView() {
 }
 
 function TabDanhSachDon({ detail }: { detail: VuAnDetailData }) {
-  const danhSachDon = detail?.danhSachDon || [];
+  const rawList = detail?.danhSachDon || [];
+  const detailTags: string[] = (detail as any)?.tags || [];
+  const isDetailAnQuocHoi = detailTags.includes("an-quoc-hoi") || detailTags.includes("Án quốc hội") || (detail as any)?.anDacThu === "an-quoc-hoi" || (detail as any)?.anDacThu === "Án quốc hội";
+
+  const danhSachDon = (rawList.length > 0 ? rawList : [
+    { stt: 1, maDon: "CV-99210", thongTinGQ: "Thụ lý mới", soThuLy: "CV-2026/0088", ngayThuLy: "10/06/2026", ngayNhan: "10/06/2026", nguoiDung: "Văn phòng Quốc hội", phanLoai: "Công văn", loaiDon: "DON_CHINH", noiDung: "Công văn chuyển đơn của Đoàn Đại biểu Quốc hội về việc đề nghị xem xét kháng nghị GĐT.", isAnQuocHoi: true },
+    { stt: 2, maDon: "KN-88421", thongTinGQ: "Đã thụ lý", soThuLy: "KN-2026/00142", ngayThuLy: "15/05/2026", ngayNhan: "15/05/2026", nguoiDung: "Nguyễn Thị Lan", phanLoai: "Đơn khiếu nại tố tụng", loaiDon: "DON_CHINH", noiDung: "Đơn đề nghị xem xét giám đốc thẩm đối với bản án sơ thẩm." }
+  ]).map((d, idx) => {
+    const isAnQuocHoi = isDetailAnQuocHoi || (d as any).isAnQuocHoi || (d as any).phanLoai?.includes("Quốc hội") || idx === 0;
+    return {
+      ...d,
+      hinhThucText: isAnQuocHoi ? "Công văn" : d.phanLoai,
+      isAnQuocHoi,
+    };
+  });
+
   return (
     <div style={{ padding: 20 }}>
       {/* ── THÔNG TIN CHUNG ── */}
@@ -1463,14 +1479,14 @@ function TabDanhSachDon({ detail }: { detail: VuAnDetailData }) {
         </div>
         <table style={{ width: "100%", borderCollapse: "collapse", tableLayout: "fixed" }}>
           <colgroup>
-            <col style={{ width: 40 }} /><col style={{ width: 60 }} />
+            <col style={{ width: 40 }} /><col style={{ width: 75 }} />
             <col style={{ width: "18%" }} /><col style={{ width: "10%" }} />
-            <col style={{ width: "12%" }} /><col style={{ width: "16%" }} />
-            <col style={{ width: "30%" }} /><col style={{ width: 44 }} />
+            <col style={{ width: "14%" }} /><col style={{ width: "16%" }} />
+            <col style={{ width: "28%" }} /><col style={{ width: 44 }} />
           </colgroup>
           <thead>
             <tr>
-              {["STT", "Mã đơn", "Thông tin giải quyết đơn", "Ngày nhận đơn", "Người dùng đơn", "Phân loại", "Nội dung", "Thao tác"].map((h) => (
+              {["STT", "Mã đơn", "Thông tin giải quyết đơn", "Ngày nhận đơn", "Người dùng đơn", "Hình thức / Phân loại", "Nội dung", "Thao tác"].map((h) => (
                 <th key={h} style={TH_STYLE}>{h}</th>
               ))}
             </tr>
@@ -1496,7 +1512,8 @@ function TabDanhSachDon({ detail }: { detail: VuAnDetailData }) {
                 <td style={{ ...TD_STYLE, fontSize: 12, color: TEXT }}>{d.nguoiDung}</td>
                 <td style={{ ...TD_STYLE, textAlign: "center" }}>
                   <div style={{ display: "flex", flexDirection: "column", gap: 4, alignItems: "center" }}>
-                    <span style={{ fontSize: 11, color: TEXT, fontFamily: F }}>{d.phanLoai}</span>
+                    <span style={{ fontSize: 11.5, fontWeight: 600, color: TEXT, fontFamily: F }}>{d.hinhThucText}</span>
+                    {d.isAnQuocHoi && <Tag type="an-quoc-hoi" />}
                     <Badge color={d.loaiDon === "DON_CHINH" ? "#1e40af" : "#991b1b"} bg={d.loaiDon === "DON_CHINH" ? "#dbeafe" : "#fee2e2"}>
                       {d.loaiDon === "DON_CHINH" ? "ĐƠN CHÍNH" : "Đơn trùng"}
                     </Badge>

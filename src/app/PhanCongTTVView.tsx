@@ -52,21 +52,26 @@ interface CaseRow {
   ttv: string;
   ngayPCLD: string;
   lanhDao: string;
+  hasGDXX?: boolean;
+  ngayPCTTV_XX?: string;
+  ttv_XX?: string;
+  ngayPCLD_XX?: string;
+  lanhDao_XX?: string;
 }
 
 const INITIAL_CHUA_PHAN_CONG: CaseRow[] = [
   {
     id: 1,
-    soThuLy: "-",
-    ngayThuLy: "-",
-    soBA: "-",
-    ngayBA: "-",
-    toaAn: "-",
-    giaiDoan: "Sơ thẩm",
-    qhpl: "Tranh chấp về thừa kế tài sản",
-    ndkn: "",
-    nbk: "",
-    ngayNhanTHS: "-",
+    soThuLy: "125/2026/TL-GĐT",
+    ngayThuLy: "15/07/2026",
+    soBA: "12/2026/HS-PT",
+    ngayBA: "20/05/2026",
+    toaAn: "Tòa án nhân dân cấp cao tại Hà Nội",
+    giaiDoan: "Phúc thẩm",
+    qhpl: "Tội cố ý gây thương tích",
+    ndkn: "Đặng Thị Dương",
+    nbk: "Hoàng Ngọc Hoa",
+    ngayNhanTHS: "18/07/2026",
     giaiDoanPC: "GĐ Giải quyết đơn",
     ngayPCTTV: "-",
     ttv: "-",
@@ -75,16 +80,16 @@ const INITIAL_CHUA_PHAN_CONG: CaseRow[] = [
   },
   {
     id: 2,
-    soThuLy: "-",
-    ngayThuLy: "-",
-    soBA: "-",
-    ngayBA: "-",
-    toaAn: "-",
+    soThuLy: "89/2026/TL-GĐT",
+    ngayThuLy: "18/07/2026",
+    soBA: "56/2026/HS-ST",
+    ngayBA: "03/06/2026",
+    toaAn: "Tòa án nhân dân tỉnh Bắc Ninh",
     giaiDoan: "Sơ thẩm",
-    qhpl: "",
-    ndkn: "",
-    nbk: "",
-    ngayNhanTHS: "-",
+    qhpl: "Tội lừa đảo chiếm đoạt tài sản",
+    ndkn: "Phạm Ngọc Hoa",
+    nbk: "Hoàng Hoa Vân",
+    ngayNhanTHS: "20/07/2026",
     giaiDoanPC: "GĐ Giải quyết đơn",
     ngayPCTTV: "-",
     ttv: "-",
@@ -93,16 +98,16 @@ const INITIAL_CHUA_PHAN_CONG: CaseRow[] = [
   },
   {
     id: 3,
-    soThuLy: "-",
-    ngayThuLy: "-",
-    soBA: "thu",
-    ngayBA: "07/08/2026",
-    toaAn: "-",
-    giaiDoan: "Sơ thẩm",
-    qhpl: "Xử phạt vi phạm hành chính",
-    ndkn: "f",
-    nbk: "sdfdsf",
-    ngayNhanTHS: "-",
+    soThuLy: "204/2026/TL-TT",
+    ngayThuLy: "20/07/2026",
+    soBA: "108/2026/HC-PT",
+    ngayBA: "07/06/2026",
+    toaAn: "Tòa án nhân dân TP Đà Nẵng",
+    giaiDoan: "Phúc thẩm",
+    qhpl: "Khiếu kiện quyết định thu hồi đất",
+    ndkn: "Lê Văn Hùng",
+    nbk: "UBND quận Hải Châu",
+    ngayNhanTHS: "22/07/2026",
     giaiDoanPC: "GĐ Giải quyết đơn",
     ngayPCTTV: "-",
     ttv: "-",
@@ -111,16 +116,16 @@ const INITIAL_CHUA_PHAN_CONG: CaseRow[] = [
   },
   {
     id: 4,
-    soThuLy: "-",
-    ngayThuLy: "-",
-    soBA: "-",
-    ngayBA: "-",
-    toaAn: "-",
+    soThuLy: "312/2026/TL-GĐT",
+    ngayThuLy: "22/07/2026",
+    soBA: "45/2026/DS-ST",
+    ngayBA: "12/06/2026",
+    toaAn: "Tòa án nhân dân tỉnh Hà Nam",
     giaiDoan: "Sơ thẩm",
-    qhpl: "",
-    ndkn: "",
-    nbk: "",
-    ngayNhanTHS: "-",
+    qhpl: "Tranh chấp thừa kế tài sản",
+    ndkn: "Nguyễn Văn Tuấn",
+    nbk: "Vũ Thị Hương",
+    ngayNhanTHS: "24/07/2026",
     giaiDoanPC: "GĐ Giải quyết đơn",
     ngayPCTTV: "-",
     ttv: "-",
@@ -129,16 +134,16 @@ const INITIAL_CHUA_PHAN_CONG: CaseRow[] = [
   },
   {
     id: 5,
-    soThuLy: "-",
-    ngayThuLy: "-",
-    soBA: "108/2026/HS-ST",
-    ngayBA: "12/06/2026",
-    toaAn: "Tòa án nhân dân tỉnh Hà Nam",
-    giaiDoan: "Sơ thẩm",
-    qhpl: "Tội cố ý gây thương tích",
-    ndkn: "Nguyễn Văn Tuấn",
-    nbk: "Vũ Thị Hương",
-    ngayNhanTHS: "-",
+    soThuLy: "415/2026/TL-GĐT",
+    ngayThuLy: "25/07/2026",
+    soBA: "78/2026/HS-PT",
+    ngayBA: "15/06/2026",
+    toaAn: "Tòa án nhân dân cấp cao tại TP.HCM",
+    giaiDoan: "Phúc thẩm",
+    qhpl: "Tội vi phạm quy định giao thông đường bộ",
+    ndkn: "Trần Quốc Bảo",
+    nbk: "Nguyễn Văn Cường",
+    ngayNhanTHS: "26/07/2026",
     giaiDoanPC: "GĐ Giải quyết đơn",
     ngayPCTTV: "-",
     ttv: "-",
@@ -147,16 +152,52 @@ const INITIAL_CHUA_PHAN_CONG: CaseRow[] = [
   },
   {
     id: 6,
-    soThuLy: "-",
-    ngayThuLy: "-",
-    soBA: "42/2026/HC-ST",
-    ngayBA: "19/05/2026",
-    toaAn: "Tòa án nhân dân TP Đà Nẵng",
+    soThuLy: "508/2026/TL-TT",
+    ngayThuLy: "28/07/2026",
+    soBA: "92/2026/KDTM-ST",
+    ngayBA: "18/06/2026",
+    toaAn: "Tòa án nhân dân thành phố Hà Nội",
     giaiDoan: "Sơ thẩm",
-    qhpl: "Khiếu kiện quyết định thu hồi đất",
-    ndkn: "Lê Văn Hùng",
-    nbk: "UBND quận Hải Châu",
-    ngayNhanTHS: "-",
+    qhpl: "Tranh chấp hợp đồng tín dụng",
+    ndkn: "Ngân hàng TMCP X",
+    nbk: "Công ty TNHH Hưng Thịnh",
+    ngayNhanTHS: "30/07/2026",
+    giaiDoanPC: "GĐ Giải quyết đơn",
+    ngayPCTTV: "-",
+    ttv: "-",
+    ngayPCLD: "-",
+    lanhDao: "-",
+  },
+  {
+    id: 7,
+    soThuLy: "612/2026/TL-GĐT",
+    ngayThuLy: "01/08/2026",
+    soBA: "115/2026/HS-ST",
+    ngayBA: "20/06/2026",
+    toaAn: "Tòa án nhân dân tỉnh Hải Dương",
+    giaiDoan: "Sơ thẩm",
+    qhpl: "Tội vi phạm quy định về quản lý đất đai",
+    ndkn: "Hoàng Thị Mai",
+    nbk: "Đào Văn Nam",
+    ngayNhanTHS: "03/08/2026",
+    giaiDoanPC: "GĐ Giải quyết đơn",
+    ngayPCTTV: "-",
+    ttv: "-",
+    ngayPCLD: "-",
+    lanhDao: "-",
+  },
+  {
+    id: 8,
+    soThuLy: "720/2026/TL-GĐT",
+    ngayThuLy: "04/08/2026",
+    soBA: "130/2026/HC-PT",
+    ngayBA: "25/06/2026",
+    toaAn: "Tòa án nhân dân tỉnh Đồng Nai",
+    giaiDoan: "Phúc thẩm",
+    qhpl: "Khiếu kiện quyết định bồi thường GPMB",
+    ndkn: "Vũ Đình Trọng",
+    nbk: "UBND TP Biên Hòa",
+    ngayNhanTHS: "05/08/2026",
     giaiDoanPC: "GĐ Giải quyết đơn",
     ngayPCTTV: "-",
     ttv: "-",
@@ -168,111 +209,172 @@ const INITIAL_CHUA_PHAN_CONG: CaseRow[] = [
 const INITIAL_DA_PHAN_CONG: CaseRow[] = [
   {
     id: 101,
-    soThuLy: "3539",
+    soThuLy: "3539/2026/TL-GĐT",
     ngayThuLy: "25/05/2026",
-    soBA: "3504",
-    ngayBA: "25/05/2026",
+    soBA: "35/2026/HS-PT",
+    ngayBA: "20/05/2026",
     toaAn: "Tòa án nhân dân tỉnh An Giang",
-    giaiDoan: "Sơ thẩm",
-    qhpl: "",
+    giaiDoan: "Phúc thẩm",
+    qhpl: "Tội lạm dụng tín nhiệm chiếm đoạt tài sản",
     ndkn: "Nguyễn Văn Rô",
-    nbk: "",
-    ngayNhanTHS: "-",
-    giaiDoanPC: "GĐ Xét xử GĐT, TT",
-    ngayPCTTV: "25/06/2026",
+    nbk: "Phạm Văn Tiến",
+    ngayNhanTHS: "10/06/2026",
+    giaiDoanPC: "GĐ Giải quyết đơn",
+    ngayPCTTV: "25/05/2026",
     ttv: "Nguyễn Thị Thúy Hường",
-    ngayPCLD: "25/06/2026",
+    ngayPCLD: "25/05/2026",
     lanhDao: "Phạm Thị Bích Ngọc - Phó Vụ trưởng",
+    hasGDXX: true,
+    ngayPCTTV_XX: "25/06/2026",
+    ttv_XX: "Nguyễn Thị Thúy Hường",
+    ngayPCLD_XX: "25/06/2026",
+    lanhDao_XX: "Phạm Thị Bích Ngọc - Phó Vụ trưởng",
   },
   {
     id: 102,
-    soThuLy: "2328917",
+    soThuLy: "2328/2026/TL-TT",
     ngayThuLy: "02/06/2026",
-    soBA: "32",
+    soBA: "32/2026/HS-ST",
     ngayBA: "20/05/2026",
-    toaAn: "Tòa án nhân dân khu vực 5 - Bắc Ninh",
+    toaAn: "Tòa án nhân dân tỉnh Bắc Ninh",
     giaiDoan: "Sơ thẩm",
-    qhpl: "",
-    ndkn: "",
-    nbk: "",
-    ngayNhanTHS: "-",
-    giaiDoanPC: "GĐ Xét xử GĐT, TT",
-    ngayPCTTV: "25/06/2026",
+    qhpl: "Tội cố ý gây thương tích",
+    ndkn: "Hoàng Anh Việt",
+    nbk: "Trần Văn Cường",
+    ngayNhanTHS: "15/06/2026",
+    giaiDoanPC: "GĐ Giải quyết đơn",
+    ngayPCTTV: "05/06/2026",
     ttv: "Vũ Xuân Hiền",
-    ngayPCLD: "25/06/2026",
+    ngayPCLD: "05/06/2026",
     lanhDao: "Lê Thị Thu Hiền - Phó Vụ trưởng",
   },
   {
     id: 103,
-    soThuLy: "239872",
+    soThuLy: "2398/2026/TL-GĐT",
     ngayThuLy: "27/05/2026",
-    soBA: "2809",
+    soBA: "28/2026/HC-ST",
     ngayBA: "20/05/2026",
-    toaAn: "Tòa án nhân dân khu vực 1 - An Giang",
+    toaAn: "Tòa án nhân dân tỉnh An Giang",
     giaiDoan: "Sơ thẩm",
-    qhpl: "",
-    ndkn: "Hoàng Anh Test",
-    nbk: "",
-    ngayNhanTHS: "-",
-    giaiDoanPC: "GĐ Xét xử GĐT, TT",
-    ngayPCTTV: "25/06/2026",
+    qhpl: "Khiếu kiện quyết định xử phạt vi phạm hành chính",
+    ndkn: "Hoàng Văn Tuấn",
+    nbk: "Chủ tịch UBND tỉnh An Giang",
+    ngayNhanTHS: "18/06/2026",
+    giaiDoanPC: "GĐ Giải quyết đơn",
+    ngayPCTTV: "27/05/2026",
     ttv: "Nguyễn Thị Hường",
-    ngayPCLD: "25/06/2026",
+    ngayPCLD: "27/05/2026",
     lanhDao: "Nguyễn Như Thắng - Vụ trưởng",
+    hasGDXX: true,
+    ngayPCTTV_XX: "25/06/2026",
+    ttv_XX: "Nguyễn Thị Hường",
+    ngayPCLD_XX: "25/06/2026",
+    lanhDao_XX: "Nguyễn Như Thắng - Vụ trưởng",
   },
   {
     id: 104,
-    soThuLy: "23715",
+    soThuLy: "2371/2026/TL-GĐT",
     ngayThuLy: "27/05/2026",
-    soBA: "GĐT-2026-0158",
+    soBA: "158/2026/DS-PT",
     ngayBA: "23/05/2026",
     toaAn: "Tòa án nhân dân thành phố Hà Nội",
-    giaiDoan: "Sơ thẩm",
-    qhpl: "",
+    giaiDoan: "Phúc thẩm",
+    qhpl: "Tranh chấp quyền sử dụng đất",
     ndkn: "Nguyễn Văn Bình",
-    nbk: "",
-    ngayNhanTHS: "-",
-    giaiDoanPC: "GĐ Xét xử GĐT, TT",
-    ngayPCTTV: "25/06/2026",
+    nbk: "Nguyễn Thị Kim",
+    ngayNhanTHS: "20/06/2026",
+    giaiDoanPC: "GĐ Giải quyết đơn",
+    ngayPCTTV: "01/06/2026",
     ttv: "Nguyễn Đức Thiện",
-    ngayPCLD: "25/06/2026",
+    ngayPCLD: "01/06/2026",
     lanhDao: "Nguyễn Như Thắng - Vụ trưởng",
   },
   {
     id: 105,
-    soThuLy: "5468112",
+    soThuLy: "5468/2026/TL-GĐT",
     ngayThuLy: "08/06/2026",
     soBA: "78/2026/DS-ST",
     ngayBA: "01/06/2026",
     toaAn: "Tòa án nhân dân tỉnh Vĩnh Phúc",
     giaiDoan: "Sơ thẩm",
-    qhpl: "Tranh chấp đất đai",
+    qhpl: "Tranh chấp hợp đồng đặt cọc",
     ndkn: "Đỗ Văn Hải",
     nbk: "Trần Thị Nga",
-    ngayNhanTHS: "-",
-    giaiDoanPC: "GĐ Xét xử GĐT, TT",
-    ngayPCTTV: "28/06/2026",
+    ngayNhanTHS: "22/06/2026",
+    giaiDoanPC: "GĐ Giải quyết đơn",
+    ngayPCTTV: "10/06/2026",
     ttv: "Vũ Diệu Thúy",
-    ngayPCLD: "28/06/2026",
+    ngayPCLD: "10/06/2026",
     lanhDao: "Nguyễn Biên Thùy - Phó Vụ trưởng",
+    hasGDXX: true,
+    ngayPCTTV_XX: "28/06/2026",
+    ttv_XX: "Vũ Diệu Thúy",
+    ngayPCLD_XX: "28/06/2026",
+    lanhDao_XX: "Nguyễn Biên Thùy - Phó Vụ trưởng",
   },
   {
     id: 106,
-    soThuLy: "5468190",
+    soThuLy: "5469/2026/TL-TT",
     ngayThuLy: "15/06/2026",
     soBA: "112/2026/HC-ST",
     ngayBA: "10/06/2026",
     toaAn: "Tòa án nhân dân TP Cần Thơ",
     giaiDoan: "Sơ thẩm",
-    qhpl: "Khiếu kiện bồi thường",
+    qhpl: "Khiếu kiện bồi thường thiệt hại",
     ndkn: "Lê Thị Tuyết",
     nbk: "UBND TP Cần Thơ",
-    ngayNhanTHS: "-",
-    giaiDoanPC: "GĐ Xét xử GĐT, TT",
-    ngayPCTTV: "30/06/2026",
+    ngayNhanTHS: "25/06/2026",
+    giaiDoanPC: "GĐ Giải quyết đơn",
+    ngayPCTTV: "18/06/2026",
     ttv: "Đặng Thị Mai",
-    ngayPCLD: "30/06/2026",
+    ngayPCLD: "18/06/2026",
     lanhDao: "Phạm Thị Bích Ngọc - Phó Vụ trưởng",
+  },
+  {
+    id: 107,
+    soThuLy: "6712/2026/TL-GĐT",
+    ngayThuLy: "20/06/2026",
+    soBA: "95/2026/HS-PT",
+    ngayBA: "12/06/2026",
+    toaAn: "Tòa án nhân dân cấp cao tại Đà Nẵng",
+    giaiDoan: "Phúc thẩm",
+    qhpl: "Tội trộm cắp tài sản",
+    ndkn: "Trần Văn Hùng",
+    nbk: "Phạm Thị Nga",
+    ngayNhanTHS: "28/06/2026",
+    giaiDoanPC: "GĐ Giải quyết đơn",
+    ngayPCTTV: "22/06/2026",
+    ttv: "Trần Văn Hưng",
+    ngayPCLD: "22/06/2026",
+    lanhDao: "Trần Hồng Hà - Vụ trưởng",
+    hasGDXX: true,
+    ngayPCTTV_XX: "02/07/2026",
+    ttv_XX: "Trần Văn Hưng",
+    ngayPCLD_XX: "02/07/2026",
+    lanhDao_XX: "Trần Hồng Hà - Vụ trưởng",
+  },
+  {
+    id: 108,
+    soThuLy: "8910/2026/TL-GĐT",
+    ngayThuLy: "25/06/2026",
+    soBA: "140/2026/KDTM-PT",
+    ngayBA: "18/06/2026",
+    toaAn: "Tòa án nhân dân thành phố Hà Nội",
+    giaiDoan: "Phúc thẩm",
+    qhpl: "Tranh chấp hợp đồng mua bán hàng hóa",
+    ndkn: "Công ty TNHH Vận tải Y",
+    nbk: "Công ty CP Sản xuất Z",
+    ngayNhanTHS: "30/06/2026",
+    giaiDoanPC: "GĐ Giải quyết đơn",
+    ngayPCTTV: "28/06/2026",
+    ttv: "Hoàng Ngọc Chiêu",
+    ngayPCLD: "28/06/2026",
+    lanhDao: "Nguyễn Văn Cường - Phó Vụ trưởng",
+    hasGDXX: true,
+    ngayPCTTV_XX: "05/07/2026",
+    ttv_XX: "Hoàng Ngọc Chiêu",
+    ngayPCLD_XX: "05/07/2026",
+    lanhDao_XX: "Nguyễn Văn Cường - Phó Vụ trưởng",
   },
 ];
 
@@ -355,7 +457,7 @@ export function PhanCongTTVView() {
           const randLD = DANH_SACH_LANH_DAO[Math.floor(Math.random() * DANH_SACH_LANH_DAO.length)];
           assignedRows.push({
             ...r,
-            giaiDoanPC: "GĐ Xét xử GĐT, TT",
+            giaiDoanPC: "GĐ Giải quyết đơn",
             ngayPCTTV: "26/06/2026",
             ttv: randTTV,
             ngayPCLD: "26/06/2026",
@@ -384,7 +486,7 @@ export function PhanCongTTVView() {
       if (selectedIds.includes(r.id)) {
         assignedRows.push({
           ...r,
-          giaiDoanPC: "GĐ Xét xử GĐT, TT",
+          giaiDoanPC: "GĐ Giải quyết đơn",
           ngayPCTTV: "26/06/2026",
           ttv: assignTTV,
           ngayPCLD: "26/06/2026",
@@ -503,7 +605,6 @@ export function PhanCongTTVView() {
             Đã phân công TTV
           </button>
         </div>
-
         {/* Radio Option for Tab 1 */}
         {activeTab === "chua-phan-cong" && (
           <div style={{ display: "flex", alignItems: "center", gap: 20, marginTop: -4 }}>
@@ -934,34 +1035,77 @@ export function PhanCongTTVView() {
                         <td style={TD_CUSTOM}>
                           <span style={{ color: MUTED }}>{r.ngayNhanTHS}</span>
                         </td>
-                        <td style={TD_CUSTOM}>
-                          <div>
-                            <div style={{ fontSize: 11, fontWeight: 600, color: "#1e40af" }}>{r.giaiDoanPC}</div>
-                            <div style={{ fontSize: 11, color: MUTED, marginTop: 2 }}>{r.ngayPCTTV}</div>
-                          </div>
-                        </td>
-                        <td style={TD_CUSTOM}>
-                          <div>
-                            <div style={{ fontSize: 11, fontWeight: 600, color: "#1e40af" }}>{r.giaiDoanPC}</div>
-                            <div style={{ fontSize: 11, fontWeight: r.ttv !== "-" ? 600 : 400, color: r.ttv !== "-" ? TEXT : MUTED, marginTop: 2 }}>
-                              {r.ttv}
-                            </div>
-                          </div>
-                        </td>
-                        <td style={TD_CUSTOM}>
-                          <div>
-                            <div style={{ fontSize: 11, fontWeight: 600, color: "#1e40af" }}>{r.giaiDoanPC}</div>
-                            <div style={{ fontSize: 11, color: MUTED, marginTop: 2 }}>{r.ngayPCLD}</div>
-                          </div>
-                        </td>
-                        <td style={TD_CUSTOM}>
-                          <div>
-                            <div style={{ fontSize: 11, fontWeight: 600, color: "#1e40af" }}>{r.giaiDoanPC}</div>
-                            <div style={{ fontSize: 11, fontWeight: r.lanhDao !== "-" ? 600 : 400, color: r.lanhDao !== "-" ? TEXT : MUTED, marginTop: 2 }}>
-                              {r.lanhDao}
-                            </div>
-                          </div>
-                        </td>
+                        {(() => {
+                          const isXX = r.giaiDoanPC.includes("Xét xử") || Boolean(r.hasGDXX);
+                          return (
+                            <>
+                              <td style={TD_CUSTOM}>
+                                <div>
+                                  {isXX && (
+                                    <div style={{ marginBottom: 6, paddingBottom: 4, borderBottom: "1px dashed #cbd5e1" }}>
+                                      <div style={{ fontSize: 11, fontWeight: 600, color: "#1e40af" }}>GĐ Giải quyết đơn</div>
+                                      <div style={{ fontSize: 11, color: MUTED, marginTop: 2 }}>{r.ngayPCTTV_XX || "20/05/2026"}</div>
+                                    </div>
+                                  )}
+                                  <div style={{ fontSize: 11, fontWeight: isXX ? 700 : 600, color: isXX ? "#047857" : "#1e40af" }}>
+                                    {isXX ? "GĐ Xét xử GĐT, TT" : "GĐ Giải quyết đơn"}
+                                  </div>
+                                  <div style={{ fontSize: 11, color: MUTED, marginTop: 2 }}>{r.ngayPCTTV}</div>
+                                </div>
+                              </td>
+                              <td style={TD_CUSTOM}>
+                                <div>
+                                  {isXX && (
+                                    <div style={{ marginBottom: 6, paddingBottom: 4, borderBottom: "1px dashed #cbd5e1" }}>
+                                      <div style={{ fontSize: 11, fontWeight: 600, color: "#1e40af" }}>GĐ Giải quyết đơn</div>
+                                      <div style={{ fontSize: 11, fontWeight: 600, color: TEXT, marginTop: 2 }}>
+                                        {r.ttv_XX || r.ttv}
+                                      </div>
+                                    </div>
+                                  )}
+                                  <div style={{ fontSize: 11, fontWeight: isXX ? 700 : 600, color: isXX ? "#047857" : "#1e40af" }}>
+                                    {isXX ? "GĐ Xét xử GĐT, TT" : "GĐ Giải quyết đơn"}
+                                  </div>
+                                  <div style={{ fontSize: 11, fontWeight: r.ttv !== "-" ? 600 : 400, color: r.ttv !== "-" ? TEXT : MUTED, marginTop: 2 }}>
+                                    {r.ttv !== "-" ? r.ttv : <span style={{ color: "#d97706", fontStyle: "italic", fontSize: 11 }}>Chưa phân công</span>}
+                                  </div>
+                                </div>
+                              </td>
+                              <td style={TD_CUSTOM}>
+                                <div>
+                                  {isXX && (
+                                    <div style={{ marginBottom: 6, paddingBottom: 4, borderBottom: "1px dashed #cbd5e1" }}>
+                                      <div style={{ fontSize: 11, fontWeight: 600, color: "#1e40af" }}>GĐ Giải quyết đơn</div>
+                                      <div style={{ fontSize: 11, color: MUTED, marginTop: 2 }}>{r.ngayPCLD_XX || "20/05/2026"}</div>
+                                    </div>
+                                  )}
+                                  <div style={{ fontSize: 11, fontWeight: isXX ? 700 : 600, color: isXX ? "#047857" : "#1e40af" }}>
+                                    {isXX ? "GĐ Xét xử GĐT, TT" : "GĐ Giải quyết đơn"}
+                                  </div>
+                                  <div style={{ fontSize: 11, color: MUTED, marginTop: 2 }}>{r.ngayPCLD}</div>
+                                </div>
+                              </td>
+                              <td style={TD_CUSTOM}>
+                                <div>
+                                  {isXX && (
+                                    <div style={{ marginBottom: 6, paddingBottom: 4, borderBottom: "1px dashed #cbd5e1" }}>
+                                      <div style={{ fontSize: 11, fontWeight: 600, color: "#1e40af" }}>GĐ Giải quyết đơn</div>
+                                      <div style={{ fontSize: 11, fontWeight: 600, color: TEXT, marginTop: 2 }}>
+                                        {r.lanhDao_XX || r.lanhDao}
+                                      </div>
+                                    </div>
+                                  )}
+                                  <div style={{ fontSize: 11, fontWeight: isXX ? 700 : 600, color: isXX ? "#047857" : "#1e40af" }}>
+                                    {isXX ? "GĐ Xét xử GĐT, TT" : "GĐ Giải quyết đơn"}
+                                  </div>
+                                  <div style={{ fontSize: 11, fontWeight: r.lanhDao !== "-" ? 600 : 400, color: r.lanhDao !== "-" ? TEXT : MUTED, marginTop: 2 }}>
+                                    {r.lanhDao !== "-" ? r.lanhDao : <span style={{ color: "#d97706", fontStyle: "italic", fontSize: 11 }}>Chưa phân công</span>}
+                                  </div>
+                                </div>
+                              </td>
+                            </>
+                          );
+                        })()}
                         <td style={{ ...TD_CUSTOM, textAlign: "center", borderRight: "none" }}>
                           <button
                             onClick={() => setShowDetailModal(r)}
@@ -989,7 +1133,7 @@ export function PhanCongTTVView() {
           {/* Table Footer / Pagination */}
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "12px 20px", borderTop: `1px solid ${BORDER}`, background: "#fff", fontSize: 12, color: MUTED, fontFamily: F }}>
             <div>
-              Hiển thị 1-{currentRows.length} trong tổng {activeTab === "chua-phan-cong" ? "9" : "641"} bản ghi
+              Hiển thị 1-{currentRows.length} trong tổng {activeTab === "chua-phan-cong" ? chuaPCRows.length : daPCRows.length} bản ghi
             </div>
 
             <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
