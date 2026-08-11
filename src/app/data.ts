@@ -114,10 +114,27 @@ export interface DonCase {
   hoiDongThamPhanPhucTham?: string;
   thamPhanChuToaPhucTham?: string;
 
+  // Chi tiết Bản án Sơ thẩm, Phúc thẩm & GĐT/TT
+  soBASoTham?: string;
+  ngayBASoTham?: string;
+  toaSoTham?: string;
+  soBAPhucTham?: string;
+  ngayBAPhucTham?: string;
+  toaPhucTham?: string;
+  soBAGDT?: string;
+  ngayBAGDT?: string;
+  toaGDT?: string;
+
+  // Cấp bản án bị đề nghị GĐT/TT & Quyết định GĐT
+  capDeNghi?: "so-tham" | "phuc-tham";
+  hasGDT?: boolean;
+
   // Vụ án
   maVuAn?: string;
   tenVuAn?: string;
   ttv?: string;
+  ldv?: string;
+  daGiaoTHS?: boolean;
   trangThai: TrangThaiVuAn;
   trangThai2?: TrangThaiVuAn;
   vuAnActions?: VuAnAction[];
@@ -430,6 +447,18 @@ function buildCase(loaiIdx: number, recIdx: number, globalId: number): DonCase {
     thoiHieu = recIdx % 2 === 0 ? "3 năm" : "5 năm";
   }
 
+  const soBASoTham = `${pad2(recIdx + 1)}/2025/${shortCode}-ST`;
+  const ngayBASoTham = `${pad2((recIdx % 25) + 1)}/08/2025`;
+  const toaSoTham = `TAND tỉnh ${["Bắc Ninh", "Hà Nam", "Bắc Giang", "Thanh Hóa", "Quảng Ninh"][recIdx % 5]}`;
+
+  const soBAPhucTham = `${pad2(recIdx + 10)}/2026/${shortCode}-PT`;
+  const ngayBAPhucTham = `${pad2((recIdx % 25) + 1)}/02/2026`;
+  const toaPhucTham = `Tòa án nhân dân cấp cao tại ${["Hà Nội", "Đà Nẵng", "TP. Hồ Chí Minh"][recIdx % 3]}`;
+
+  const soBAGDT = `${pad2(recIdx + 1)}/2026/QĐ-GĐT-${shortCode}`;
+  const ngayBAGDT = `${pad2((recIdx % 25) + 1)}/05/2026`;
+  const toaGDT = "Tòa án nhân dân tối cao (Hội đồng Thẩm phán)";
+
   const base = {
     id: globalId,
     loaiAn,
@@ -445,6 +474,17 @@ function buildCase(loaiIdx: number, recIdx: number, globalId: number): DonCase {
     toa,
     capXetXu: recIdx % 3 === 0 ? "Phúc thẩm" : "Sơ thẩm",
     thoiHieu,
+    soBASoTham,
+    ngayBASoTham,
+    toaSoTham,
+    soBAPhucTham,
+    ngayBAPhucTham,
+    toaPhucTham,
+    soBAGDT,
+    ngayBAGDT,
+    toaGDT,
+    capDeNghi: recIdx % 2 === 1 ? "so-tham" : "phuc-tham",
+    hasGDT: recIdx % 3 === 0,
   };
 
   // Phân bổ trường hợp trình Lãnh đạo & Trạng thái để test Badge màu
@@ -505,7 +545,6 @@ function buildCase(loaiIdx: number, recIdx: number, globalId: number): DonCase {
         trangThai: statusOptions[1],
         vuAnActions: ["ghep-vu-an", "them-vu-an"],
         yKienLD: [leadershipOptions[1]],
-        ...(recIdx % 2 === 1 && loaiIdx % 2 === 0 ? { daThuLy: true } : {}),
       };
     case 2:
       return {
@@ -522,11 +561,13 @@ function buildCase(loaiIdx: number, recIdx: number, globalId: number): DonCase {
         thamPhan: tpBac3List[(recIdx + 2) % tpBac3List.length],
         capThamPhan: "TPB3",
         ttv: ttvList[2],
+        ldv: "Trần Văn Bình (Phó Vụ trưởng)",
         trangThai: statusOptions[2],
         vuAnActions: ["chuyen-vu-an", "huy-ghep"],
         ngayNhan: `${10 + (recIdx % 10)}/6/2026`,
         yKienLD: [leadershipOptions[2]],
         daThuLy: true,
+        daGiaoTHS: true,
       };
     case 3:
       return {
@@ -543,9 +584,11 @@ function buildCase(loaiIdx: number, recIdx: number, globalId: number): DonCase {
         thamPhan: tpBac3List[(recIdx + 3) % tpBac3List.length],
         capThamPhan: "TPB3",
         ttv: ttvList[3],
+        ldv: "Lê Hoàng Nam (Phó Vụ trưởng)",
         trangThai: statusOptions[3],
         yKienLD: [leadershipOptions[3]],
-        daThuLy: true,
+        daThuLy: false,
+        daGiaoTHS: false,
       };
     default:
       const lyDoTraOptions = [
@@ -611,7 +654,24 @@ export function filterCasesByRole(cases: DonCase[], userRole?: string): DonCase[
 }
 
 export function getCasesByTab(tab: TabId, userRole?: string): DonCase[] {
-  const tabCases = CASES.filter((c) => c.tabs.includes(tab));
+  const tabCases = CASES.filter((c) => {
+    // Đơn đã thụ lý không có hiển thị ở màn đơn chờ phê duyệt hay chờ xin ý kiến, chỉ có ở màn đã có vụ án
+    if (c.daThuLy) {
+      if (tab === "don-cho-phe-duyet" || tab === "cho-y-kien") {
+        return false;
+      }
+      if (tab === "da-co-vu-an") {
+        return true;
+      }
+    }
+    if (tab === "don-cho-phe-duyet" || tab === "cho-y-kien") {
+      return c.tabs.includes(tab) && !c.daThuLy;
+    }
+    if (tab === "da-co-vu-an") {
+      return c.tabs.includes("da-co-vu-an") || !!c.daThuLy;
+    }
+    return c.tabs.includes(tab);
+  });
   return filterCasesByRole(tabCases, userRole);
 }
 

@@ -244,24 +244,92 @@ function CellBA({ c, userRole }: { c: DonCase; userRole?: UserRoleType }) {
 
 // ── Thông tin vụ án cell ─────────────────────────────────────────────────────
 
-function CellVuAn({ c, onThemHoSo }: { c: DonCase; onThemHoSo?: () => void }) {
+function CellVuAn({ c, tab, onThemHoSo }: { c: DonCase; tab?: TabId; onThemHoSo?: () => void }) {
   const hasGiaiQuyet = !!(c.thongBaoBoSung || c.ttvGiaiQuyet || c.tpGiaiQuyet);
+  const isChuaPhanCongTTV = !c.ttv || c.ttv === "Chưa phân công" || c.id % 2 === 1;
+  const isDaCoVuAn = tab === "da-co-vu-an" || c.daThuLy;
+
+  const ttvList = ["Phạm Thị Minh", "Nguyễn Văn A", "Lê Văn Hùng", "Trịnh Đức Minh", "Hoàng Văn Tuấn"];
+  const ttvText = c.ttv || ttvList[c.id % ttvList.length];
+
+  const ldvList = ["Trần Văn Bình (Phó Vụ trưởng)", "Nguyễn Thị Nga (Vụ trưởng)", "Lê Hoàng Nam (Phó Vụ trưởng)", "Phạm Đức Anh (Phó Vụ trưởng)"];
+  const ldvAssignedName = c.ldv || ldvList[c.id % ldvList.length];
+
+  const tpBac3List = ["Nguyễn Biên Thuỳ", "Trần Minh Đức", "Lê Văn Minh", "Chu Thị Thu Hiền", "Nguyễn Thị Hoa"];
+  const tpText = c.tpGiaiQuyet || c.thamPhan || tpBac3List[c.id % tpBac3List.length];
+
+  const daGiaoTHS = c.daGiaoTHS !== undefined ? c.daGiaoTHS : (c.id % 2 === 0);
+
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-      {(c.tenVuAn || c.ttv) && (
-        <div style={{ textAlign: "left" }}>
-          {c.tenVuAn && (
-            <span style={{ fontSize: 11, color: TEXT, fontFamily: F, lineHeight: 1.4, display: "block" }}>
-              Tên vụ án: {c.tenVuAn}
+      <div style={{ textAlign: "left" }}>
+        {c.tenVuAn && (
+          <span style={{ fontSize: 11, color: TEXT, fontFamily: F, lineHeight: 1.4, display: "block", marginBottom: 2 }}>
+            Tên vụ án: {c.tenVuAn}
+          </span>
+        )}
+
+        <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+          {ttvText && (
+            <span style={{ fontSize: 11, color: TEXT, fontFamily: F, display: "block" }}>
+              TTV: {ttvText}
             </span>
           )}
-          {c.ttv && (
+          {ldvAssignedName && (
             <span style={{ fontSize: 11, color: TEXT, fontFamily: F, display: "block" }}>
-              TTV: {c.ttv}
+              LĐV: {ldvAssignedName}
             </span>
+          )}
+          {isDaCoVuAn && (
+            <>
+              <span style={{ fontSize: 11, color: TEXT, fontFamily: F, display: "block" }}>
+                TP: {tpText}
+              </span>
+              <div style={{ marginTop: 2 }}>
+                {daGiaoTHS ? (
+                  <span
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: 3,
+                      padding: "2px 7px",
+                      background: "#dcfce7",
+                      border: "1px solid #86efac",
+                      borderRadius: 4,
+                      color: "#166534",
+                      fontSize: 10.5,
+                      fontWeight: 700,
+                      fontFamily: F,
+                    }}
+                    title="Đã giao tiểu hồ sơ"
+                  >
+                    ✓ Đã giao THS
+                  </span>
+                ) : (
+                  <span
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: 3,
+                      padding: "2px 7px",
+                      background: "#fff7ed",
+                      border: "1px solid #fed7aa",
+                      borderRadius: 4,
+                      color: "#c2410c",
+                      fontSize: 10.5,
+                      fontWeight: 700,
+                      fontFamily: F,
+                    }}
+                    title="Chưa giao tiểu hồ sơ"
+                  >
+                    ⏳ Chưa giao THS
+                  </span>
+                )}
+              </div>
+            </>
           )}
         </div>
-      )}
+      </div>
       {hasGiaiQuyet && (
         <div style={{
           marginTop: 2, padding: "6px 8px",
@@ -543,7 +611,7 @@ function CaseTable({
                 {tab === "cho-y-kien" ? (
                   <CellYKienLD c={c} />
                 ) : (
-                  <CellVuAn c={c} onThemHoSo={onThemHoSo} />
+                  <CellVuAn c={c} tab={tab} onThemHoSo={onThemHoSo} />
                 )}
               </td>
               {hasNhanTraCol && (
@@ -2144,7 +2212,7 @@ function TabToTrinh({ detail, userRole }: { detail?: VuAnDetailData; userRole?: 
                     {r.subRows.map((sub, si) => (
                       <tr key={"sub-" + realIdx + "-" + si} style={{ background: "#fafafa" }}>
                         <td style={{ ...TD, textAlign: "center", color: MUTED }} />
-                        <td colSpan={3} style={{ ...TD, paddingLeft: 28, fontSize: 11, color: MUTED }}>↳ {sub.label}</td>
+                        {/* <td colSpan={3} style={{ ...TD, paddingLeft: 28, fontSize: 11, color: MUTED }}>↳ {sub.label}</td> */}
                         <td style={{ ...TD, fontSize: 11, color: MUTED }} colSpan={3}>Ngày: {sub.ngayDuyet}</td>
                         <td style={TD}><Badge color="#065f46" bg="#d1fae5">Đã duyệt</Badge></td>
                         <td style={{ ...TD, textAlign: "center" }}>

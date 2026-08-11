@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import {
-  Search, Eye, ChevronDown, ChevronUp, RotateCcw, X, Save, Printer,
+  Search, Eye, ChevronDown, ChevronUp, ChevronRight, RotateCcw, X, Save, Printer,
   FileText, Send, Archive, RefreshCw, Download, Trash2,
 } from "lucide-react";
 import { type LoaiAn } from "./data";
@@ -809,8 +809,163 @@ export function QuickViewDanhSachDonModal({
   );
 }
 
+// ── Render Cell Trạng Thái (Cấp trình & Kết quả trả lời đơn của từng đơn) ─────
+export function renderCellTrangThaiDon(
+  row: VuAnRow,
+  group: VuAnGroup,
+  idxInGroup: number,
+  onQuickView?: () => void
+) {
+  const isTrinhPhoCA = row.kqgq === "trinh-pho-chanh-an";
+  const isTrinhTP = row.kqgq === "trinh-tham-phan" || (!isTrinhPhoCA && row.thamPhan);
+  const isChuaPhanCong = row.kqgq === "chua-phan-cong";
+
+  const capTrinhText = isChuaPhanCong
+    ? "Chưa phân công TTV"
+    : isTrinhPhoCA
+      ? "Phó Chánh án TANDTC"
+      : isTrinhTP
+        ? `Thẩm phán TANDTC (${row.thamPhan || "Nguyễn Biên Thuỳ"})`
+        : `Lãnh đạo Vụ (${row.lanhDao || "Nguyễn Thị Bình"})`;
+
+  const trangThaiToTrinhLabel = row.trangThaiToTrinh === "da-duyet"
+    ? "Đã duyệt"
+    : row.trangThaiToTrinh === "dang-trinh"
+      ? "Đang trình"
+      : row.trangThaiToTrinh === "bi-tra-lai"
+        ? "Bị trả lại"
+        : row.soToTrinh > 0
+          ? "Đã trình"
+          : "Chưa trình";
+
+  const trangThaiBadgeProps = row.trangThaiToTrinh === "da-duyet"
+    ? { color: "#065f46", bg: "#d1fae5" }
+    : row.trangThaiToTrinh === "dang-trinh"
+      ? { color: "#92400e", bg: "#fef3c7" }
+      : row.trangThaiToTrinh === "bi-tra-lai"
+        ? { color: "#991b1b", bg: "#fee2e2" }
+        : { color: "#4b5563", bg: "#f3f4f6" };
+
+  // Kết quả trả lời đơn của từng đơn
+  let kqComponent = null;
+
+  if (row.kqGiaiQuyet === "chua-co") {
+    kqComponent = (
+      <span style={{ fontSize: 11, color: "#6b7280", fontFamily: F }}>
+        Chưa có kết quả
+      </span>
+    );
+  } else {
+    const typeIdx = (idxInGroup + group.rows.indexOf(row)) % 4;
+
+    if (group.id === "VA26-003005-HS" || typeIdx === 0) {
+      kqComponent = (
+        <div style={{ display: "inline-flex", alignItems: "center", gap: 5, flexWrap: "wrap" }}>
+          <Badge color="#065f46" bg="#d1fae5">⚖ Kháng nghị</Badge>
+          <span style={{ fontSize: 10.5, color: "#111827", fontWeight: 600, fontFamily: F }}>
+            (Số: {102 + idxInGroup}/2026/QĐ-KN-HS)
+          </span>
+        </div>
+      );
+    } else if (typeIdx === 1) {
+      kqComponent = (
+        <div style={{ display: "inline-flex", alignItems: "center", gap: 5, flexWrap: "wrap" }}>
+          <Badge color="#1e40af" bg="#dbeafe">📩 Trả lời đơn</Badge>
+          <span style={{ fontSize: 10.5, color: "#111827", fontWeight: 600, fontFamily: F }}>
+            (Số: {45 + idxInGroup}/TB-TANDTC)
+          </span>
+        </div>
+      );
+    } else if (typeIdx === 2) {
+      kqComponent = (
+        <div style={{ display: "inline-flex", alignItems: "center", gap: 5, flexWrap: "wrap" }}>
+          <Badge color="#92400e" bg="#fef3c7">🏛 VKS đang giải quyết</Badge>
+          <span style={{ fontSize: 10.5, color: "#111827", fontWeight: 600, fontFamily: F }}>
+            (CV: {210 + idxInGroup}/CV-VKSTC)
+          </span>
+        </div>
+      );
+    } else {
+      kqComponent = (
+        <div style={{ display: "inline-flex", alignItems: "center", gap: 5, flexWrap: "wrap" }}>
+          <Badge color="#374151" bg="#f3f4f6">📁 Xếp đơn</Badge>
+          <span style={{ fontSize: 10.5, color: "#111827", fontWeight: 600, fontFamily: F }}>
+            (QĐ: {12 + idxInGroup}/QĐ-XD)
+          </span>
+        </div>
+      );
+    }
+  }
+
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 5, lineHeight: 1.35 }}>
+      {/* 1. Tờ trình & Cấp trình (cùng dòng) */}
+      <div style={{ display: "flex", alignItems: "center", gap: 5, flexWrap: "wrap" }}>
+        <span style={{ fontSize: 11, fontWeight: 700, color: "#1e293b", fontFamily: F }}>
+          Tờ trình:
+        </span>
+        <Badge color={trangThaiBadgeProps.color} bg={trangThaiBadgeProps.bg}>
+          {trangThaiToTrinhLabel}
+        </Badge>
+        {!isChuaPhanCong && capTrinhText && (
+          <span style={{ fontSize: 10.5, color: "#475569", fontFamily: F }}>
+            ({capTrinhText})
+          </span>
+        )}
+      </div>
+
+      {/* 2. Hồ sơ (cùng dòng) */}
+      <div style={{ display: "flex", alignItems: "center", gap: 5, flexWrap: "wrap", borderTop: `1px dashed #e5e7eb`, paddingTop: 4 }}>
+        <span style={{ fontSize: 11, fontWeight: 700, color: "#1e293b", fontFamily: F }}>
+          Hồ sơ:
+        </span>
+        {row.trangThaiHoSo === "chua-co" && <span style={{ fontSize: 11, color: "#6b7280", fontFamily: F }}>Chưa có hồ sơ</span>}
+        {row.trangThaiHoSo === "dang-muon" && <Badge color="#92400e" bg="#fef3c7">Đang mượn hồ sơ</Badge>}
+        {row.trangThaiHoSo === "da-co" && <Badge color="#065f46" bg="#d1fae5">Đã có hồ sơ</Badge>}
+        {row.trangThaiHoSo === "da-tra" && <Badge color="#1e40af" bg="#dbeafe">Đã trả hồ sơ</Badge>}
+        {row.trangThaiHoSo === "da-chuyen" && <Badge color="#6d28d9" bg="#ede9fe">Đã chuyển hồ sơ</Badge>}
+      </div>
+
+      {/* 3. Kết quả trả lời đơn (cùng dòng) */}
+      <div style={{ display: "flex", alignItems: "center", gap: 5, flexWrap: "wrap", borderTop: `1px dashed #e5e7eb`, paddingTop: 4 }}>
+        <span style={{ fontSize: 11, fontWeight: 700, color: "#1e293b", fontFamily: F }}>
+          Kết quả trả lời đơn:
+        </span>
+        {kqComponent}
+      </div>
+
+      {/* 4. Link xem danh sách đơn */}
+      {onQuickView && (
+        <div style={{ borderTop: `1px dashed #e5e7eb`, paddingTop: 4 }}>
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onQuickView();
+            }}
+            style={{
+              background: "none",
+              border: "none",
+              cursor: "pointer",
+              padding: 0,
+              fontSize: 10.5,
+              color: "#2563eb",
+              fontFamily: F,
+              textDecoration: "underline",
+              fontWeight: 600,
+              textAlign: "left",
+            }}
+            title="Xem toàn bộ danh sách đơn của vụ án"
+          >
+            📄 Danh sách đơn ({group.rows.length})
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ── Quản lý vụ án – Main View Component ───────────────────────────────────────
-export type VuAnTabId = "tat-ca" | "dang-giai-quyet" | "khang-nghi" | "vks-giai-quyet" | "tra-lai-don";
+export type VuAnTabId = "tat-ca" | "dang-giai-quyet" | "da-giai-quyet";
 export type ChiTietTab = "thong-tin" | "danh-sach-don" | "phan-cong" | "muon-tra-ho-so" | "to-trinh" | "giai-quyet-vb" | "tai-lieu" | "ho-so-luu-tru";
 
 export default function QuanLyVuAnView({
@@ -824,14 +979,36 @@ export default function QuanLyVuAnView({
 }) {
   const [activeTab, setActiveTab] = useState<VuAnTabId>("dang-giai-quyet");
   const [quickViewDonGroup, setQuickViewDonGroup] = useState<VuAnGroup | null>(null);
-  const filteredGroups = filterVuAnListByRole(VU_AN_LIST, userRole);
+  const [collapsedGroups, setCollapsedGroups] = useState<Record<string, boolean>>({});
+
+  const toggleGroupCollapse = (groupId: string) => {
+    setCollapsedGroups((prev) => ({ ...prev, [groupId]: !prev[groupId] }));
+  };
+
+  const isHinhSu = !userRole || userRole === "vu-1" || userRole === "hinh-su" || userRole === "toan-bo";
+
+  const roleGroups = filterVuAnListByRole(VU_AN_LIST, userRole);
+  const filteredGroups = roleGroups
+    .map((group) => {
+      if (activeTab === "tat-ca") return group;
+      if (activeTab === "dang-giai-quyet") {
+        const rows = group.rows.filter((r) => r.kqGiaiQuyet === "chua-co" || r.kqGiaiQuyet === "da-co-con-don" || !r.kqGiaiQuyet);
+        if (rows.length === 0) return null;
+        return { ...group, rows };
+      }
+      if (activeTab === "da-giai-quyet") {
+        const rows = group.rows.filter((r) => r.kqGiaiQuyet === "da-co");
+        if (rows.length === 0) return null;
+        return { ...group, rows };
+      }
+      return group;
+    })
+    .filter(Boolean) as VuAnGroup[];
 
   const tabs = [
     { id: "tat-ca", label: "Tất cả" },
     { id: "dang-giai-quyet", label: "Đang giải quyết" },
-    { id: "khang-nghi", label: "Kháng nghị" },
-    { id: "vks-giai-quyet", label: "VKS giải quyết" },
-    { id: "tra-lai-don", label: "Trả lại đơn" },
+    { id: "da-giai-quyet", label: "Đã giải quyết" },
   ];
 
   const paginBtn: React.CSSProperties = {
@@ -887,206 +1064,354 @@ export default function QuanLyVuAnView({
       {/* Table */}
       <div style={{ flex: 1, overflow: "auto" }}>
         <table style={{ width: "100%", borderCollapse: "collapse", tableLayout: "fixed" }}>
-          <colgroup>
-            <col style={{ width: 36 }} />
-            <col style={{ width: 36 }} />
-            <col style={{ width: "13%" }} />
-            <col style={{ width: "20%" }} />
-            <col style={{ width: "18%" }} />
-            <col style={{ width: "14%" }} />
-            <col style={{ width: "20%" }} />
-            <col style={{ width: 44 }} />
-          </colgroup>
-          <thead>
-            <tr>
-              <th style={TH_STYLE}><input type="checkbox" /></th>
-              <th style={TH_STYLE}>STT</th>
-              <th style={TH_STYLE}>SỐ & NGÀY THỤ LÝ</th>
-              <th style={TH_STYLE}>THÔNG TIN BẢN ÁN/QĐ & QHPL</th>
-              <th style={TH_STYLE}>ĐƯƠNG SỰ & NGƯỜI ĐỀ NGHỊ</th>
-              <th style={TH_STYLE}>PHÂN CÔNG</th>
-              <th style={TH_STYLE}>TRẠNG THÁI</th>
-              <th style={{ ...TH_STYLE, textAlign: "center" }}>THAO TÁC</th>
-            </tr>
-          </thead>
+          {isHinhSu ? (
+            <>
+              <colgroup>
+                <col style={{ width: 36 }} />
+                <col style={{ width: "19%" }} />
+                <col style={{ width: "21%" }} />
+                <col style={{ width: "19%" }} />
+                <col style={{ width: "15%" }} />
+                <col style={{ width: "19%" }} />
+                <col style={{ width: 44 }} />
+              </colgroup>
+              <thead>
+                <tr>
+                  <th style={TH_STYLE}><input type="checkbox" /></th>
+                  <th style={TH_STYLE}>THÔNG TIN ĐƠN & THỤ LÝ</th>
+                  <th style={TH_STYLE}>THÔNG TIN BẢN ÁN/QĐ & QHPL</th>
+                  <th style={TH_STYLE}>ĐƯƠNG SỰ & NGƯỜI ĐỀ NGHỊ</th>
+                  <th style={TH_STYLE}>PHÂN CÔNG</th>
+                  <th style={TH_STYLE}>TRẠNG THÁI</th>
+                  <th style={{ ...TH_STYLE, textAlign: "center" }}>THAO TÁC</th>
+                </tr>
+              </thead>
+            </>
+          ) : (
+            <>
+              <colgroup>
+                <col style={{ width: 36 }} />
+                <col style={{ width: 36 }} />
+                <col style={{ width: "14%" }} />
+                <col style={{ width: "20%" }} />
+                <col style={{ width: "18%" }} />
+                <col style={{ width: "14%" }} />
+                <col style={{ width: "20%" }} />
+                <col style={{ width: 44 }} />
+              </colgroup>
+              <thead>
+                <tr>
+                  <th style={TH_STYLE}><input type="checkbox" /></th>
+                  <th style={TH_STYLE}>STT</th>
+                  <th style={TH_STYLE}>SỐ & NGÀY THỤ LÝ</th>
+                  <th style={TH_STYLE}>THÔNG TIN BẢN ÁN/QĐ & QHPL</th>
+                  <th style={TH_STYLE}>ĐƯƠNG SỰ & NGƯỜI ĐỀ NGHỊ</th>
+                  <th style={TH_STYLE}>PHÂN CÔNG</th>
+                  <th style={TH_STYLE}>TRẠNG THÁI</th>
+                  <th style={{ ...TH_STYLE, textAlign: "center" }}>THAO TÁC</th>
+                </tr>
+              </thead>
+            </>
+          )}
           <tbody>
-            {filteredGroups.flatMap((group) =>
-              group.rows.map((row, idx) => {
-                const effectiveLoaiAn = row.loaiAn || group.loaiAn || "Hình sự";
-                const { label1, label2 } = getPartyLabels(effectiveLoaiAn, userRole);
-                const rowKey = `${group.id}-${row.stt}`;
-                const globalIdx = filteredGroups.indexOf(group) * group.rows.length + idx;
+            {isHinhSu
+              ? filteredGroups.map((group, groupIdx) => {
+                const isCollapsed = collapsedGroups[group.id];
                 return (
-                  <tr
-                    key={rowKey}
-                    style={{ background: globalIdx % 2 === 0 ? "#fff" : "#fafafa" }}
-                    onMouseEnter={(e) => (e.currentTarget.style.background = "#f0f9ff")}
-                    onMouseLeave={(e) => (e.currentTarget.style.background = globalIdx % 2 === 0 ? "#fff" : "#fafafa")}
-                  >
-                    <td style={{ ...TD_STYLE, textAlign: "center" }}>
-                      <input type="checkbox" />
-                    </td>
-                    <td style={{ ...TD_STYLE, textAlign: "center", color: MUTED, fontSize: 12, fontFamily: F }}>
-                      {globalIdx + 1}
-                    </td>
-                    <td style={TD_STYLE}>
-                      <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
-                        <span style={{ fontSize: 11, color: TEXT, fontFamily: F }}>
-                          Số: <b>{row.soThuLy}</b>
-                        </span>
-                        <span style={{ fontSize: 11, color: MUTED, fontFamily: F }}>Ngày TL: {row.ngayThuLy}</span>
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setQuickViewDonGroup(group);
-                          }}
-                          style={{
-                            background: "none",
-                            border: "none",
-                            cursor: "pointer",
-                            padding: 0,
-                            fontSize: 11,
-                            color: "#2563eb",
-                            fontFamily: F,
-                            textDecoration: "underline",
-                            textAlign: "left",
-                            fontWeight: 600,
-                          }}
-                          title="Xem nhanh danh sách đơn và thông tin trình"
+                  <React.Fragment key={group.id}>
+                    {/* Header Vụ án (Level 1: Dòng Mã Vụ Án hồng nhạt tinh gọn) */}
+                    <tr
+                      style={{
+                        background: "#fef2f2",
+                        borderTop: `1px solid #fecdd3`,
+                        borderBottom: `1px solid #fecdd3`,
+                      }}
+                    >
+                      <td style={{ ...TD_STYLE, textAlign: "center", background: "#fef2f2", padding: "4px 8px" }}>
+                        <input type="checkbox" style={{ cursor: "pointer" }} />
+                      </td>
+                      <td colSpan={6} style={{ ...TD_STYLE, background: "#fef2f2", padding: "5px 10px" }}>
+                        <div
+                          style={{ display: "flex", alignItems: "center", gap: 8, cursor: "pointer", userSelect: "none" }}
+                          onClick={() => toggleGroupCollapse(group.id)}
                         >
-                          Số đơn {group.rows.length}
-                        </button>
-
-                      </div>
-                    </td>
-                    <td style={TD_STYLE}>
-                      <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
-                        <span style={{ fontSize: 11, fontFamily: F }}>
-                          <span style={{ color: TEXT }}>Số BA: </span>
-                          <span style={{ color: "#2563eb", fontWeight: 600 }}>{formatSoBA(row.soBA, effectiveLoaiAn)}</span>
-                          {row.ngayBA && (
-                            <>
-                              <span style={{ color: TEXT }}> Ngày: </span>
-                              <span style={{ color: "#2563eb" }}>{row.ngayBA}</span>
-                            </>
-                          )}
-                        </span>
-                        <span style={{ fontSize: 11, color: TEXT, fontFamily: F }}>
-                          <span style={{ color: TEXT }}>Tại: </span>{row.toa}
-                        </span>
-                        {row.thoiHieu && (
-                          <span style={{ fontSize: 11, color: TEXT, fontFamily: F }}>
-                            <span style={{ color: TEXT }}>Thời hiệu: </span>
-                            <span style={{ color: row.thoiHieu === "Không xác định thời hiệu" || row.thoiHieu === "Không có thời hiệu giải quyết" ? "#047857" : "#c2410c", fontWeight: 600 }}>
-                              {row.thoiHieu}
-                            </span>
+                          {isCollapsed ? <ChevronRight size={14} color="#2563eb" /> : <ChevronDown size={14} color="#2563eb" />}
+                          <span style={{ fontSize: 12, fontWeight: 700, color: "#1e293b", fontFamily: F }}>
+                            {groupIdx + 1}.
                           </span>
-                        )}
-                        {isVu234(userRole, row.loaiAn) && (
-                          <span style={{ fontSize: 11, color: "#047857", fontFamily: F, fontWeight: 500 }}>
-                            <span style={{ color: TEXT, fontWeight: 400 }}>QHPL: </span>{getQuanHePhapLuat(row)}
+                          <span style={{ fontSize: 12, fontWeight: 700, color: "#2563eb", fontFamily: F }}>
+                            {group.maSo || group.id}
                           </span>
-                        )}
-                        <div style={{ display: "flex", gap: 4, flexWrap: "wrap", marginTop: 2 }}>
-                          {row.anLoai === "chi-dao" && <Badge color="#92400e" bg="#fef3c7">Án chỉ đạo</Badge>}
-                          {row.anLoai === "quoc-hoi" && <Badge color="#3730a3" bg="#e0e7ff">Án Quốc hội</Badge>}
-                          {row.anLoai === "tvtn" && <Badge color="#065f46" bg="#d1fae5">Án TVTN</Badge>}
-                          {row.anLoai === "tu-hinh" && <Badge color="#991b1b" bg="#fee2e2">Án tử hình</Badge>}
+                          <span style={{ fontSize: 12, fontWeight: 600, color: "#1e293b", fontFamily: F }}>
+                            – {group.tenVuAn}
+                          </span>
                         </div>
-                      </div>
-                    </td>
-                    <td style={TD_STYLE}>
-                      <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
-                        <span style={{ fontSize: 11, fontFamily: F }}>
-                          <span style={{ color: TEXT, fontWeight: 600 }}>{label1}:</span>{" "}
-                          <span style={{ fontWeight: 600, color: TEXT }}>{row.nkn}</span>
-                        </span>
-                        {row.biCao && (
-                          <span style={{ fontSize: 11, fontFamily: F }}>
-                            <span style={{ color: TEXT, fontWeight: 600 }}>{label2}:</span>{" "}
-                            <span style={{ fontWeight: 600, color: TEXT }}>{row.biCao}</span>
-                          </span>
-                        )}
-                        {row.ndd && (
-                          <span style={{ fontSize: 11, fontFamily: F }}>
-                            <span style={{ color: TEXT, fontWeight: 600 }}>NĐĐ:</span>{" "}
-                            <span style={{ color: TEXT }}>{row.ndd}</span>
-                          </span>
-                        )}
-                      </div>
-                    </td>
-                    <td style={TD_STYLE}>
-                      <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
-                        {row.kqgq !== "chua-phan-cong" && (
-                          <span style={{ fontSize: 11, fontFamily: F }}>
-                            <span style={{ color: MUTED }}>TTV: </span>{row.ttv}
-                          </span>
-                        )}
-                        <span style={{ fontSize: 11, fontFamily: F }}>
-                          <span style={{ color: MUTED }}>TP: </span>
-                          {row.thamPhan || "–"}
-                        </span>
-                        {row.kqgq !== "chua-phan-cong" && (
-                          <span style={{ fontSize: 11, fontFamily: F }}>
-                            <span style={{ color: MUTED }}>LĐ: </span>{row.lanhDao}
-                          </span>
-                        )}
-                      </div>
-                    </td>
-                    <td style={TD_STYLE}>
-                      <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-                        {row.kqgq === "chua-phan-cong"
-                          ? <Badge color="#374151" bg="#f3f4f6">Chưa phân công TTV</Badge>
-                          : row.kqgq === "trinh-tham-phan"
-                            ? <Badge color="#0f766e" bg="#ccfbf1">Trình Thẩm phán</Badge>
-                            : <Badge color="#1e40af" bg="#dbeafe">Trình Phó Chánh án</Badge>}
+                      </td>
+                    </tr>
 
-                        <div style={{ display: "flex", flexDirection: "column", gap: 2, borderTop: `1px dashed #e5e7eb`, paddingTop: 4 }}>
-                          <span style={{ fontSize: 10, color: MUTED, fontFamily: F, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.04em" }}>Hồ sơ</span>
-                          {row.trangThaiHoSo === "chua-co" && (
-                            <span style={{ fontSize: 11, color: "#6b7280", fontFamily: F }}>Chưa có hồ sơ</span>
-                          )}
-                          {row.trangThaiHoSo === "dang-muon" && (
-                            <Badge color="#92400e" bg="#fef3c7">Đang mượn hồ sơ</Badge>
-                          )}
-                          {row.trangThaiHoSo === "da-co" && (
-                            <Badge color="#065f46" bg="#d1fae5">Đã có hồ sơ</Badge>
-                          )}
-                          {row.trangThaiHoSo === "da-tra" && (
-                            <Badge color="#1e40af" bg="#dbeafe">Đã trả hồ sơ</Badge>
-                          )}
-                          {row.trangThaiHoSo === "da-chuyen" && (
-                            <Badge color="#6d28d9" bg="#ede9fe">Đã chuyển hồ sơ</Badge>
-                          )}
-                        </div>
+                    {/* Danh sách các đơn thuộc Vụ án (1 dòng = 1 đơn) */}
+                    {!isCollapsed &&
+                      group.rows.map((row, idx) => {
+                        const effectiveLoaiAn = row.loaiAn || group.loaiAn || "Hình sự";
+                        const { label1, label2 } = getPartyLabels(effectiveLoaiAn, userRole);
+                        const rowKey = `${group.id}-${row.stt}-${idx}`;
+                        const isFirst = idx === 0;
+                        const totalRows = group.rows.length;
 
-                        <div style={{ display: "flex", flexDirection: "column", gap: 2, borderTop: `1px dashed #e5e7eb`, paddingTop: 4 }}>
-                          <span style={{ fontSize: 10, color: MUTED, fontFamily: F, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.04em" }}>Kết quả GQ</span>
-                          {row.kqGiaiQuyet === "chua-co" && (
-                            <span style={{ fontSize: 11, color: "#6b7280", fontFamily: F }}>Chưa có kết quả</span>
-                          )}
-                          {row.kqGiaiQuyet === "da-co" && (
-                            <Badge color="#065f46" bg="#d1fae5">Đã có kết quả</Badge>
-                          )}
-                          {row.kqGiaiQuyet === "da-co-con-don" && (
-                            <Badge color="#92400e" bg="#fef3c7">Đã có KQ – còn đơn TLM</Badge>
-                          )}
-                        </div>
-                      </div>
-                    </td>
-                    <td style={{ ...TD_STYLE, textAlign: "center" }}>
-                      <button
-                        onClick={() => onSelectVuAn(group.id)}
-                        style={{ background: "none", border: "none", cursor: "pointer", padding: 4, borderRadius: 4, fontSize: 18, color: MUTED, lineHeight: 1 }}
-                        title="Tùy chọn"
-                      >
-                        ⋮
-                      </button>
-                    </td>
-                  </tr>
+                        return (
+                          <tr
+                            key={rowKey}
+                            style={{ background: "#ffffff" }}
+                            onMouseEnter={(e) => (e.currentTarget.style.background = "#f0f9ff")}
+                            onMouseLeave={(e) => (e.currentTarget.style.background = "#ffffff")}
+                          >
+                            <td style={{ ...TD_STYLE, textAlign: "center", padding: "4px 8px" }}>
+                              <input type="checkbox" style={{ cursor: "pointer" }} />
+                            </td>
+
+                            {/* Cột gộp chung: STT, THÔNG TIN ĐƠN & THỤ LÝ */}
+                            <td style={{ ...TD_STYLE, padding: "5px 8px", lineHeight: 1.35 }}>
+                              <div style={{ display: "flex", gap: 6 }}>
+                                {/* <span style={{ color: "#94a3b8", fontSize: 11, fontFamily: F, marginTop: 1 }}>↳</span> */}
+                                <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+                                  <span style={{ fontSize: 11, color: TEXT, fontFamily: F }}>
+                                    Số TL: <b style={{ color: "#0f172a" }}>{row.soThuLy}</b>
+                                  </span>
+                                  <span style={{ fontSize: 10.5, color: MUTED, fontFamily: F }}>
+                                    Ngày TL: {row.ngayThuLy}
+                                  </span>
+                                  <span style={{ fontSize: 10.5, color: "#64748b", fontFamily: F }}>
+                                    Ngày đơn: {row.ngayThuLy}
+                                  </span>
+                                </div>
+                              </div>
+                            </td>
+
+                            {/* 3 Cột chung (Thông tin bản án, Đương sự, Phân công) gộp ô theo rowSpan */}
+                            {isFirst && (
+                              <>
+                                {/* Cột 2: Thông tin Bản án / QĐ & QHPL */}
+                                <td rowSpan={totalRows} style={{ ...TD_STYLE, verticalAlign: "middle", background: "#ffffff", padding: "6px 10px", lineHeight: 1.35 }}>
+                                  <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
+                                    <span style={{ fontSize: 11, fontFamily: F }}>
+                                      <span style={{ color: TEXT }}>Số BA: </span>
+                                      <span style={{ color: "#2563eb", fontWeight: 600 }}>{formatSoBA(row.soBA, effectiveLoaiAn)}</span>
+                                      {row.ngayBA && (
+                                        <>
+                                          <span style={{ color: TEXT }}> Ngày: </span>
+                                          <span style={{ color: "#2563eb" }}>{row.ngayBA}</span>
+                                        </>
+                                      )}
+                                    </span>
+                                    <span style={{ fontSize: 11, color: TEXT, fontFamily: F }}>
+                                      <span style={{ color: TEXT }}>Tại: </span>{row.toa}
+                                    </span>
+                                    {/* <div style={{ display: "inline-block", background: "#fef9c3", border: "1px solid #fef08a", borderRadius: 3, padding: "0px 6px", width: "fit-content", fontSize: 10.5, color: "#854d0e", fontWeight: 600 }}>
+                                      Cấp xét xử: {row.capXetXu || "Tái thẩm"}
+                                    </div> */}
+                                  </div>
+                                </td>
+
+                                {/* Cột 3: Đương sự & Người đứng đơn */}
+                                <td rowSpan={totalRows} style={{ ...TD_STYLE, verticalAlign: "middle", background: "#ffffff", padding: "6px 10px", lineHeight: 1.35 }}>
+                                  <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+                                    {row.nkn && (
+                                      <span style={{ fontSize: 11, fontFamily: F }}>
+                                        <span style={{ color: TEXT, fontWeight: 500 }}>{label1}:</span>{" "}
+                                        <span style={{ fontWeight: 600, color: TEXT }}>{row.nkn}</span>
+                                      </span>
+                                    )}
+                                    {row.biCao && (
+                                      <span style={{ fontSize: 11, fontFamily: F }}>
+                                        <span style={{ color: TEXT, fontWeight: 500 }}>{label2}:</span>{" "}
+                                        <span style={{ fontWeight: 600, color: TEXT }}>{row.biCao}</span>
+                                      </span>
+                                    )}
+                                    {row.ndd && (
+                                      <span style={{ fontSize: 11, fontFamily: F }}>
+                                        <span style={{ color: TEXT, fontWeight: 500 }}>NĐĐ:</span>{" "}
+                                        <span style={{ color: TEXT }}>{row.ndd}</span>
+                                      </span>
+                                    )}
+                                  </div>
+                                </td>
+
+                                {/* Cột 4: Phân công */}
+                                <td rowSpan={totalRows} style={{ ...TD_STYLE, verticalAlign: "middle", background: "#ffffff", padding: "6px 10px", lineHeight: 1.35 }}>
+                                  <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+                                    <span style={{ fontSize: 11, fontFamily: F }}>
+                                      <span style={{ color: MUTED }}>TTV: </span>
+                                      <span style={{ fontWeight: 600, color: TEXT }}>{row.ttv}</span>
+                                    </span>
+                                    <span style={{ fontSize: 11, fontFamily: F }}>
+                                      <span style={{ color: MUTED }}>LĐ: </span>
+                                      <span style={{ color: TEXT }}>{row.lanhDao}</span>
+                                    </span>
+                                  </div>
+                                </td>
+                              </>
+                            )}
+
+                            {/* Cột 5: Trạng thái (Tờ trình & Kết quả trả lời đơn) */}
+                            <td style={{ ...TD_STYLE, padding: "6px 8px", verticalAlign: "top" }}>
+                              {renderCellTrangThaiDon(row, group, idx, () => setQuickViewDonGroup(group))}
+                            </td>
+
+                            {/* Cột 6: Thao tác */}
+                            <td style={{ ...TD_STYLE, textAlign: "center", padding: "5px 8px" }}>
+                              <button
+                                onClick={() => onSelectVuAn(group.id)}
+                                style={{ background: "none", border: "none", cursor: "pointer", padding: 3, borderRadius: 4 }}
+                                title="Xem chi tiết"
+                              >
+                                <Eye size={14} color="#6b7280" />
+                              </button>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                  </React.Fragment>
                 );
               })
-            )}
+              : filteredGroups.flatMap((group) =>
+                group.rows.map((row, idx) => {
+                  const effectiveLoaiAn = row.loaiAn || group.loaiAn || "Dân sự";
+                  const { label1, label2 } = getPartyLabels(effectiveLoaiAn, userRole);
+                  const rowKey = `${group.id}-${row.stt}-${idx}`;
+                  const globalIdx = filteredGroups.indexOf(group) * group.rows.length + idx;
+                  return (
+                    <tr
+                      key={rowKey}
+                      style={{ background: globalIdx % 2 === 0 ? "#fff" : "#fafafa" }}
+                      onMouseEnter={(e) => (e.currentTarget.style.background = "#f0f9ff")}
+                      onMouseLeave={(e) => (e.currentTarget.style.background = globalIdx % 2 === 0 ? "#fff" : "#fafafa")}
+                    >
+                      <td style={{ ...TD_STYLE, textAlign: "center" }}>
+                        <input type="checkbox" />
+                      </td>
+                      <td style={{ ...TD_STYLE, textAlign: "center", color: MUTED, fontSize: 12, fontFamily: F }}>
+                        {globalIdx + 1}
+                      </td>
+                      <td style={TD_STYLE}>
+                        <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
+                          <span style={{ fontSize: 11, color: TEXT, fontFamily: F }}>
+                            Số: <b>{row.soThuLy}</b>
+                          </span>
+                          <span style={{ fontSize: 11, color: MUTED, fontFamily: F }}>Ngày TL: {row.ngayThuLy}</span>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setQuickViewDonGroup(group);
+                            }}
+                            style={{
+                              background: "none",
+                              border: "none",
+                              cursor: "pointer",
+                              padding: 0,
+                              fontSize: 11,
+                              color: "#2563eb",
+                              fontFamily: F,
+                              textDecoration: "underline",
+                              textAlign: "left",
+                              fontWeight: 600,
+                            }}
+                            title="Xem nhanh danh sách đơn và thông tin trình"
+                          >
+                            Số đơn {group.rows.length}
+                          </button>
+                        </div>
+                      </td>
+                      <td style={TD_STYLE}>
+                        <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
+                          <span style={{ fontSize: 11, fontFamily: F }}>
+                            <span style={{ color: TEXT }}>Số BA: </span>
+                            <span style={{ color: "#2563eb", fontWeight: 600 }}>{formatSoBA(row.soBA, effectiveLoaiAn)}</span>
+                            {row.ngayBA && (
+                              <>
+                                <span style={{ color: TEXT }}> Ngày: </span>
+                                <span style={{ color: "#2563eb" }}>{row.ngayBA}</span>
+                              </>
+                            )}
+                          </span>
+                          <span style={{ fontSize: 11, color: TEXT, fontFamily: F }}>
+                            <span style={{ color: TEXT }}>Tại: </span>{row.toa}
+                          </span>
+                          {row.thoiHieu && (
+                            <span style={{ fontSize: 11, color: TEXT, fontFamily: F }}>
+                              <span style={{ color: TEXT }}>Thời hiệu: </span>
+                              <span style={{ color: row.thoiHieu === "Không xác định thời hiệu" || row.thoiHieu === "Không có thời hiệu giải quyết" ? "#047857" : "#c2410c", fontWeight: 600 }}>
+                                {row.thoiHieu}
+                              </span>
+                            </span>
+                          )}
+                          {isVu234(userRole, row.loaiAn) && (
+                            <span style={{ fontSize: 11, color: "#047857", fontFamily: F, fontWeight: 500 }}>
+                              <span style={{ color: TEXT, fontWeight: 400 }}>QHPL: </span>{getQuanHePhapLuat(row)}
+                            </span>
+                          )}
+                          <div style={{ display: "flex", gap: 4, flexWrap: "wrap", marginTop: 2 }}>
+                            {row.anLoai === "chi-dao" && <Badge color="#92400e" bg="#fef3c7">Án chỉ đạo</Badge>}
+                            {row.anLoai === "quoc-hoi" && <Badge color="#3730a3" bg="#e0e7ff">Án Quốc hội</Badge>}
+                            {row.anLoai === "tvtn" && <Badge color="#065f46" bg="#d1fae5">Án TVTN</Badge>}
+                            {row.anLoai === "tu-hinh" && <Badge color="#991b1b" bg="#fee2e2">Án tử hình</Badge>}
+                          </div>
+                        </div>
+                      </td>
+                      <td style={TD_STYLE}>
+                        <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
+                          <span style={{ fontSize: 11, fontFamily: F }}>
+                            <span style={{ color: TEXT, fontWeight: 600 }}>{label1}:</span>{" "}
+                            <span style={{ fontWeight: 600, color: TEXT }}>{row.nkn}</span>
+                          </span>
+                          {row.biCao && (
+                            <span style={{ fontSize: 11, fontFamily: F }}>
+                              <span style={{ color: TEXT, fontWeight: 600 }}>{label2}:</span>{" "}
+                              <span style={{ fontWeight: 600, color: TEXT }}>{row.biCao}</span>
+                            </span>
+                          )}
+                          {row.ndd && (
+                            <span style={{ fontSize: 11, fontFamily: F }}>
+                              <span style={{ color: TEXT, fontWeight: 600 }}>NĐĐ:</span>{" "}
+                              <span style={{ color: TEXT }}>{row.ndd}</span>
+                            </span>
+                          )}
+                        </div>
+                      </td>
+                      <td style={TD_STYLE}>
+                        <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+                          {row.kqgq !== "chua-phan-cong" && (
+                            <span style={{ fontSize: 11, fontFamily: F }}>
+                              <span style={{ color: MUTED }}>TTV: </span>{row.ttv}
+                            </span>
+                          )}
+                          <span style={{ fontSize: 11, fontFamily: F }}>
+                            <span style={{ color: MUTED }}>TP: </span>
+                            {row.thamPhan || "–"}
+                          </span>
+                          {row.kqgq !== "chua-phan-cong" && (
+                            <span style={{ fontSize: 11, fontFamily: F }}>
+                              <span style={{ color: MUTED }}>LĐ: </span>{row.lanhDao}
+                            </span>
+                          )}
+                        </div>
+                      </td>
+                      {/* Cột Trạng thái (Tờ trình & Kết quả trả lời đơn) */}
+                      <td style={{ ...TD_STYLE, padding: "6px 8px", verticalAlign: "top" }}>
+                        {renderCellTrangThaiDon(row, group, idx, () => setQuickViewDonGroup(group))}
+                      </td>
+                      <td style={{ ...TD_STYLE, textAlign: "center" }}>
+                        <button
+                          onClick={() => onSelectVuAn(group.id)}
+                          style={{ background: "none", border: "none", cursor: "pointer", padding: 4, borderRadius: 4, fontSize: 18, color: MUTED, lineHeight: 1 }}
+                          title="Tùy chọn"
+                        >
+                          ⋮
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })
+              )}
           </tbody>
         </table>
 

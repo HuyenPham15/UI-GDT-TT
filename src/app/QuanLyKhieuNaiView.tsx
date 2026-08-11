@@ -56,7 +56,23 @@ export function QuanLyKhieuNaiView({
   const [activeTab, setActiveTab] = useState<KhieuNaiTabId>("dang-giai-quyet");
   const [quickViewDonGroup, setQuickViewDonGroup] = useState<VuAnGroup | null>(null);
 
-  const filteredGroups = filterVuAnListByRole(KHIEU_NAI_LIST, userRole);
+  const roleGroups = filterVuAnListByRole(KHIEU_NAI_LIST, userRole);
+  const filteredGroups = roleGroups
+    .map((group) => {
+      if (activeTab === "tat-ca") return group;
+      if (activeTab === "dang-giai-quyet") {
+        const rows = group.rows.filter((r) => r.kqGiaiQuyet === "chua-co" || r.kqGiaiQuyet === "da-co-con-don" || !r.kqGiaiQuyet);
+        if (rows.length === 0) return null;
+        return { ...group, rows };
+      }
+      if (activeTab === "da-giai-quyet") {
+        const rows = group.rows.filter((r) => r.kqGiaiQuyet === "da-co");
+        if (rows.length === 0) return null;
+        return { ...group, rows };
+      }
+      return group;
+    })
+    .filter(Boolean) as VuAnGroup[];
 
   const tabs: { id: KhieuNaiTabId; label: string }[] = [
     { id: "tat-ca", label: "Tất cả" },

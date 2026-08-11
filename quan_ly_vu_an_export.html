@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quản lý vụ án - Export for Figma</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f8fafc; color: #1e293b; font-size: 12px; }
+    
+    /* Layout Header & Breadcrumb */
+    .breadcrumb { padding: 8px 20px; border-bottom: 1px solid #e2e8f0; font-size: 12px; color: #64748b; background: #fff; }
+    .header-bar { background: #fff; padding: 14px 20px 10px; border-bottom: 1px solid #e2e8f0; }
+    .header-title { font-size: 20px; font-weight: 700; color: #0f172a; margin-bottom: 10px; }
+    .tabs-container { display: flex; gap: 8px; border-bottom: 1px solid #e2e8f0; }
+    .tab-btn { padding: 8px 16px; font-size: 13px; font-weight: 600; background: none; border: none; cursor: pointer; color: #dc2626; border-bottom: 2px solid #dc2626; }
+    
+    /* Filter Panel Grid 4 Columns */
+    .filter-panel { background: #ffffff; border-bottom: 1px solid #e2e8f0; padding: 12px 20px; display: flex; flex-direction: column; gap: 10px; }
+    .filter-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px 14px; }
+    .field-group { display: flex; flex-direction: column; gap: 3px; }
+    .field-label { font-size: 11px; font-weight: 600; color: #475569; }
+    .field-input, .field-select { width: 100%; padding: 5px 8px; font-size: 12px; border: 1px solid #cbd5e1; border-radius: 4px; color: #0f172a; outline: none; background: #fff; }
+    
+    /* Date Range Field */
+    .date-range-box { display: flex; align-items: center; gap: 4px; }
+    .date-range-sep { color: #64748b; font-size: 11px; }
+
+    /* Action buttons */
+    .actions-bar { display: flex; align-items: center; justify-content: space-between; padding-top: 4px; }
+    .btn-search { display: inline-flex; items-center: center; gap: 6px; padding: 6px 20px; background: #dc2626; color: #fff; border: none; border-radius: 4px; font-weight: 600; font-size: 12px; cursor: pointer; }
+    .btn-reset { display: inline-flex; items-center: center; gap: 6px; padding: 6px 14px; background: #fff; color: #0f172a; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 12px; cursor: pointer; }
+    
+    /* Table Styling */
+    .table-container { padding: 0; overflow-x: auto; background: #fff; }
+    table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+    th { background: #f8fafc; border-bottom: 1px solid #e2e8f0; border-right: 1px solid #f1f5f9; padding: 8px 10px; font-size: 11px; font-weight: 700; color: #475569; text-align: left; text-transform: uppercase; }
+    td { border-bottom: 1px solid #e2e8f0; border-right: 1px solid #f1f5f9; padding: 5px 8px; font-size: 11px; color: #0f172a; vertical-align: middle; }
+    
+    /* Case Group Row (Pink) */
+    .row-case-header { background-color: #fef2f2; border-top: 1px solid #fecdd3; border-bottom: 1px solid #fecdd3; }
+    .case-title-link { color: #2563eb; font-weight: 700; text-decoration: none; }
+    .case-title-text { color: #1e293b; font-weight: 600; }
+    
+    /* Badges */
+    .badge { display: inline-block; padding: 1px 6px; border-radius: 3px; font-size: 10.5px; font-weight: 600; }
+    .badge-yellow { background: #fef9c3; border: 1px solid #fef08a; color: #854d0e; }
+    .badge-green { background: #d1fae5; color: #065f46; }
+    .badge-blue { background: #dbeafe; color: #1e40af; }
+    .btn-link { background: none; border: none; color: #2563eb; text-decoration: underline; font-weight: 600; cursor: pointer; font-size: 11px; }
+  </style>
+</head>
+<body>
+
+  <!-- Breadcrumb -->
+  <div class="breadcrumb">
+    Trang chủ › Quản lý án GĐT/TT › Quản lý vụ án
+  </div>
+
+  <!-- Header Bar -->
+  <div class="header-bar">
+    <h2 class="header-title">Quản lý vụ án</h2>
+    <div class="tabs-container">
+      <button class="tab-btn">Đang giải quyết (3)</button>
+    </div>
+  </div>
+
+  <!-- Filter Panel -->
+  <div class="filter-panel">
+    <div class="filter-grid">
+      <div class="field-group">
+        <label class="field-label">Loại án</label>
+        <select class="field-select"><option>Hình sự</option></select>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Tòa ra BA/QĐ</label>
+        <select class="field-select"><option>Tòa án nhân dân tối cao</option></select>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Số BA/QĐ</label>
+        <input class="field-input" placeholder="Nhập số BA/QĐ" value="12/2026/HS-ST">
+      </div>
+      <div class="field-group">
+        <label class="field-label">Ngày BA/QĐ</label>
+        <input class="field-input" placeholder="dd/mm/yyyy" value="15/05/2026">
+      </div>
+      <div class="field-group">
+        <label class="field-label">Bị cáo / Đương sự</label>
+        <input class="field-input" placeholder="Nhập tên bị cáo/đương sự" value="Đặng Thị Dương">
+      </div>
+      <div class="field-group">
+        <label class="field-label">Số thụ lý</label>
+        <input class="field-input" placeholder="Nhập số thụ lý" value="5:44682424">
+      </div>
+      <div class="field-group">
+        <label class="field-label">Lãnh đạo phụ trách</label>
+        <select class="field-select"><option>Phạm Thị Bích Ngọc - Phó Vụ trưởng</option></select>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Cán bộ giải quyết</label>
+        <select class="field-select"><option>Nguyễn Thị Thúy Hường</option></select>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="actions-bar">
+      <span style="color: #2563eb; font-weight: 600; font-size: 12px; cursor: pointer;">▾ Mở rộng bộ lọc nâng cao</span>
+      <div style="display: flex; gap: 10px;">
+        <button class="btn-search">🔍 Tìm kiếm</button>
+        <button class="btn-reset">🔄 Xóa bộ lọc</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Table Container -->
+  <div class="table-container">
+    <table>
+      <colgroup>
+        <col style="width: 36px;">
+        <col style="width: 19%;">
+        <col style="width: 21%;">
+        <col style="width: 19%;">
+        <col style="width: 15%;">
+        <col style="width: 19%;">
+        <col style="width: 44px;">
+      </colgroup>
+      <thead>
+        <tr>
+          <th><input type="checkbox"></th>
+          <th>THÔNG TIN ĐƠN & THỤ LÝ</th>
+          <th>THÔNG TIN BẢN ÁN/QĐ & QHPL</th>
+          <th>ĐƯƠNG SỰ & NGƯỜI ĐỀ NGHỊ</th>
+          <th>PHÂN CÔNG</th>
+          <th>TRẠNG THÁI</th>
+          <th style="text-align: center;">THAO TÁC</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Group Header 1 -->
+        <tr class="row-case-header">
+          <td style="text-align: center;"><input type="checkbox"></td>
+          <td colspan="6" style="padding: 6px 10px;">
+            ▼ <span style="font-weight: 700;">1.</span>
+            <span class="case-title-link">VA26-002621</span>
+            <span class="case-title-text">– Vụ án Đặng Thị Dương – Tội cố ý gây thương tích</span>
+          </td>
+        </tr>
+        <!-- Sub-row 1 -->
+        <tr>
+          <td style="text-align: center;"><input type="checkbox"></td>
+          <td>
+            <div style="font-weight: 600;">Số TL: <span style="color: #0f172a;">5:44682424</span></div>
+            <div style="color: #64748b;">Ngày TL: 20/07/2026</div>
+            <div style="color: #64748b;">Ngày đơn: 20/07/2026</div>
+          </td>
+          <td rowspan="1" style="vertical-align: middle;">
+            <div>Số BA: <span style="color: #2563eb; font-weight: 600;">12/2026/HS-ST</span> Ngày: 15/05/2026</div>
+            <div>Tại: TAND tỉnh Bắc Ninh</div>
+          </td>
+          <td rowspan="1" style="vertical-align: middle;">
+            <div><b>Bị cáo:</b> Đặng Thị Dương</div>
+            <div><b>NĐĐ:</b> Nguyễn Văn A</div>
+          </td>
+          <td rowspan="1" style="vertical-align: middle;">
+            <div>TTV: <b>Nguyễn Thị Thúy Hường</b></div>
+            <div>LĐ: Phạm Thị Bích Ngọc</div>
+          </td>
+          <td>
+            <button class="btn-link">📄 1 tờ trình</button>
+          </td>
+          <td style="text-align: center;">👁</td>
+        </tr>
+
+        <!-- Group Header 2 -->
+        <tr class="row-case-header">
+          <td style="text-align: center;"><input type="checkbox"></td>
+          <td colspan="6" style="padding: 6px 10px;">
+            ▼ <span style="font-weight: 700;">2.</span>
+            <span class="case-title-link">VA26-002138</span>
+            <span class="case-title-text">– Vụ án Hoàng Hoa Tham – Tội vi phạm quy định về tham gia giao thông</span>
+          </td>
+        </tr>
+        <!-- Sub-row 2.1 -->
+        <tr>
+          <td style="text-align: center;"><input type="checkbox"></td>
+          <td>
+            <div style="font-weight: 600;">Số TL: <span style="color: #0f172a;">5:4684H06</span></div>
+            <div style="color: #64748b;">Ngày TL: 07/07/2026</div>
+            <div style="color: #64748b;">Ngày đơn: 07/07/2026</div>
+          </td>
+          <td rowspan="2" style="vertical-align: middle;">
+            <div>Số BA: <span style="color: #2563eb; font-weight: 600;">88/2026/HS-PT</span> Ngày: 10/04/2026</div>
+            <div>Tại: TAND cấp cao tại Hà Nội</div>
+          </td>
+          <td rowspan="2" style="vertical-align: middle;">
+            <div><b>Bị cáo:</b> Hoàng Hoa Tham</div>
+            <div><b>NĐĐ:</b> Trần Thị C</div>
+          </td>
+          <td rowspan="2" style="vertical-align: middle;">
+            <div>TTV: <b>Vũ Xuân Hiền</b></div>
+            <div>LĐ: Lê Thị Thu Hiền</div>
+          </td>
+          <td>
+            <button class="btn-link">📄 1 tờ trình</button>
+          </td>
+          <td style="text-align: center;">👁</td>
+        </tr>
+        <!-- Sub-row 2.2 -->
+        <tr>
+          <td style="text-align: center;"><input type="checkbox"></td>
+          <td>
+            <div style="font-weight: 600;">Số TL: <span style="color: #0f172a;">5:4684606</span></div>
+            <div style="color: #64748b;">Ngày TL: 07/07/2026</div>
+            <div style="color: #64748b;">Ngày đơn: 07/07/2026</div>
+          </td>
+          <td>
+            <button class="btn-link">📄 1 tờ trình</button>
+          </td>
+          <td style="text-align: center;">👁</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</body>
+</html>
