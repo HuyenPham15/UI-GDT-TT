@@ -919,6 +919,15 @@ export function renderThongTinBanAnCell(
   );
 }
 
+export function renderBadgeHoSo(trangThaiHoSo?: string) {
+  if (trangThaiHoSo === "chua-co") return <span style={{ fontSize: 11, color: "#6b7280", fontFamily: F }}>Chưa có hồ sơ</span>;
+  if (trangThaiHoSo === "dang-muon") return <Badge color="#92400e" bg="#fef3c7">Đang mượn hồ sơ</Badge>;
+  if (trangThaiHoSo === "da-co") return <Badge color="#065f46" bg="#d1fae5">Đã có hồ sơ</Badge>;
+  if (trangThaiHoSo === "da-tra") return <Badge color="#1e40af" bg="#dbeafe">Đã trả hồ sơ</Badge>;
+  if (trangThaiHoSo === "da-chuyen") return <Badge color="#6d28d9" bg="#ede9fe">Đã chuyển hồ sơ</Badge>;
+  return <span style={{ fontSize: 11, color: "#6b7280", fontFamily: F }}>Chưa có hồ sơ</span>;
+}
+
 // ── Render Cell Trạng Thái (Cấp trình & Kết quả trả lời đơn của từng đơn) ─────
 export function renderCellTrangThaiDon(
   row: VuAnRow,
@@ -1024,52 +1033,13 @@ export function renderCellTrangThaiDon(
         )}
       </div>
 
-      {/* 2. Hồ sơ (cùng dòng) */}
-      <div style={{ display: "flex", alignItems: "center", gap: 5, flexWrap: "wrap", borderTop: `1px dashed #e5e7eb`, paddingTop: 4 }}>
-        <span style={{ fontSize: 11, fontWeight: 700, color: "#1e293b", fontFamily: F }}>
-          Hồ sơ:
-        </span>
-        {row.trangThaiHoSo === "chua-co" && <span style={{ fontSize: 11, color: "#6b7280", fontFamily: F }}>Chưa có hồ sơ</span>}
-        {row.trangThaiHoSo === "dang-muon" && <Badge color="#92400e" bg="#fef3c7">Đang mượn hồ sơ</Badge>}
-        {row.trangThaiHoSo === "da-co" && <Badge color="#065f46" bg="#d1fae5">Đã có hồ sơ</Badge>}
-        {row.trangThaiHoSo === "da-tra" && <Badge color="#1e40af" bg="#dbeafe">Đã trả hồ sơ</Badge>}
-        {row.trangThaiHoSo === "da-chuyen" && <Badge color="#6d28d9" bg="#ede9fe">Đã chuyển hồ sơ</Badge>}
-      </div>
-
-      {/* 3. Kết quả trả lời đơn (cùng dòng) */}
+      {/* 2. Kết quả trả lời đơn (cùng dòng) */}
       <div style={{ display: "flex", alignItems: "center", gap: 5, flexWrap: "wrap", borderTop: `1px dashed #e5e7eb`, paddingTop: 4 }}>
         <span style={{ fontSize: 11, fontWeight: 700, color: "#1e293b", fontFamily: F }}>
           Kết quả trả lời đơn:
         </span>
         {kqComponent}
       </div>
-
-      {/* 4. Link xem danh sách đơn */}
-      {/* {onQuickView && (
-        <div style={{ borderTop: `1px dashed #e5e7eb`, paddingTop: 4 }}>
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              onQuickView();
-            }}
-            style={{
-              background: "none",
-              border: "none",
-              cursor: "pointer",
-              padding: 0,
-              fontSize: 10.5,
-              color: "#2563eb",
-              fontFamily: F,
-              textDecoration: "underline",
-              fontWeight: 600,
-              textAlign: "left",
-            }}
-            title="Xem toàn bộ danh sách đơn của vụ án"
-          >
-            📄 Danh sách đơn ({group.rows.length})
-          </button>
-        </div>
-      )} */}
     </div>
   );
 }
@@ -1189,8 +1159,8 @@ export default function QuanLyVuAnView({
                 <tr>
                   <th style={TH_STYLE}><input type="checkbox" /></th>
                   <th style={TH_STYLE}>THÔNG TIN ĐƠN & THỤ LÝ</th>
-                  <th style={TH_STYLE}>THÔNG TIN BẢN ÁN ĐỀ NGHỊ</th>
                   <th style={TH_STYLE}>ĐƯƠNG SỰ & NGƯỜI ĐỀ NGHỊ</th>
+                  <th style={TH_STYLE}>THÔNG TIN BẢN ÁN ĐỀ NGHỊ</th>
                   <th style={TH_STYLE}>PHÂN CÔNG</th>
                   <th style={TH_STYLE}>TRẠNG THÁI</th>
                   <th style={{ ...TH_STYLE, textAlign: "center" }}>THAO TÁC</th>
@@ -1214,8 +1184,8 @@ export default function QuanLyVuAnView({
                   <th style={TH_STYLE}><input type="checkbox" /></th>
                   <th style={TH_STYLE}>STT</th>
                   <th style={TH_STYLE}>SỐ & NGÀY THỤ LÝ</th>
-                  <th style={TH_STYLE}>THÔNG TIN BẢN ÁN/QĐ & QHPL</th>
                   <th style={TH_STYLE}>ĐƯƠNG SỰ & NGƯỜI ĐỀ NGHỊ</th>
+                  <th style={TH_STYLE}>THÔNG TIN BẢN ÁN/QĐ & QHPL</th>
                   <th style={TH_STYLE}>PHÂN CÔNG</th>
                   <th style={TH_STYLE}>TRẠNG THÁI</th>
                   <th style={{ ...TH_STYLE, textAlign: "center" }}>THAO TÁC</th>
@@ -1240,7 +1210,7 @@ export default function QuanLyVuAnView({
                       <td style={{ ...TD_STYLE, textAlign: "center", background: "#fef2f2", padding: "4px 8px" }}>
                         <input type="checkbox" style={{ cursor: "pointer" }} />
                       </td>
-                      <td colSpan={6} style={{ ...TD_STYLE, background: "#fef2f2", padding: "5px 10px" }}>
+                      <td colSpan={4} style={{ ...TD_STYLE, background: "#fef2f2", padding: "5px 10px" }}>
                         <div
                           style={{ display: "flex", alignItems: "center", gap: 8, cursor: "pointer", userSelect: "none" }}
                           onClick={() => toggleGroupCollapse(group.id)}
@@ -1257,6 +1227,15 @@ export default function QuanLyVuAnView({
                           </span>
                         </div>
                       </td>
+                      <td style={{ ...TD_STYLE, background: "#fef2f2", padding: "5px 8px" }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
+                          <span style={{ fontSize: 11, fontWeight: 700, color: "#1e293b", fontFamily: F }}>
+                            Hồ sơ vụ án:
+                          </span>
+                          {renderBadgeHoSo(group.rows[0]?.trangThaiHoSo)}
+                        </div>
+                      </td>
+                      <td style={{ ...TD_STYLE, background: "#fef2f2", padding: "5px 8px", textAlign: "center" }} />
                     </tr>
 
                     {/* Danh sách các đơn thuộc Vụ án (1 dòng = 1 đơn) */}
@@ -1282,7 +1261,6 @@ export default function QuanLyVuAnView({
                             {/* Cột gộp chung: STT, THÔNG TIN ĐƠN & THỤ LÝ */}
                             <td style={{ ...TD_STYLE, padding: "5px 8px", lineHeight: 1.35 }}>
                               <div style={{ display: "flex", gap: 6 }}>
-                                {/* <span style={{ color: "#94a3b8", fontSize: 11, fontFamily: F, marginTop: 1 }}>↳</span> */}
                                 <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
                                   <span style={{ fontSize: 11, color: TEXT, fontFamily: F }}>
                                     Số TL: <b style={{ color: "#0f172a" }}>{row.soThuLy}</b>
@@ -1297,36 +1275,36 @@ export default function QuanLyVuAnView({
                               </div>
                             </td>
 
-                            {/* 3 Cột chung (Thông tin bản án, Đương sự, Phân công) gộp ô theo rowSpan */}
+                            {/* Cột 2: Đương sự & Người đứng đơn (theo từng đơn) */}
+                            <td style={{ ...TD_STYLE, verticalAlign: "top", background: "#ffffff", padding: "6px 10px", lineHeight: 1.35 }}>
+                              <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+                                {row.nkn && (
+                                  <span style={{ fontSize: 11, fontFamily: F }}>
+                                    <span style={{ color: TEXT, fontWeight: 500 }}>{label1}:</span>{" "}
+                                    <span style={{ fontWeight: 600, color: TEXT }}>{row.nkn}</span>
+                                  </span>
+                                )}
+                                {row.biCao && (
+                                  <span style={{ fontSize: 11, fontFamily: F }}>
+                                    <span style={{ color: TEXT, fontWeight: 500 }}>{label2}:</span>{" "}
+                                    <span style={{ fontWeight: 600, color: TEXT }}>{row.biCao}</span>
+                                  </span>
+                                )}
+                                {row.ndd && (
+                                  <span style={{ fontSize: 11, fontFamily: F }}>
+                                    <span style={{ color: TEXT, fontWeight: 500 }}>NĐĐ:</span>{" "}
+                                    <span style={{ color: TEXT }}>{row.ndd}</span>
+                                  </span>
+                                )}
+                              </div>
+                            </td>
+
+                            {/* 2 Cột chung (Thông tin bản án, Phân công) gộp ô theo rowSpan */}
                             {isFirst && (
                               <>
-                                {/* Cột 2: Thông tin Bản án Đề nghị & Giai đoạn còn lại */}
+                                {/* Cột 3: Thông tin Bản án Đề nghị & Giai đoạn còn lại */}
                                 <td rowSpan={totalRows} style={{ ...TD_STYLE, verticalAlign: "top", background: "#ffffff", padding: "6px 10px", lineHeight: 1.35 }}>
                                   {renderThongTinBanAnCell(row, effectiveLoaiAn, false)}
-                                </td>
-
-                                {/* Cột 3: Đương sự & Người đứng đơn */}
-                                <td rowSpan={totalRows} style={{ ...TD_STYLE, verticalAlign: "middle", background: "#ffffff", padding: "6px 10px", lineHeight: 1.35 }}>
-                                  <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
-                                    {row.nkn && (
-                                      <span style={{ fontSize: 11, fontFamily: F }}>
-                                        <span style={{ color: TEXT, fontWeight: 500 }}>{label1}:</span>{" "}
-                                        <span style={{ fontWeight: 600, color: TEXT }}>{row.nkn}</span>
-                                      </span>
-                                    )}
-                                    {row.biCao && (
-                                      <span style={{ fontSize: 11, fontFamily: F }}>
-                                        <span style={{ color: TEXT, fontWeight: 500 }}>{label2}:</span>{" "}
-                                        <span style={{ fontWeight: 600, color: TEXT }}>{row.biCao}</span>
-                                      </span>
-                                    )}
-                                    {row.ndd && (
-                                      <span style={{ fontSize: 11, fontFamily: F }}>
-                                        <span style={{ color: TEXT, fontWeight: 500 }}>NĐĐ:</span>{" "}
-                                        <span style={{ color: TEXT }}>{row.ndd}</span>
-                                      </span>
-                                    )}
-                                  </div>
                                 </td>
 
                                 {/* Cột 4: Phân công */}
@@ -1339,6 +1317,10 @@ export default function QuanLyVuAnView({
                                     <span style={{ fontSize: 11, fontFamily: F }}>
                                       <span style={{ color: MUTED }}>LĐ: </span>
                                       <span style={{ color: TEXT }}>{row.lanhDao}</span>
+                                    </span>
+                                    <span style={{ fontSize: 11, fontFamily: F }}>
+                                      <span style={{ color: MUTED }}>TP: </span>
+                                      <span style={{ color: TEXT }}>{row.thamPhan}</span>
                                     </span>
                                   </div>
                                 </td>
@@ -1453,6 +1435,10 @@ export default function QuanLyVuAnView({
                               <span style={{ color: MUTED }}>LĐ: </span>{row.lanhDao}
                             </span>
                           )}
+                          <div style={{ display: "flex", alignItems: "center", gap: 4, borderTop: `1px dashed #e5e7eb`, paddingTop: 4, marginTop: 2 }}>
+                            <span style={{ fontSize: 10.5, fontWeight: 600, color: "#475569", fontFamily: F }}>Hồ sơ:</span>
+                            {renderBadgeHoSo(row.trangThaiHoSo)}
+                          </div>
                         </div>
                       </td>
                       {/* Cột Trạng thái (Tờ trình & Kết quả trả lời đơn) */}

@@ -18,12 +18,16 @@ import { SearchFilterPanel } from "./SearchFilterPanel";
 function CellThongTinDon({ c, tab }: { c: DonCase; tab?: TabId }) {
   const isDaCoVuAn = tab === "da-co-vu-an" || c.tabs?.includes("da-co-vu-an") || c.daThuLy;
   const isDonChoPheDuyet = tab === "don-cho-phe-duyet" || c.tabs?.includes("don-cho-phe-duyet");
+  const isChoYKienTab = tab === "cho-y-kien";
   const isBac3Tab = tab === "da-co-vu-an" || isDonChoPheDuyet;
-  const showDuKien = !isDaCoVuAn;
+  const showDuKien = !isDaCoVuAn && !isChoYKienTab;
 
   const capThamPhanText = isBac3Tab ? "TPB3" : c.capThamPhan;
   const tpBac3List = ["Nguyễn Biên Thuỳ", "Trần Minh Đức", "Lê Văn Minh", "Chu Thị Thu Hiền", "Nguyễn Thị Hoa"];
   const thamPhanText = isBac3Tab ? (tpBac3List[c.id % tpBac3List.length] || c.thamPhan) : c.thamPhan;
+
+  const soToTrinhText = (c as any).soToTrinh || `${12 + c.id}/TT-V1`;
+  const ngayToTrinhText = (c as any).ngayToTrinh || "15/07/2026";
 
   let hinhThucText = c.hinhThuc;
   if (c.soCV) {
@@ -39,25 +43,34 @@ function CellThongTinDon({ c, tab }: { c: DonCase; tab?: TabId }) {
           <span style={{ fontSize: 12, fontWeight: 700, color: RED, fontFamily: F }}>
             Mã đơn: {c.maDon}
           </span>
-          {c.daThuLy ? (
-            <span style={{ fontSize: 11, color: TEXT, fontFamily: F }}>Đã thụ lý</span>
-          ) : (
-            <>
-              {c.soCV && (
-                <span style={{ fontSize: 11, color: TEXT, fontFamily: F }}>
-                  CV chuyển: {c.soCV} - {c.ngayCV}
-                </span>
-              )}
-              {c.thuLyMoi && (
-                <span style={{ fontSize: 11, color: TEXT, fontFamily: F }}>
-                  Thụ lý mới: {c.thuLyMoi}
-                </span>
-              )}
-            </>
+          {!isChoYKienTab && (
+            c.daThuLy ? (
+              <span style={{ fontSize: 11, color: TEXT, fontFamily: F }}>Đã thụ lý</span>
+            ) : (
+              <>
+                {c.soCV && (
+                  <span style={{ fontSize: 11, color: TEXT, fontFamily: F }}>
+                    CV chuyển: {c.soCV} - {c.ngayCV}
+                  </span>
+                )}
+                {c.thuLyMoi && (
+                  <span style={{ fontSize: 11, color: TEXT, fontFamily: F }}>
+                    Thụ lý mới: {c.thuLyMoi}
+                  </span>
+                )}
+              </>
+            )
           )}
-          <span style={{ fontSize: 11, color: TEXT, fontFamily: F }}>
-            Thẩm phán{showDuKien ? " (Dự kiến)" : ""}: {thamPhanText} ({capThamPhanText})
-          </span>
+          {tab === "da-co-vu-an" && (
+            <span style={{ fontSize: 11, color: TEXT, fontFamily: F }}>
+              Tờ trình: {soToTrinhText} - {ngayToTrinhText}
+            </span>
+          )}
+          {!isChoYKienTab && (
+            <span style={{ fontSize: 11, color: TEXT, fontFamily: F }}>
+              Thẩm phán{showDuKien ? " (Dự kiến)" : ""}: {thamPhanText} ({capThamPhanText})
+            </span>
+          )}
           <span style={{ fontSize: 11, color: TEXT, fontFamily: F }}>
             Hình thức: {hinhThucText}
           </span>
@@ -67,19 +80,30 @@ function CellThongTinDon({ c, tab }: { c: DonCase; tab?: TabId }) {
           <span style={{ fontSize: 12, fontWeight: 700, color: RED, fontFamily: F }}>
             Mã văn thư đến: {c.maVanThuDen} - {c.ngayVanThuDen}
           </span>
-          {c.soHSKN && (
+          {!isChoYKienTab && (
+            <>
+              {c.soHSKN && (
+                <span style={{ fontSize: 11, color: TEXT, fontFamily: F }}>
+                  Số HSKN: {c.soHSKN} - {c.ngayHSKN}
+                </span>
+              )}
+              {c.thuLyXetXu && (
+                <span style={{ fontSize: 11, color: TEXT, fontFamily: F }}>
+                  Thụ lý xét xử: {c.thuLyXetXu}
+                </span>
+              )}
+            </>
+          )}
+          {tab === "da-co-vu-an" && (
             <span style={{ fontSize: 11, color: TEXT, fontFamily: F }}>
-              Số HSKN: {c.soHSKN} - {c.ngayHSKN}
+              Tờ trình: {soToTrinhText} - {ngayToTrinhText}
             </span>
           )}
-          {c.thuLyXetXu && (
+          {!isChoYKienTab && (
             <span style={{ fontSize: 11, color: TEXT, fontFamily: F }}>
-              Thụ lý xét xử: {c.thuLyXetXu}
+              Thẩm phán{showDuKien ? " (Dự kiến)" : ""}: {thamPhanText} ({capThamPhanText})
             </span>
           )}
-          <span style={{ fontSize: 11, color: TEXT, fontFamily: F }}>
-            Thẩm phán{showDuKien ? " (Dự kiến)" : ""}: {thamPhanText} ({capThamPhanText})
-          </span>
           <span style={{ fontSize: 11, color: TEXT, fontFamily: F }}>
             Hình thức: {hinhThucText}
           </span>
@@ -261,8 +285,9 @@ function CellBA({ c, userRole }: { c: DonCase; userRole?: UserRoleType }) {
 // ── Thông tin vụ án cell ─────────────────────────────────────────────────────
 
 function CellVuAn({ c, tab, onThemHoSo }: { c: DonCase; tab?: TabId; onThemHoSo?: () => void }) {
-  const hasGiaiQuyet = !!(c.thongBaoBoSung || c.ttvGiaiQuyet || c.tpGiaiQuyet);
   const isDaCoVuAn = tab === "da-co-vu-an" || c.daThuLy;
+  const isChoYKienOrTraLai = tab === "cho-y-kien" || tab === "tra-lai";
+  const daGiaoTHS = c.daGiaoTHS !== undefined ? c.daGiaoTHS : (c.id % 2 === 0);
 
   const ttvList = ["Phạm Thị Minh", "Nguyễn Văn A", "Lê Văn Hùng", "Trịnh Đức Minh", "Hoàng Văn Tuấn"];
   const ttvText = c.ttv || ttvList[c.id % ttvList.length];
@@ -273,99 +298,94 @@ function CellVuAn({ c, tab, onThemHoSo }: { c: DonCase; tab?: TabId; onThemHoSo?
   const tpBac3List = ["Nguyễn Biên Thuỳ", "Trần Minh Đức", "Lê Văn Minh", "Chu Thị Thu Hiền", "Nguyễn Thị Hoa"];
   const tpText = c.tpGiaiQuyet || c.thamPhan || tpBac3List[c.id % tpBac3List.length];
 
-  const daGiaoTHS = c.daGiaoTHS !== undefined ? c.daGiaoTHS : (c.id % 2 === 0);
-
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
       <div style={{ textAlign: "left" }}>
-        {c.tenVuAn && (
-          <span style={{ fontSize: 11, color: TEXT, fontFamily: F, lineHeight: 1.4, display: "block", marginBottom: 2 }}>
-            Tên vụ án: {c.tenVuAn}
-          </span>
-        )}
+        <span style={{ fontSize: 11, color: TEXT, fontFamily: F, lineHeight: 1.4, display: "block", marginBottom: 2 }}>
+          Tên vụ án: {c.tenVuAn || `Vụ án ${c.nguoiKhieuNai || "Đặng Thị Dương"} – Tội cố ý gây thương tích`}
+        </span>
 
-        <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
-          {ttvText && (
+        {isChoYKienOrTraLai ? (
+          <div style={{
+            marginTop: 3, padding: "6px 8px",
+            background: "#f0fdf4", border: "1px solid #bbf7d0",
+            borderRadius: 5, display: "flex", flexDirection: "column", gap: 3,
+          }}>
+            <span style={{ fontSize: 10.5, fontWeight: 700, color: "#15803d", fontFamily: F, textTransform: "uppercase", letterSpacing: 0.3 }}>
+              ĐÃ CÓ TBGQ: TBTLĐ SỐ 1
+            </span>
+
+            <span style={{ fontSize: 11, color: TEXT, fontFamily: F, display: "block" }}>
+              TTV giải quyết: <strong>{c.ttvGiaiQuyet || "Nguyễn Văn An"}</strong>
+            </span>
+
+            <span style={{ fontSize: 11, color: TEXT, fontFamily: F, display: "block" }}>
+              LĐV giải quyết: <strong>{ldvAssignedName}</strong>
+            </span>
+
+            <span style={{ fontSize: 11, color: TEXT, fontFamily: F, display: "block" }}>
+              TP giải quyết: <strong>{c.tpGiaiQuyet || "Đào Văn Nam"}</strong>
+            </span>
+          </div>
+        ) : (
+          <div style={{ display: "flex", flexDirection: "column", gap: 2, marginTop: 2 }}>
             <span style={{ fontSize: 11, color: TEXT, fontFamily: F, display: "block" }}>
               TTV: {ttvText}
             </span>
-          )}
-          {ldvAssignedName && (
             <span style={{ fontSize: 11, color: TEXT, fontFamily: F, display: "block" }}>
               LĐV: {ldvAssignedName}
             </span>
-          )}
-          {isDaCoVuAn && (
-            <>
-              <span style={{ fontSize: 11, color: TEXT, fontFamily: F, display: "block" }}>
-                TP: {tpText}
+            <span style={{ fontSize: 11, color: TEXT, fontFamily: F, display: "block" }}>
+              TP: {tpText}
+            </span>
+          </div>
+        )}
+
+        {isDaCoVuAn && (
+          <div style={{ marginTop: 4 }}>
+            {daGiaoTHS ? (
+              <span
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 3,
+                  padding: "2px 7px",
+                  background: "#dcfce7",
+                  border: "1px solid #86efac",
+                  borderRadius: 4,
+                  color: "#166534",
+                  fontSize: 10.5,
+                  fontWeight: 700,
+                  fontFamily: F,
+                }}
+                title="Đã giao tiểu hồ sơ"
+              >
+                ✓ Đã giao THS
               </span>
-              <div style={{ marginTop: 2 }}>
-                {daGiaoTHS ? (
-                  <span
-                    style={{
-                      display: "inline-flex",
-                      alignItems: "center",
-                      gap: 3,
-                      padding: "2px 7px",
-                      background: "#dcfce7",
-                      border: "1px solid #86efac",
-                      borderRadius: 4,
-                      color: "#166534",
-                      fontSize: 10.5,
-                      fontWeight: 700,
-                      fontFamily: F,
-                    }}
-                    title="Đã giao tiểu hồ sơ"
-                  >
-                    ✓ Đã giao THS
-                  </span>
-                ) : (
-                  <span
-                    style={{
-                      display: "inline-flex",
-                      alignItems: "center",
-                      gap: 3,
-                      padding: "2px 7px",
-                      background: "#fff7ed",
-                      border: "1px solid #fed7aa",
-                      borderRadius: 4,
-                      color: "#c2410c",
-                      fontSize: 10.5,
-                      fontWeight: 700,
-                      fontFamily: F,
-                    }}
-                    title="Chưa giao tiểu hồ sơ"
-                  >
-                    ⏳ Chưa giao THS
-                  </span>
-                )}
-              </div>
-            </>
-          )}
-        </div>
+            ) : (
+              <span
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 3,
+                  padding: "2px 7px",
+                  background: "#fff7ed",
+                  border: "1px solid #fed7aa",
+                  borderRadius: 4,
+                  color: "#c2410c",
+                  fontSize: 10.5,
+                  fontWeight: 700,
+                  fontFamily: F,
+                }}
+                title="Chưa giao tiểu hồ sơ"
+              >
+                ⏳ Chưa giao THS
+              </span>
+            )}
+          </div>
+        )}
       </div>
-      {hasGiaiQuyet && (
-        <div style={{
-          marginTop: 2, padding: "6px 8px",
-          background: "#f0fdf4", border: "1px solid #bbf7d0",
-          borderRadius: 5, display: "flex", flexDirection: "column", gap: 3,
-        }}>
-          <span style={{ fontSize: 10, fontWeight: 700, color: "#15803d", fontFamily: F, textTransform: "uppercase", letterSpacing: 0.4 }}>
-            Đã có TBGQ: TBTLĐ số 1
-          </span>
-          {c.ttvGiaiQuyet && (
-            <span style={{ fontSize: 11, color: TEXT, fontFamily: F, display: "block" }}>
-              TTV giải quyết: <strong>{c.ttvGiaiQuyet}</strong>
-            </span>
-          )}
-          {c.tpGiaiQuyet && (
-            <span style={{ fontSize: 11, color: TEXT, fontFamily: F, display: "block" }}>
-              TP giải quyết: <strong>{c.tpGiaiQuyet}</strong>
-            </span>
-          )}
-        </div>
-      )}
+
       {c.vuAnActions && c.vuAnActions.length > 0 && (
         <div style={{ display: "flex", gap: 4, flexWrap: "wrap", justifyContent: "center" }}>
           {c.vuAnActions.map((a) => (
@@ -412,6 +432,7 @@ function CellYKienLD({ c }: { c: DonCase }) {
 
 function CellNhanTra({ c, tab }: { c: DonCase; tab?: TabId }) {
   if (tab === "da-co-vu-an") {
+    const nguoiThaoTacText = c.nguoiThaoTac || "Nguyễn Văn Hùng";
     const ngayDuyet =
       (c as any).ngayDuyetToTrinh ||
       c.yKienLD?.[0]?.date ||
@@ -420,8 +441,8 @@ function CellNhanTra({ c, tab }: { c: DonCase; tab?: TabId }) {
       "24/07/2026";
     return (
       <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
-        <span style={{ fontSize: 12, color: TEXT, fontFamily: F, fontWeight: 500 }}>
-          {ngayDuyet}
+        <span style={{ fontSize: 11, color: TEXT, fontFamily: F, fontWeight: 500 }}>
+          {nguoiThaoTacText} ({ngayDuyet})
         </span>
       </div>
     );
@@ -431,30 +452,20 @@ function CellNhanTra({ c, tab }: { c: DonCase; tab?: TabId }) {
   if (!hasData)
     return <span style={{ color: MUTED, fontSize: 11, fontFamily: F }}>-</span>;
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+    <div style={{ display: "flex", flexDirection: "column", gap: 3, fontSize: 11, fontFamily: F }}>
       {c.ngayNhan && (
-        <span style={{ fontSize: 11, color: TEXT, fontFamily: F }}>
+        <span style={{ color: TEXT }}>
           Ngày nhận: {c.ngayNhan}
         </span>
       )}
-      {c.nguoiThaoTac && (
-        <span style={{ fontSize: 11, color: TEXT, fontFamily: F }}>
-          Người thao tác: {c.nguoiThaoTac}
+      {(c.nguoiThaoTac || c.ngayThaoTac) && (
+        <span style={{ color: TEXT }}>
+          Người thao tác: {c.nguoiThaoTac || "–"}{c.ngayThaoTac ? ` (${c.ngayThaoTac})` : ""}
         </span>
       )}
-      {c.ngayThaoTac && (
-        <span style={{ fontSize: 11, color: TEXT, fontFamily: F }}>
-          Ngày thao tác: {c.ngayThaoTac}
-        </span>
-      )}
-      {c.nguoiTra && (
-        <span style={{ fontSize: 11, color: TEXT, fontFamily: F }}>
-          Người trả: {c.nguoiTra}
-        </span>
-      )}
-      {c.ngayTra && (
-        <span style={{ fontSize: 11, color: TEXT, fontFamily: F }}>
-          Ngày trả: {c.ngayTra}
+      {(c.nguoiTra || c.ngayTra) && (
+        <span style={{ color: TEXT }}>
+          Người trả: {c.nguoiTra || "–"}{c.ngayTra ? ` (${c.ngayTra})` : ""}
         </span>
       )}
     </div>
@@ -592,8 +603,7 @@ function CaseTable({
 }) {
   const cases = overrideCases ?? getCasesByTab(tab, userRole);
 
-  const lastColHeader =
-    tab === "cho-y-kien" ? "Ý KIẾN LÃNH ĐẠO" : "THÔNG TIN VỤ ÁN";
+  const lastColHeader = "THÔNG TIN VỤ ÁN";
 
   const duongSuHeader =
     userRole === "vu-1" || userRole === "hinh-su"
@@ -612,10 +622,12 @@ function CaseTable({
     tab === "tra-lai"
       ? "LÝ DO TRẢ LẠI"
       : tab === "da-co-vu-an"
-        ? "NGÀY DUYỆT TỜ TRÌNH"
-        : "THÔNG TIN NHẬN/TRẢ";
+        ? "NGƯỜI THAO TÁC"
+        : tab === "cho-y-kien"
+          ? "Ý KIẾN LÃNH ĐẠO"
+          : "THÔNG TIN NHẬN/TRẢ";
 
-  const hasNhanTraCol = tab !== "cho-y-kien" && tab !== "don-cho-phe-duyet" && tab != "tat-ca";
+  const hasNhanTraCol = tab !== "don-cho-phe-duyet" && tab !== "tat-ca";
 
   return (
     <div style={{ flex: 1, overflow: "auto" }}>
@@ -683,11 +695,7 @@ function CaseTable({
               <td style={TD_STYLE}><CellDuongSu c={c} userRole={userRole} /></td>
               <td style={TD_STYLE}><CellBA c={c} userRole={userRole} /></td>
               <td style={TD_STYLE}>
-                {tab === "cho-y-kien" ? (
-                  <CellYKienLD c={c} />
-                ) : (
-                  <CellVuAn c={c} tab={tab} onThemHoSo={onThemHoSo} />
-                )}
+                <CellVuAn c={c} tab={tab} onThemHoSo={onThemHoSo} />
               </td>
               {hasNhanTraCol && (
                 <td style={TD_STYLE}>
@@ -705,6 +713,8 @@ function CaseTable({
                         </span>
                       )}
                     </div>
+                  ) : tab === "cho-y-kien" ? (
+                    <CellYKienLD c={c} />
                   ) : (
                     <CellNhanTra c={c} tab={tab} />
                   )}
@@ -1843,7 +1853,7 @@ export function GiaoTieuHoSoView({ onClose, userRole }: { onClose: () => void; u
             {/* Document Preview Box (Mẫu Phiếu bàn giao chuẩn TANDTC) */}
             <div style={{ flex: 1, padding: 30, overflow: "auto", background: "#e2e8f0" }}>
               <div id="print-area" style={{ background: "#fff", padding: "40px 50px", border: "1px solid #cbd5e1", boxShadow: "0 4px 6px rgba(0,0,0,0.05)", fontFamily: "'Times New Roman', Times, serif", color: "#000", fontSize: 13, lineHeight: 1.5 }}>
-                
+
                 {/* Quốc hiệu Tiêu ngữ */}
                 <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 20 }}>
                   <div style={{ textAlign: "center", width: "45%" }}>

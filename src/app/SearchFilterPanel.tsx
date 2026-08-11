@@ -19,18 +19,16 @@ const SEARCH_ROWS: RowCell[][] = [
     { label: "Người gửi đơn", type: "input", placeholder: "Người gửi đơn" },
     { label: "Số BA/QĐ", type: "input", placeholder: "Số BA/QĐ" },
     { label: "Ngày BA/QĐ", type: "date" },
+    { label: "Tòa ra BA/QĐ", type: "select", placeholder: "--- Chọn ---" },
   ],
   [
-    { label: "Tòa ra BA/QĐ", type: "select", placeholder: "--- Chọn ---" },
     { label: "Thời gian nhận đơn", type: "dateRange" },
     { label: "Thẩm phán", type: "select", placeholder: "--- Tất cả ---" },
-  ],
-  [
     "diaChi",
     { label: "Chi tiết", type: "input", placeholder: "Chi tiết" },
-    { label: "Phân loại đơn", type: "select", placeholder: "--- Tất cả ---", options: ["Đơn khiếu nại sau khi đã giải quyết", "Đơn đề nghị GĐT/TT", "Công văn kiến nghị GĐT/TT", "Đơn khiếu nại quyết định"] },
   ],
   [
+    { label: "Phân loại đơn", type: "select", placeholder: "--- Tất cả ---", options: ["Đơn khiếu nại sau khi đã giải quyết", "Đơn đề nghị GĐT/TT", "Công văn kiến nghị GĐT/TT", "Đơn khiếu nại quyết định"] },
     { label: "Số CMND", type: "input", placeholder: "Số CMND / CCCD" },
     { label: "Mã đơn", type: "input", placeholder: "Mã đơn" },
     { label: "Hình thức đơn", type: "select", placeholder: "--- Tất cả ---" },
@@ -39,24 +37,23 @@ const SEARCH_ROWS: RowCell[][] = [
     { label: "Thời gian chuyển", type: "dateRange" },
     { label: "Thời gian thụ lý", type: "dateRange" },
     { label: "Số thụ lý", type: "input", placeholder: "Số thụ lý" },
+    { label: "Thụ lý đơn", type: "select", placeholder: "--Tất cả--" },
   ],
   [
-    { label: "Thụ lý đơn", type: "select", placeholder: "--Tất cả--" },
     { label: "Số CV chuyển", type: "input", placeholder: "Số CV chuyển" },
     { label: "Ngày CV chuyển", type: "date" },
-  ],
-  [
     { label: "Cán bộ giải quyết đơn", type: "select", placeholder: "--- Tất cả ---" },
     { label: "Loại án", type: "select", placeholder: "--- Tất cả ---", options: [...LOAI_AN_OPTIONS] },
-    { label: "Giao THS", type: "select", placeholder: "--Tất cả--" },
   ],
   [
+    { label: "Giao THS", type: "select", placeholder: "--Tất cả--" },
     "trangThai",
     "anDacThu",
     { label: "Nơi chuyển", type: "select", placeholder: "--Tất cả--" },
   ],
   [
     "thoiHieu",
+    null,
     null,
     null,
   ],
@@ -196,7 +193,7 @@ export function SearchFilterPanel({
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: isHoSoKhangNghi ? "repeat(4, 1fr)" : "repeat(3, 1fr)",
+          gridTemplateColumns: "repeat(4, 1fr)",
           gap: "10px 16px",
           marginBottom: 12,
         }}
