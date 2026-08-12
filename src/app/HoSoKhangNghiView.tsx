@@ -515,7 +515,7 @@ function ModalNhanHoSoKhangNghi({
                   <td style={{ padding: "9px 12px", background: BG, fontSize: 11, color: MUTED, fontWeight: 600, borderRight: `1px solid ${BORDER}`, borderBottom: `1px solid ${BORDER}` }}>Người kháng nghị</td>
                   <td style={{ padding: "9px 12px", fontSize: 12, color: TEXT, fontWeight: 600, borderBottom: `1px solid ${BORDER}` }}>{rec.nguoiKhangNghi || "---"}</td>
                 </tr>
-              
+
               </tbody>
             </table>
           </div>
@@ -1992,11 +1992,11 @@ export function HoSoKhangNghiView({ userRole, onTaoCongVan }: { userRole?: UserR
             setListDen(prev => prev.map(item =>
               item.id === targetId
                 ? {
-                    ...item,
-                    trangThai: "Đã nhận",
-                    nguoiNhan: item.nguoiNhan === "--" || !item.nguoiNhan ? "Lý Thái Phúc" : item.nguoiNhan,
-                    ngayNhan: item.ngayNhan === "--" || !item.ngayNhan ? "07/08/2026" : item.ngayNhan,
-                  }
+                  ...item,
+                  trangThai: "Đã nhận",
+                  nguoiNhan: item.nguoiNhan === "--" || !item.nguoiNhan ? "Lý Thái Phúc" : item.nguoiNhan,
+                  ngayNhan: item.ngayNhan === "--" || !item.ngayNhan ? "07/08/2026" : item.ngayNhan,
+                }
                 : item
             ));
             setShowNhanHoSoModal(false);
@@ -2106,8 +2106,7 @@ export function HoSoKhangNghiView({ userRole, onTaoCongVan }: { userRole?: UserR
               <th style={{ ...TH_STYLE, width: 145 }}>MÃ VĂN THƯ ĐẾN</th>
               <th style={{ ...TH_STYLE, width: 160 }}>THÔNG TIN KHÁNG NGHỊ</th>
               <th style={{ ...TH_STYLE, width: 145 }}>SỐ BẢN ÁN / QĐ</th>
-              <th style={{ ...TH_STYLE, width: 210 }}>{activeSubTab === "di" ? "ĐƠN VỊ NHẬN / CÔNG VĂN CHUYỂN" : "ĐƠN VỊ GỬI / NGƯỜI NHẬN"}</th>
-              <th style={{ ...TH_STYLE, width: 110, textAlign: "center" }}>TRẠNG THÁI</th>
+              <th style={{ ...TH_STYLE, width: 320 }}>TRẠNG THÁI & THÔNG TIN PHÁT HÀNH</th>
               <th style={{ ...TH_STYLE, width: 110, textAlign: "center" }}>THAO TÁC</th>
             </tr>
           </thead>
@@ -2139,7 +2138,7 @@ export function HoSoKhangNghiView({ userRole, onTaoCongVan }: { userRole?: UserR
                   <div style={{ color: RED, fontWeight: 600 }}><span style={{ color: MUTED, fontWeight: 400 }}>Số KN: </span>{(row as any).soKhangNghi}</div>
                   <div style={{ fontSize: 11, color: TEXT, fontFamily: F, marginTop: 2 }}><span style={{ color: MUTED }}>Ngày KN: </span>{(row as any).ngayKhangNghi}</div>
                   <div style={{ fontSize: 11, color: TEXT, fontFamily: F, marginTop: 2 }}><span style={{ color: MUTED }}>Người KN: </span>{(row as any).nguoiKhangNghi}</div>
-                  <div style={{ fontSize: 11, color: TEXT, fontFamily: F, marginTop: 2 }}><span style={{ color: MUTED }}>Thẩm quyền xét xử: </span>{(row as any).thamquyenxx}</div>
+                  {/* <div style={{ fontSize: 11, color: TEXT, fontFamily: F, marginTop: 2 }}><span style={{ color: MUTED }}>Thẩm quyền xét xử: </span>{(row as any).thamquyenxx}</div> */}
                 </td>
                 <td style={{ ...TD_STYLE, fontFamily: F, fontSize: 12 }}>
                   <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
@@ -2159,46 +2158,42 @@ export function HoSoKhangNghiView({ userRole, onTaoCongVan }: { userRole?: UserR
                   <div style={{ fontSize: 11, color: TEXT, fontFamily: F, marginTop: 2 }}><span style={{ color: MUTED }}>Tòa ra bản án: </span>{(row as any).toaRaBanAn}</div>
                 </td>
                 <td style={{ ...TD_STYLE, color: TEXT, fontSize: 11, fontFamily: F }}>
+                  <div style={{ marginBottom: 6 }}>
+                    <Badge
+                      color={
+                        row.trangThai.includes("Đã")
+                          ? "#065f46"
+                          : row.trangThai === "Chưa chuyển"
+                            ? "#991b1b"
+                            : "#92400e"
+                      }
+                      bg={
+                        row.trangThai.includes("Đã")
+                          ? "#d1fae5"
+                          : row.trangThai === "Chưa chuyển"
+                            ? "#fee2e2"
+                            : "#fef3c7"
+                      }
+                    >
+                      {row.trangThai}
+                    </Badge>
+                  </div>
+                  
                   {activeSubTab === "di" ? (
-                    <>
-                      <div><b style={{ fontFamily: F }}>Đơn vị nhận:</b> {(row as any).donViNhan}</div>
-                      <div>
-                        <b style={{ fontFamily: F }}>CV chuyển:</b>{" "}
-                        {(row as any).soCVChuyen ? (
-                          <span style={{ color: "#0284c7", fontWeight: 600 }}>
-                            {(row as any).soCVChuyen} ({(row as any).ngayChuyen})
-                          </span>
-                        ) : (
-                          <span style={{ color: "#d97706", fontStyle: "italic" }}>Chưa có công văn</span>
-                        )}
-                      </div>
-                    </>
+                    <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
+                      <div><b style={{ fontFamily: F, color: MUTED }}>Đơn vị nhận:</b> {(row as any).donViNhan}</div>
+                      <div><b style={{ fontFamily: F, color: MUTED }}>Số văn thư đi:</b> VT-2026/DI-{(row as any).soKhangNghi?.replace(/\D/g, "") || row.id}</div>
+                      <div><b style={{ fontFamily: F, color: MUTED }}>Ngày phát hành:</b> {(row as any).ngayChuyen || "08/08/2026"}</div>
+                      <div><b style={{ fontFamily: F, color: MUTED }}>Người phát hành:</b> Cán bộ Văn thư</div>
+                    </div>
                   ) : (
-                    <>
-                      <div><b style={{ fontFamily: F }}>Đơn vị gửi:</b> {(row as any).donViGui}</div>
-                      <div><b style={{ fontFamily: F }}>Người nhận:</b> {(row as any).nguoiNhan} ({(row as any).ngayNhan})</div>
-                    </>
+                    <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
+                      <div><b style={{ fontFamily: F, color: MUTED }}>Đơn vị gửi:</b> {(row as any).donViGui}</div>
+                      <div><b style={{ fontFamily: F, color: MUTED }}>Người nhận:</b> {(row as any).nguoiNhan} ({(row as any).ngayNhan})</div>
+                      <div><b style={{ fontFamily: F, color: MUTED }}>Số văn thư đến:</b> VT-2026/DEN-{(row as any).soKhangNghi?.replace(/\D/g, "") || row.id}</div>
+                      <div><b style={{ fontFamily: F, color: MUTED }}>Ngày tiếp nhận:</b> {row.ngayNhan || "07/08/2026"}</div>
+                    </div>
                   )}
-                </td>
-                <td style={{ ...TD_STYLE, textAlign: "center" }}>
-                  <Badge
-                    color={
-                      row.trangThai.includes("Đã")
-                        ? "#065f46"
-                        : row.trangThai === "Chưa chuyển"
-                          ? "#991b1b"
-                          : "#92400e"
-                    }
-                    bg={
-                      row.trangThai.includes("Đã")
-                        ? "#d1fae5"
-                        : row.trangThai === "Chưa chuyển"
-                          ? "#fee2e2"
-                          : "#fef3c7"
-                    }
-                  >
-                    {row.trangThai}
-                  </Badge>
                 </td>
                 <td style={{ ...TD_STYLE, textAlign: "center" }}>
                   <div style={{ display: "flex", gap: 6, justifyContent: "center" }}>

@@ -1127,9 +1127,19 @@ function TabDanhSachDon({ detail }: { detail: VuAnDetailData }) {
     { stt: 2, maDon: "KN-88421", thongTinGQ: "Đã thụ lý", soThuLy: "KN-2026/00142", ngayThuLy: "15/05/2026", ngayNhan: "15/05/2026", nguoiDung: "Nguyễn Thị Lan", phanLoai: "Đơn khiếu nại tố tụng", loaiDon: "DON_CHINH", noiDung: "Đơn đề nghị xem xét giám đốc thẩm đối với bản án sơ thẩm." }
   ]).map((d, idx) => {
     const isAnQuocHoi = isDetailAnQuocHoi || (d as any).isAnQuocHoi || (d as any).phanLoai?.includes("Quốc hội") || idx === 0;
+    const isKhieuNai = Boolean(
+      detail?.isKhieuNai ||
+      detail?.entityWord === "Khiếu nại" ||
+      (typeof detail?.maVuAn === "string" && (detail.maVuAn.startsWith("KN") || detail.maVuAn.includes("KN"))) ||
+      (detail as any).maSo?.startsWith("KN")
+    );
+    let hT = isAnQuocHoi ? "Công văn" : d.phanLoai;
+    if (isKhieuNai && hT === "Công văn") {
+      hT = "Đơn khiếu nại tố cáo trong tố tụng";
+    }
     return {
       ...d,
-      hinhThucText: isAnQuocHoi ? "Công văn" : d.phanLoai,
+      hinhThucText: hT,
       isAnQuocHoi,
     };
   });
@@ -2870,7 +2880,7 @@ function TabToTrinh({ detail, userRole }: { detail?: VuAnDetailData; userRole?: 
       lanTrinh: "Lần 4",
       ngayTrinh: "12/08/2026",
       dsVanBan: [
-        "Dự thảo Thông báo Viện kiểm sát đang giải quyết",
+        "Dự thảo Kháng nghị",
       ],
       ngayDuyetCuoi: "–",
       trangThaiChung: "cho-duyet",
@@ -3001,8 +3011,8 @@ function TabToTrinh({ detail, userRole }: { detail?: VuAnDetailData; userRole?: 
 
   const [vanBanList, setVanBanList] = useState([
     { stt: 1, loai: "to-trinh", vanBan: "Tờ trình thẩm tra vụ án", don: formattedDonStr, ngayTao: "09/08/2026", nguoiKy: detail?.thamTraVien, trangThai: "–", daDinhKemHoSo: true, soHoSo: 5 },
-    { stt: 2, loai: "du-thao", vanBan: "Dự thảo Quyết định kháng nghị giám đốc thẩm", don: `Mã đơn: DN26 - Nguyễn Văn Bình\nSố TL: 28 - Ngày TL: 18/05/2026`, ngayTao: "09/08/2026", nguoiKy: "–", trangThai: "Chờ ký số", daDinhKemHoSo: true, soHoSo: 3 },
-    { stt: 3, loai: "du-thao", vanBan: "Dự thảo Thông báo trả lời đơn đề nghị", don: formattedDonStr, ngayTao: "08/08/2026", nguoiKy: detail?.thamTraVien || "Lý Thái Phúc (TTV)", trangThai: "Đã ký số", daDinhKemHoSo: true, soHoSo: 1 },
+    { stt: 2, loai: "du-thao", vanBan: "Dự thảo Chấp nhận khiếu nại", don: `Mã đơn: DN26 - Nguyễn Văn Bình\nSố TL: 28 - Ngày TL: 18/05/2026`, ngayTao: "09/08/2026", nguoiKy: "–", trangThai: "Chờ ký số", daDinhKemHoSo: true, soHoSo: 3 },
+    { stt: 3, loai: "du-thao", vanBan: "Dự thảo Quyết định không chấp nhận khiếu nại", don: formattedDonStr, ngayTao: "08/08/2026", nguoiKy: detail?.thamTraVien || "Lý Thái Phúc (TTV)", trangThai: "Đã ký số", daDinhKemHoSo: true, soHoSo: 1 },
   ]);
 
   const handleSaveToTrinh = (data?: { daDinhKemHoSo: boolean; countHoSo: number; soTT: string }) => {
@@ -3057,7 +3067,7 @@ function TabToTrinh({ detail, userRole }: { detail?: VuAnDetailData; userRole?: 
     } else if (data?.ketQuaGQ === "xep-don") {
       tenDuThao = "Dự thảo Thông báo xếp đơn đề nghị";
     } else if (data?.ketQuaGQ === "vks-dang-giai-quyet") {
-      tenDuThao = "Dự thảo Thông báo Viện kiểm sát đang giải quyết";
+      tenDuThao = "Dự thảo Thông báo trả lời đơn";
     }
     const newRow = { stt: 1, loai: "du-thao", vanBan: tenDuThao, don: formattedDonStr, ngayTao: data?.ngayQuyetDinh || "09/08/2026", nguoiKy: data?.nguoiKy || "Nguyễn Biên Thuỳ", trangThai: "Chờ ký số", daDinhKemHoSo: true, soHoSo: 3 };
     setVanBanList(prev => [newRow, ...prev.map((r, i) => ({ ...r, stt: i + 2 }))]);

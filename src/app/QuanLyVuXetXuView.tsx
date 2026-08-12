@@ -154,7 +154,7 @@ const ROWS: VuXetXuRow[] = [
     ttv: "Vô Thị Thúy Giang", ldv: "Nguyễn Như Thắng", tp: "Nguyễn Biên Thùy",
     trangThai: "Chưa xét xử", thoiHanXX: "19 ngày",
     soNgayBAQD: "54681139/2026/HS-PT – 03/07/2026", toaRABAQD: "Tòa án nhân dân khu vực 5 – Bắc Ninh",
-    nguoiKhangNghi: "Phan Văn Hùng",
+    nguoiKhangNghi: "Chánh án tòa án nhân dân tối cao ",
     soNgayKhangNghi: "QDKN_1111 – 11/11/2024", soNgayThuLy: "54681923 – 09/07/2026",
     vienKiemSat: "Viện kiểm sát nhân dân tối cao", toaAnGiaiQuyet: "Tòa án nhân dân tối cao",
     biCao: "Phan Văn Hùng", loaiAn: "Hình sự", chuToa: "Nguyễn Biên Thùy",
@@ -172,7 +172,7 @@ const ROWS: VuXetXuRow[] = [
     trangThai: "Chưa xét xử",
     soNgayBAQD: "112/2026/HS-ST – 15/06/2026", toaRABAQD: "Tòa án nhân dân TP Hà Nội",
     soNgayKhangNghi: "QDKN_1888 – 20/06/2026", soNgayThuLy: "–",
-    nguoiKhangNghi: "Viện trưởng Viện kiểm sát nhân dân tối cao",
+    nguoiKhangNghi: "Chánh án tòa án nhân dân tối cao",
     vienKiemSat: "Viện kiểm sát nhân dân tối cao", toaAnGiaiQuyet: "Tòa án nhân dân tối cao",
     biCao: "Trần Minh Quang", loaiAn: "Hình sự", chuToa: "–",
     hdxx: "–", ngayXX: "–", phongXX: "–",
@@ -188,7 +188,7 @@ const ROWS: VuXetXuRow[] = [
     ttv: "Nguyễn Thị Hương", ldv: "Nguyễn Như Thắng", tp: "Lê Thị Thu Hiển",
     trangThai: "Rút kháng nghị", soQD: "54/2026/QĐ-CA", ngayQD: "09/07/2026",
     soNgayBAQD: "18/2026/HS-ST – 08/07/2026", toaRABAQD: "Tòa án nhân dân khu vực 5 – Bắc Ninh",
-    nguoiKhangNghi: "Viện trưởng Viện kiểm sát nhân dân tối cao",
+    nguoiKhangNghi: "Chánh án tòa án nhân dân tối cao",
     soNgayKhangNghi: "QDKN_1201 – 01/05/2026", soNgayThuLy: "54681813 – 09/07/2026",
     vienKiemSat: "Viện kiểm sát nhân dân tối cao", toaAnGiaiQuyet: "Tòa án nhân dân tối cao",
     biCao: "Đỗ Thành Công", loaiAn: "Hình sự", chuToa: "Lê Thị Thu Hiển",
@@ -205,7 +205,7 @@ const ROWS: VuXetXuRow[] = [
     ttv: "Hoàng Quỳnh Trang", ldv: "Nguyễn Như Thắng", tp: "Nguyễn Biên Thùy",
     trangThai: "Đã xét xử", soQD: "102/2026/QĐ-GĐT", ngayQD: "25/06/2026",
     soNgayBAQD: "99/2026/HS-PT – 20/04/2026", toaRABAQD: "Tòa án nhân dân tỉnh Vĩnh Phúc",
-    nguoiKhangNghi: "Viện trưởng Viện kiểm sát nhân dân tối cao",
+    nguoiKhangNghi: "Chánh án tòa án nhân dân tối cao",
     soNgayKhangNghi: "QDKN_1402 – 05/05/2026", soNgayThuLy: "54681555 – 10/05/2026",
     vienKiemSat: "Viện kiểm sát nhân dân tối cao", toaAnGiaiQuyet: "Tòa án nhân dân tối cao",
     biCao: "Bùi Thị Tuyết", loaiAn: "Hình sự", chuToa: "Nguyễn Biên Thùy",
@@ -222,7 +222,7 @@ const ROWS: VuXetXuRow[] = [
     ttv: "Vũ Diệu Thúy", ldv: "Nguyễn Như Thắng", tp: "Lê Thị Thu Hiển",
     trangThai: "Chuyển thẩm quyền", soQD: "18/2026/QĐ-CTQ", ngayQD: "15/06/2026",
     soNgayBAQD: "45/2026/HS-ST – 12/05/2026", toaRABAQD: "Tòa án nhân dân tỉnh Quảng Ninh",
-    nguoiKhangNghi: "Viện trưởng Viện kiểm sát nhân dân tối cao",
+    nguoiKhangNghi: "Chánh án tòa án nhân dân tối cao",
     soNgayKhangNghi: "QDKN_1600 – 20/05/2026", soNgayThuLy: "54681600 – 01/06/2026",
     vienKiemSat: "Viện kiểm sát nhân dân tối cao", toaAnGiaiQuyet: "Tòa án nhân dân tối cao",
     biCao: "Nguyễn Văn Lợi", loaiAn: "Hình sự", chuToa: "Lê Thị Thu Hiển",
@@ -241,7 +241,7 @@ const ROWS: VuXetXuRow[] = [
     ttv: "Hoàng Quỳnh Trang", ldv: "Lê Thị Thu Hiển", tp: "Nguyễn Như Thắng",
     trangThai: "Chưa xét xử",
     soNgayBAQD: "21/2026/DS-ST – 03/07/2026", toaRABAQD: "Tòa án nhân dân khu vực 5 – Bắc Ninh",
-    nguoiKhangNghi: "Viện trưởng Viện kiểm sát nhân dân tối cao",
+    nguoiKhangNghi: "Chánh án tòa án nhân dân tối cao",
     soNgayKhangNghi: "QDKN_1543 – 15/06/2026", soNgayThuLy: "–",
     vienKiemSat: "Viện kiểm sát nhân dân tối cao", toaAnGiaiQuyet: "Tòa án nhân dân tối cao",
     biCao: "Ngô Mai Trang", loaiAn: "Dân sự", chuToa: "Nguyễn Như Thắng",
@@ -258,7 +258,7 @@ const ROWS: VuXetXuRow[] = [
     ttv: "Vũ Diệu Thúy", ldv: "Phạm Thị Bích Ngọc", tp: "Nguyễn Như Thắng",
     trangThai: "Đã xét xử", soQD: "88/2026/QĐ-GĐT", ngayQD: "08/07/2026",
     soNgayBAQD: "08/2026/DS-ST – 08/07/2025", toaRABAQD: "Tòa án nhân dân khu vực 5 – Bắc Ninh",
-    nguoiKhangNghi: "Viện trưởng Viện kiểm sát nhân dân tối cao",
+    nguoiKhangNghi: "Chánh án tòa án nhân dân tối cao",
     soNgayKhangNghi: "QDKN_0987 – 10/04/2026", soNgayThuLy: "54681748 – 08/07/2026",
     vienKiemSat: "Viện kiểm sát nhân dân tối cao", toaAnGiaiQuyet: "Tòa án nhân dân tối cao",
     biCao: "Nguyễn Quốc Huy", loaiAn: "Dân sự", chuToa: "Nguyễn Như Thắng",
@@ -275,7 +275,7 @@ const ROWS: VuXetXuRow[] = [
     ttv: "Vô Thị Thúy Giang", ldv: "Lê Thị Thu Hiển", tp: "Nguyễn Như Thắng",
     trangThai: "Chưa xét xử",
     soNgayBAQD: "77/2026/DS-PT – 28/06/2026", toaRABAQD: "Tòa án nhân dân TP Đà Nẵng",
-    nguoiKhangNghi: "Viện trưởng Viện kiểm sát nhân dân tối cao",
+    nguoiKhangNghi: "Chánh án tòa án nhân dân tối cao",
     soNgayKhangNghi: "QDKN_2300 – 05/07/2026", soNgayThuLy: "54682300 – 12/07/2026",
     vienKiemSat: "Viện kiểm sát nhân dân tối cao", toaAnGiaiQuyet: "Tòa án nhân dân tối cao",
     biCao: "Lê Văn Hùng", loaiAn: "Dân sự", chuToa: "Nguyễn Như Thắng",
@@ -292,7 +292,7 @@ const ROWS: VuXetXuRow[] = [
     ttv: "Nguyễn Thị Hương", ldv: "Phạm Thị Bích Ngọc", tp: "Trịnh Đức Minh",
     trangThai: "Chưa xét xử", thoiHanXX: "25 ngày",
     soNgayBAQD: "105/2026/DS-ST – 30/06/2026", toaRABAQD: "Tòa án nhân dân tỉnh Bình Dương",
-    nguoiKhangNghi: "Ngân hàng Thương mại Cổ phần Á Châu",
+    nguoiKhangNghi: "Chánh án tòa án nhân dân tối cao ",
     soNgayKhangNghi: "QDKN_2410 – 08/07/2026", soNgayThuLy: "54682410 – 14/07/2026",
     vienKiemSat: "Viện kiểm sát nhân dân tối cao", toaAnGiaiQuyet: "Tòa án nhân dân tối cao",
     biCao: "Trần Quốc Toản", loaiAn: "Dân sự", chuToa: "Trịnh Đức Minh",
@@ -309,7 +309,7 @@ const ROWS: VuXetXuRow[] = [
     ttv: "Trịnh Thị Minh Trang", ldv: "Lê Thị Thu Hiển", tp: "Nguyễn Như Thắng",
     trangThai: "Rút kháng nghị", soQD: "72/2026/QĐ-CA", ngayQD: "18/07/2026",
     soNgayBAQD: "34/2026/DS-PT – 02/07/2026", toaRABAQD: "Tòa án nhân dân TP Hồ Chí Minh",
-    nguoiKhangNghi: "Viện trưởng Viện kiểm sát nhân dân tối cao",
+    nguoiKhangNghi: "Chánh án tòa án nhân dân tối cao",
     soNgayKhangNghi: "QDKN_2511 – 10/07/2026", soNgayThuLy: "54682511 – 15/07/2026",
     vienKiemSat: "Viện kiểm sát nhân dân tối cao", toaAnGiaiQuyet: "Tòa án nhân dân tối cao",
     biCao: "Công ty TNHH Truyền thông XYZ", loaiAn: "Dân sự", chuToa: "Nguyễn Như Thắng",
@@ -329,7 +329,7 @@ const ROWS: VuXetXuRow[] = [
     trangThai: "Chuyển thẩm quyền", soQD: "29/2026/QĐ-CTQ", ngayQD: "12/07/2026",
     soNgayBAQD: "0807/2026/HC-ST – 08/07/2025", toaRABAQD: "Tòa án nhân dân quận Ninh Kiều",
     soNgayKhangNghi: "QDKN_0654 – 20/03/2026", soNgayThuLy: "54681800 – 08/07/2026",
-    nguoiKhangNghi: "Viện trưởng Viện kiểm sát nhân dân tối cao",
+    nguoiKhangNghi: "Chánh án tòa án nhân dân tối cao",
     vienKiemSat: "Viện kiểm sát nhân dân tối cao", toaAnGiaiQuyet: "Tòa án nhân dân tối cao",
     biCao: "ỦY BAN NHÂN DÂN QUẬN NINH KIỀU", loaiAn: "Hành chính", chuToa: "Nguyễn Như Thắng",
     hdxx: "Hội đồng toàn thể", ngayXX: "–", phongXX: "–",
@@ -345,7 +345,7 @@ const ROWS: VuXetXuRow[] = [
     ttv: "Trịnh Thị Minh Trang", ldv: "Nguyễn Như Thắng", tp: "Lê Thị Thu Hiển",
     trangThai: "Chưa xét xử",
     soNgayBAQD: "18/2026/HC-ST – 08/07/2026", toaRABAQD: "Tòa án nhân dân cấp cao tại Hà Nội",
-    nguoiKhangNghi: "Viện trưởng Viện kiểm sát nhân dân tối cao",
+    nguoiKhangNghi: "Chánh án tòa án nhân dân tối cao",
     soNgayKhangNghi: "QDKN_2613 – 09/07/2026", soNgayThuLy: "54682613 – 10/07/2026",
     vienKiemSat: "Viện kiểm sát nhân dân tối cao", toaAnGiaiQuyet: "Tòa án nhân dân tối cao",
     biCao: "Ủy ban nhân dân tỉnh Bắc Ninh", loaiAn: "Hành chính", chuToa: "Lê Thị Thu Hiển",
@@ -362,7 +362,7 @@ const ROWS: VuXetXuRow[] = [
     ttv: "Hoàng Quỳnh Trang", ldv: "Phạm Thị Bích Ngọc", tp: "Trịnh Đức Minh",
     trangThai: "Chưa xét xử", thoiHanXX: "14 ngày",
     soNgayBAQD: "52/2026/HC-PT – 25/06/2026", toaRABAQD: "Tòa án nhân dân cấp cao tại TP.HCM",
-    nguoiKhangNghi: "Viện trưởng Viện kiểm sát nhân dân tối cao",
+    nguoiKhangNghi: "Chánh án tòa án nhân dân tối cao",
     soNgayKhangNghi: "QDKN_2714 – 02/07/2026", soNgayThuLy: "54682714 – 12/07/2026",
     vienKiemSat: "Viện kiểm sát nhân dân tối cao", toaAnGiaiQuyet: "Tòa án nhân dân tối cao",
     biCao: "Ủy ban nhân dân TP Thủ Đức", loaiAn: "Hành chính", chuToa: "Trịnh Đức Minh",
@@ -380,7 +380,7 @@ const ROWS: VuXetXuRow[] = [
     trangThai: "Chưa xét xử",
     soNgayBAQD: "99/2026/HC-ST – 12/07/2026", toaRABAQD: "Tòa án nhân dân tỉnh Vĩnh Phúc",
     soNgayKhangNghi: "QDKN_2815 – 15/07/2026", soNgayThuLy: "–",
-    nguoiKhangNghi: "Viện trưởng Viện kiểm sát nhân dân tối cao",
+    nguoiKhangNghi: "Chánh án tòa án nhân dân tối cao",
     vienKiemSat: "Viện kiểm sát nhân dân tối cao", toaAnGiaiQuyet: "Tòa án nhân dân tối cao",
     biCao: "Ủy ban nhân dân huyện Yên Lạc", loaiAn: "Hành chính", chuToa: "–",
     hdxx: "–", ngayXX: "–", phongXX: "–",
@@ -396,7 +396,7 @@ const ROWS: VuXetXuRow[] = [
     ttv: "Nguyễn Thị Hương", ldv: "Phạm Thị Bích Ngọc", tp: "Nguyễn Biên Thùy",
     trangThai: "Đã xét xử", soQD: "44/2026/QĐ-GĐT", ngayQD: "28/06/2026",
     soNgayBAQD: "14/2026/HC-ST – 10/05/2026", toaRABAQD: "Tòa án nhân dân tỉnh Hải Dương",
-    nguoiKhangNghi: "Viện trưởng Viện kiểm sát nhân dân tối cao",
+    nguoiKhangNghi: "Chánh án tòa án nhân dân tối cao",
     soNgayKhangNghi: "QDKN_2916 – 20/05/2026", soNgayThuLy: "54682916 – 05/06/2026",
     vienKiemSat: "Viện kiểm sát nhân dân tối cao", toaAnGiaiQuyet: "Tòa án nhân dân tối cao",
     biCao: "Cục trưởng Cục Thuế tỉnh Hải Dương", loaiAn: "Hành chính", chuToa: "Nguyễn Biên Thùy",
@@ -414,7 +414,7 @@ const ROWS: VuXetXuRow[] = [
     trangThai: "Rút kháng nghị", soQD: "81/2026/QĐ-CA", ngayQD: "02/07/2026",
     soNgayBAQD: "28/2026/HC-PT – 01/06/2026", toaRABAQD: "Tòa án nhân dân cấp cao tại Hà Nội",
     soNgayKhangNghi: "QDKN_3017 – 10/06/2026", soNgayThuLy: "54683017 – 15/06/2026",
-    nguoiKhangNghi: "Viện trưởng Viện kiểm sát nhân dân tối cao",
+    nguoiKhangNghi: "Chánh án tòa án nhân dân tối cao",
     vienKiemSat: "Viện kiểm sát nhân dân tối cao", toaAnGiaiQuyet: "Tòa án nhân dân tối cao",
     biCao: "Văn phòng Đăng ký đất đai tỉnh Hòa Bình", loaiAn: "Hành chính", chuToa: "Lê Thị Thu Hiển",
     hdxx: "Hội đồng 5 thẩm phán", ngayXX: "–", phongXX: "–",
@@ -4200,6 +4200,7 @@ function TabQuyetDinhBiCao({ row }: { row?: VuXetXuRow }) {
   const [search, setSearch] = useState("");
   const [showAddMenu, setShowAddMenu] = useState(false);
   const [showTaoDuThao, setShowTaoDuThao] = useState(false);
+  const [pendingQuyetDinhType, setPendingQuyetDinhType] = useState("Quyết định tiếp tục tạm giam");
 
   const [dataList, setDataList] = useState([
     {
@@ -4234,7 +4235,8 @@ function TabQuyetDinhBiCao({ row }: { row?: VuXetXuRow }) {
     },
   ]);
 
-  const handleAddQuyetDinh = () => {
+  const handleAddQuyetDinh = (type: string) => {
+    setPendingQuyetDinhType(type);
     setShowAddMenu(false);
     setShowTaoDuThao(true);
   };
@@ -4288,7 +4290,7 @@ function TabQuyetDinhBiCao({ row }: { row?: VuXetXuRow }) {
                 id: nextId,
                 stt: prev.length + 1,
                 tenBiCao: "Trần Văn Hải – 2000 – Tội che giấu tội phạm",
-                tenQuyetDinh: "Quyết định tiếp tục tạm giam",
+                tenQuyetDinh: pendingQuyetDinhType,
                 soQD: d.soQuyetDinh || "54682800/2026/THAHS-QĐ",
                 ngayQD: d.ngayQuyetDinh || "09/08/2026",
                 nguoiKy: { ten: d.nguoiKy || "Phạm Quốc Hưng – Phó CA", status: "Chờ ký", isDone: false },
@@ -4437,7 +4439,27 @@ function TabQuyetDinhBiCao({ row }: { row?: VuXetXuRow }) {
                 }}
               >
                 <button
-                  onClick={handleAddQuyetDinh}
+                  onClick={() => handleAddQuyetDinh("Quyết định tiếp tục tạm giam")}
+                  style={{
+                    width: "100%",
+                    padding: "8px 12px",
+                    background: "none",
+                    border: "none",
+                    textAlign: "left",
+                    fontSize: 12,
+                    fontFamily: F,
+                    color: "#111827",
+                    cursor: "pointer",
+                    transition: "background 0.15s",
+                    borderBottom: `1px solid ${BORDER}`,
+                  }}
+                  onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = "#f3f4f6"; }}
+                  onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = "none"; }}
+                >
+                  Quyết định tiếp tục tạm giam
+                </button>
+                <button
+                  onClick={() => handleAddQuyetDinh("Quyết định đình chỉ thi hành án")}
                   style={{
                     width: "100%",
                     padding: "8px 12px",
@@ -4453,7 +4475,7 @@ function TabQuyetDinhBiCao({ row }: { row?: VuXetXuRow }) {
                   onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = "#f3f4f6"; }}
                   onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = "none"; }}
                 >
-                  Quyết định tiếp tục tạm giam
+                  Quyết định đình chỉ thi hành án
                 </button>
               </div>
             )}

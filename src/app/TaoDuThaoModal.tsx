@@ -496,6 +496,8 @@ export function TaoDuThaoModal({
   const [nguoiKy, setNguoiKy] = useState("Nguyễn Biên Thuỳ - Thẩm phán TANDTC");
   const [ngayPhatHanh, setNgayPhatHanh] = useState("");
   const [noiDung, setNoiDung] = useState("");
+  const [thamQuyenXX, setThamQuyenXX] = useState("Hội đồng Thẩm phán TANDTC");
+  const [noiDungVuAn, setNoiDungVuAn] = useState("");
 
   const [daLaySo, setDaLaySo] = useState(false);
   const [showTrinhKy, setShowTrinhKy] = useState(false);
@@ -1021,21 +1023,51 @@ export function TaoDuThaoModal({
             </div>
 
             {ketQuaGQ === "khang-nghi" && (
-              <div style={{ marginTop: 4 }}>
-                <label style={lblSt}>
-                  <span style={{ color: "#dc2626", marginRight: 3 }}>*</span>
-                  Chọn Bị cáo
-                </label>
-                <select
-                  value={selectedBiCao}
-                  onChange={e => setSelectedBiCao(e.target.value)}
-                  style={{ ...inSt, cursor: "pointer", maxWidth: 380 }}
-                >
-                  <option value="">-- Chọn bị cáo --</option>
-                  {biCaoOptions.map(bc => (
-                    <option key={bc} value={bc}>{bc}</option>
-                  ))}
-                </select>
+              <div style={{ marginTop: 4, display: "flex", flexDirection: "column", gap: 10 }}>
+                <div>
+                  <label style={lblSt}>
+                    <span style={{ color: "#dc2626", marginRight: 3 }}>*</span>
+                    Chọn Bị cáo
+                  </label>
+                  <select
+                    value={selectedBiCao}
+                    onChange={e => setSelectedBiCao(e.target.value)}
+                    style={{ ...inSt, cursor: "pointer", maxWidth: 380 }}
+                  >
+                    <option value="">-- Chọn bị cáo --</option>
+                    {biCaoOptions.map(bc => (
+                      <option key={bc} value={bc}>{bc}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label style={lblSt}>
+                    <span style={{ color: "#dc2626", marginRight: 3 }}>*</span>
+                    Thẩm quyền xét xử
+                  </label>
+                  <select
+                    value={thamQuyenXX}
+                    onChange={e => setThamQuyenXX(e.target.value)}
+                    style={{ ...inSt, cursor: "pointer", maxWidth: 380 }}
+                  >
+                    <option value="Hội đồng Thẩm phán TANDTC">Hội đồng Thẩm phán TANDTC</option>
+                    <option value="Ủy ban Thẩm phán TAND cấp cao">Ủy ban Thẩm phán TAND cấp cao</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label style={lblSt}>
+                    Nội dung vụ án
+                  </label>
+                  <textarea
+                    value={noiDungVuAn}
+                    onChange={e => setNoiDungVuAn(e.target.value)}
+                    placeholder="Nhập tóm tắt nội dung vụ án..."
+                    rows={4}
+                    style={{ ...inSt, resize: "vertical", width: "100%", height: "auto" }}
+                  />
+                </div>
               </div>
             )}
           </div>

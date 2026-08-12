@@ -1453,9 +1453,19 @@ function TabDanhSachDon({ detail }: { detail: VuAnDetailData }) {
     { stt: 2, maDon: "KN-88421", thongTinGQ: "Đã thụ lý", soThuLy: "KN-2026/00142", ngayThuLy: "15/05/2026", ngayNhan: "15/05/2026", nguoiDung: "Nguyễn Thị Lan", phanLoai: "Đơn khiếu nại tố tụng", loaiDon: "DON_CHINH", noiDung: "Đơn đề nghị xem xét giám đốc thẩm đối với bản án sơ thẩm." }
   ]).map((d, idx) => {
     const isAnQuocHoi = isDetailAnQuocHoi || (d as any).isAnQuocHoi || (d as any).phanLoai?.includes("Quốc hội") || idx === 0;
+    const isKhieuNai = Boolean(
+      detail?.isKhieuNai ||
+      detail?.entityWord === "Khiếu nại" ||
+      (typeof detail?.maVuAn === "string" && (detail.maVuAn.startsWith("KN") || detail.maVuAn.includes("KN"))) ||
+      (detail as any).maSo?.startsWith("KN")
+    );
+    let hT = isAnQuocHoi ? "Công văn" : d.phanLoai;
+    if (isKhieuNai && hT === "Công văn") {
+      hT = "Đơn khiếu nại tố cáo trong tố tụng";
+    }
     return {
       ...d,
-      hinhThucText: isAnQuocHoi ? "Công văn" : d.phanLoai,
+      hinhThucText: hT,
       isAnQuocHoi,
     };
   });
@@ -1990,7 +2000,7 @@ function TabToTrinh({ detail, userRole }: { detail?: VuAnDetailData; userRole?: 
     } else if (data?.ketQuaGQ === "xep-don") {
       tenDuThao = "Dự thảo Thông báo xếp đơn đề nghị";
     } else if (data?.ketQuaGQ === "vks-dang-giai-quyet") {
-      tenDuThao = "Dự thảo Thông báo Viện kiểm sát đang giải quyết";
+      tenDuThao = "Dự thảo trả lời đơn";
     }
     const newRow = {
       stt: 1,
