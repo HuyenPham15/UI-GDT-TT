@@ -297,7 +297,7 @@ export function QuanLyKhieuNaiView({
                         <div style={{ display: "flex", gap: 4, flexWrap: "wrap", marginTop: 2 }}>
                           {row.anLoai === "chi-dao" && <Badge color="#92400e" bg="#fef3c7">Án chỉ đạo</Badge>}
                           {row.anLoai === "quoc-hoi" && <Badge color="#3730a3" bg="#e0e7ff">Án Quốc hội</Badge>}
-                          {row.anLoai === "tvtn" && <Badge color="#065f46" bg="#d1fae5">Án TVTN</Badge>}
+                          {row.anLoai === "tvtn" && <Badge color="#065f46" bg="#d1fae5">Người chưa thành niên</Badge>}
                           {row.anLoai === "tu-hinh" && <Badge color="#991b1b" bg="#fee2e2">Án tử hình</Badge>}
                         </div>
                       </div>

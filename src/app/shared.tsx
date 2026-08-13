@@ -50,11 +50,11 @@ export function StatusBadge({ status }: { status: DonCase["trangThai"] | undefin
 export function VuAnBtn({ action, onClick }: { action: VuAnAction; onClick?: () => void }) {
   const map: Record<VuAnAction, { label: string; color: string; bg: string; border: string }> = {
     "chuyen-vu-an": { label: "Chuyển vụ án", color: "#1e40af", bg: "#dbeafe", border: "#93c5fd" },
-    "huy-ghep": { label: "Hủy ghép vụ án", color: "#92400e", bg: "#fef3c7", border: "#fcd34d" },
     "them-vu-an": { label: "Thêm vụ án", color: "#ffffff", bg: RED, border: RED },
     "ghep-vu-an": { label: "Ghép vụ án", color: "#065f46", bg: "#d1fae5", border: "#6ee7b7" },
   };
   const s = map[action];
+  if (!s) return null;
   return (
     <button
       onClick={onClick}
@@ -82,10 +82,10 @@ export function Tag({ type }: { type: string }) {
         🏛️ Án quốc hội
       </Badge>
     );
-  if (type === "an-tvtn" || type === "Án TVTN")
+  if (type === "an-tvtn" || type === "Người chưa thành niên")
     return (
       <Badge color="#065f46" bg="#d1fae5">
-        📋 Án TVTN
+        📋 Người chưa thành niên
       </Badge>
     );
   if (type === "an-tu-hinh" || type === "Án tử hình")
@@ -103,11 +103,11 @@ export function getAnDacThuOptions(userRole?: UserRoleType, loaiAnStr?: string) 
   const isOtherVu = userRole === "vu-2" || userRole === "vu-3" || userRole === "vu-4" || userRole === "dan-su" || userRole === "hanh-chinh";
 
   if (isVu1) {
-    return ["Án quốc hội", "Án chỉ đạo", "Án TVTN", "Án tử hình"];
+    return ["Án quốc hội", "Án chỉ đạo", "Người chưa thành niên", "Án tử hình"];
   } else if (isOtherVu) {
     return ["Án quốc hội", "Án chỉ đạo"];
   } else {
-    return ["Án quốc hội", "Án chỉ đạo", "Án TVTN", "Án tử hình"];
+    return ["Án quốc hội", "Án chỉ đạo", "Người chưa thành niên", "Án tử hình"];
   }
 }
 

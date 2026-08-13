@@ -2342,31 +2342,12 @@ function Container87() {
   );
 }
 
-function Button12() {
-  return (
-    <div className="bg-[rgba(239,68,68,0.78)] content-stretch flex flex-col items-center justify-center px-[8px] py-[4px] relative rounded-[4px] shrink-0 w-[88px]" data-name="Button">
-      <div className="[word-break:break-word] flex flex-col font-['Be_Vietnam_Pro:Regular',sans-serif] justify-center leading-[0] not-italic relative shrink-0 text-[10px] text-center text-white whitespace-nowrap">
-        <p className="leading-[16px]">Hủy ghép vụ án</p>
-      </div>
-    </div>
-  );
-}
-
-function Data7() {
-  return (
-    <div className="relative shrink-0 w-[104px]" data-name="Data">
-      <div className="bg-clip-padding border-0 border-[transparent] border-solid content-stretch flex flex-col items-start pl-[12px] relative size-full">
-        <Button12 />
-      </div>
-    </div>
-  );
-}
 
 function BackgroundBorder() {
   return (
     <div className="bg-white content-stretch flex items-center justify-end px-[9px] py-[2px] relative rounded-[9999px] shrink-0 w-[144px]" data-name="Background+Border">
       <div aria-hidden className="absolute border border-solid border-white inset-0 pointer-events-none rounded-[9999px]" />
-      <Data7 />
+      {/* <Data7 /> */}
     </div>
   );
 }

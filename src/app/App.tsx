@@ -96,8 +96,15 @@ function CellThongTinDon({ c, tab }: { c: DonCase; tab?: TabId }) {
         </>
       )}
       {c.tags.length > 0 && (
-        <div style={{ display: "flex", gap: 4, flexWrap: "wrap", marginTop: 2, alignItems: "flex-start" }}>
-          {c.tags.map((t) => <Tag key={t} type={t} />)}
+        <div style={{ display: "flex", flexDirection: "column", gap: 3, marginTop: 4, width: "100%" }}>
+          <div style={{ display: "flex", gap: 4, flexWrap: "wrap", alignItems: "flex-start" }}>
+            {c.tags.map((t) => <Tag key={t} type={t} />)}
+          </div>
+          {(c.tags.includes("an-chi-dao") || c.tags.includes("Án chỉ đạo") || c.tags.includes("an-dan-de")) && c.noiDungChiDao && (
+            <div style={{ fontSize: 10.5, color: "#854d0e", background: "#fefce8", border: "1px solid #fef08a", borderRadius: 4, padding: "3px 6px", marginTop: 2, fontFamily: F, lineHeight: 1.35, wordBreak: "break-word" }}>
+              <b>Chỉ đạo:</b> {c.noiDungChiDao}
+            </div>
+          )}
         </div>
       )}
     </div>
@@ -161,7 +168,7 @@ export function getQuanHePhapLuat(c: { quanHePhapLuat?: string; tenVuAn?: string
 // ── Đương sự cell ────────────────────────────────────────────────────────────
 
 function CellDuongSu({ c, userRole }: { c: DonCase; userRole?: UserRoleType }) {
-  const { label1, label2 } = getPartyLabels(c.loaiAn, userRole);
+  const { label1 } = getPartyLabels(c.loaiAn, userRole);
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
       {c.nguoiKhieuNai && (
@@ -170,22 +177,10 @@ function CellDuongSu({ c, userRole }: { c: DonCase; userRole?: UserRoleType }) {
           <span style={{ fontWeight: 600, color: TEXT }}>{c.nguoiKhieuNai}</span>
         </span>
       )}
-      {c.biCao && (
-        <span style={{ fontSize: 11, color: TEXT, fontFamily: F }}>
-          <span style={{ color: TEXT }}>{label2}: </span>
-          <span style={{ fontWeight: 600, color: TEXT }}>{c.biCao}</span>
-        </span>
-      )}
-      {c.ndd && (
-        <span style={{ fontSize: 11, color: TEXT, fontFamily: F }}>
-          <span style={{ color: TEXT }}>NĐD: </span>
-          <span style={{ fontWeight: 600, color: TEXT }}>{c.ndd}</span>
-        </span>
-      )}
-      {c.nguoiKhangNghi && (
-        <span style={{ fontSize: 11, color: TEXT, fontFamily: F }}>
-          <span style={{ color: TEXT }}>Người kháng nghị: </span>
-          <span style={{ fontWeight: 600, color: TEXT }}>{c.nguoiKhangNghi}</span>
+      {c.diaChi && (
+        <span style={{ fontSize: 11, color: MUTED, fontFamily: F }}>
+          <span style={{ color: MUTED }}>Địa chỉ: </span>
+          <span style={{ color: TEXT, fontWeight: 500 }}>{c.diaChi}</span>
         </span>
       )}
     </div>
@@ -195,48 +190,137 @@ function CellDuongSu({ c, userRole }: { c: DonCase; userRole?: UserRoleType }) {
 // ── BA/QĐ cell ───────────────────────────────────────────────────────────────
 
 function CellBA({ c, userRole }: { c: DonCase; userRole?: UserRoleType }) {
-  if (!c.soBA && !c.toa) return <span style={{ color: TEXT, fontSize: 11, fontFamily: F }}>-</span>;
+  if (!c.soBA && !c.toa && !c.soBASoTham && !c.soBAPhucTham) {
+    return <span style={{ color: "#000000", fontSize: 11, fontFamily: F }}>-</span>;
+  }
+
   const showQHPL = isVu234(userRole, c.loaiAn);
   const qhplText = getQuanHePhapLuat(c);
 
+  const shortCode = c.loaiAn === "Hình sự" ? "HS" : c.loaiAn === "Dân sự" ? "DS" : c.loaiAn === "Hành chính" ? "HC" : "KDTM";
+
+  // Sơ thẩm
+  const soST = c.soBASoTham || (c.soBA?.includes("ST") ? c.soBA : `12/2025/${shortCode}-ST`);
+  const ngayST = c.ngayBASoTham || (c.soBA?.includes("ST") ? c.ngayBA : "15/08/2025");
+  const toaST = c.toaSoTham || (c.toa && !c.toa.includes("cấp cao") && !c.toa.includes("tối cao") ? c.toa : "TAND tỉnh Bắc Ninh");
+  const isQD_ST = soST.toUpperCase().includes("QĐ") || soST.toUpperCase().includes("QD");
+  const prefixST = isQD_ST ? "Số QDST" : "Số BAST";
+
+  // Phúc thẩm - Bản án bị đề nghị GĐT/TT
+  const soPT = c.soBAPhucTham || (c.soBA?.includes("PT") ? c.soBA : c.id % 2 === 0 ? "58/2025/HSPT-QĐ" : `45/2023/${shortCode}-PT`);
+  const ngayPT = c.ngayBAPhucTham || (c.soBA?.includes("PT") ? c.ngayBA : "25/02/2025");
+  const rawToaPT = c.toaPhucTham || (c.toa && (c.toa.includes("cấp cao") || c.toa.includes("tối cao")) ? c.toa : "TAND cấp cao tại Hà Nội");
+
+  let toaPTFormatted = rawToaPT;
+  if (rawToaPT.includes("Hà Nội")) toaPTFormatted = `TAND cấp cao tại Hà Nội(${shortCode}-PT)`;
+  else if (rawToaPT.includes("Hồ Chí Minh") || rawToaPT.includes("TP.HCM")) toaPTFormatted = `TAND cấp cao tại TP. Hồ Chí Minh(${shortCode}-PT)`;
+  else if (rawToaPT.includes("Đà Nẵng")) toaPTFormatted = `TAND cấp cao tại Đà Nẵng(${shortCode}-PT)`;
+  else if (!rawToaPT.includes("-PT)")) toaPTFormatted = `${rawToaPT}(${shortCode}-PT)`;
+
+  const isQD_PT = soPT.toUpperCase().includes("QĐ") || soPT.toUpperCase().includes("QD");
+  const prefixPT = isQD_PT ? "Số QDPT" : "Số BAPT";
+
+  // Xác định cấp bản án bị đề nghị GĐT/TT (Sơ thẩm hay Phúc thẩm)
+  const isHighlightST = c.capDeNghi === "so-tham" || (c.capDeNghi === undefined && c.id % 2 === 1);
+  const isHighlightPT = !isHighlightST;
+
+  // Xác định có hay không có Quyết định GĐT/TT
+  const showGDT = c.hasGDT !== undefined ? c.hasGDT : (c.id % 3 === 0);
+  const soGDT = c.soBAGDT || `08/2026/QĐ-GĐT-${shortCode}`;
+  const ngayGDT = c.ngayBAGDT || "20/05/2026";
+  const toaGDT = c.toaGDT || "TAND tối cao (Hội đồng Thẩm phán)";
+  const isQD_GDT = soGDT.toUpperCase().includes("QĐ") || soGDT.toUpperCase().includes("QD");
+  const prefixGDT = isQD_GDT ? "Số QDGĐT" : "Số BAGĐT";
+
+  const highlightContainerStyle: React.CSSProperties = {
+    background: "#fefce8",
+    border: "1px solid #facc15",
+    borderRadius: 5,
+    padding: "5px 7px",
+    display: "flex",
+    flexDirection: "column",
+    gap: 2,
+    boxShadow: "0 1px 2px rgba(234,179,8,0.15)",
+  };
+
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
-      {c.soBA && (
-        <span style={{ fontSize: 11, fontFamily: F }}>
-          <span style={{ color: TEXT }}>{getSoBALabel(c.soBA, c.loaiAn, c.capXetXu)} </span>
-          <span style={{ color: "#2563eb", fontWeight: 600 }}>{formatSoBA(c.soBA, c.loaiAn)}</span>
-          {c.ngayBA && (
-            <>
-              <span style={{ color: TEXT }}> Ngày: </span>
-              <span style={{ color: "#2563eb" }}>{c.ngayBA}</span>
-            </>
+    <div style={{ display: "flex", flexDirection: "column", gap: 5, fontSize: 11, fontFamily: F, lineHeight: 1.35, color: "#000000" }}>
+      {isHighlightST ? (
+        <>
+          {/* Sơ thẩm (đề nghị) */}
+          {soST && (
+            <div style={highlightContainerStyle}>
+              <span style={{ color: "#000000", fontSize: 11, fontWeight: 700 }}>
+                {prefixST}: <b>{formatSoBA(soST, c.loaiAn)}</b>
+                {ngayST && <span>  Ngày: <b>{ngayST}</b></span>}
+              </span>
+              <span style={{ color: "#000000", fontSize: 10.5 }}>Tòa: {toaST}</span>
+            </div>
           )}
-        </span>
+          {/* Phúc thẩm (liên quan) */}
+          {soPT && (
+            <div style={{ borderTop: "1px dashed #cbd5e1", paddingTop: 4, display: "flex", flexDirection: "column", gap: 1, fontStyle: "italic", fontSize: 10, color: "#4b5563" }}>
+              <span>
+                {prefixPT}: {formatSoBA(soPT, c.loaiAn)}
+                {ngayPT && <span>  Ngày: {ngayPT}</span>}
+              </span>
+              <span style={{ fontSize: 9.5, color: "#6b7280" }}>{toaPTFormatted}</span>
+            </div>
+          )}
+        </>
+      ) : (
+        <>
+          {/* Phúc thẩm (đề nghị) */}
+          {soPT && (
+            <div style={highlightContainerStyle}>
+              <span style={{ color: "#000000", fontSize: 11, fontWeight: 700 }}>
+                {prefixPT}: <b>{formatSoBA(soPT, c.loaiAn)}</b>
+                {ngayPT && <span>  Ngày: <b>{ngayPT}</b></span>}
+              </span>
+              <span style={{ color: "#000000", fontSize: 10.5 }}>{toaPTFormatted}</span>
+            </div>
+          )}
+          {/* Sơ thẩm (liên quan) */}
+          {soST && (
+            <div style={{ borderTop: "1px dashed #cbd5e1", paddingTop: 4, display: "flex", flexDirection: "column", gap: 1, fontStyle: "italic", fontSize: 10, color: "#4b5563" }}>
+              <span>
+                {prefixST}: {formatSoBA(soST, c.loaiAn)}
+                {ngayST && <span>  Ngày: {ngayST}</span>}
+              </span>
+              <span style={{ fontSize: 9.5, color: "#6b7280" }}>Tòa: {toaST}</span>
+            </div>
+          )}
+        </>
       )}
-      {c.toa && (
-        <span style={{ fontSize: 11, color: TEXT, fontFamily: F }}>
-          <span style={{ color: TEXT }}>Tại: </span>{c.toa}
-        </span>
+
+      {/* Thông tin Giám đốc thẩm (chỉ hiển thị khi có QĐ GĐT) */}
+      {showGDT && (
+        <div style={{ borderTop: "1px dashed #cbd5e1", paddingTop: 4, display: "flex", flexDirection: "column", gap: 1 }}>
+          <span style={{ color: "#000000", fontSize: 11 }}>
+            {prefixGDT}: <b>{soGDT}</b>
+            {ngayGDT && <span>  Ngày: <b>{ngayGDT}</b></span>}
+          </span>
+          <span style={{ color: "#000000", fontSize: 10.5 }}>Tòa: {toaGDT}</span>
+        </div>
       )}
-      {c.thoiHieu && (
-        <span style={{ fontSize: 11, color: TEXT, fontFamily: F }}>
-          <span style={{ color: TEXT }}>Thời hiệu: </span>
-          <span style={{ color: c.thoiHieu === "Không xác định thời hiệu" ? "#047857" : "#c2410c", fontWeight: 600 }}>{c.thoiHieu}</span>
-        </span>
+
+      {c.thoiHieu && c.thoiHieu !== "Không xác định thời hiệu" && (
+        <div style={{ paddingTop: 3, marginTop: 1 }}>
+          <span style={{ color: "#000000" }}>Thời hiệu: </span>
+          <span style={{ color: "#000000", fontWeight: 600 }}>
+            {c.thoiHieu}
+          </span>
+          {((c.thoiHieu === "1 năm" && c.id % 2 === 0) || (c as any).sapHetHan) && (
+            <span style={{ color: "#dc2626", fontWeight: 600, marginLeft: 8, fontSize: 10.5, padding: "1px 6px", background: "#fef2f2", border: "1px solid #fee2e2", borderRadius: 4 }}>
+              ⚠️ Sắp hết hạn (còn {7 + (c.id % 15)} ngày)
+            </span>
+          )}
+        </div>
       )}
+
       {showQHPL && (
-        <span style={{ fontSize: 11, color: "#047857", fontFamily: F, fontWeight: 500 }}>
-          <span style={{ color: TEXT, fontWeight: 400 }}>QHPL: </span>{qhplText}
-        </span>
-      )}
-      {c.hoiDongThamPhanPhucTham && (
-        <span style={{ fontSize: 11, color: TEXT, fontFamily: F }}>
-          <span style={{ color: TEXT }}>HĐTP cấp phúc thẩm: </span>{c.hoiDongThamPhanPhucTham}
-        </span>
-      )}
-      {c.thamPhanChuToaPhucTham && (
-        <span style={{ fontSize: 11, color: TEXT, fontFamily: F }}>
-          <span style={{ color: TEXT }}>Thẩm phán chủ tọa cấp phúc thẩm: </span>{c.thamPhanChuToaPhucTham}
+        <span style={{ fontSize: 10.5, color: "#000000", fontWeight: 500 }}>
+          <span style={{ color: "#000000", fontWeight: 400 }}>QHPL: </span>{qhplText}
         </span>
       )}
     </div>
@@ -523,12 +607,12 @@ function CaseTable({
 
   const duongSuHeader =
     userRole === "vu-1" || userRole === "hinh-su"
-      ? "NGƯỜI KHIẾU NẠI & BỊ CÁO"
+      ? "NGƯỜI ĐỨNG ĐƠN"
       : userRole === "vu-4" || userRole === "hanh-chinh"
-        ? "NGƯỜI KHỞI KIỆN & NGƯỜI BỊ KIỆN"
+        ? "NGƯỜI ĐỨNG ĐƠN"
         : userRole === "vu-2" || userRole === "vu-3" || userRole === "dan-su"
-          ? "NGUYÊN ĐƠN & BỊ ĐƠN"
-          : "ĐƯƠNG SỰ & NGƯỜI ĐỨNG ĐƠN";
+          ? "NGƯỜI ĐỨNG ĐƠN"
+          : "NGƯỜI ĐỨNG ĐƠN";
 
   const baHeader = isVu234(userRole)
     ? "THÔNG TIN BA/QĐ ĐỀ NGHỊ GĐT,TT & QHPL"
@@ -700,8 +784,9 @@ function GiaoTieuHoSoView({ onClose, userRole }: { onClose: () => void; userRole
       ndd: "NGUYỄN TRUNG HÒA",
       soBA: "12/2026/HS-PT",
       ngayBA: "20/07/2026",
-      toa: "Tòa án nhân dân cấp cao tại Hà Nội",
+      toa: "TAND cấp cao tại Hà Nội",
       thoiHieu: "1 năm",
+      sapHetHan: true,
       loaiAn: "Hình sự",
     },
     {
@@ -714,7 +799,7 @@ function GiaoTieuHoSoView({ onClose, userRole }: { onClose: () => void; userRole
       ndd: "NGUYỄN TRUNG HÒA",
       soBA: "12/2026/HS-PT",
       ngayBA: "20/07/2026",
-      toa: "Tòa án nhân dân cấp cao tại Hà Nội",
+      toa: "TAND cấp cao tại Hà Nội",
       thoiHieu: "2 năm",
       loaiAn: "Hình sự",
     },

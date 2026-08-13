@@ -554,7 +554,7 @@ function ThongTinChungBlock({ row }: { row: VuXetXuRow }) {
   if (row.tag === "an-chi-dao") tagBadges.push(<span key="cd" style={{ display: "inline-flex", alignItems: "center", gap: 4, padding: "3px 10px", background: "#fef9c3", border: "1px solid #ca8a04", borderRadius: 4, fontSize: 11, fontWeight: 700, color: "#92400e", fontFamily: F }}>⭐ Án chỉ đạo</span>);
   if (row.tag === "an-qh") tagBadges.push(<span key="qh" style={{ display: "inline-flex", alignItems: "center", gap: 4, padding: "3px 10px", background: "#dbeafe", border: "1px solid #3b82f6", borderRadius: 4, fontSize: 11, fontWeight: 700, color: "#1e40af", fontFamily: F }}>🏛 Án QH</span>);
   if (row.tag === "an-tu-hinh") tagBadges.push(<span key="th" style={{ display: "inline-flex", alignItems: "center", gap: 4, padding: "3px 10px", background: "#fee2e2", border: "1px solid #ef4444", borderRadius: 4, fontSize: 11, fontWeight: 700, color: "#991b1b", fontFamily: F }}>⚠ Án tử hình</span>);
-  if (row.tag === "an-tvtn") tagBadges.push(<span key="tvtn" style={{ display: "inline-flex", alignItems: "center", gap: 4, padding: "3px 10px", background: "#d1fae5", border: "1px solid #10b981", borderRadius: 4, fontSize: 11, fontWeight: 700, color: "#065f46", fontFamily: F }}>🔒 Án TVTN</span>);
+  if (row.tag === "an-tvtn") tagBadges.push(<span key="tvtn" style={{ display: "inline-flex", alignItems: "center", gap: 4, padding: "3px 10px", background: "#d1fae5", border: "1px solid #10b981", borderRadius: 4, fontSize: 11, fontWeight: 700, color: "#065f46", fontFamily: F }}>🔒 Người chưa thành niên</span>);
 
   const congVanNode = (
     <div style={{ display: "flex", flexDirection: "column", gap: 2, fontSize: 12, fontFamily: F, color: TEXT }}>
@@ -6667,7 +6667,7 @@ export default function QuanLyVuXetXuView({
 
   const isVu1 = userRole === "vu-1" || userRole === "hinh-su" || !userRole;
   const thuocAnOptions = isVu1
-    ? ["Án Quốc hội", "Án chỉ đạo", "Án TVTN", "Án tử hình"]
+    ? ["Án Quốc hội", "Án chỉ đạo", "Người chưa thành niên", "Án tử hình"]
     : ["Án Quốc hội", "Án chỉ đạo"];
 
   const handleResetFilters = () => {
@@ -7170,7 +7170,7 @@ export default function QuanLyVuXetXuView({
                         )}
                         {row.tag === "an-tvtn" && (
                           <span style={{ display: "inline-flex", alignItems: "center", gap: 3, padding: "1px 7px", background: "#d1fae5", color: "#065f46", border: "1px solid #a7f3d0", borderRadius: 3, fontSize: 10, fontWeight: 600, fontFamily: F }}>
-                            📋 Án TVTN
+                            📋 Người chưa thành niên
                           </span>
                         )}
                       </div>

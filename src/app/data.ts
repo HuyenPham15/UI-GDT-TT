@@ -8,7 +8,6 @@ export type TabId =
 
 export type VuAnAction =
   | "chuyen-vu-an"
-  | "huy-ghep"
   | "them-vu-an"
   | "ghep-vu-an";
 
@@ -105,6 +104,7 @@ export interface DonCase {
   biCao?: string;
   ndd?: string;
   nguoiKhangNghi?: string;
+  diaChi?: string;
 
   // BA/QĐ
   soBA: string;
@@ -155,6 +155,7 @@ export interface DonCase {
   nguoiTra?: string;
   ngayTra?: string;
   lyDoTraLai?: string;
+  noiDungChiDao?: string;
 }
 
 export type ToTrinhScope = "case" | "submission";
@@ -342,9 +343,9 @@ const THAM_PHAN_LIST = [
 ];
 const CAP_THAM_PHAN_LIST = ["TPB3", "TPB2", "TPTC", "TPB1", "TPB3", "TPTC", "TPB2", "TPB1", "TPB3", "TPTC"];
 const TOA_LIST = [
-  "Tòa án nhân dân cấp cao tại thành phố Hồ Chí Minh",
+  "TAND cấp cao tại thành phố Hồ Chí Minh",
   "TAND tỉnh Bắc Ninh",
-  "Tòa án nhân dân cấp cao tại Hà Nội",
+  "TAND cấp cao tại Hà Nội",
   "TAND tỉnh Quảng Ninh",
   "Tòa án nhân dân thành phố Đà Nẵng",
   "Tòa án nhân dân tỉnh Thanh Hóa",
@@ -390,6 +391,19 @@ const NDD_LIST = [
   "Lập Thái Phúc",
 ];
 
+const DIA_CHI_LIST = [
+  "Số 12 Phố Lê Duẩn, Quận Hoàn Kiếm, TP. Hà Nội",
+  "Xã Vân Sơn, Huyện Lương Sơn, Tỉnh Hòa Bình",
+  "Phường Hoàng Văn Thụ, TP. Bắc Giang, Tỉnh Bắc Giang",
+  "Số 7, Xã Trường Sơn, Tỉnh Bắc Ninh",
+  "Thị trấn Nham Biền, Huyện Yên Dũng, Tỉnh Bắc Giang",
+  "Số 10, Phường Chũ, Tỉnh Bắc Ninh",
+  "Phường Hoàng Văn Thụ, TP. Bắc Giang",
+  "Thị trấn Nham Biền, Huyện Yên Dũng",
+  "Số 7, Xã Trường Sơn, Tỉnh Bắc Ninh",
+  "Số 10, Phường Chũ, Tỉnh Bắc Ninh"
+];
+
 function pad2(n: number): string {
   return String(n).padStart(2, "0");
 }
@@ -406,8 +420,55 @@ function buildCase(loaiIdx: number, recIdx: number, globalId: number): DonCase {
   const nguoiKhieuNai = NKN_LIST[recIdx % NKN_LIST.length];
   const biCao = BICAO_LIST[recIdx % BICAO_LIST.length];
   const ndd = NDD_LIST[recIdx % NDD_LIST.length];
-  const tenVuAn = meta.vuAnTitles[recIdx] || `Vụ án ${loaiAn} số ${recIdx + 1}`;
-  const soCV = String(10 + recIdx + loaiIdx);
+  const diaChi = DIA_CHI_LIST[recIdx % DIA_CHI_LIST.length];
+  let tenVuAn = meta.vuAnTitles[recIdx];
+  if (!tenVuAn) {
+    const templateIdx = recIdx % 10;
+    const nkn = NKN_LIST[recIdx % NKN_LIST.length];
+    const bicao = BICAO_LIST[recIdx % BICAO_LIST.length];
+    if (loaiAn === "Hình sự") {
+      const crimes = [
+        "Tội cố ý gây thương tích",
+        "Tội lừa đảo chiếm đoạt tài sản",
+        "Tội trộm cắp tài sản",
+        "Tội lạm dụng tín nhiệm chiếm đoạt tài sản",
+        "Tội đánh bạc",
+        "Tội tàng trữ trái phép chất ma túy",
+        "Tội vi phạm quy định về tham gia giao thông đường bộ",
+        "Tội chứa chấp hoặc tiêu thụ tài sản do người khác phạm tội mà có",
+        "Tội làm giả con dấu, tài liệu của cơ quan, tổ chức",
+        "Tội lạm dụng chức vụ, quyền hạn trong khi thi hành công vụ"
+      ];
+      tenVuAn = `Vụ án ${nkn} – ${crimes[templateIdx]}`;
+    } else if (loaiAn === "Dân sự") {
+      const tranhChaps = [
+        "Tranh chấp quyền sử dụng đất và tài sản gắn liền với đất",
+        "Tranh chấp thừa kế di sản và yêu cầu chia tài sản chung",
+        "Tranh chấp hợp đồng chuyển nhượng quyền sử dụng đất",
+        "Tranh chấp hợp đồng vay tài sản",
+        "Tranh chấp lối đi chung và ranh giới quyền sử dụng đất",
+        "Tranh chấp bồi thường thiệt hại ngoài hợp đồng",
+        "Tranh chấp đòi quyền sử dụng đất cho mượn, cho ở nhờ",
+        "Tranh chấp hợp đồng mua bán nhà đất",
+        "Tranh chấp hợp đồng đặt cọc chuyển nhượng nhà đất",
+        "Tranh chấp quyền sở hữu tài sản"
+      ];
+      tenVuAn = `Vụ án ${nkn} vs ${bicao} – ${tranhChaps[templateIdx]}`;
+    } else if (loaiAn === "Hành chính") {
+      tenVuAn = `Vụ án ${nkn} – Khiếu kiện quyết định hành chính về bồi thường, hỗ trợ tái định cư`;
+    } else if (loaiAn === "Kinh doanh thương mại") {
+      tenVuAn = `Vụ án ${nkn} vs ${bicao} – Tranh chấp hợp đồng mua bán hàng hóa`;
+    } else if (loaiAn === "Hôn nhân gia đình") {
+      tenVuAn = `Vụ án ${nkn} vs ${bicao} – Ly hôn và chia tài sản chung`;
+    } else if (loaiAn === "Lao động") {
+      tenVuAn = `Vụ án ${nkn} vs ${bicao} – Tranh chấp đơn phương chấm dứt hợp đồng lao động`;
+    } else {
+      tenVuAn = `Vụ án ${loaiAn} của ${nkn} số ${recIdx + 1}`;
+    }
+  }
+  let soCV = String(10 + recIdx + loaiIdx);
+  if (recIdx === 0) soCV = "8/3";
+  else if (recIdx === 1) soCV = "9.1";
   const ngayCV = `${pad2((recIdx % 28) + 1)}/06/2026`;
   const SHORT_MAP: Record<string, string> = {
     "Hình sự": "HS",
@@ -426,20 +487,34 @@ function buildCase(loaiIdx: number, recIdx: number, globalId: number): DonCase {
   const thuLyMoi = String(2330000 + globalId);
   const ngaythuly = `${pad2((recIdx % 28) + 1)}/06/2026`;
 
-  // Phân bổ số lượng tag linh hoạt (1, 2-3, 4 label)
+  // Phân bổ số lượng tag linh hoạt, chỉ gán nhãn cho các hồ sơ đầu để đảm bảo có đơn thường không có nhãn chiếm đa số
   let caseTags: string[] = [];
-  if (loaiAn === "Hình sự") {
-    if (recIdx % 5 === 0) caseTags = ["an-quoc-hoi", "an-chi-dao", "an-tvtn", "an-tu-hinh"];
-    else if (recIdx % 5 === 1) caseTags = ["an-tu-hinh", "an-chi-dao", "an-quoc-hoi"];
-    else if (recIdx % 5 === 2) caseTags = ["an-tu-hinh", "an-tvtn"];
-    else if (recIdx % 5 === 3) caseTags = ["an-tu-hinh"];
-    else caseTags = ["an-chi-dao"];
-  } else {
-    if (recIdx % 5 === 0) caseTags = ["an-quoc-hoi", "an-chi-dao"];
-    else if (recIdx % 5 === 1) caseTags = ["an-chi-dao", "an-quoc-hoi"];
-    else if (recIdx % 5 === 2) caseTags = ["an-chi-dao"];
-    else if (recIdx % 5 === 3) caseTags = ["an-quoc-hoi"];
-    else caseTags = ["an-chi-dao"];
+  if (recIdx < 5) {
+    if (loaiAn === "Hình sự") {
+      if (recIdx === 0) caseTags = ["an-quoc-hoi"];
+      else if (recIdx === 1) caseTags = ["an-chi-dao"];
+      else if (recIdx === 2) caseTags = ["an-tvtn"];
+      else if (recIdx === 4) caseTags = ["an-tu-hinh"];
+    } else {
+      if (recIdx === 0) caseTags = ["an-quoc-hoi"];
+      else if (recIdx === 2) caseTags = ["an-chi-dao"];
+    }
+  }
+
+  if (recIdx < 5 && (soCV === "8/3" || soCV === "9.1") && !caseTags.includes("an-quoc-hoi") && !caseTags.includes("an-chi-dao")) {
+    caseTags.push("an-quoc-hoi");
+  }
+
+  let noiDungChiDao: string | undefined = undefined;
+  if (caseTags.includes("an-chi-dao") || caseTags.includes("an-dan-de") || caseTags.includes("Án chỉ đạo")) {
+    const leaderNames = ["Nguyễn Hòa Bình (Chánh án TANDTC)", "Nguyễn Văn Tiến (Phó Chánh án TANDTC)", "Nguyễn Trí Tuệ (Phó Chánh án TANDTC)"];
+    const instructions = [
+      "Yêu cầu đẩy nhanh tiến độ giải quyết dứt điểm vụ án trước thời hạn kiểm tra.",
+      "Chỉ đạo phối hợp chặt chẽ với cơ quan điều tra làm rõ các tình tiết mâu thuẫn trong hồ sơ sơ thẩm.",
+      "Cần xem xét kỹ lưỡng các tình tiết giảm nhẹ trách nhiệm hình sự của bị cáo.",
+      "Lưu ý làm rõ vai trò đồng phạm và tính chất nguy hiểm của hành vi phạm tội."
+    ];
+    noiDungChiDao = `${leaderNames[recIdx % leaderNames.length]}: ${instructions[recIdx % instructions.length]}`;
   }
 
   let thoiHieu: string;
@@ -471,6 +546,7 @@ function buildCase(loaiIdx: number, recIdx: number, globalId: number): DonCase {
     nguoiKhieuNai,
     biCao,
     ndd,
+    diaChi,
     soBA,
     ngayBA,
     toa,
@@ -487,6 +563,7 @@ function buildCase(loaiIdx: number, recIdx: number, globalId: number): DonCase {
     toaGDT,
     capDeNghi: recIdx % 2 === 1 ? "so-tham" : "phuc-tham",
     hasGDT: recIdx % 3 === 0,
+    noiDungChiDao,
   };
 
   // Phân bổ trường hợp trình Lãnh đạo & Trạng thái để test Badge màu
@@ -568,7 +645,7 @@ function buildCase(loaiIdx: number, recIdx: number, globalId: number): DonCase {
         ttv: ttvList[2],
         ldv: "Trần Văn Bình (Phó Vụ trưởng)",
         trangThai: statusOptions[2],
-        vuAnActions: ["chuyen-vu-an", "huy-ghep"],
+        vuAnActions: ["chuyen-vu-an"],
         ngayNhan: `${10 + (recIdx % 10)}/6/2026`,
         yKienLD: [leadershipOptions[2]],
         daThuLy: true,
@@ -629,8 +706,8 @@ function buildCase(loaiIdx: number, recIdx: number, globalId: number): DonCase {
 }
 
 export const CASES: DonCase[] = LOAI_AN_META.flatMap((meta, loaiIdx) =>
-  Array.from({ length: meta.vuAnTitles.length }, (_, recIdx) =>
-    buildCase(loaiIdx, recIdx, loaiIdx * 10 + recIdx + 1),
+  Array.from({ length: 25 }, (_, recIdx) =>
+    buildCase(loaiIdx, recIdx, loaiIdx * 25 + recIdx + 1),
   ),
 );
 

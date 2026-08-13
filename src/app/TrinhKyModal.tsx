@@ -19,16 +19,29 @@ import { F, RED, BORDER, TEXT, MUTED, BG, TH_STYLE, TD_STYLE, Badge } from "./sh
 
 // ── Modal / Màn hình Hồ sơ tờ trình (Đồng bộ chuẩn giao diện theo mẫu ảnh) ─────────────
 export function HoSoToTrinhModal({
+  row,
   onClose,
   onSave,
+  onlyPrint = false,
 }: {
+  row?: any;
   onClose: () => void;
   onSave?: (doc: { ten: string; loai: string; size: string; ngay: string }) => void;
+  onlyPrint?: boolean;
 }) {
+  const isHinhSu = !row || (row.loaiAn || "").includes("Hình sự");
+  const caseTypeLabel = isHinhSu ? "hình sự" : "dân sự";
+  const partyName = row?.biCao || row?.nkn || "Nguyễn Văn A";
+  const address = row?.dcd || "Số 12, phố Phan Đình Phùng, phường Quán Thánh, quận Ba Đình, TP. Hà Nội";
+  const soBA = row?.soBA || "12/2023/HS-ST";
+  const ngayBA = row?.ngayBA || "25/06/2023";
+  const toa = row?.toa || "TAND quận Thanh Xuân";
+  const ttv = row?.ttv || "Lý Thái Phúc";
+
   // Danh sách 5 văn bản mặc định như ảnh mẫu
   const [docList, setDocList] = useState<Array<{ id: string; ten: string; loai: string; ngay: string; size?: string }>>([
-    { id: "tt-1", ten: "Tờ trình thẩm tra vụ án hình sự - Nguyễn Văn A", loai: "PDF", ngay: "25/06/2026", size: "1.2 MB" },
-    { id: "tt-2", ten: "Bản án sơ thẩm số 12/2023/HS-ST", loai: "PDF", ngay: "25/06/2026", size: "850 KB" },
+    { id: "tt-1", ten: `Tờ trình thẩm tra vụ án ${caseTypeLabel} - ${partyName}`, loai: "PDF", ngay: row?.ngayThuLy || "25/06/2026", size: "1.2 MB" },
+    { id: "tt-2", ten: `Bản án sơ thẩm số ${soBA}`, loai: "PDF", ngay: ngayBA, size: "850 KB" },
     { id: "tt-3", ten: "Quyết định kháng nghị giám đốc thẩm", loai: "PDF", ngay: "25/06/2026", size: "510 KB" },
     { id: "tt-4", ten: "Biên bản lấy lời khai nhân chứng", loai: "FILE", ngay: "25/06/2026", size: "420 KB" },
     { id: "tt-5", ten: "Kết luận giám định pháp y", loai: "PDF", ngay: "25/06/2026", size: "640 KB" },
@@ -75,9 +88,183 @@ export function HoSoToTrinhModal({
   // Tài liệu đang được chọn xem preview
   const currentDoc = docList.find(d => d.id === selectedDocId) || docList[0];
 
+  const renderPaperContent = () => {
+    return (
+      <>
+        {/* Header Phụ lục */}
+        <div style={{ textAlign: "center", fontWeight: 700, fontSize: 13, textTransform: "uppercase", marginBottom: 4 }}>
+          PHỤ LỤC I
+        </div>
+        <div style={{ textAlign: "center", fontWeight: 700, fontSize: 14, textTransform: "uppercase", marginBottom: 4 }}>
+          TỜ TRÌNH THẨM TRA VỤ ÁN {caseTypeLabel.toUpperCase()}
+        </div>
+        <div style={{ textAlign: "center", fontStyle: "italic", fontSize: 11, marginBottom: 20 }}>
+          (Kèm theo Quyết định số 75/QĐ-CA ngày 06 tháng 4 năm 2026 của Chánh án Tòa án nhân dân tối cao)
+        </div>
+
+        {/* Hai cột cơ quan ban hành & Quốc hiệu */}
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 24 }}>
+          <div style={{ textAlign: "center", width: "45%" }}>
+            <div style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase" }}>TÒA ÁN NHÂN DÂN TỐI CAO</div>
+            <div style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase" }}>VỤ GIÁM ĐỐC, KIỂM TRA ....</div>
+            <div style={{ width: 80, borderBottom: "1px solid #000", margin: "4px auto" }} />
+          </div>
+          <div style={{ textAlign: "center", width: "50%" }}>
+            <div style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase" }}>CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</div>
+            <div style={{ fontSize: 11, fontWeight: 700 }}>Độc lập - Tự do - Hạnh phúc</div>
+            <div style={{ width: 120, borderBottom: "1px solid #000", margin: "4px auto 8px" }} />
+            <div style={{ fontStyle: "italic", fontSize: 11 }}>Hà Nội, ngày &nbsp;&nbsp; tháng &nbsp;&nbsp; năm 202..</div>
+          </div>
+        </div>
+
+        {/* Tiêu đề Tờ trình */}
+        <div style={{ textAlign: "center", marginBottom: 24 }}>
+          <div style={{ fontWeight: 700, fontSize: 14, textTransform: "uppercase", marginBottom: 4 }}>TỜ TRÌNH</div>
+          <div style={{ fontWeight: 700, fontSize: 13, textTransform: "uppercase", marginBottom: 6 }}>CHÁNH ÁN TÒA ÁN NHÂN DÂN TỐI CAO</div>
+          <div style={{ fontStyle: "italic", fontSize: 11.5, lineHeight: 1.5 }}>
+            Về vụ án {partyName} {isHinhSu ? 'bị kết án về tội "......" ở tỉnh, thành phố.....' : 'tranh chấp hợp đồng mua bán nhà ở và QSDĐ...'}<br />
+            Bản án sơ thẩm số {soBA} ngày {ngayBA} của {toa}
+          </div>
+        </div>
+
+        {/* Nội dung chi tiết */}
+        <div style={{ fontSize: 12, textAlign: "justify" }}>
+          <div style={{ fontWeight: 700, marginBottom: 6 }}>1. {isHinhSu ? "Người bị kết án" : "Đương sự / Bị đơn"}</div>
+          <p style={{ margin: "0 0 10px", textIndent: 24 }}>
+            Họ và tên: <b>{partyName}</b>; Sinh năm: 1988 tại TP. Hà Nội; Nơi ĐKHKTT / Địa chỉ: {address}; Nghề nghiệp: Lao động tự do; Tiền án, tiền sự: Không.
+          </p>
+
+          <div style={{ fontWeight: 700, marginBottom: 6 }}>2. Tóm tắt nội dung vụ án và quá trình giải quyết</div>
+          <p style={{ margin: "0 0 10px", textIndent: 24 }}>
+            Theo các tài liệu có trong hồ sơ vụ án, {isHinhSu ? `khoảng 21h30 ngày 15/01/2023, tại khu vực đường Nguyễn Trãi, quận Thanh Xuân, ${partyName} đã có hành vi điều khiển phương tiện giao thông vi phạm quy định, gây thiệt hại nghiêm trọng.` : `vụ án phát sinh tranh chấp hợp đồng và quyền sử dụng đất đai giữa các đương sự liên quan đến quyền lợi của ${partyName}.`}
+          </p>
+          <p style={{ margin: "0 0 10px", textIndent: 24 }}>
+            Tại Bản án sơ thẩm số {soBA} ngày {ngayBA} của Tòa án nhân dân {toa} đã quyết định tuyên xử giải quyết đối với các yêu cầu của đương sự.
+          </p>
+
+          <div style={{ fontWeight: 700, marginBottom: 6 }}>3. Nhận định và đề xuất của Thẩm tra viên</div>
+          <p style={{ margin: "0 0 10px", textIndent: 24 }}>
+            Qua nghiên cứu toàn bộ hồ sơ vụ án, Thẩm tra viên <b>{ttv}</b> nhận thấy có một số nội dung chưa được làm rõ tại bản án trước đó, cần được xem xét giải quyết khách quan.
+          </p>
+          <p style={{ margin: "0 0 10px", textIndent: 24 }}>
+            Kính trình Chánh án Tòa án nhân dân tối cao xem xét giải quyết vụ việc theo thủ tục Giám đốc thẩm/Tái thẩm đối với Bản án nêu trên theo đúng quy định của pháp luật.
+          </p>
+        </div>
+      </>
+    );
+  };
+
+  // ── Mode: chỉ mở popup in tờ trình chứ không trỏ thẳng đến hồ sơ ──
+  if (onlyPrint) {
+    return (
+      <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)", zIndex: 1600, display: "flex", alignItems: "center", justifyContent: "center", padding: 24, fontFamily: F }}>
+        <div style={{ background: "#fff", borderRadius: 8, width: "95%", maxWidth: 840, height: "90%", display: "flex", flexDirection: "column", overflow: "hidden", boxShadow: "0 10px 25px rgba(0,0,0,0.2)" }}>
+          {/* Top Header */}
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "12px 20px", borderBottom: `1px solid ${BORDER}`, background: "#fff", flexShrink: 0 }}>
+            <span style={{ fontSize: 15, fontWeight: 700, color: "#111827", fontFamily: F }}>
+              Xem trước bản in tờ trình
+            </span>
+            <button
+              onClick={onClose}
+              style={{
+                background: "none",
+                border: "none",
+                cursor: "pointer",
+                fontSize: 22,
+                color: "#6b7280",
+                display: "flex",
+                alignItems: "center",
+                lineHeight: 1,
+              }}
+            >
+              ×
+            </button>
+          </div>
+
+          {/* Action Toolbar */}
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              padding: "8px 20px",
+              background: "#f9fafb",
+              borderBottom: `1px solid ${BORDER}`,
+              flexShrink: 0,
+              fontFamily: F,
+            }}
+          >
+            {/* Zoom controls */}
+            <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+              <button
+                onClick={() => setZoomLevel(prev => Math.max(50, prev - 10))}
+                style={{ background: "none", border: "none", cursor: "pointer", padding: 4, color: "#374151" }}
+                title="Thu nhỏ"
+              >
+                <ZoomOut size={16} />
+              </button>
+              <span style={{ fontSize: 12, fontWeight: 500, color: "#374151", minWidth: 45, textAlign: "center" }}>
+                {zoomLevel}%
+              </span>
+              <button
+                onClick={() => setZoomLevel(prev => Math.min(300, prev + 10))}
+                style={{ background: "none", border: "none", cursor: "pointer", padding: 4, color: "#374151" }}
+                title="Phóng to"
+              >
+                <ZoomIn size={16} />
+              </button>
+            </div>
+
+            {/* Print and Download buttons */}
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <button
+                onClick={() => alert(`Đang tải xuống tờ trình: Tờ trình thẩm tra vụ án ${caseTypeLabel} - ${partyName}`)}
+                style={{ background: "none", border: "none", cursor: "pointer", padding: 4, color: "#374151" }}
+                title="Tải xuống PDF"
+              >
+                <Download size={16} />
+              </button>
+              <button
+                onClick={() => window.print()}
+                style={{ background: "none", border: "none", cursor: "pointer", padding: 4, color: "#374151" }}
+                title="In tờ trình"
+              >
+                <Printer size={16} />
+              </button>
+            </div>
+          </div>
+
+          {/* Paper Viewport */}
+          <div style={{ flex: 1, overflowY: "auto", display: "flex", justifyContent: "center", padding: "24px 16px", background: "#6b7280" }}>
+            <div
+              style={{
+                background: "#fff",
+                width: "100%",
+                maxWidth: 680,
+                minHeight: 960,
+                padding: "44px 56px",
+                boxShadow: "0 4px 20px rgba(0,0,0,0.25)",
+                fontFamily: "'Times New Roman', Times, serif",
+                color: "#000",
+                lineHeight: 1.7,
+                boxSizing: "border-box",
+                transform: `scale(${zoomLevel / 190})`,
+                transformOrigin: "top center",
+                marginBottom: 40,
+              }}
+            >
+              {renderPaperContent()}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // ── Mode: hiển thị toàn màn hình Hồ sơ tờ trình (như ban đầu) ──
   return (
     <div style={{ position: "fixed", inset: 0, background: "#fff", zIndex: 1600, display: "flex", flexDirection: "column", fontFamily: F }}>
-      {/* ── Modal Bổ sung tài liệu vào hồ sơ tờ trình (Màn để chọn tài liệu như cũ) ── */}
+      {/* ── Modal Bổ sung tài liệu vào hồ sơ tờ trình ── */}
       {showChonTaiLieuModal && (
         <ChonTaiLieuBoSungModal
           onClose={() => setShowChonTaiLieuModal(false)}
@@ -381,65 +568,7 @@ export function HoSoToTrinhModal({
                 marginBottom: 40,
               }}
             >
-              {/* Header Phụ lục */}
-              <div style={{ textAlign: "center", fontWeight: 700, fontSize: 13, textTransform: "uppercase", marginBottom: 4 }}>
-                PHỤ LỤC I
-              </div>
-              <div style={{ textAlign: "center", fontWeight: 700, fontSize: 14, textTransform: "uppercase", marginBottom: 4 }}>
-                TỜ TRÌNH THẨM TRA VỤ ÁN HÌNH SỰ
-              </div>
-              <div style={{ textAlign: "center", fontStyle: "italic", fontSize: 11, marginBottom: 20 }}>
-                (Kèm theo Quyết định số 75/QĐ-CA ngày 06 tháng 4 năm 2026 của Chánh án Tòa án nhân dân tối cao)
-              </div>
-
-              {/* Hai cột cơ quan ban hành & Quốc hiệu */}
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 24 }}>
-                <div style={{ textAlign: "center", width: "45%" }}>
-                  <div style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase" }}>TÒA ÁN NHÂN DÂN TỐI CAO</div>
-                  <div style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase" }}>VỤ GIÁM ĐỐC, KIỂM TRA ....</div>
-                  <div style={{ width: 80, borderBottom: "1px solid #000", margin: "4px auto" }} />
-                </div>
-                <div style={{ textAlign: "center", width: "50%" }}>
-                  <div style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase" }}>CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</div>
-                  <div style={{ fontSize: 11, fontWeight: 700 }}>Độc lập - Tự do - Hạnh phúc</div>
-                  <div style={{ width: 120, borderBottom: "1px solid #000", margin: "4px auto 8px" }} />
-                  <div style={{ fontStyle: "italic", fontSize: 11 }}>Hà Nội, ngày &nbsp;&nbsp; tháng &nbsp;&nbsp; năm 202..</div>
-                </div>
-              </div>
-
-              {/* Tiêu đề Tờ trình */}
-              <div style={{ textAlign: "center", marginBottom: 24 }}>
-                <div style={{ fontWeight: 700, fontSize: 14, textTransform: "uppercase", marginBottom: 4 }}>TỜ TRÌNH</div>
-                <div style={{ fontWeight: 700, fontSize: 13, textTransform: "uppercase", marginBottom: 6 }}>CHÁNH ÁN TÒA ÁN NHÂN DÂN TỐI CAO</div>
-                <div style={{ fontStyle: "italic", fontSize: 11.5, lineHeight: 1.5 }}>
-                  Về vụ án Nguyễn Văn A bị kết án về tội "......"¹ ở tỉnh, thành phố.....<br />
-                  Bản án ... số .... ngày .... của Tòa án nhân dân ....²
-                </div>
-              </div>
-
-              {/* Nội dung chi tiết */}
-              <div style={{ fontSize: 12, textAlign: "justify" }}>
-                <div style={{ fontWeight: 700, marginBottom: 6 }}>1. Người bị kết án</div>
-                <p style={{ margin: "0 0 10px", textIndent: 24 }}>
-                  Họ và tên: <b>Nguyễn Văn A</b>; Sinh năm: 1988 tại TP. Hà Nội; Nơi ĐKHKTT: Số 12, phố Phan Đình Phùng, phường Quán Thánh, quận Ba Đình, TP. Hà Nội; Nghề nghiệp: Lao động tự do; Tiền án, tiền sự: Không.
-                </p>
-
-                <div style={{ fontWeight: 700, marginBottom: 6 }}>2. Tóm tắt nội dung vụ án và quá trình giải quyết</div>
-                <p style={{ margin: "0 0 10px", textIndent: 24 }}>
-                  Theo các tài liệu có trong hồ sơ vụ án, khoảng 21h30 ngày 15/01/2023, tại khu vực đường Nguyễn Trãi, quận Thanh Xuân, Nguyễn Văn A đã có hành vi điều khiển phương tiện giao thông đường bộ vi phạm quy định, gây thiệt hại nghiêm trọng.
-                </p>
-                <p style={{ margin: "0 0 10px", textIndent: 24 }}>
-                  Tại Bản án hình sự sơ thẩm số 12/2023/HS-ST ngày 25/06/2023 của TAND quận Thanh Xuân và Bản án phúc thẩm số 45/2023/HS-PT ngày 28/11/2023 của TAND TP. Hà Nội đã quyết định tuyên phạt Nguyễn Văn A mức án 03 năm tù giam.
-                </p>
-
-                <div style={{ fontWeight: 700, marginBottom: 6 }}>3. Nhận định và đề xuất của Thẩm tra viên</div>
-                <p style={{ margin: "0 0 10px", textIndent: 24 }}>
-                  Qua nghiên cứu toàn bộ hồ sơ vụ án, lời khai của các bên liên quan và kết luận giám định pháp y số 28/GĐ-PY, Thẩm tra viên nhận thấy có tình tiết mới làm thay đổi cơ bản nội dung vụ án mà Tòa án cấp sơ thẩm và phúc thẩm chưa xem xét đầy đủ.
-                </p>
-                <p style={{ margin: "0 0 10px", textIndent: 24 }}>
-                  Kính trình Chánh án Tòa án nhân dân tối cao xem xét kháng nghị theo thủ tục Giám đốc thẩm đối với Bản án phúc thẩm nêu trên theo hướng hủy bản án để điều tra lại theo đúng quy định của Bộ luật Tố tụng hình sự.
-                </p>
-              </div>
+              {renderPaperContent()}
             </div>
           </div>
         </div>
@@ -1428,6 +1557,312 @@ export function TrinhKyModal({ onClose }: { onClose: () => void }) {
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export function HoSoKetQuaModal({
+  row,
+  type,
+  numberStr,
+  onClose,
+}: {
+  row: any;
+  type: string;
+  numberStr: string;
+  onClose: () => void;
+}) {
+  const isHinhSu = !row || (row.loaiAn || "").includes("Hình sự");
+  const partyName = row?.biCao || row?.nkn || "Nguyễn Văn A";
+  const address = row?.dcd || "Số 12, phố Phan Đình Phùng, phường Quán Thánh, quận Ba Đình, TP. Hà Nội";
+  const soBA = row?.soBA || "12/2023/HS-ST";
+  const ngayBA = row?.ngayBA || "25/06/2023";
+  const toa = row?.toa || "TAND quận Thanh Xuân";
+  const ttv = row?.ttv || "Lý Thái Phúc";
+
+  const [zoomLevel, setZoomLevel] = useState(190);
+
+  const renderPaperContent = () => {
+    if (type === "khang-nghi") {
+      return (
+        <>
+          {/* Header Quốc hiệu */}
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 24 }}>
+            <div style={{ textAlign: "center", width: "45%" }}>
+              <div style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase" }}>TÒA ÁN NHÂN DÂN TỐI CAO</div>
+              <div style={{ width: 80, borderBottom: "1px solid #000", margin: "4px auto" }} />
+              <div style={{ fontSize: 11 }}>Số: {numberStr}</div>
+            </div>
+            <div style={{ textAlign: "center", width: "50%" }}>
+              <div style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase" }}>CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</div>
+              <div style={{ fontSize: 11, fontWeight: 700 }}>Độc lập - Tự do - Hạnh phúc</div>
+              <div style={{ width: 120, borderBottom: "1px solid #000", margin: "4px auto 8px" }} />
+              <div style={{ fontStyle: "italic", fontSize: 11 }}>Hà Nội, ngày &nbsp;&nbsp; tháng &nbsp;&nbsp; năm 202..</div>
+            </div>
+          </div>
+
+          {/* Tiêu đề */}
+          <div style={{ textAlign: "center", marginBottom: 24 }}>
+            <div style={{ fontWeight: 700, fontSize: 13, textTransform: "uppercase", marginBottom: 4 }}>QUYẾT ĐỊNH KHÁNG NGHỊ GIÁM ĐỐC THẨM</div>
+            <div style={{ fontWeight: 700, fontSize: 12, textTransform: "uppercase", marginBottom: 6 }}>CHÁNH ÁN TÒA ÁN NHÂN DÂN TỐI CAO</div>
+          </div>
+
+          <div style={{ fontSize: 12, textAlign: "justify" }}>
+            <p style={{ margin: "0 0 10px", textIndent: 24 }}>
+              Căn cứ Bộ luật Tố tụng {isHinhSu ? "hình sự" : "dân sự"};
+            </p>
+            <p style={{ margin: "0 0 10px", textIndent: 24 }}>
+              Sau khi nghiên cứu hồ sơ vụ án {isHinhSu ? `đối với bị cáo ${partyName}` : `tranh chấp hợp đồng liên quan đến ${partyName}`} đối với Bản án sơ thẩm số {soBA} ngày {ngayBA} của Tòa án nhân dân {toa};
+            </p>
+            <div style={{ fontWeight: 700, marginBottom: 6 }}>NHẬN THẤY:</div>
+            <p style={{ margin: "0 0 10px", textIndent: 24 }}>
+              Có vi phạm nghiêm trọng trong việc đánh giá chứng cứ và áp dụng pháp luật tại bản án sơ thẩm/phúc thẩm. Các tài liệu chưa làm rõ đầy đủ động cơ, mục đích hoặc nghĩa vụ hợp đồng liên quan trực tiếp đến đương sự.
+            </p>
+            <div style={{ fontWeight: 700, marginBottom: 6 }}>QUYẾT ĐỊNH:</div>
+            <p style={{ margin: "0 0 10px", textIndent: 24 }}>
+              1. Kháng nghị đối với Bản án sơ thẩm/phúc thẩm nêu trên của Tòa án nhân dân {toa} theo thủ tục Giám đốc thẩm.
+            </p>
+            <p style={{ margin: "0 0 10px", textIndent: 24 }}>
+              2. Tạm đình chỉ thi hành bản án cho đến khi có quyết định Giám đốc thẩm.
+            </p>
+          </div>
+        </>
+      );
+    }
+
+    if (type === "tra-loi-don") {
+      return (
+        <>
+          {/* Header Quốc hiệu */}
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 24 }}>
+            <div style={{ textAlign: "center", width: "45%" }}>
+              <div style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase" }}>TÒA ÁN NHÂN DÂN TỐI CAO</div>
+              <div style={{ width: 80, borderBottom: "1px solid #000", margin: "4px auto" }} />
+              <div style={{ fontSize: 11 }}>Số: {numberStr}</div>
+            </div>
+            <div style={{ textAlign: "center", width: "50%" }}>
+              <div style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase" }}>CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</div>
+              <div style={{ fontSize: 11, fontWeight: 700 }}>Độc lập - Tự do - Hạnh phúc</div>
+              <div style={{ width: 120, borderBottom: "1px solid #000", margin: "4px auto 8px" }} />
+              <div style={{ fontStyle: "italic", fontSize: 11 }}>Hà Nội, ngày &nbsp;&nbsp; tháng &nbsp;&nbsp; năm 202..</div>
+            </div>
+          </div>
+
+          {/* Tiêu đề */}
+          <div style={{ textAlign: "center", marginBottom: 24 }}>
+            <div style={{ fontWeight: 700, fontSize: 13, textTransform: "uppercase", marginBottom: 4 }}>THÔNG BÁO GIẢI QUYẾT ĐƠN ĐỀ NGHỊ</div>
+            <div style={{ fontStyle: "italic", fontSize: 11.5 }}>
+              (V/v: Trả lời đơn đề nghị kháng nghị giám đốc thẩm của đương sự)
+            </div>
+          </div>
+
+          <div style={{ fontSize: 12, textAlign: "justify" }}>
+            <p style={{ margin: "0 0 10px", textIndent: 24 }}>
+              Kính gửi: <b>{row?.nkn || "Đương sự"}</b> (Địa chỉ: {address})
+            </p>
+            <p style={{ margin: "0 0 10px", textIndent: 24 }}>
+              Tòa án nhân dân tối cao nhận được đơn đề nghị của ông/bà về việc kháng nghị giám đốc thẩm đối với Bản án sơ thẩm số {soBA} ngày {ngayBA} của Tòa án nhân dân {toa}.
+            </p>
+            <p style={{ margin: "0 0 10px", textIndent: 24 }}>
+              Sau khi nghiên cứu tài liệu chứng cứ trong hồ sơ vụ án, Tòa án nhân dân tối cao nhận thấy các quyết định của bản án đã có hiệu lực pháp luật là hoàn toàn có căn cứ và đúng quy định pháp luật. Không có vi phạm nghiêm trọng nào làm thay đổi bản chất vụ việc.
+            </p>
+            <p style={{ margin: "0 0 10px", textIndent: 24 }}>
+              Do đó, Tòa án nhân dân tối cao thông báo không có căn cứ kháng nghị giám đốc thẩm đối với bản án nêu trên.
+            </p>
+          </div>
+        </>
+      );
+    }
+
+    if (type === "vks") {
+      return (
+        <>
+          {/* Header Quốc hiệu */}
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 24 }}>
+            <div style={{ textAlign: "center", width: "45%" }}>
+              <div style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase" }}>TÒA ÁN NHÂN DÂN TỐI CAO</div>
+              <div style={{ width: 80, borderBottom: "1px solid #000", margin: "4px auto" }} />
+              <div style={{ fontSize: 11 }}>Số: {numberStr}</div>
+            </div>
+            <div style={{ textAlign: "center", width: "50%" }}>
+              <div style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase" }}>CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</div>
+              <div style={{ fontSize: 11, fontWeight: 700 }}>Độc lập - Tự do - Hạnh phúc</div>
+              <div style={{ width: 120, borderBottom: "1px solid #000", margin: "4px auto 8px" }} />
+              <div style={{ fontStyle: "italic", fontSize: 11 }}>Hà Nội, ngày &nbsp;&nbsp; tháng &nbsp;&nbsp; năm 202..</div>
+            </div>
+          </div>
+
+          {/* Tiêu đề */}
+          <div style={{ textAlign: "center", marginBottom: 24 }}>
+            <div style={{ fontWeight: 700, fontSize: 13, textTransform: "uppercase", marginBottom: 4 }}>CÔNG VĂN TRAO ĐỔI NGHIÊN CỨU</div>
+            <div style={{ fontStyle: "italic", fontSize: 11.5 }}>
+              (V/v: Chuyển hồ sơ nghiên cứu, trao đổi ý kiến nghiệp vụ với VKSNDTC)
+            </div>
+          </div>
+
+          <div style={{ fontSize: 12, textAlign: "justify" }}>
+            <p style={{ margin: "0 0 10px", textIndent: 24 }}>
+              Kính gửi: <b>Viện kiểm sát nhân dân tối cao (Vụ 1/2/9/10)</b>
+            </p>
+            <p style={{ margin: "0 0 10px", textIndent: 24 }}>
+              Liên quan đến vụ án {isHinhSu ? `bị cáo ${partyName}` : `tranh chấp hợp đồng liên quan đến ${partyName}`} theo Bản án sơ thẩm số {soBA} ngày {ngayBA} của Tòa án nhân dân {toa};
+            </p>
+            <p style={{ margin: "0 0 10px", textIndent: 24 }}>
+              Tòa án nhân dân tối cao trân trọng chuyển kèm hồ sơ vụ án để quý Viện cùng nghiên cứu, trao đổi ý kiến thống nhất về hướng xử lý đối với đơn đề nghị kháng nghị giám đốc thẩm của đương sự.
+            </p>
+            <p style={{ margin: "0 0 10px", textIndent: 24 }}>
+              Đề nghị quý Viện phản hồi ý kiến bằng văn bản trong thời hạn quy định.
+            </p>
+          </div>
+        </>
+      );
+    }
+
+    // Default: Xếp đơn
+    return (
+      <>
+        {/* Header Quốc hiệu */}
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 24 }}>
+          <div style={{ textAlign: "center", width: "45%" }}>
+            <div style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase" }}>TÒA ÁN NHÂN DÂN TỐI CAO</div>
+            <div style={{ width: 80, borderBottom: "1px solid #000", margin: "4px auto" }} />
+            <div style={{ fontSize: 11 }}>Số: {numberStr}</div>
+          </div>
+          <div style={{ textAlign: "center", width: "50%" }}>
+            <div style={{ fontSize: 11, fontWeight: 700, textTransform: "uppercase" }}>CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</div>
+            <div style={{ fontSize: 11, fontWeight: 700 }}>Độc lập - Tự do - Hạnh phúc</div>
+            <div style={{ width: 120, borderBottom: "1px solid #000", margin: "4px auto 8px" }} />
+            <div style={{ fontStyle: "italic", fontSize: 11 }}>Hà Nội, ngày &nbsp;&nbsp; tháng &nbsp;&nbsp; năm 202..</div>
+          </div>
+        </div>
+
+        {/* Tiêu đề */}
+        <div style={{ textAlign: "center", marginBottom: 24 }}>
+          <div style={{ fontWeight: 700, fontSize: 13, textTransform: "uppercase", marginBottom: 4 }}>QUYẾT ĐỊNH XẾP LƯU ĐƠN</div>
+          <div style={{ fontStyle: "italic", fontSize: 11.5 }}>
+            (V/v: Xếp lưu đơn đề nghị kháng nghị giám đốc thẩm do hết thời hạn / không bổ sung chứng cứ)
+          </div>
+        </div>
+
+        <div style={{ fontSize: 12, textAlign: "justify" }}>
+          <p style={{ margin: "0 0 10px", textIndent: 24 }}>
+            Căn cứ Quy chế giải quyết đơn đề nghị giám đốc thẩm, tái thẩm của Tòa án nhân dân tối cao;
+          </p>
+          <p style={{ margin: "0 0 10px", textIndent: 24 }}>
+            Xét đơn đề nghị của ông/bà: <b>{row?.nkn || "Đương sự"}</b> liên quan đến vụ án {partyName} theo Bản án số {soBA} của Tòa án nhân dân {toa}.
+          </p>
+          <p style={{ margin: "0 0 10px", textIndent: 24 }}>
+            Lý do xếp lưu đơn: Đơn đề nghị trùng lặp đã được giải quyết hoặc đương sự không bổ sung tài liệu chứng cứ hợp lệ sau khi đã nhận được thông báo yêu cầu bổ sung trong thời hạn luật định.
+          </p>
+          <p style={{ margin: "0 0 10px", textIndent: 24 }}>
+            Tòa án nhân dân tối cao quyết định xếp lưu hồ sơ đơn đề nghị nêu trên.
+          </p>
+        </div>
+      </>
+    );
+  };
+
+  return (
+    <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)", zIndex: 1600, display: "flex", alignItems: "center", justifyContent: "center", padding: 24, fontFamily: F }}>
+      <div style={{ background: "#fff", borderRadius: 8, width: "95%", maxWidth: 840, height: "90%", display: "flex", flexDirection: "column", overflow: "hidden", boxShadow: "0 10px 25px rgba(0,0,0,0.2)" }}>
+        {/* Top Header */}
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "12px 20px", borderBottom: `1px solid ${BORDER}`, background: "#fff", flexShrink: 0 }}>
+          <span style={{ fontSize: 15, fontWeight: 700, color: "#111827", fontFamily: F }}>
+            Xem trước bản in kết quả giải quyết
+          </span>
+          <button
+            onClick={onClose}
+            style={{
+              background: "none",
+              border: "none",
+              cursor: "pointer",
+              fontSize: 22,
+              color: "#6b7280",
+              display: "flex",
+              alignItems: "center",
+              lineHeight: 1,
+            }}
+          >
+            ×
+          </button>
+        </div>
+
+        {/* Action Toolbar */}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            padding: "8px 20px",
+            background: "#f9fafb",
+            borderBottom: `1px solid ${BORDER}`,
+            flexShrink: 0,
+            fontFamily: F,
+          }}
+        >
+          {/* Zoom controls */}
+          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+            <button
+              onClick={() => setZoomLevel(prev => Math.max(50, prev - 10))}
+              style={{ background: "none", border: "none", cursor: "pointer", padding: 4, color: "#374151" }}
+              title="Thu nhỏ"
+            >
+              <ZoomOut size={16} />
+            </button>
+            <span style={{ fontSize: 12, fontWeight: 500, color: "#374151", minWidth: 45, textAlign: "center" }}>
+              {zoomLevel}%
+            </span>
+            <button
+              onClick={() => setZoomLevel(prev => Math.min(300, prev + 10))}
+              style={{ background: "none", border: "none", cursor: "pointer", padding: 4, color: "#374151" }}
+              title="Phóng to"
+            >
+              <ZoomIn size={16} />
+            </button>
+          </div>
+
+          {/* Print and Download buttons */}
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <button
+              onClick={() => alert(`Đang tải xuống tài liệu: ${numberStr}`)}
+              style={{ background: "none", border: "none", cursor: "pointer", padding: 4, color: "#374151" }}
+              title="Tải xuống PDF"
+            >
+              <Download size={16} />
+            </button>
+            <button
+              onClick={() => window.print()}
+              style={{ background: "none", border: "none", cursor: "pointer", padding: 4, color: "#374151" }}
+              title="In kết quả"
+            >
+              <Printer size={16} />
+            </button>
+          </div>
+        </div>
+
+        {/* Paper Viewport */}
+        <div style={{ flex: 1, overflowY: "auto", display: "flex", justifyContent: "center", padding: "24px 16px", background: "#6b7280" }}>
+          <div
+            style={{
+              background: "#fff",
+              width: "100%",
+              maxWidth: 680,
+              minHeight: 960,
+              padding: "44px 56px",
+              boxShadow: "0 4px 20px rgba(0,0,0,0.25)",
+              fontFamily: "'Times New Roman', Times, serif",
+              color: "#000",
+              lineHeight: 1.7,
+              boxSizing: "border-box",
+              transform: `scale(${zoomLevel / 190})`,
+              transformOrigin: "top center",
+              marginBottom: 40,
+            }}
+          >
+            {renderPaperContent()}
           </div>
         </div>
       </div>

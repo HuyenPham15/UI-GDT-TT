@@ -579,7 +579,7 @@ export function VuAnSearchFilterPanel({
                 <option value="">– Tất cả –</option>
                 <option value="Án Quốc hội">Án Quốc hội</option>
                 <option value="Án chỉ đạo">Án chỉ đạo</option>
-                <option value="Án TVTN">Án TVTN</option>
+                <option value="Người chưa thành niên">Người chưa thành niên</option>
                 <option value="Án tử hình">Án tử hình</option>
               </select>
             </div>
