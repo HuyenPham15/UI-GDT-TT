@@ -6665,6 +6665,37 @@ export default function QuanLyVuXetXuView({
   const [fThamQuyenXX, setFThamQuyenXX] = useState("");
   const [fApDungAnLe, setFApDungAnLe] = useState("");
 
+  React.useEffect(() => {
+    if (userRole === "vu-1" || userRole === "hinh-su") {
+      setFLoaiAn("Hình sự");
+    } else if (userRole === "vu-2" || userRole === "dan-su") {
+      setFLoaiAn("Dân sự");
+    } else if (userRole === "vu-3") {
+      setFLoaiAn("Dân sự chung");
+    } else if (userRole === "vu-4" || userRole === "hanh-chinh") {
+      setFLoaiAn("Hành chính");
+    } else {
+      setFLoaiAn("");
+    }
+  }, [userRole]);
+
+  const getFilteredLoaiAnOptions = () => {
+    if (userRole === "vu-1" || userRole === "hinh-su") {
+      return ["Hình sự"];
+    }
+    if (userRole === "vu-2" || userRole === "dan-su") {
+      return ["Dân sự"];
+    }
+    if (userRole === "vu-3") {
+      const options = LOAI_AN_OPTIONS.filter((opt) => opt !== "Hành chính");
+      return [...options, "Dân sự chung"];
+    }
+    if (userRole === "vu-4" || userRole === "hanh-chinh") {
+      return ["Dân sự", "Hành chính"];
+    }
+    return [...LOAI_AN_OPTIONS, "Dân sự chung"];
+  };
+
   const isVu1 = userRole === "vu-1" || userRole === "hinh-su" || !userRole;
   const thuocAnOptions = isVu1
     ? ["Án Quốc hội", "Án chỉ đạo", "Người chưa thành niên", "Án tử hình"]
@@ -6866,7 +6897,7 @@ export default function QuanLyVuXetXuView({
                   style={selSt}
                 >
                   <option value="">– Tất cả –</option>
-                  {LOAI_AN_OPTIONS.map((opt) => (
+                  {getFilteredLoaiAnOptions().map((opt) => (
                     <option key={opt} value={opt}>{opt}</option>
                   ))}
                 </select>

@@ -614,11 +614,11 @@ export interface QuaTrinhGiaiQuyetRow {
 function NguoiLienQuanTable({ rows, noMarginBottom = false, showToiDanh = false, showDiaVi = true, defaultDiaVi }: { rows: NguoiLienQuanRow[]; noMarginBottom?: boolean; showToiDanh?: boolean; showDiaVi?: boolean; defaultDiaVi?: string }) {
   const headers = showToiDanh
     ? (showDiaVi
-      ? ["STT", "Họ và tên/Tổ chức", "Ngày sinh", "CCCD", "Địa chỉ", "Địa vị pháp lý", "Thông tin tội danh, Mức án", "Thao tác"]
-      : ["STT", "Họ và tên/Tổ chức", "Ngày sinh", "CCCD", "Địa chỉ", "Thông tin tội danh, Mức án", "Thao tác"])
+      ? ["STT", "Họ và tên/Tổ chức", "Ngày sinh", "CCCD", "Địa chỉ", "Địa vị pháp lý", "Thông tin tội danh, Mức án", "Người thao tác", "Thao tác"]
+      : ["STT", "Họ và tên/Tổ chức", "Ngày sinh", "CCCD", "Địa chỉ", "Thông tin tội danh, Mức án", "Người thao tác", "Thao tác"])
     : (showDiaVi
-      ? ["STT", "Họ và tên/Tổ chức", "Ngày sinh", "CCCD", "Địa chỉ", "Địa vị pháp lý", "Thao tác"]
-      : ["STT", "Họ và tên/Tổ chức", "Ngày sinh", "CCCD", "Địa chỉ", "Thao tác"]);
+      ? ["STT", "Họ và tên/Tổ chức", "Ngày sinh", "CCCD", "Địa chỉ", "Địa vị pháp lý", "Người thao tác", "Thao tác"]
+      : ["STT", "Họ và tên/Tổ chức", "Ngày sinh", "CCCD", "Địa chỉ", "Người thao tác", "Thao tác"]);
 
   return (
     <table style={{ width: "100%", borderCollapse: "collapse", tableLayout: "fixed", marginBottom: noMarginBottom ? 0 : 16 }}>
@@ -628,39 +628,43 @@ function NguoiLienQuanTable({ rows, noMarginBottom = false, showToiDanh = false,
           <col style={{ width: "16%" }} />
           <col style={{ width: "9%" }} />
           <col style={{ width: "11%" }} />
-          <col style={{ width: "22%" }} />
+          <col style={{ width: "20%" }} />
           <col style={{ width: "11%" }} />
-          <col style={{ width: "22%" }} />
-          <col style={{ width: 70 }} />
+          <col style={{ width: "18%" }} />
+          <col style={{ width: "10%" }} />
+          <col style={{ width: 60 }} />
         </colgroup>
       ) : showToiDanh && !showDiaVi ? (
         <colgroup>
           <col style={{ width: 40 }} />
+          <col style={{ width: "18%" }} />
+          <col style={{ width: "10%" }} />
+          <col style={{ width: "12%" }} />
+          <col style={{ width: "25%" }} />
           <col style={{ width: "20%" }} />
           <col style={{ width: "10%" }} />
-          <col style={{ width: "13%" }} />
-          <col style={{ width: "30%" }} />
-          <col style={{ width: "22%" }} />
-          <col style={{ width: 70 }} />
+          <col style={{ width: 60 }} />
         </colgroup>
       ) : !showToiDanh && showDiaVi ? (
         <colgroup>
           <col style={{ width: 40 }} />
-          <col style={{ width: "20%" }} />
+          <col style={{ width: "18%" }} />
           <col style={{ width: "10%" }} />
-          <col style={{ width: "13%" }} />
-          <col style={{ width: "31%" }} />
+          <col style={{ width: "12%" }} />
+          <col style={{ width: "26%" }} />
           <col style={{ width: "14%" }} />
-          <col style={{ width: 70 }} />
+          <col style={{ width: "12%" }} />
+          <col style={{ width: 60 }} />
         </colgroup>
       ) : (
         <colgroup>
           <col style={{ width: 40 }} />
-          <col style={{ width: "24%" }} />
+          <col style={{ width: "20%" }} />
           <col style={{ width: "11%" }} />
-          <col style={{ width: "14%" }} />
-          <col style={{ width: "43%" }} />
-          <col style={{ width: 70 }} />
+          <col style={{ width: "13%" }} />
+          <col style={{ width: "36%" }} />
+          <col style={{ width: "13%" }} />
+          <col style={{ width: 60 }} />
         </colgroup>
       )}
       <thead>
@@ -681,7 +685,10 @@ function NguoiLienQuanTable({ rows, noMarginBottom = false, showToiDanh = false,
           rows.map((r, idx) => (
             <tr key={r.stt} style={{ background: idx % 2 === 0 ? "#fff" : "#fafafa" }}>
               <td style={{ ...TD_STYLE, textAlign: "center", color: MUTED, fontSize: 12 }}>{r.stt}</td>
-              <td style={{ ...TD_STYLE, fontSize: 12, color: TEXT, fontWeight: 500 }}>{r.hoTen}</td>
+              <td style={{ ...TD_STYLE, fontSize: 12, color: TEXT, fontWeight: 500 }}>
+                {r.hoTen}
+                {((defaultDiaVi === "Bị cáo" || showToiDanh) && idx === 0) ? " (đầu vụ)" : ""}
+              </td>
               <td style={{ ...TD_STYLE, fontSize: 12, color: TEXT, textAlign: "center" }}>{r.ngaySinh}</td>
               <td style={{ ...TD_STYLE, fontSize: 12, color: TEXT, textAlign: "center" }}>{r.cccd || "-"}</td>
               <td style={{ ...TD_STYLE, fontSize: 12, color: TEXT }}>{r.diaChi}</td>
@@ -691,6 +698,7 @@ function NguoiLienQuanTable({ rows, noMarginBottom = false, showToiDanh = false,
               {showToiDanh && (
                 <td style={{ ...TD_STYLE, fontSize: 12, color: TEXT }}>{r.toiDanhMucAn || r.toiDanh || "-"}</td>
               )}
+              <td style={{ ...TD_STYLE, fontSize: 12, color: TEXT, textAlign: "center" }}>{r.nguoiThaoTac || (idx % 2 === 0 ? "Nguyễn Thị Hương" : "Vũ Đức Thiện")}</td>
               <td style={{ ...TD_STYLE, textAlign: "center" }}>
                 <div style={{ display: "flex", gap: 10, justifyContent: "center" }}>
                   <button style={{ background: "none", border: "none", cursor: "pointer", padding: 2 }} title="Xem"><Eye size={13} color={MUTED} /></button>
@@ -705,17 +713,18 @@ function NguoiLienQuanTable({ rows, noMarginBottom = false, showToiDanh = false,
   );
 }
 
-function ThongTinKhieuNaiTable({ rows }: { rows?: Array<{ stt: number; nguoiKhieuNai: string; nguoiDuocKhieuNai: string; noiDungKhieuNai?: string }> }) {
-  const headers = ["STT", "Người khiếu nại", "Người được khiếu nại", "Nội dung khiếu nại", "Thao tác"];
+function ThongTinKhieuNaiTable({ rows }: { rows?: Array<{ stt: number; nguoiKhieuNai: string; nguoiDuocKhieuNai: string; noiDungKhieuNai?: string; nguoiThaoTac?: string }> }) {
+  const headers = ["STT", "Người khiếu nại", "Người được khiếu nại", "Nội dung khiếu nại", "Người thao tác", "Thao tác"];
   const data = rows || [];
   return (
     <table style={{ width: "100%", borderCollapse: "collapse", tableLayout: "fixed", marginBottom: 16 }}>
       <colgroup>
         <col style={{ width: 45 }} />
-        <col style={{ width: "25%" }} />
-        <col style={{ width: "25%" }} />
-        <col style={{ width: "37%" }} />
-        <col style={{ width: 70 }} />
+        <col style={{ width: "23%" }} />
+        <col style={{ width: "23%" }} />
+        <col style={{ width: "32%" }} />
+        <col style={{ width: "15%" }} />
+        <col style={{ width: 60 }} />
       </colgroup>
       <thead>
         <tr>
@@ -727,7 +736,7 @@ function ThongTinKhieuNaiTable({ rows }: { rows?: Array<{ stt: number; nguoiKhie
       <tbody>
         {data.length === 0 ? (
           <tr>
-            <td colSpan={5} style={{ ...TD_STYLE, textAlign: "center", padding: "20px 0", color: MUTED, fontSize: 12 }}>
+            <td colSpan={headers.length} style={{ ...TD_STYLE, textAlign: "center", padding: "20px 0", color: MUTED, fontSize: 12 }}>
               Không có dữ liệu
             </td>
           </tr>
@@ -738,6 +747,7 @@ function ThongTinKhieuNaiTable({ rows }: { rows?: Array<{ stt: number; nguoiKhie
               <td style={{ ...TD_STYLE, fontSize: 12, color: TEXT, fontWeight: 500 }}>{r.nguoiKhieuNai}</td>
               <td style={{ ...TD_STYLE, fontSize: 12, color: TEXT }}>{r.nguoiDuocKhieuNai}</td>
               <td style={{ ...TD_STYLE, fontSize: 12, color: TEXT }}>{r.noiDungKhieuNai || "-"}</td>
+              <td style={{ ...TD_STYLE, fontSize: 12, color: TEXT, textAlign: "center" }}>{r.nguoiThaoTac || (idx % 2 === 0 ? "Nguyễn Thị Hương" : "Vũ Đức Thiện")}</td>
               <td style={{ ...TD_STYLE, textAlign: "center" }}>
                 <div style={{ display: "flex", gap: 10, justifyContent: "center" }}>
                   <button style={{ background: "none", border: "none", cursor: "pointer", padding: 2 }} title="Xem"><Eye size={13} color={MUTED} /></button>
@@ -1335,6 +1345,7 @@ export function TabThongTin({ detail, userRole }: { detail?: VuAnDetailData; use
               const giaiCode = isPhucTham ? "PT" : "ST";
 
               const labelSo = `Số ${loaiCode}${giaiCode}:`;
+              const labelNgay = `Ngày ${loaiCode}${giaiCode}:`;
 
               return (
                 <tr key={r.stt} style={{ background: idx % 2 === 0 ? "#fff" : "#fafafa" }}>
@@ -1344,7 +1355,7 @@ export function TabThongTin({ detail, userRole }: { detail?: VuAnDetailData; use
                     <div>
                       <b>{labelSo}</b> <span style={{ fontWeight: 600 }}>{r.soBA}</span>
                       <span style={{ margin: "0 8px", color: "#cbd5e1" }}>|</span>
-                      <b>Ngày:</b> <span style={{ color: TEXT }}>{r.ngayBA}</span>
+                      <b>{labelNgay}</b> <span style={{ color: TEXT }}>{r.ngayBA}</span>
                     </div>
                     <div><b>Tại:</b> {r.toa}</div>
                   </td>

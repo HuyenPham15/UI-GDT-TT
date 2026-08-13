@@ -58,6 +58,11 @@ export interface VuAnFilterValues {
   soBA: string;
   ngayBA: string;
   biCao: string;
+  nguoiKhieuNai: string;
+  nguyenDon: string;
+  biDon: string;
+  nguoiKhoiKien: string;
+  nguoiBiKien: string;
   soThuLy: string;
   lanhDaoVu: string;
   thamTraVien: string;
@@ -100,6 +105,11 @@ export const INITIAL_FILTER_VALUES: VuAnFilterValues = {
   soBA: "",
   ngayBA: "",
   biCao: "",
+  nguoiKhieuNai: "",
+  nguyenDon: "",
+  biDon: "",
+  nguoiKhoiKien: "",
+  nguoiBiKien: "",
   soThuLy: "",
   lanhDaoVu: "",
   thamTraVien: "",
@@ -137,7 +147,12 @@ export const FILTER_LABELS: Record<keyof VuAnFilterValues, string> = {
   toaRaBA: "Tòa ra BA/QĐ",
   soBA: "Số BA/QĐ",
   ngayBA: "Ngày BA/QĐ",
-  biCao: "Bị cáo/Đương sự",
+  biCao: "Bị cáo",
+  nguoiKhieuNai: "Người khiếu nại",
+  nguyenDon: "Nguyên đơn",
+  biDon: "Bị đơn",
+  nguoiKhoiKien: "Người khởi kiện",
+  nguoiBiKien: "Người bị kiện",
   thamPhan: "Thẩm phán",
   lanhDaoVu: "Lãnh đạo phụ trách",
   thamTraVien: "Cán bộ giải quyết",
@@ -181,6 +196,37 @@ export function VuAnSearchFilterPanel({
 }) {
   const [filterExpanded, setFilterExpanded] = useState(false);
   const [filters, setFilters] = useState<VuAnFilterValues>(INITIAL_FILTER_VALUES);
+
+  React.useEffect(() => {
+    let defaultLoaiAn = "";
+    if (userRole === "vu-1" || userRole === "hinh-su") {
+      defaultLoaiAn = "Hình sự";
+    } else if (userRole === "vu-2" || userRole === "dan-su") {
+      defaultLoaiAn = "Dân sự";
+    } else if (userRole === "vu-3") {
+      defaultLoaiAn = "Dân sự chung";
+    } else if (userRole === "vu-4" || userRole === "hanh-chinh") {
+      defaultLoaiAn = "Hành chính";
+    }
+    setFilters((prev) => ({ ...prev, loaiAn: defaultLoaiAn }));
+  }, [userRole]);
+
+  const getFilteredLoaiAnOptions = () => {
+    if (userRole === "vu-1" || userRole === "hinh-su") {
+      return ["Hình sự"];
+    }
+    if (userRole === "vu-2" || userRole === "dan-su") {
+      return ["Dân sự"];
+    }
+    if (userRole === "vu-3") {
+      const options = LOAI_AN_OPTIONS.filter((opt) => opt !== "Hành chính");
+      return [...options, "Dân sự chung"];
+    }
+    if (userRole === "vu-4" || userRole === "hanh-chinh") {
+      return ["Dân sự", "Hành chính"];
+    }
+    return [...LOAI_AN_OPTIONS, "Dân sự chung"];
+  };
 
   const handleChange = (key: keyof VuAnFilterValues, value: string) => {
     setFilters((prev) => ({ ...prev, [key]: value }));
@@ -250,7 +296,7 @@ export function VuAnSearchFilterPanel({
             <label style={labelStyle}>Loại án</label>
             <select value={filters.loaiAn} onChange={(e) => handleChange("loaiAn", e.target.value)} style={selectStyle}>
               <option value="">– Tất cả –</option>
-              {LOAI_AN_OPTIONS.map((opt) => (
+              {getFilteredLoaiAnOptions().map((opt) => (
                 <option key={opt} value={opt}>{opt}</option>
               ))}
             </select>
@@ -282,11 +328,62 @@ export function VuAnSearchFilterPanel({
             </div>
           </div>
 
-          {/* 5. Bị cáo / Đương sự */}
-          <div>
-            <label style={labelStyle}>Bị cáo / Đương sự</label>
-            <input placeholder="Nhập tên bị cáo/đương sự" value={filters.biCao} onChange={(e) => handleChange("biCao", e.target.value)} style={inputStyle} />
-          </div>
+          {/* 5. Bị cáo / Đương sự / Nguyên đơn / vv (Dynamic by loaiAn) */}
+          {(() => {
+            const isHinhSu = filters.loaiAn === "Hình sự";
+            const isDanSu = filters.loaiAn === "Dân sự" || filters.loaiAn === "Dân sự chung" || filters.loaiAn === "Kinh doanh thương mại" || filters.loaiAn === "Hôn nhân gia đình" || filters.loaiAn === "Lao động" || filters.loaiAn === "Sở hữu trí tuệ" || filters.loaiAn === "Phá sản";
+            const isHanhChinh = filters.loaiAn === "Hành chính";
+
+            if (isHinhSu) {
+              return (
+                <>
+                  <div>
+                    <label style={labelStyle}>Bị cáo</label>
+                    <input placeholder="Nhập tên bị cáo" value={filters.biCao} onChange={(e) => handleChange("biCao", e.target.value)} style={inputStyle} />
+                  </div>
+                  <div>
+                    <label style={labelStyle}>Người khiếu nại</label>
+                    <input placeholder="Nhập tên người khiếu nại" value={filters.nguoiKhieuNai} onChange={(e) => handleChange("nguoiKhieuNai", e.target.value)} style={inputStyle} />
+                  </div>
+                </>
+              );
+            }
+            if (isDanSu) {
+              return (
+                <>
+                  <div>
+                    <label style={labelStyle}>Nguyên đơn</label>
+                    <input placeholder="Nhập tên nguyên đơn" value={filters.nguyenDon} onChange={(e) => handleChange("nguyenDon", e.target.value)} style={inputStyle} />
+                  </div>
+                  <div>
+                    <label style={labelStyle}>Bị đơn</label>
+                    <input placeholder="Nhập tên bị đơn" value={filters.biDon} onChange={(e) => handleChange("biDon", e.target.value)} style={inputStyle} />
+                  </div>
+                </>
+              );
+            }
+            if (isHanhChinh) {
+              return (
+                <>
+                  <div>
+                    <label style={labelStyle}>Người khởi kiện</label>
+                    <input placeholder="Nhập tên người khởi kiện" value={filters.nguoiKhoiKien} onChange={(e) => handleChange("nguoiKhoiKien", e.target.value)} style={inputStyle} />
+                  </div>
+                  <div>
+                    <label style={labelStyle}>Người bị kiện</label>
+                    <input placeholder="Nhập tên người bị kiện" value={filters.nguoiBiKien} onChange={(e) => handleChange("nguoiBiKien", e.target.value)} style={inputStyle} />
+                  </div>
+                </>
+              );
+            }
+
+            return (
+              <div>
+                <label style={labelStyle}>Bị cáo / Đương sự</label>
+                <input placeholder="Nhập tên bị cáo/đương sự" value={filters.biCao} onChange={(e) => handleChange("biCao", e.target.value)} style={inputStyle} />
+              </div>
+            );
+          })()}
 
           {/* 6. Số thụ lý */}
           <div>
@@ -650,7 +747,7 @@ export function VuAnSearchFilterPanel({
         )}
 
         {/* ── ACTIVE FILTER TAGS VỚI NÚT XÓA TỪNG TAG (NẰM NGOÀI BLOCK MỞ RỘNG) ── */}
-        {activeTags.length > 0 && (
+        {/* {activeTags.length > 0 && (
           <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 10 }}>
             {activeTags.map(([key, val]) => (
               <span
@@ -692,7 +789,7 @@ export function VuAnSearchFilterPanel({
               Xóa tất cả
             </button>
           </div>
-        )}
+        )} */}
 
         {/* ── NÚT THAO TÁC (TÌM KIẾM MÀU ĐỎ & XÓA BỘ LỌC) ── */}
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", paddingTop: 4 }}>

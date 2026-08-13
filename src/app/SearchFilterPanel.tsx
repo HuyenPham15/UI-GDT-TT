@@ -105,6 +105,20 @@ export function SearchFilterPanel({
 }) {
   const [selectedLoaiAn, setSelectedLoaiAn] = React.useState<string>("");
 
+  React.useEffect(() => {
+    if (userRole === "vu-1" || userRole === "hinh-su") {
+      setSelectedLoaiAn("Hình sự");
+    } else if (userRole === "vu-2" || userRole === "dan-su") {
+      setSelectedLoaiAn("Dân sự");
+    } else if (userRole === "vu-3") {
+      setSelectedLoaiAn("Dân sự chung");
+    } else if (userRole === "vu-4" || userRole === "hanh-chinh") {
+      setSelectedLoaiAn("Hành chính");
+    } else {
+      setSelectedLoaiAn("");
+    }
+  }, [userRole]);
+
   const inputStyle: React.CSSProperties = {
     width: "100%",
     padding: "6px 10px",
@@ -143,11 +157,33 @@ export function SearchFilterPanel({
           onChange={label === "Loại án" ? (e) => setSelectedLoaiAn(e.target.value) : undefined}
         >
           <option value="">{placeholder ?? "--- Tất cả ---"}</option>
-          {options?.map((o) => (
-            <option key={o} value={o}>
-              {o}
-            </option>
-          ))}
+          {(() => {
+            if (label === "Loại án") {
+              let finalOptions: string[] = [];
+              if (userRole === "vu-1" || userRole === "hinh-su") {
+                finalOptions = ["Hình sự"];
+              } else if (userRole === "vu-2" || userRole === "dan-su") {
+                finalOptions = ["Dân sự"];
+              } else if (userRole === "vu-3") {
+                const filtered = (options || []).filter((opt) => opt !== "Hành chính");
+                finalOptions = [...filtered, "Dân sự chung"];
+              } else if (userRole === "vu-4" || userRole === "hanh-chinh") {
+                finalOptions = ["Dân sự", "Hành chính"];
+              } else {
+                finalOptions = [...(options || []), "Dân sự chung"];
+              }
+              return finalOptions.map((o) => (
+                <option key={o} value={o}>
+                  {o}
+                </option>
+              ));
+            }
+            return (options || []).map((o) => (
+              <option key={o} value={o}>
+                {o}
+              </option>
+            ));
+          })()}
         </select>
       ) : type === "dateRange" ? (
         <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
