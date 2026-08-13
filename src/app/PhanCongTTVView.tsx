@@ -379,6 +379,20 @@ const INITIAL_DA_PHAN_CONG: CaseRow[] = [
   },
 ];
 
+const isRowHinhSu = (r?: CaseRow | null) => {
+  if (!r) return false;
+  const loai = (r as any).loaiAn ? String((r as any).loaiAn).toLowerCase() : "";
+  const soBA = r.soBA ? r.soBA.toUpperCase() : "";
+  const soTL = r.soThuLy ? r.soThuLy.toUpperCase() : "";
+  const qh = r.qhpl ? r.qhpl.toLowerCase() : "";
+  return (
+    loai.includes("hình sự") ||
+    soBA.includes("/HS") ||
+    soTL.includes("/HS") ||
+    qh.includes("tội")
+  );
+};
+
 export function PhanCongTTVView() {
   const [activeTab, setActiveTab] = useState<"chua-phan-cong" | "da-phan-cong">("chua-phan-cong");
   const [phanCongMode, setPhanCongMode] = useState<"ngau-nhien" | "chi-dinh">("ngau-nhien");
@@ -504,6 +518,34 @@ export function PhanCongTTVView() {
     setShowAssignModal(false);
     alert(`Đã phân công chỉ định thành công cho Thẩm tra viên: ${assignTTV} và Lãnh đạo: ${assignLD}!`);
     setActiveTab("da-phan-cong");
+  };
+
+  const handleChangeTTV = (id: number, val: string, isXX: boolean) => {
+    setDaPCRows((prev) =>
+      prev.map((row) => {
+        if (row.id === id) {
+          if (isXX) {
+            return { ...row, ttv_XX: val };
+          }
+          return { ...row, ttv: val };
+        }
+        return row;
+      })
+    );
+  };
+
+  const handleChangeLĐ = (id: number, val: string, isXX: boolean) => {
+    setDaPCRows((prev) =>
+      prev.map((row) => {
+        if (row.id === id) {
+          if (isXX) {
+            return { ...row, lanhDao_XX: val };
+          }
+          return { ...row, lanhDao: val };
+        }
+        return row;
+      })
+    );
   };
 
   const currentRows = activeTab === "chua-phan-cong" ? chuaPCRows : daPCRows;
@@ -955,14 +997,14 @@ export function PhanCongTTVView() {
                     />
                   </th>
                   <th style={{ ...TH_CUSTOM, width: 44, textAlign: "center" }}>STT</th>
-                  <th style={{ ...TH_CUSTOM, width: "12%" }}>Số & Ngày thụ lý</th>
-                  <th style={{ ...TH_CUSTOM, width: "23%" }}>Thông tin bản án/quyết định và QHPL</th>
-                  <th style={{ ...TH_CUSTOM, width: "14%" }}>Đương sự</th>
-                  <th style={{ ...TH_CUSTOM, width: "10%" }}>Ngày TTV nhận THS</th>
-                  <th style={{ ...TH_CUSTOM, width: "11%" }}>Ngày phân công TTV</th>
-                  <th style={{ ...TH_CUSTOM, width: "13%" }}>Thẩm tra viên (TTV)</th>
-                  <th style={{ ...TH_CUSTOM, width: "11%" }}>Ngày phân công LĐ</th>
-                  <th style={{ ...TH_CUSTOM, width: "14%" }}>Lãnh đạo vụ (LĐV)</th>
+                  <th style={{ ...TH_CUSTOM, width: "10%" }}>Số & Ngày thụ lý</th>
+                  <th style={{ ...TH_CUSTOM, width: "21%" }}>Thông tin bản án/quyết định và QHPL</th>
+                  <th style={{ ...TH_CUSTOM, width: "11%" }}>Đương sự</th>
+                  <th style={{ ...TH_CUSTOM, width: "9%" }}>Ngày TTV nhận THS</th>
+                  <th style={{ ...TH_CUSTOM, width: "8%" }}>Ngày phân công TTV</th>
+                  <th style={{ ...TH_CUSTOM, width: "16%" }}>Thẩm tra viên (TTV)</th>
+                  <th style={{ ...TH_CUSTOM, width: "8%" }}>Ngày phân công LĐ</th>
+                  <th style={{ ...TH_CUSTOM, width: "17%" }}>Lãnh đạo vụ (LĐV)</th>
                   <th style={{ ...TH_CUSTOM, width: 60, textAlign: "center", borderRight: "none" }}>Thao tác</th>
                 </tr>
               </thead>
@@ -1010,7 +1052,7 @@ export function PhanCongTTVView() {
                             <div><b>{getSoBALabel(r.soBA, r.loaiAn, r.giaiDoan)}</b> {r.soBA} &nbsp; <b>Ngày:</b> {r.ngayBA}</div>
                             <div style={{ color: MUTED, marginTop: 2, fontSize: 11 }}><b>Tại:</b> {r.toaAn}</div>
 
-                            {r.qhpl && (
+                            {r.qhpl && !isRowHinhSu(r) && (
                               <div style={{ color: "#2563eb", marginTop: 4, fontSize: 11, fontWeight: 500 }}>
                                 <b>QHPL:</b> {r.qhpl}
                               </div>
@@ -1061,9 +1103,20 @@ export function PhanCongTTVView() {
                                   <div style={{ fontSize: 11, fontWeight: isXX ? 700 : 600, color: isXX ? "#047857" : "#1e40af" }}>
                                     {isXX ? "GĐ Xét xử GĐT, TT" : "GĐ Giải quyết đơn"}
                                   </div>
-                                  <div style={{ fontSize: 11, fontWeight: r.ttv !== "-" ? 600 : 400, color: r.ttv !== "-" ? TEXT : MUTED, marginTop: 2 }}>
-                                    {r.ttv !== "-" ? r.ttv : <span style={{ color: "#d97706", fontStyle: "italic", fontSize: 11 }}>Chưa phân công</span>}
-                                  </div>
+                                  {activeTab === "da-phan-cong" && isSelected && isXX ? (
+                                    <select
+                                      value={r.ttv}
+                                      onChange={(e) => handleChangeTTV(r.id, e.target.value, false)}
+                                      style={{ ...inputStyle, padding: "2px 4px 2px 2px", fontSize: 10.5, marginTop: 2, height: 26, width: "100%" }}
+                                      title={r.ttv}
+                                    >
+                                      {DANH_SACH_TTV.map(t => <option key={t} value={t}>{t}</option>)}
+                                    </select>
+                                  ) : (
+                                    <div style={{ fontSize: 11, fontWeight: r.ttv !== "-" ? 600 : 400, color: r.ttv !== "-" ? TEXT : MUTED, marginTop: 2 }}>
+                                      {r.ttv !== "-" ? r.ttv : <span style={{ color: "#d97706", fontStyle: "italic", fontSize: 11 }}>Chưa phân công</span>}
+                                    </div>
+                                  )}
                                 </div>
                               </td>
                               <td style={TD_CUSTOM}>
@@ -1093,9 +1146,20 @@ export function PhanCongTTVView() {
                                   <div style={{ fontSize: 11, fontWeight: isXX ? 700 : 600, color: isXX ? "#047857" : "#1e40af" }}>
                                     {isXX ? "GĐ Xét xử GĐT, TT" : "GĐ Giải quyết đơn"}
                                   </div>
-                                  <div style={{ fontSize: 11, fontWeight: r.lanhDao !== "-" ? 600 : 400, color: r.lanhDao !== "-" ? TEXT : MUTED, marginTop: 2 }}>
-                                    {r.lanhDao !== "-" ? r.lanhDao : <span style={{ color: "#d97706", fontStyle: "italic", fontSize: 11 }}>Chưa phân công</span>}
-                                  </div>
+                                  {activeTab === "da-phan-cong" && isSelected && isXX ? (
+                                    <select
+                                      value={r.lanhDao}
+                                      onChange={(e) => handleChangeLĐ(r.id, e.target.value, false)}
+                                      style={{ ...inputStyle, padding: "2px 4px 2px 2px", fontSize: 10.5, marginTop: 2, height: 26, width: "100%" }}
+                                      title={r.lanhDao}
+                                    >
+                                      {DANH_SACH_LANH_DAO.map(l => <option key={l} value={l}>{l.split(" - ")[0]}</option>)}
+                                    </select>
+                                  ) : (
+                                    <div style={{ fontSize: 11, fontWeight: r.lanhDao !== "-" ? 600 : 400, color: r.lanhDao !== "-" ? TEXT : MUTED, marginTop: 2 }}>
+                                      {r.lanhDao !== "-" ? r.lanhDao : <span style={{ color: "#d97706", fontStyle: "italic", fontSize: 11 }}>Chưa phân công</span>}
+                                    </div>
+                                  )}
                                 </div>
                               </td>
                             </>
@@ -1243,10 +1307,12 @@ export function PhanCongTTVView() {
                 <span style={{ color: MUTED, fontWeight: 600 }}>Tòa án ra bản án:</span>
                 <span>{showDetailModal.toaAn}</span>
               </div>
-              <div style={{ display: "grid", gridTemplateColumns: "140px 1fr", gap: 8, padding: "6px 0", borderBottom: `1px solid ${BORDER}` }}>
-                <span style={{ color: MUTED, fontWeight: 600 }}>Quan hệ pháp luật:</span>
-                <span>{showDetailModal.qhpl || "Chưa cập nhật"}</span>
-              </div>
+              {!isRowHinhSu(showDetailModal) && showDetailModal.qhpl && (
+                <div style={{ display: "grid", gridTemplateColumns: "140px 1fr", gap: 8, padding: "6px 0", borderBottom: `1px solid ${BORDER}` }}>
+                  <span style={{ color: MUTED, fontWeight: 600 }}>Quan hệ pháp luật:</span>
+                  <span>{showDetailModal.qhpl}</span>
+                </div>
+              )}
               <div style={{ display: "grid", gridTemplateColumns: "140px 1fr", gap: 8, padding: "6px 0", borderBottom: `1px solid ${BORDER}` }}>
                 <span style={{ color: MUTED, fontWeight: 600 }}>Đương sự:</span>
                 <span>{showDetailModal.ndkn ? `NĐ/NKK: ${showDetailModal.ndkn} - BĐ/NBK: ${showDetailModal.nbk}` : "Chưa cập nhật"}</span>
