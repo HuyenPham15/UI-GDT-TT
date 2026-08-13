@@ -23,36 +23,63 @@ function CellThongTinDon({ c, tab }: { c: DonCase; tab?: TabId }) {
   const showDuKien = !isDaCoVuAn && !isChoYKienTab;
 
   const capThamPhanText = isBac3Tab ? "TPB3" : c.capThamPhan;
-  const tpBac3List = ["Nguyễn Biên Thuỳ", "Trần Minh Đức", "Lê Văn Minh", "Chu Thị Thu Hiền", "Nguyễn Thị Hoa"];
+  const tpBac3List = ["Trần Minh Đức", "Trần Minh Đức", "Lê Văn Minh", "Chu Thị Thu Hiền", "Nguyễn Thị Hoa"];
   const thamPhanText = isBac3Tab ? (tpBac3List[c.id % tpBac3List.length] || c.thamPhan) : c.thamPhan;
 
   const soToTrinhText = (c as any).soToTrinh || `${12 + c.id}/TT-V1`;
   const ngayToTrinhText = (c as any).ngayToTrinh || "15/07/2026";
 
-  let hinhThucText = c.hinhThuc;
-  const isCV = c.soCV && (
-    (c.hinhThuc && (
-      c.hinhThuc.toLowerCase().includes("cv") ||
-      c.hinhThuc.toLowerCase().includes("công văn") ||
-      c.hinhThuc.toLowerCase().includes("kiến nghị") ||
-      c.hinhThuc.toLowerCase().includes("chuyển đơn")
-    )) ||
-    (!c.hinhThuc)
+  const isAnQuocHoiBase = c.tags?.includes("an-quoc-hoi") || c.tags?.includes("Án quốc hội") || (c as any).isAnQuocHoi;
+  const isFormCV = !c.hinhThuc || (
+    c.hinhThuc.toLowerCase().includes("cv") ||
+    c.hinhThuc.toLowerCase().includes("công văn") ||
+    c.hinhThuc.toLowerCase().includes("kiến nghị") ||
+    c.hinhThuc.toLowerCase().includes("chuyển đơn")
   );
+  const isAnQuocHoi = !!isAnQuocHoiBase && !!c.soCV && isFormCV;
+  const hasCV = !!c.soCV && isFormCV;
 
-  if (isCV && c.soCV) {
-    let soCVNo = c.soCV;
-    let ngayCVVal = c.ngayCV || "";
-    if (c.soCV.includes(" - ")) {
-      const parts = c.soCV.split(" - ");
-      soCVNo = parts[0];
-      if (!ngayCVVal) {
-        ngayCVVal = parts[1];
+  let hinhThucText = c.hinhThuc;
+  if (hasCV) {
+    let donViGui = "";
+    let soCVNo = "";
+    let ngayCVVal = "";
+
+    if (isAnQuocHoi) {
+      donViGui = c.id % 3 === 0 ? "Ban Dân nguyện" : c.id % 3 === 1 ? "Ủy ban Tư pháp" : "Văn phòng Quốc hội";
+      soCVNo = c.id % 3 === 0 ? "382/BDN-QH" : c.id % 3 === 1 ? "195/UBTP15" : "524/VPQH";
+      ngayCVVal = c.ngayCV || (c.ngaythuly ? (() => {
+        const parts = c.ngaythuly.split("/");
+        if (parts.length === 3) {
+          const day = parseInt(parts[0], 10);
+          const month = parseInt(parts[1], 10);
+          const year = parseInt(parts[2], 10);
+          let prevDay = day - 5;
+          let prevMonth = month;
+          if (prevDay <= 0) {
+            prevDay = 25;
+            prevMonth = month - 1;
+            if (prevMonth <= 0) prevMonth = 12;
+          }
+          return `${prevDay.toString().padStart(2, "0")}/${prevMonth.toString().padStart(2, "0")}/${year}`;
+        }
+        return "15/07/2026";
+      })() : "15/07/2026");
+    } else {
+      donViGui = (c as any).donViGui || c.toa || "TAND Cấp cao tại Hà Nội";
+      soCVNo = c.soCV || "";
+      ngayCVVal = c.ngayCV || "";
+      if (soCVNo.includes(" - ")) {
+        const parts = soCVNo.split(" - ");
+        soCVNo = parts[0];
+        if (!ngayCVVal) {
+          ngayCVVal = parts[1];
+        }
       }
     }
-    const donViGui = (c as any).donViGui || c.toa || "TAND Cấp cao tại Hà Nội";
-    hinhThucText = `${c.hinhThuc || "Đơn đề nghị GĐT,TT kèm theo CV chuyển đơn"} (${donViGui} - ${soCVNo} - ${ngayCVVal})`;
-  } else if (!hinhThucText || hinhThucText.toLowerCase() === "đơn") {
+
+    hinhThucText = `${c.hinhThuc || (isAnQuocHoi ? "Công văn chuyển đơn" : "Đơn đề nghị GĐT,TT kèm theo CV chuyển đơn")} (${donViGui} - ${soCVNo} - ${ngayCVVal})`;
+  } else if (!hinhThucText || hinhThucText.toLowerCase() === "đơn" || hinhThucText.toLowerCase().includes("đề nghị gđt")) {
     hinhThucText = "Đơn đề nghị GĐT,TT";
   }
 
@@ -129,18 +156,21 @@ function CellThongTinDon({ c, tab }: { c: DonCase; tab?: TabId }) {
           </span>
         </>
       )}
-      {c.tags.length > 0 && (
-        <div style={{ display: "flex", flexDirection: "column", gap: 3, marginTop: 4, width: "100%" }}>
-          <div style={{ display: "flex", gap: 4, flexWrap: "wrap", alignItems: "flex-start" }}>
-            {c.tags.map((t) => <Tag key={t} type={t} />)}
-          </div>
-          {/* {(c.tags.includes("an-chi-dao") || c.tags.includes("Án chỉ đạo") || c.tags.includes("an-dan-de")) && c.noiDungChiDao && (
-            <div style={{ fontSize: 10.5, color: "#854d0e", background: "#fefce8", border: "1px solid #fef08a", borderRadius: 4, padding: "3px 6px", marginTop: 2, fontFamily: F, lineHeight: 1.35, wordBreak: "break-word" }}>
-              <b>Chỉ đạo:</b> {c.noiDungChiDao}
+      {(() => {
+        const renderedTags = c.tags.filter((t) => {
+          if (t === "an-quoc-hoi" || t === "an-qh" || t === "Án quốc hội" || t === "Án Quốc hội") {
+            return isAnQuocHoi;
+          }
+          return true;
+        });
+        return renderedTags.length > 0 ? (
+          <div style={{ display: "flex", flexDirection: "column", gap: 3, marginTop: 4, width: "100%" }}>
+            <div style={{ display: "flex", gap: 4, flexWrap: "wrap", alignItems: "flex-start" }}>
+              {renderedTags.map((t) => <Tag key={t} type={t} />)}
             </div>
-          )} */}
-        </div>
-      )}
+          </div>
+        ) : null;
+      })()}
     </div>
   );
 }
@@ -169,7 +199,14 @@ function CellDuongSu({ c, userRole }: { c: DonCase; userRole?: UserRoleType }) {
 
 // ── BA/QĐ cell ───────────────────────────────────────────────────────────────
 
-function CellBA({ c, userRole }: { c: DonCase; userRole?: UserRoleType }) {
+function CellBA({ c, userRole, tab }: { c: DonCase; userRole?: UserRoleType; tab?: TabId }) {
+  const isChuaPhanCongLDV = !c.ldv || c.ldv === "Chưa phân công" || c.id % 5 === 4 || c.id % 5 === 0 || c.id % 5 === 1;
+  const isChuaPhanCongTTV = !c.ttv || c.ttv === "Chưa phân công" || isChuaPhanCongLDV;
+
+  if (tab !== "don-cho-phe-duyet" && tab !== "tra-lai" && isChuaPhanCongTTV && isChuaPhanCongLDV) {
+    return <span style={{ color: "#000000", fontSize: 11, fontFamily: F }}>-</span>;
+  }
+
   if (!c.soBA && !c.toa && !c.soBASoTham && !c.soBAPhucTham) {
     return <span style={{ color: "#000000", fontSize: 11, fontFamily: F }}>-</span>;
   }
@@ -192,15 +229,15 @@ function CellBA({ c, userRole }: { c: DonCase; userRole?: UserRoleType }) {
   const rawToaPT = c.toaPhucTham || (c.toa && (c.toa.includes("cấp cao") || c.toa.includes("tối cao")) ? c.toa : "TAND cấp cao tại Hà Nội");
 
   let toaPTFormatted = rawToaPT;
-  if (rawToaPT.includes("Hà Nội")) toaPTFormatted = `TAND cấp cao tại Hà Nội(${shortCode}-PT)`;
-  else if (rawToaPT.includes("Hồ Chí Minh") || rawToaPT.includes("TP.HCM")) toaPTFormatted = `TAND cấp cao tại TP. Hồ Chí Minh(${shortCode}-PT)`;
-  else if (rawToaPT.includes("Đà Nẵng")) toaPTFormatted = `TAND cấp cao tại Đà Nẵng(${shortCode}-PT)`;
-  else if (!rawToaPT.includes("-PT)")) toaPTFormatted = `${rawToaPT}(${shortCode}-PT)`;
+  if (rawToaPT.includes("Hà Nội")) toaPTFormatted = `Tại: TAND cấp cao tại Hà Nội(${shortCode}-PT)`;
+  else if (rawToaPT.includes("Hồ Chí Minh") || rawToaPT.includes("TP.HCM")) toaPTFormatted = `Tại: TAND cấp cao tại TP. Hồ Chí Minh(${shortCode}-PT)`;
+  else if (rawToaPT.includes("Đà Nẵng")) toaPTFormatted = `Tại: TAND cấp cao tại Đà Nẵng(${shortCode}-PT)`;
+  else if (!rawToaPT.includes("-PT)")) toaPTFormatted = `Tại: ${rawToaPT}(${shortCode}-PT)`;
+  else toaPTFormatted = `Tại: ${rawToaPT}`;
 
   const isQD_PT = soPT.toUpperCase().includes("QĐ") || soPT.toUpperCase().includes("QD");
   const prefixPT = isQD_PT ? "Số QDPT" : "Số BAPT";
 
-  // Xác định cấp bản án bị đề nghị GĐT/TT (Sơ thẩm hay Phúc thẩm)
   const isHighlightST = c.capDeNghi === "so-tham" || (c.capDeNghi === undefined && c.id % 2 === 1);
   const isHighlightPT = !isHighlightST;
 
@@ -212,24 +249,13 @@ function CellBA({ c, userRole }: { c: DonCase; userRole?: UserRoleType }) {
   const isQD_GDT = soGDT.toUpperCase().includes("QĐ") || soGDT.toUpperCase().includes("QD");
   const prefixGDT = isQD_GDT ? "Số QDGĐT" : "Số BAGĐT";
 
-  // const highlightContainerStyle: React.CSSProperties = {
-  //   background: "#fefce8",
-  //   border: "1px solid #facc15",
-  //   borderRadius: 5,
-  //   padding: "5px 7px",
-  //   display: "flex",
-  //   flexDirection: "column",
-  //   gap: 2,
-  //   boxShadow: "0 1px 2px rgba(234,179,8,0.15)",
-  // };
-
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 5, fontSize: 11, fontFamily: F, lineHeight: 1.35, color: "#000000" }}>
       {isHighlightST ? (
         <>
           {/* Sơ thẩm (đề nghị) */}
           {soST && (
-            <div>
+            <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "2px 8px" }}>
               <span style={{ color: "#000000", fontSize: 11, fontWeight: 700 }}>
                 {prefixST}: <b>{formatSoBA(soST, c.loaiAn)}</b>
                 {ngayST && <span>  Ngày: <b>{ngayST}</b></span>}
@@ -239,7 +265,7 @@ function CellBA({ c, userRole }: { c: DonCase; userRole?: UserRoleType }) {
           )}
           {/* Phúc thẩm (liên quan) */}
           {soPT && (
-            <div style={{ borderTop: "1px dashed #cbd5e1", paddingTop: 4, display: "flex", flexDirection: "column", gap: 1, fontStyle: "italic", fontSize: 10, color: "#4b5563" }}>
+            <div style={{ borderTop: "1px dashed #cbd5e1", paddingTop: 4, display: "flex", flexWrap: "wrap", alignItems: "center", gap: "2px 8px", fontStyle: "italic", fontSize: 10, color: "#4b5563" }}>
               <span>
                 {prefixPT}: {formatSoBA(soPT, c.loaiAn)}
                 {ngayPT && <span>  Ngày: {ngayPT}</span>}
@@ -252,17 +278,17 @@ function CellBA({ c, userRole }: { c: DonCase; userRole?: UserRoleType }) {
         <>
           {/* Phúc thẩm (đề nghị) */}
           {soPT && (
-            <div>
+            <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "2px 8px" }}>
               <span style={{ color: "#000000", fontSize: 11, fontWeight: 700 }}>
                 {prefixPT}: <b>{formatSoBA(soPT, c.loaiAn)}</b>
-                {ngayPT && <span>  Ngày: <b>{ngayPT}</b></span>}
+                {ngayPT && <span>  Ngày: {ngayPT}</span>}
               </span>
               <span style={{ color: "#000000", fontSize: 10.5 }}>{toaPTFormatted}</span>
             </div>
           )}
           {/* Sơ thẩm (liên quan) */}
           {soST && (
-            <div style={{ borderTop: "1px dashed #cbd5e1", paddingTop: 4, display: "flex", flexDirection: "column", gap: 1, fontStyle: "italic", fontSize: 10, color: "#4b5563" }}>
+            <div style={{ borderTop: "1px dashed #cbd5e1", paddingTop: 4, display: "flex", flexWrap: "wrap", alignItems: "center", gap: "2px 8px", fontStyle: "italic", fontSize: 10, color: "#4b5563" }}>
               <span>
                 {prefixST}: {formatSoBA(soST, c.loaiAn)}
                 {ngayST && <span>  Ngày: {ngayST}</span>}
@@ -275,15 +301,14 @@ function CellBA({ c, userRole }: { c: DonCase; userRole?: UserRoleType }) {
 
       {/* Thông tin Giám đốc thẩm (chỉ hiển thị khi có QĐ GĐT) */}
       {showGDT && (
-        <div style={{ display: "flex", flexDirection: "column", gap: 1, fontStyle: "italic", fontSize: 10, color: "#4b5563" }}>
-          <span >
+        <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "2px 8px", fontStyle: "italic", fontSize: 10, color: "#4b5563" }}>
+          <span>
             {prefixGDT}: <b>{soGDT}</b>
             {ngayGDT && <span>  Ngày: <b>{ngayGDT}</b></span>}
           </span>
-          <span >Tòa: {toaGDT}</span>
+          <span>Tòa: {toaGDT}</span>
         </div>
-      )
-      }
+      )}
 
       {
         c.thoiHieu && c.thoiHieu !== "Không xác định thời hiệu" && (
@@ -320,20 +345,32 @@ function CellVuAn({ c, tab, onThemHoSo }: { c: DonCase; tab?: TabId; onThemHoSo?
   const daGiaoTHS = c.daGiaoTHS !== undefined ? c.daGiaoTHS : (c.id % 2 === 0);
 
   const ttvList = ["Phạm Thị Minh", "Nguyễn Văn A", "Lê Văn Hùng", "Trịnh Đức Minh", "Hoàng Văn Tuấn"];
-  const ttvText = c.ttv || ttvList[c.id % ttvList.length];
-
   const ldvList = ["Trần Văn Bình (Phó Vụ trưởng)", "Nguyễn Thị Nga (Vụ trưởng)", "Lê Hoàng Nam (Phó Vụ trưởng)", "Phạm Đức Anh (Phó Vụ trưởng)"];
-  const ldvAssignedName = c.ldv || ldvList[c.id % ldvList.length];
 
-  const tpBac3List = ["Nguyễn Biên Thuỳ", "Trần Minh Đức", "Lê Văn Minh", "Chu Thị Thu Hiền", "Nguyễn Thị Hoa"];
+  const isChuaPhanCongLDV = !c.ldv || c.ldv === "Chưa phân công" || c.id % 5 === 4 || c.id % 5 === 0 || c.id % 5 === 1;
+  const ldvAssignedName = isChuaPhanCongLDV ? "Chưa phân công" : (c.ldv || ldvList[c.id % ldvList.length]);
+
+  const isChuaPhanCongTTV = !c.ttv || c.ttv === "Chưa phân công" || isChuaPhanCongLDV;
+  const ttvText = isChuaPhanCongTTV ? "Chưa phân công" : (c.ttv || ttvList[c.id % ttvList.length]);
+
+  const tpBac3List = ["Trần Minh Đức", "Trần Minh Đức", "Lê Văn Minh", "Chu Thị Thu Hiền", "Nguyễn Thị Hoa"];
   const tpText = c.tpGiaiQuyet || c.thamPhan || tpBac3List[c.id % tpBac3List.length];
+
+  const isDaCoVuAn_ForTP = tab === "da-co-vu-an" || c.tabs?.includes("da-co-vu-an") || c.daThuLy;
+  const isDonChoPheDuyet = tab === "don-cho-phe-duyet" || c.tabs?.includes("don-cho-phe-duyet");
+  const isChoYKienTab = tab === "cho-y-kien";
+  const isBac3Tab = tab === "da-co-vu-an" || isDonChoPheDuyet;
+  const showDuKien = !isDaCoVuAn_ForTP && !isChoYKienTab;
+
+  const capThamPhanText = isBac3Tab ? "TPB3" : c.capThamPhan;
+  const thamPhanText = isBac3Tab ? (tpBac3List[c.id % tpBac3List.length] || c.thamPhan) : c.thamPhan;
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
       <div style={{ textAlign: "left" }}>
-        <span style={{ fontSize: 11, color: TEXT, fontFamily: F, lineHeight: 1.4, display: "block", marginBottom: 2 }}>
+        {/* <span style={{ fontSize: 11, color: TEXT, fontFamily: F, lineHeight: 1.4, display: "block", marginBottom: 2 }}>
           Tên vụ án: {c.tenVuAn || `Vụ án ${c.nguoiKhieuNai || "Đặng Thị Dương"} – Tội cố ý gây thương tích`}
-        </span>
+        </span> */}
 
         {isChoYKienOrTraLai ? (
           <div style={{
@@ -350,24 +387,40 @@ function CellVuAn({ c, tab, onThemHoSo }: { c: DonCase; tab?: TabId; onThemHoSo?
             </span>
 
             <span style={{ fontSize: 11, color: TEXT, fontFamily: F, display: "block" }}>
-              LĐV giải quyết: <strong>{ldvAssignedName}</strong>
+              LĐV giải quyết: <strong>{ldvAssignedName === "Chưa phân công" ? <span style={{ color: "#ef4444", fontWeight: 700 }}>Chưa phân công</span> : ldvAssignedName}</strong>
             </span>
 
-            <span style={{ fontSize: 11, color: TEXT, fontFamily: F, display: "block" }}>
-              TP giải quyết: <strong>{c.tpGiaiQuyet || "Đào Văn Nam"}</strong>
-            </span>
+            {isChoYKienTab ? (
+              <span style={{ fontSize: 11, color: TEXT, fontFamily: F, display: "block" }}>
+                TP giải quyết: <strong>{c.tpGiaiQuyet || "Đào Văn Nam"}</strong>
+              </span>
+            ) : (
+              <span style={{ fontSize: 11, color: TEXT, fontFamily: F, display: "block" }}>
+                Thẩm phán{showDuKien ? " (Dự kiến)" : ""}: <strong>{thamPhanText} ({capThamPhanText})</strong>
+              </span>
+            )}
           </div>
         ) : (
           <div style={{ display: "flex", flexDirection: "column", gap: 2, marginTop: 2 }}>
-            <span style={{ fontSize: 11, color: TEXT, fontFamily: F, display: "block" }}>
-              TTV: {ttvText}
-            </span>
-            <span style={{ fontSize: 11, color: TEXT, fontFamily: F, display: "block" }}>
-              LĐV: {ldvAssignedName}
-            </span>
-            <span style={{ fontSize: 11, color: TEXT, fontFamily: F, display: "block" }}>
-              TP: {tpText}
-            </span>
+            {!((tab === "don-cho-phe-duyet" || tab === "da-co-vu-an") && isChuaPhanCongTTV && isChuaPhanCongLDV) && (
+              <>
+                <span style={{ fontSize: 11, color: TEXT, fontFamily: F, display: "block" }}>
+                  TTV: {ttvText === "Chưa phân công" ? <span style={{ color: "#ef4444", fontWeight: 500 }}>Chưa phân công</span> : ttvText}
+                </span>
+                <span style={{ fontSize: 11, color: TEXT, fontFamily: F, display: "block" }}>
+                  LĐV: {ldvAssignedName === "Chưa phân công" ? <span style={{ color: "#ef4444", fontWeight: 500 }}>Chưa phân công</span> : ldvAssignedName}
+                </span>
+              </>
+            )}
+            {isChoYKienTab ? (
+              <span style={{ fontSize: 11, color: TEXT, fontFamily: F, display: "block" }}>
+                TP: {tpText}
+              </span>
+            ) : (
+              <span style={{ fontSize: 11, color: TEXT, fontFamily: F, display: "block" }}>
+                Thẩm phán{showDuKien ? " (Dự kiến)" : ""}: {thamPhanText} ({capThamPhanText})
+              </span>
+            )}
           </div>
         )}
 
@@ -657,7 +710,7 @@ function CaseTable({
           ? "Ý KIẾN LÃNH ĐẠO"
           : "THÔNG TIN NHẬN/TRẢ";
 
-  const hasNhanTraCol = tab !== "don-cho-phe-duyet" && tab !== "tat-ca";
+  const hasNhanTraCol = tab !== "don-cho-phe-duyet" && tab !== "tat-ca" && tab !== "da-co-vu-an";
 
   return (
     <div style={{ flex: 1, overflow: "auto" }}>
@@ -723,7 +776,7 @@ function CaseTable({
               </td>
               <td style={TD_STYLE}><CellThongTinDon c={c} tab={tab} /></td>
               <td style={TD_STYLE}><CellDuongSu c={c} userRole={userRole} /></td>
-              <td style={TD_STYLE}><CellBA c={c} userRole={userRole} /></td>
+              <td style={TD_STYLE}><CellBA c={c} userRole={userRole} tab={tab} /></td>
               <td style={TD_STYLE}>
                 <CellVuAn c={c} tab={tab} onThemHoSo={onThemHoSo} />
               </td>

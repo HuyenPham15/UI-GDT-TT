@@ -580,7 +580,7 @@ export function renderCellTrangThaiDon(
           }}
           title="Xem bản in Quyết định kháng nghị"
         >
-          <Badge color="#065f46" bg="#d1fae5">⚖ Kháng nghị</Badge>
+          <Badge color="#065f46" bg="#d1fae5">Kháng nghị</Badge>
           <span style={{ fontSize: 10.5, color: "#1d4ed8", fontWeight: 600, fontFamily: F, textDecoration: "underline" }}>
             (Số: {soQuyetDinh})
           </span>
@@ -606,7 +606,7 @@ export function renderCellTrangThaiDon(
           }}
           title="Xem bản in Thông báo trả lời đơn"
         >
-          <Badge color="#1e40af" bg="#dbeafe">📩 Trả lời đơn</Badge>
+          <Badge color="#1e40af" bg="#dbeafe">Trả lời đơn</Badge>
           <span style={{ fontSize: 10.5, color: "#1d4ed8", fontWeight: 600, fontFamily: F, textDecoration: "underline" }}>
             (Số: {soQuyetDinh})
           </span>
@@ -632,7 +632,7 @@ export function renderCellTrangThaiDon(
           }}
           title="Xem bản in Công văn trao đổi"
         >
-          <Badge color="#92400e" bg="#fef3c7">🏛 VKS đang giải quyết</Badge>
+          <Badge color="#92400e" bg="#fef3c7">VKS đang giải quyết</Badge>
           <span style={{ fontSize: 10.5, color: "#1d4ed8", fontWeight: 600, fontFamily: F, textDecoration: "underline" }}>
             (CV: {soQuyetDinh})
           </span>
@@ -658,7 +658,7 @@ export function renderCellTrangThaiDon(
           }}
           title="Xem bản in Quyết định xếp đơn"
         >
-          <Badge color="#374151" bg="#f3f4f6">📁 Xếp đơn</Badge>
+          <Badge color="#374151" bg="#f3f4f6">Xếp đơn</Badge>
           <span style={{ fontSize: 10.5, color: "#1d4ed8", fontWeight: 600, fontFamily: F, textDecoration: "underline" }}>
             (QĐ: {soQuyetDinh})
           </span>
@@ -704,7 +704,7 @@ export function renderCellTrangThaiDon(
       {/* 2. Kết quả trả lời đơn (cùng dòng) */}
       <div style={{ display: "flex", alignItems: "center", gap: 5, flexWrap: "wrap", borderTop: `1px dashed #e5e7eb`, paddingTop: 4 }}>
         <span style={{ fontSize: 11, fontWeight: 700, color: "#1e293b", fontFamily: F }}>
-          Kết quả trả lời đơn:
+          KQGQ:
         </span>
         {kqComponent}
       </div>
@@ -897,13 +897,13 @@ export default function QuanLyVuAnView({
                             {groupIdx + 1}.
                           </span>
                           <span style={{ fontSize: 12, fontWeight: 700, color: "#2563eb", fontFamily: F }}>
-                            {group.soBA || group.id}
+                            Số BA: {group.soBA || group.id}
                           </span>
                           <span style={{ fontSize: 12, fontWeight: 600, color: "#1e293b", fontFamily: F }}>
-                            – {group.ngayBA || group.id}
+                            - Ngày BA: {group.ngayBA || group.id}
                           </span>
                           <span style={{ fontSize: 12, fontWeight: 600, color: "#1e293b", fontFamily: F }}>
-                            – {group.toa || group.id}
+                            - Tòa: {group.toa || group.id}
                           </span>
                         </div>
                         <div style={{ display: 'flex', flexDirection: 'row', gap: 10, alignItems: 'center', marginTop: 4 }}>

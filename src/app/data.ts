@@ -467,8 +467,8 @@ function buildCase(loaiIdx: number, recIdx: number, globalId: number): DonCase {
     }
   }
   let soCV = String(10 + recIdx + loaiIdx);
-  if (recIdx === 0) soCV = "8/3";
-  else if (recIdx === 1) soCV = "9.1";
+  if (recIdx === 0) soCV = "83";
+  else if (recIdx === 1) soCV = "9";
   const ngayCV = `${pad2((recIdx % 28) + 1)}/06/2026`;
   const SHORT_MAP: Record<string, string> = {
     "Hình sự": "HS",
