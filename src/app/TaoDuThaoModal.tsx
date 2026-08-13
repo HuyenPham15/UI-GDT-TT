@@ -369,8 +369,8 @@ export function TaoDuThaoModal({
   const isHanhChinh = loaiAn === "Hành chính" || detail?.isHanhChinh || detail?.userRole === "vu-4" || detail?.userRole === "hanh-chinh";
   const isVu23 = loaiAn === "Dân sự" || loaiAn === "Hôn nhân gia đình" || loaiAn === "Kinh doanh thương mại" || loaiAn === "Lao động" || detail?.isDanSu || detail?.isVu23 || detail?.userRole === "vu-2" || detail?.userRole === "vu-3";
 
-  const maVuAn = detail?.maVuAn || (isKhieuNai ? "KN26-004128" : "VA26-00321");
-  const tenVuAn = detail?.tenVuAn || (isKhieuNai ? "Vụ khiếu nại Quyết định giải quyết đơn số 45/QĐ-TANDTC" : isHanhChinh ? "Vụ án khiếu kiện Quyết định hành chính số 12/QĐ-UBND" : isVu23 ? "Vụ án tranh chấp hợp đồng mua bán nhà đất" : "Vụ án Phan Văn Thành – bức cung");
+  // const maVuAn = detail?.maVuAn || (isKhieuNai ? "KN26-004128" : "VA26-00321");
+  // const tenVuAn = detail?.tenVuAn || (isKhieuNai ? "Vụ khiếu nại Quyết định giải quyết đơn số 45/QĐ-TANDTC" : isHanhChinh ? "Vụ án khiếu kiện Quyết định hành chính số 12/QĐ-UBND" : isVu23 ? "Vụ án tranh chấp hợp đồng mua bán nhà đất" : "Vụ án Phan Văn Thành – bức cung");
   const tenBiCan = isKhieuNai ? "Nguyễn Thị Lan" : "Phan Văn Thành";
   const toiDanh = isKhieuNai ? "Khiếu nại tố tụng" : "Bức cung";
   const soBA = "050526_CTH02";
