@@ -39,9 +39,13 @@ export interface TabThongTinMockData {
     maVuAn: string;
     loaiBanAn: string;
     thuTucGiaiQuyet: string;
-    soNgayBanAn: string;
+    soBanAn: string;
+    ngayBanAn: string;
     loaiAn: LoaiAn;
     toaRaBanAn: string;
+    nguoiDon: string;
+    nguoiBiDon?: string;
+    noiDung?: string;
     congVan: {
       soNgay: string;
       donVi: string;
@@ -79,8 +83,12 @@ export const MOCK_DATA_BY_LOAI_AN: Record<LoaiAn, TabThongTinMockData> = {
       maVuAn: "VA26-002012: ĐẶNG THỊ DƯƠNG – Tội cố ý gây thương tích",
       loaiBanAn: "Sơ thẩm",
       thuTucGiaiQuyet: "Giám đốc thẩm",
-      soNgayBanAn: "124/2026/HS-ST – 20/07/2026",
+      soBanAn: "124/2026/HS-ST",
+      ngayBanAn: "20/07/2026",
       loaiAn: "Hình sự",
+      nguoiDon: "Đặng Thị Dương",
+      nguoiBiDon: "Hoàng Ngọc Hoa",
+      noiDung: "Tội cố ý gây thương tích",
       toaRaBanAn: "Tòa án nhân dân khu vực 5 - Bắc Ninh",
       congVan: {
         soNgay: "Số 124/CV-VKSTC – 15/07/2026",
@@ -157,8 +165,12 @@ export const MOCK_DATA_BY_LOAI_AN: Record<LoaiAn, TabThongTinMockData> = {
       maVuAn: "VA26-003102: DƯƠNG THU HẰNG – Tranh chấp hợp đồng vay tài sản",
       loaiBanAn: "Sơ thẩm",
       thuTucGiaiQuyet: "Giám đốc thẩm",
-      soNgayBanAn: "102/2026/DS-ST – 18/06/2026",
+      soBanAn: "102/2026/DS-ST",
+      ngayBanAn: "18/06/2026",
       loaiAn: "Dân sự",
+      nguoiDon: "Dương Thu Hằng",
+      nguoiBiDon: "Nguyễn Văn Bình",
+      noiDung: "Tranh chấp hợp đồng vay tài sản",
       toaRaBanAn: "Tòa án nhân dân tỉnh Bắc Ninh",
       congVan: {
         soNgay: "Số 45/CV-TA – 22/06/2026",
@@ -220,8 +232,12 @@ export const MOCK_DATA_BY_LOAI_AN: Record<LoaiAn, TabThongTinMockData> = {
       maVuAn: "VA26-004150: PHẠM VĂN CƯỜNG – Khiếu kiện quyết định thu hồi đất",
       loaiBanAn: "Phúc thẩm",
       thuTucGiaiQuyet: "Giám đốc thẩm",
-      soNgayBanAn: "45/2026/HC-PT – 10/05/2026",
+      soBanAn: "45/2026/HC-PT",
+      ngayBanAn: "10/05/2026",
       loaiAn: "Hành chính",
+      nguoiDon: "Phạm Văn Cường",
+      nguoiBiDon: "UBND tỉnh Bắc Giang",
+      noiDung: "Khiếu kiện quyết định thu hồi đất",
       toaRaBanAn: "Tòa án nhân dân cấp cao tại Hà Nội",
       congVan: {
         soNgay: "Số 88/CV-UBND – 12/05/2026",
@@ -284,8 +300,12 @@ export const MOCK_DATA_BY_LOAI_AN: Record<LoaiAn, TabThongTinMockData> = {
       maVuAn: "VA26-005201: CÔNG TY Á CHÂU – Tranh chấp hợp đồng mua bán hàng hóa",
       loaiBanAn: "Sơ thẩm",
       thuTucGiaiQuyet: "Giám đốc thẩm",
-      soNgayBanAn: "18/2026/KDTM-ST – 25/04/2026",
+      soBanAn: "18/2026/KDTM-ST",
+      ngayBanAn: "25/04/2026",
       loaiAn: "Kinh doanh thương mại",
+      nguoiDon: "Công ty Á Châu",
+      nguoiBiDon: "Ngân hàng TMCP Phương Đông",
+      noiDung: "Tranh chấp hợp đồng tín dụng",
       toaRaBanAn: "Tòa án nhân dân tỉnh Bắc Ninh",
       congVan: {
         soNgay: "Số 05/CV-AC – 30/04/2026",
@@ -346,8 +366,12 @@ export const MOCK_DATA_BY_LOAI_AN: Record<LoaiAn, TabThongTinMockData> = {
       maVuAn: "VA26-006305: LÊ THỊ MAI – Tranh chấp chia tài sản chung vợ chồng",
       loaiBanAn: "Phúc thẩm",
       thuTucGiaiQuyet: "Giám đốc thẩm",
-      soNgayBanAn: "88/2026/HNGĐ-PT – 12/03/2026",
+      soBanAn: "88/2026/HNGĐ-PT",
+      ngayBanAn: "12/03/2026",
       loaiAn: "Hôn nhân gia đình",
+      nguoiDon: "Lê Thị Mai",
+      nguoiBiDon: "Nguyễn Văn Hùng",
+      noiDung: "Tranh chấp ly hôn và chia tài sản chung vợ chồng",
       toaRaBanAn: "Tòa án nhân dân tỉnh Bắc Ninh",
       congVan: {
         soNgay: "Số 12/CV-ĐN – 15/03/2026",
@@ -408,8 +432,12 @@ export const MOCK_DATA_BY_LOAI_AN: Record<LoaiAn, TabThongTinMockData> = {
       maVuAn: "VA26-007412: NGUYỄN VĂN HÙNG – Tranh chấp đơn phương chấm dứt HĐLĐ",
       loaiBanAn: "Sơ thẩm",
       thuTucGiaiQuyet: "Giám đốc thẩm",
-      soNgayBanAn: "09/2026/LĐ-ST – 05/02/2026",
+      soBanAn: "09/2026/LĐ-ST",
+      ngayBanAn: "05/02/2026",
       loaiAn: "Lao động",
+      nguoiDon: "Nguyễn Văn Hùng",
+      nguoiBiDon: "Công ty TNHH ABC",
+      noiDung: "Tranh chấp đơn phương chấm dứt hợp đồng lao động",
       toaRaBanAn: "Tòa án nhân dân TP. Bắc Ninh",
       congVan: {
         soNgay: "Số 33/CV-LĐ – 10/02/2026",
@@ -470,8 +498,12 @@ export const MOCK_DATA_BY_LOAI_AN: Record<LoaiAn, TabThongTinMockData> = {
       maVuAn: "VA26-008520: CÔNG TY DƯỢC PHẨM X – Tranh chấp quyền sở hữu công nghiệp",
       loaiBanAn: "Phúc thẩm",
       thuTucGiaiQuyet: "Giám đốc thẩm",
-      soNgayBanAn: "14/2026/SHTT-PT – 19/01/2026",
+      soBanAn: "14/2026/SHTT-PT",
+      ngayBanAn: "19/01/2026",
       loaiAn: "Sở hữu trí tuệ",
+      nguoiDon: "Công ty Dược phẩm X",
+      nguoiBiDon: "Công ty Cổ phần Dược phẩm Y",
+      noiDung: "Tranh chấp xâm phạm nhãn hiệu",
       toaRaBanAn: "Tòa án nhân dân cấp cao tại Hà Nội",
       congVan: {
         soNgay: "Số 102/SHTT – 22/01/2026",
@@ -532,8 +564,12 @@ export const MOCK_DATA_BY_LOAI_AN: Record<LoaiAn, TabThongTinMockData> = {
       maVuAn: "VA26-009633: CÔNG TY XÂY DỰNG Z – Yêu cầu mở thủ tục phá sản",
       loaiBanAn: "Quyết định",
       thuTucGiaiQuyet: "Giám đốc thẩm",
-      soNgayBanAn: "03/2026/QĐ-PS – 15/01/2026",
+      soBanAn: "03/2026/QĐ-PS",
+      ngayBanAn: "15/01/2026",
       loaiAn: "Phá sản",
+      nguoiDon: "Công ty Cổ phần Xây dựng Z",
+      nguoiBiDon: "Tòa án nhân dân TP. Bắc Ninh",
+      noiDung: "Yêu cầu mở thủ tục phá sản",
       toaRaBanAn: "Tòa án nhân dân tỉnh Bắc Ninh",
       congVan: {
         soNgay: "Số 08/CV-PS – 20/01/2026",
@@ -1220,17 +1256,19 @@ export function TabThongTin({ detail, userRole }: { detail?: VuAnDetailData; use
   }, [selectedLoaiAn]);
 
   // Merge dữ liệu thực từ detail nếu có
-  const displayMaVuAn = detail ? `${detail.maVuAn}: ${detail.tenVuAn}` : mock.thongTinChung.maVuAn;
+  // const displayMaVuAn = detail ? `${detail.maVuAn}: ${detail.tenVuAn}` : mock.thongTinChung.maVuAn;
   const displayLoaiBanAn = detail?.loaiBienAn || mock.thongTinChung.loaiBanAn;
   const displayThuTuc = detail?.namGiaiQuyet || mock.thongTinChung.thuTucGiaiQuyet;
-  const displaySoNgayBA = detail?.soNgayBanAn || mock.thongTinChung.soNgayBanAn;
+  const displaySoNgayBA = detail?.soBanAn || mock.thongTinChung.soBanAn;
+  const displayNgayBA = detail?.ngayBanAn || mock.thongTinChung.ngayBanAn;
   const displayToa = detail?.toaXetXu || mock.thongTinChung.toaRaBanAn;
+  const displayNguoiDoan = detail?.nguoiDoan || mock.thongTinChung.nguoiDon;
 
   const isKhieuNai = Boolean(
     (detail as any)?.isKhieuNai ||
     (detail as any)?.entityWord === "Khiếu nại" ||
     (detail as any)?.moduleLabel === "Quản lý khiếu nại" ||
-    (typeof (detail as any)?.maVuAn === "string" && ((detail as any).maVuAn.startsWith("KN") || (detail as any).maVuAn.includes("KN"))) ||
+    // (typeof (detail as any)?.maVuAn === "string" && ((detail as any).maVuAn.startsWith("KN") || (detail as any).maVuAn.includes("KN"))) ||
     (typeof (detail as any)?.id === "string" && (detail as any).id.includes("KN")) ||
     (typeof (detail as any)?.tenVuAn === "string" && (detail as any).tenVuAn.toLowerCase().includes("khiếu nại"))
   );
@@ -1279,10 +1317,14 @@ export function TabThongTin({ detail, userRole }: { detail?: VuAnDetailData; use
         <table style={{ width: "100%", borderCollapse: "collapse" }}>
           <tbody>
             <tr>
-              <td style={{ ...TD_STYLE, background: BG, fontWeight: 600, fontSize: 11, color: MUTED, borderRight: `1px solid ${BORDER}`, borderBottom: `1px solid ${BORDER}`, width: "12%", whiteSpace: "nowrap" as const }}>Mã vụ án</td>
-              <td style={{ ...TD_STYLE, fontSize: 12, color: TEXT, borderRight: `1px solid ${BORDER}`, borderBottom: `1px solid ${BORDER}`, width: "38%" }}>{displayMaVuAn}</td>
-              <td style={{ ...TD_STYLE, background: BG, fontWeight: 600, fontSize: 11, color: MUTED, borderRight: `1px solid ${BORDER}`, borderBottom: `1px solid ${BORDER}`, width: "12%", whiteSpace: "nowrap" as const }}>Số – Ngày {baCodeHeader}</td>
+              {/* <td style={{ ...TD_STYLE, background: BG, fontWeight: 600, fontSize: 11, color: MUTED, borderRight: `1px solid ${BORDER}`, borderBottom: `1px solid ${BORDER}`, width: "12%", whiteSpace: "nowrap" as const }}>Mã vụ án</td> */}
+              {/* <td style={{ ...TD_STYLE, fontSize: 12, color: TEXT, borderRight: `1px solid ${BORDER}`, borderBottom: `1px solid ${BORDER}`, width: "38%" }}>{displayMaVuAn}</td> */}
+              <td style={{ ...TD_STYLE, background: BG, fontWeight: 600, fontSize: 11, color: MUTED, borderRight: `1px solid ${BORDER}`, borderBottom: `1px solid ${BORDER}`, width: "12%", whiteSpace: "nowrap" as const }}>Số {baCodeHeader}</td>
               <td style={{ ...TD_STYLE, fontSize: 12, color: TEXT, borderBottom: `1px solid ${BORDER}` }}>{displaySoNgayBA}</td>
+              <td style={{ ...TD_STYLE, background: BG, fontWeight: 600, fontSize: 11, color: MUTED, borderRight: `1px solid ${BORDER}`, borderBottom: `1px solid ${BORDER}`, whiteSpace: "nowrap" as const }}>Ngày {baCodeHeader}</td>
+              <td style={{ ...TD_STYLE, fontSize: 12, color: TEXT, borderBottom: `1px solid ${BORDER}` }}>{displayNgayBA}</td>
+
+
             </tr>
             <tr>
               <td style={{ ...TD_STYLE, background: BG, fontWeight: 600, fontSize: 11, color: MUTED, borderRight: `1px solid ${BORDER}`, borderBottom: `1px solid ${BORDER}`, whiteSpace: "nowrap" as const }}>Loại án</td>
