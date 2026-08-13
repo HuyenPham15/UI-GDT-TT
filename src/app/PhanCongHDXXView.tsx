@@ -1669,7 +1669,7 @@ function ThemBieuMauModal({
                   <th style={{ ...TH_STYLE, fontSize: 11, padding: "8px" }}>Thông tin Bản án / QĐ</th>
                   <th style={{ ...TH_STYLE, fontSize: 11, padding: "8px" }}>
                     {isHinhSu
-                      ? "Bị cáo / Bị hại / Người khiếu nại"
+                      ? "Bị cáo / Người đứng đơn"
                       : isHanhChinh
                         ? "Người khởi kiện / Người bị kiện / Khiếu kiện"
                         : isKDTM
@@ -1720,14 +1720,9 @@ function ThemBieuMauModal({
                               <span style={{ color: MUTED, fontWeight: 600 }}>Tội danh:</span> {c.toiDanh}
                             </div>
                           )}
-                          {c.biHai && (
-                            <div style={{ color: "#4b5563", fontSize: 11, marginTop: 1 }}>
-                              <span style={{ color: MUTED, fontWeight: 600 }}>Bị hại:</span> {c.biHai}
-                            </div>
-                          )}
-                          {c.nguoiKhieuNai && (
+                          {(c.nguoiDungDon || c.nguoiKhieuNai || c.biHai) && (
                             <div style={{ color: "#1e40af", fontSize: 11, marginTop: 1 }}>
-                              <span style={{ color: MUTED, fontWeight: 600 }}>Người khiếu nại:</span> {c.nguoiKhieuNai}
+                              <span style={{ color: MUTED, fontWeight: 600 }}>Người đứng đơn:</span> {c.nguoiDungDon || c.nguoiKhieuNai || c.biHai}
                             </div>
                           )}
                         </div>
@@ -3416,16 +3411,39 @@ export function ThayTheThamPhanModal({
 }
 
 function HDXXDetailView({
-  row,
+  row: initialRow,
   onBack,
   isChoKyDuyet = false,
   onKyDuyet,
+  userRole,
+  setUserRole,
+  allRows = ROWS,
 }: {
   row: HDXXRow;
   onBack: () => void;
   isChoKyDuyet?: boolean;
   onKyDuyet?: (id: number) => void;
+  userRole?: UserRoleType;
+  setUserRole?: (role: UserRoleType) => void;
+  allRows?: HDXXRow[];
 }) {
+  const row = React.useMemo(() => {
+    if (!userRole || userRole === "toan-bo") return initialRow;
+    if (userRole === "vu-1" || userRole === "hinh-su") {
+      return allRows.find(r => r.loaiAn === "Hình sự" || (r.donViGui && r.donViGui.includes("kiểm tra I ("))) || initialRow;
+    }
+    if (userRole === "vu-2" || userRole === "dan-su") {
+      return allRows.find(r => r.loaiAn === "Dân sự" || (r.donViGui && r.donViGui.includes("kiểm tra II ("))) || initialRow;
+    }
+    if (userRole === "vu-3") {
+      return allRows.find(r => r.loaiAn === "Kinh doanh thương mại" || (r.donViGui && r.donViGui.includes("kiểm tra III ("))) || initialRow;
+    }
+    if (userRole === "vu-4" || userRole === "hanh-chinh") {
+      return allRows.find(r => r.loaiAn === "Hành chính" || (r.donViGui && r.donViGui.includes("kiểm tra IV ("))) || initialRow;
+    }
+    return initialRow;
+  }, [userRole, initialRow, allRows]);
+
   const [activeTab, setActiveTab] = useState<"thong-tin" | "phan-cong">("thong-tin");
   const [showLichXX, setShowLichXX] = useState(false);
   const [showKySuccess, setShowKySuccess] = useState(false);
@@ -3439,6 +3457,96 @@ function HDXXDetailView({
   const [editMembers, setEditMembers] = useState(row.thanhPhanHDXX ? row.thanhPhanHDXX.join(", ") : "");
   const [ghiChu, setGhiChu] = useState("");
   const [qdRows, setQdRows] = useState(QD_ROWS);
+
+  const isHinhSu = row.loaiAn === "Hình sự" || (row.soBA || "").toUpperCase().includes("HS") || (row.donViGui && (row.donViGui.includes("kiểm tra I (") || row.donViGui.includes("Vụ 1") || row.donViGui.includes("Vụ I")));
+  const isHanhChinh = row.loaiAn === "Hành chính" || (row.soBA || "").toUpperCase().includes("HC") || (row.donViGui && (row.donViGui.includes("kiểm tra IV (") || row.donViGui.includes("Vụ 4") || row.donViGui.includes("Vụ IV")));
+  const loaiAnDisplay = row.loaiAn || "Hình sự";
+  const cases: VuAnDetail[] = row.danhSachVuAn || (
+    isHinhSu
+      ? [
+        {
+          id: 1,
+          soTL: row.thuLyList?.[0]?.so || "54682424",
+          ngayTL: row.thuLyList?.[0]?.ngay || "20/07/2026",
+          soBA: row.soBA || "112/2026/HS-PT",
+          ngayBA: row.ngayBA || "20/06/2026",
+          toaAn: row.toaAnBA || "TAND cấp cao tại Hà Nội",
+          capXX: row.capXX || "Phúc thẩm",
+          loaiAn: "Hình sự",
+          biCao: "Hoàng Minh Đức",
+          toiDanh: "Tội buôn lậu (Điều 188 BLHS)",
+          biHai: "Cục Hải quan TP. Hải Phòng",
+          nguoiKhieuNai: "Hoàng Minh Đức (Bị cáo đề nghị GĐT)",
+          ttv: "Nguyễn Thu Hằng",
+          ldv: "Lê Thị Thu Hiển",
+          tp: "Nguyễn Biên Thùy",
+          trangThai: "Chưa xét xử",
+          sub: "Đã lên lịch xét xử",
+        },
+        {
+          id: 2,
+          soTL: row.thuLyList?.[1]?.so || "54682425",
+          ngayTL: row.thuLyList?.[1]?.ngay || "20/07/2026",
+          soBA: "85/2026/HS-PT",
+          ngayBA: "15/06/2026",
+          toaAn: "TAND cấp cao tại Hà Nội",
+          capXX: "Phúc thẩm",
+          loaiAn: "Hình sự",
+          biCao: "Đỗ Đình Trọng",
+          toiDanh: "Tội cố ý gây thương tích (Điều 134 BLHS)",
+          biHai: "Nguyễn Văn Nam",
+          nguoiKhieuNai: "Nguyễn Văn Nam (Bị hại có đơn khiếu nại)",
+          ttv: "Trần Thị Lan",
+          ldv: "Lê Thị Thu Hiển",
+          tp: "Trần Hồng Hà",
+          trangThai: "Chưa xét xử",
+          sub: "Đã lên lịch xét xử",
+        },
+      ]
+      : isHanhChinh
+        ? [
+          {
+            id: 1,
+            soTL: row.thuLyList?.[0]?.so || "54682961",
+            ngayTL: row.thuLyList?.[0]?.ngay || "28/07/2026",
+            soBA: row.soBA || "12/2026/HC-ST",
+            ngayBA: row.ngayBA || "14/07/2026",
+            toaAn: row.toaAnBA || "TAND tỉnh Bắc Ninh",
+            capXX: row.capXX || "Sơ thẩm",
+            loaiAn: "Hành chính",
+            nguyenDon: "Công ty TNHH Phát triển Đô thị Kinh Bắc",
+            qhpl: "Khiếu kiện Quyết định thu hồi đất và phương án bồi thường",
+            biDon: "Chủ tịch UBND tỉnh Bắc Ninh",
+            ndd: "Sở TN&MT tỉnh Bắc Ninh",
+            ttv: "Lý Văn An",
+            ldv: "Phạm Quốc Anh",
+            tp: "Lê Thị Thu Hiển",
+            trangThai: "Chưa xét xử",
+            sub: "Đã lên lịch xét xử",
+          },
+        ]
+        : [
+          {
+            id: 1,
+            soTL: row.thuLyList?.[0]?.so || "54682424",
+            ngayTL: row.thuLyList?.[0]?.ngay || "20/07/2026",
+            soBA: row.soBA || "38/2026/DS-ST",
+            ngayBA: row.ngayBA || "01/07/2026",
+            toaAn: row.toaAnBA || "TAND huyện Phong Điền",
+            capXX: row.capXX || "Sơ thẩm",
+            loaiAn: "Dân sự",
+            nguyenDon: "Trần Văn Hải",
+            qhpl: "Tranh chấp hợp đồng vay tài sản",
+            biDon: "Nguyễn Văn Hùng",
+            ndd: "Nguyễn Đơn Hải",
+            ttv: "Trịnh Thị Minh Trang",
+            ldv: "Lê Thị Thu Hiền",
+            tp: "Phạm Thị Bích Ngọc",
+            trangThai: "Chưa xét xử",
+            sub: "Đã lên lịch xét xử",
+          },
+        ]
+  );
 
   const TH: React.CSSProperties = { ...TH_STYLE, fontSize: 11, padding: "9px 12px", fontFamily: F, color: "#374151" };
   const TD: React.CSSProperties = { ...TD_STYLE, fontSize: 12, padding: "10px 12px", verticalAlign: "middle", fontFamily: F, color: TEXT };
@@ -3494,11 +3602,11 @@ function HDXXDetailView({
             setQdRows(prev => [
               {
                 id: prev.length + 1,
-                tenQD: "Quyết định thay thế thẩm phán",
-                soQD: newBm.soQD || "QĐ-02/2026",
-                ngayKy: newBm.ngayQD || "10/08/2026",
+                tenBM: "Quyết định thay đổi Thẩm phán, Hội thẩm, Thư ký",
+                soQD: newBm.soQD || "2443/2026/QĐ-TANDTC",
+                ngayQD: newBm.ngayQD || "10/08/2026",
                 nguoiKy: newBm.nguoiKy || "Lê Thị Thu Hiển",
-                trangThai: "Khởi tạo",
+                trangThai: "Đã có hiệu lực",
               },
               ...prev,
             ])
@@ -3532,23 +3640,28 @@ function HDXXDetailView({
         <div style={{ fontSize: 11, color: MUTED, fontFamily: F, marginBottom: 8 }}>
           Trang chủ / Quản lý án GĐT/TT / Phân công HĐXX / <span style={{ color: TEXT }}>Chi tiết phân công</span>
         </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: isSigningMode ? 12 : 16 }}>
-          <button
-            onClick={onBack}
-            style={{
-              background: "#fff",
-              border: `1px solid ${BORDER}`,
-              borderRadius: 4,
-              padding: "5px 12px",
-              cursor: "pointer",
-              fontSize: 14,
-            }}
-          >
-            ←
-          </button>
-          <h1 style={{ fontSize: 20, fontWeight: 700, color: TEXT, fontFamily: F, margin: 0 }}>
-            Phân công hội đồng xét xử
-          </h1>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, marginBottom: isSigningMode ? 12 : 16, flexWrap: "wrap" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+            <button
+              onClick={onBack}
+              style={{
+                background: "#fff",
+                border: `1px solid ${BORDER}`,
+                borderRadius: 4,
+                padding: "5px 12px",
+                cursor: "pointer",
+                fontSize: 14,
+              }}
+            >
+              ←
+            </button>
+            <h1 style={{ fontSize: 20, fontWeight: 700, color: TEXT, fontFamily: F, margin: 0 }}>
+              Phân công hội đồng xét xử
+            </h1>
+          </div>
+          {userRole && setUserRole && (
+            <TaiKhoanPhanQuyenBar userRole={userRole} setUserRole={setUserRole} />
+          )}
         </div>
 
         {/* ── Banner trạng thái ── */}
@@ -3791,11 +3904,8 @@ function HDXXDetailView({
                   boxShadow: "0 1px 3px rgba(0,0,0,0.05)",
                 }}
               >
-
-
                 <table style={{ width: "100%", borderCollapse: "collapse" }}>
                   <tbody>
-
                     <tr>
                       <td
                         style={{
@@ -3881,275 +3991,150 @@ function HDXXDetailView({
                         {isSigned ? "Trực tiếp tại trụ sở TANDTC" : "—"}
                       </td>
                     </tr>
-
                   </tbody>
                 </table>
               </div>
-
             </div>
 
             {/* Danh sách vụ xét xử table */}
             {(() => {
-              const isHinhSu = row.loaiAn === "Hình sự" || row.donViGui.includes("I (") || row.donViGui.includes("Hình sự");
-              const isHanhChinh = row.loaiAn === "Hành chính" || row.donViGui.includes("IV (") || row.donViGui.includes("Hành chính");
-              const loaiAnDisplay = isHinhSu ? "Hình sự" : isHanhChinh ? "Hành chính" : row.loaiAn || "Dân sự";
+              const thThongTin = "Thông tin bản án/\nTòa án xét xử";
 
-              const cases = row.danhSachVuAn || (
-                isHinhSu
-                  ? [
-                    {
-                      id: 1,
-                      soTL: row.thuLyList?.[0]?.so || "54682801",
-                      ngayTL: row.thuLyList?.[0]?.ngay || "24/07/2026",
-                      soBA: row.soBA || "020/2026/HS-ST",
-                      ngayBA: row.ngayBA || "09/07/2026",
-                      toaAn: row.toaAnBA || "TAND huyện Phong Điền, TP. Cần Thơ",
-                      capXX: row.capXX || "Sơ thẩm",
-                      loaiAn: "Hình sự",
-                      biCao: "Trần Văn Hải",
-                      toiDanh: "Trộm cắp tài sản (Khoản 2 Điều 173 BLHS)",
-                      biHai: "Công ty TNHH MTV Vận tải Nam Hà",
-                      nguoiKhieuNai: "Trần Văn Hải (Bị cáo có đơn đề nghị GĐT)",
-                      ttv: "Trịnh Thị Minh Trang",
-                      ldv: "Lê Thị Thu Hiền",
-                      tp: "Nguyễn Như Thắng",
-                      trangThai: "Chưa xét xử",
-                      sub: "Đã lên lịch xét xử",
-                    },
-                  ]
-                  : isHanhChinh
-                    ? [
-                      {
-                        id: 1,
-                        soTL: row.thuLyList?.[0]?.so || "54682961",
-                        ngayTL: row.thuLyList?.[0]?.ngay || "28/07/2026",
-                        soBA: row.soBA || "12/2026/HC-ST",
-                        ngayBA: row.ngayBA || "14/07/2026",
-                        toaAn: row.toaAnBA || "TAND tỉnh Bắc Ninh",
-                        capXX: row.capXX || "Sơ thẩm",
-                        loaiAn: "Hành chính",
-                        nguyenDon: "Công ty TNHH Phát triển Đô thị Kinh Bắc",
-                        qhpl: "Khiếu kiện Quyết định thu hồi đất và bồi thường",
-                        biDon: "Chủ tịch UBND tỉnh Bắc Ninh",
-                        ndd: "Sở TN&MT tỉnh Bắc Ninh",
-                        ttv: "Lý Văn An",
-                        ldv: "Phạm Quốc Anh",
-                        tp: "Lê Thị Thu Hiển",
-                        trangThai: "Chưa xét xử",
-                        sub: "Đã lên lịch xét xử",
-                      },
-                    ]
-                    : [
-                      {
-                        id: 1,
-                        soTL: row.thuLyList?.[0]?.so || "54682810",
-                        ngayTL: row.thuLyList?.[0]?.ngay || "25/07/2026",
-                        soBA: row.soBA || "45/2026/DS-ST",
-                        ngayBA: row.ngayBA || "11/07/2026",
-                        toaAn: row.toaAnBA || "TAND quận Cầu Giấy, TP. Hà Nội",
-                        capXX: row.capXX || "Sơ thẩm",
-                        loaiAn: row.loaiAn || "Dân sự",
-                        nguyenDon: "Phạm Văn Cường",
-                        qhpl: "Tranh chấp quyền sử dụng đất",
-                        biDon: "Nguyễn Thị Thanh Hà",
-                        ndd: "UBND quận Cầu Giấy",
-                        ttv: "Nguyễn Thu Hằng",
-                        ldv: "Phạm Thị Bích Ngọc",
-                        tp: "Nguyễn Biên Thùy",
-                        trangThai: "Chưa xét xử",
-                        sub: "Đã lên lịch xét xử",
-                      },
-                    ]
-              );
-
-              const thThongTin = isHinhSu
-                ? "Thông tin bản án / Quyết định"
+              const headers = isHinhSu
+                ? ["STT", thThongTin, "Bị cáo", "Người khiếu nại", "Kháng nghị", "Thẩm phán\nChủ tọa phiên tòa"]
                 : isHanhChinh
-                  ? "Thông tin bản án / QĐ & Khiếu kiện"
-                  : "Thông tin bản án/ QĐ & QHPL";
-
-              const thDuongSu = isHinhSu
-                ? "Bị cáo / Bị hại / Người khiếu nại"
-                : isHanhChinh
-                  ? "Người khởi kiện / Người bị kiện"
-                  : "Nguyên đơn / Bị đơn / QHPL";
+                  ? ["STT", thThongTin, "Quan hệ pháp luật", "Người khởi kiện", "Người bị kiện", "Kháng nghị", "Thẩm phán\nChủ tọa phiên tòa"]
+                  : ["STT", thThongTin, "Quan hệ pháp luật", "Nguyên đơn", "Bị đơn", "Kháng nghị", "Thẩm phán\nChủ tọa phiên tòa"];
 
               return (
                 <div style={{ background: "#fff", borderRadius: 8, border: `1px solid ${BORDER}`, overflow: "hidden" }}>
                   <div style={{ padding: "12px 18px", background: "#f8fafc", borderBottom: `1px solid ${BORDER}`, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                     <span style={{ fontSize: 13, fontWeight: 700, color: TEXT, fontFamily: F }}>
-                      ⚖ Danh sách các vụ án trình phê duyệt
+                      Danh sách các vụ án trình phê duyệt
                     </span>
                     <span style={{ fontSize: 12, color: MUTED, fontFamily: F }}>
                       Loại án: <b style={{ color: RED }}>{loaiAnDisplay}</b>
                     </span>
                   </div>
-                  <table style={{ width: "100%", borderCollapse: "collapse", tableLayout: "fixed" }}>
+                  <table style={{ width: "100%", borderCollapse: "collapse", border: `1px solid ${BORDER}` }}>
                     <colgroup>
-                      <col style={{ width: 32 }} />
-                      <col style={{ width: 36 }} />
-                      <col style={{ width: "11%" }} />
-                      <col style={{ width: "16%" }} />
-                      <col style={{ width: "18%" }} />
-                      <col style={{ width: "12%" }} />
-                      <col style={{ width: "18%" }} />
-                      <col style={{ width: "11%" }} />
-                      <col style={{ width: 44 }} />
+                      {isHinhSu ? (
+                        <>
+                          <col style={{ width: 50 }} />
+                          <col style={{ width: "16%" }} />
+                          <col style={{ width: "20%" }} />
+                          <col style={{ width: "20%" }} />
+                          <col style={{ width: "20%" }} />
+                          <col style={{ width: "18%" }} />
+                        </>
+                      ) : (
+                        <>
+                          <col style={{ width: 55 }} />
+                          <col style={{ width: "16%" }} />
+                          <col style={{ width: "18%" }} />
+                          <col style={{ width: "18%" }} />
+                          <col style={{ width: "16%" }} />
+                          <col style={{ width: "18%" }} />
+                          <col style={{ width: "16%" }} />
+                        </>
+                      )}
                     </colgroup>
                     <thead>
                       <tr>
-                        <th style={TH}>
-                          <input type="checkbox" style={{ accentColor: RED }} />
-                        </th>
-                        {["STT", "Số & Ngày thụ lý XX", thThongTin, thDuongSu, "Phân công TTV/TP", "Chủ tọa & HĐXX", "Trạng thái", "Thao tác"].map(
-                          h => (
-                            <th key={h} style={{ ...TH_STYLE, fontSize: 11, padding: "9px 12px" }}>
-                              {h}
-                            </th>
-                          )
-                        )}
+                        {headers.map(h => (
+                          <th
+                            key={h}
+                            style={{
+                              ...TH_STYLE,
+                              fontSize: 11,
+                              padding: "9px 12px",
+                              textAlign: h === "STT" ? "center" : "left",
+                              whiteSpace: "pre-line",
+                              border: `1px solid ${BORDER}`,
+                              background: "#f8fafc",
+                            }}
+                          >
+                            {h}
+                          </th>
+                        ))}
                       </tr>
                     </thead>
                     <tbody>
                       {cases.map((r, i) => (
                         <tr key={r.id || i} style={{ background: i % 2 === 0 ? "#fff" : "#fafafa", verticalAlign: "top" }}>
-                          <td style={{ padding: "12px", textAlign: "center" }}>
-                            <input type="checkbox" style={{ accentColor: RED }} />
-                          </td>
-                          <td
-                            style={{
-                              ...TD_STYLE,
-                              fontSize: 12,
-                              padding: "12px",
-                              textAlign: "center",
-                              color: MUTED,
-                              verticalAlign: "top",
-                            }}
-                          >
+                          {/* STT */}
+                          <td style={{ ...TD_STYLE, fontSize: 12, padding: "10px 12px", textAlign: "center", color: TEXT, verticalAlign: "top", border: `1px solid ${BORDER}` }}>
                             {i + 1}
                           </td>
-                          <td style={{ ...TD_STYLE, fontSize: 12, padding: "12px", verticalAlign: "top" }}>
-                            <div style={{ fontWeight: 700, color: TEXT, fontFamily: F }}>Số: {r.soTL}</div>
-                            <div style={{ color: MUTED, fontFamily: F, marginTop: 2 }}>Ngày: {r.ngayTL}</div>
+
+                          {/* Thông tin bản án / Tòa án xét xử */}
+                          <td style={{ ...TD_STYLE, fontSize: 12, padding: "10px 12px", verticalAlign: "top", border: `1px solid ${BORDER}` }}>
+                            <div style={{ fontWeight: 600, color: TEXT, fontFamily: F }}>{formatSoBA(r.soBA)}</div>
+                            <div style={{ color: TEXT, fontFamily: F, marginTop: 2 }}>{r.ngayBA}</div>
+                            <div style={{ color: MUTED, fontFamily: F, marginTop: 2 }}>{r.toaAn}</div>
                           </td>
-                          <td style={{ ...TD_STYLE, fontSize: 12, padding: "12px", verticalAlign: "top" }}>
-                            <div style={{ fontFamily: F, color: TEXT }}>Số BA: {formatSoBA(r.soBA)}</div>
-                            <div style={{ fontFamily: F, color: TEXT }}>Ngày: {r.ngayBA}</div>
-                            <div style={{ fontFamily: F, color: MUTED, marginTop: 2 }}>Tại: {r.toaAn}</div>
-                            <div style={{ fontFamily: F, fontSize: 11, color: "#1e40af", marginTop: 2 }}>Cấp: {r.capXX}</div>
-                          </td>
-                          <td style={{ ...TD_STYLE, fontSize: 12, padding: "12px", verticalAlign: "top" }}>
-                            {isHinhSu || r.loaiAn === "Hình sự" ? (
-                              <>
-                                <div style={{ fontFamily: F, fontSize: 12 }}>
-                                  <span style={{ color: MUTED, fontWeight: 600 }}>Bị cáo:</span>{" "}
-                                  <span style={{ color: RED, fontWeight: 700 }}>{r.biCao || "Trần Văn Hải"}</span>
-                                </div>
+
+                          {isHinhSu || r.loaiAn === "Hình sự" ? (
+                            <>
+                              {/* Bị cáo */}
+                              <td style={{ ...TD_STYLE, fontSize: 12, padding: "10px 12px", verticalAlign: "top", border: `1px solid ${BORDER}` }}>
+                                <div style={{ fontWeight: 600, color: TEXT, fontFamily: F }}>{r.biCao || "Trần Văn Hải"}</div>
                                 {r.toiDanh && (
-                                  <div style={{ fontFamily: F, fontSize: 11, color: "#374151", marginTop: 3 }}>
-                                    <span style={{ color: MUTED, fontWeight: 600 }}>Tội danh:</span> {r.toiDanh}
-                                  </div>
+                                  <div style={{ fontSize: 11, color: MUTED, fontFamily: F, marginTop: 2 }}>{r.toiDanh}</div>
                                 )}
-                                {r.biHai && (
-                                  <div style={{ fontFamily: F, fontSize: 12, marginTop: 3 }}>
-                                    <span style={{ color: MUTED, fontWeight: 600 }}>Bị hại:</span>{" "}
-                                    <span style={{ color: TEXT }}>{r.biHai}</span>
-                                  </div>
-                                )}
-                                {r.nguoiKhieuNai && (
-                                  <div style={{ fontFamily: F, fontSize: 12, marginTop: 3 }}>
-                                    <span style={{ color: MUTED, fontWeight: 600 }}>Người khiếu nại:</span>{" "}
-                                    <span style={{ color: "#1e40af", fontWeight: 600 }}>{r.nguoiKhieuNai}</span>
-                                  </div>
-                                )}
-                              </>
-                            ) : isHanhChinh || r.loaiAn === "Hành chính" ? (
-                              <>
-                                <div style={{ fontFamily: F, fontSize: 12 }}>
-                                  <span style={{ color: MUTED, fontWeight: 600 }}>Người khởi kiện:</span>{" "}
-                                  <span style={{ color: TEXT, fontWeight: 700 }}>{r.nguyenDon}</span>
-                                </div>
-                                {r.qhpl && (
-                                  <div style={{ fontFamily: F, fontSize: 11, color: MUTED, marginTop: 2 }}>
-                                    <b>Khiếu kiện:</b> {r.qhpl}
-                                  </div>
-                                )}
-                                <div style={{ fontFamily: F, fontSize: 12, marginTop: 2 }}>
-                                  <span style={{ color: MUTED, fontWeight: 600 }}>Người bị kiện:</span>{" "}
-                                  <span style={{ color: TEXT }}>{r.biDon}</span>
-                                </div>
-                                {r.ndd && (
-                                  <div style={{ fontFamily: F, fontSize: 11, marginTop: 2, color: "#4b5563" }}>
-                                    <span style={{ color: MUTED, fontWeight: 600 }}>NQLNVLQ:</span> {r.ndd}
-                                  </div>
-                                )}
-                              </>
-                            ) : (
-                              <>
-                                <div style={{ fontFamily: F, fontSize: 12 }}>
-                                  <span style={{ color: MUTED, fontWeight: 600 }}>Nguyên đơn:</span>{" "}
-                                  <span style={{ color: TEXT, fontWeight: 700 }}>{r.nguyenDon}</span>
-                                </div>
-                                {r.qhpl && (
-                                  <div style={{ fontFamily: F, fontSize: 11, color: MUTED, marginTop: 2 }}>
-                                    <b>QHPL:</b> {r.qhpl}
-                                  </div>
-                                )}
-                                <div style={{ fontFamily: F, fontSize: 12, marginTop: 2 }}>
-                                  <span style={{ color: MUTED, fontWeight: 600 }}>Bị đơn:</span>{" "}
-                                  <span style={{ color: TEXT }}>{r.biDon}</span>
-                                </div>
-                                {r.ndd && (
-                                  <div style={{ fontFamily: F, fontSize: 11, marginTop: 2, color: "#4b5563" }}>
-                                    <span style={{ color: MUTED, fontWeight: 600 }}>NQLNVLQ/NĐĐ:</span> {r.ndd}
-                                  </div>
-                                )}
-                              </>
-                            )}
-                          </td>
-                          <td style={{ ...TD_STYLE, fontSize: 12, padding: "12px", verticalAlign: "top" }}>
-                            <div style={{ fontFamily: F, fontSize: 12 }}>
-                              <span style={{ color: MUTED }}>TTV:</span> <span style={{ color: TEXT }}>{r.ttv}</span>
-                            </div>
-                            <div style={{ fontFamily: F, fontSize: 12, marginTop: 2 }}>
-                              <span style={{ color: MUTED }}>LĐV:</span> <span style={{ color: TEXT }}>{r.ldv}</span>
-                            </div>
-                            <div style={{ fontFamily: F, fontSize: 12, marginTop: 2 }}>
-                              <span style={{ color: MUTED }}>TPTC:</span> <span style={{ color: TEXT }}>{r.tp}</span>
+                              </td>
+
+                              {/* Người khiếu nại */}
+                              <td style={{ ...TD_STYLE, fontSize: 12, padding: "10px 12px", verticalAlign: "top", color: TEXT, fontFamily: F, border: `1px solid ${BORDER}` }}>
+                                {r.nguoiKhieuNai || r.nguoiDungDon || r.biHai || "Hoàng Minh Đức (Bị cáo đề nghị GĐT)"}
+                              </td>
+                            </>
+                          ) : isHanhChinh || r.loaiAn === "Hành chính" ? (
+                            <>
+                              {/* Quan hệ pháp luật */}
+                              <td style={{ ...TD_STYLE, fontSize: 12, padding: "10px 12px", verticalAlign: "top", color: TEXT, fontFamily: F, border: `1px solid ${BORDER}` }}>
+                                {r.qhpl || "Khiếu kiện quyết định hành chính trong lĩnh vực quản lý đất đai"}
+                              </td>
+
+                              {/* Người khởi kiện */}
+                              <td style={{ ...TD_STYLE, fontSize: 12, padding: "10px 12px", verticalAlign: "top", color: TEXT, fontFamily: F, border: `1px solid ${BORDER}` }}>
+                                {r.nguyenDon}
+                              </td>
+
+                              {/* Người bị kiện */}
+                              <td style={{ ...TD_STYLE, fontSize: 12, padding: "10px 12px", verticalAlign: "top", color: TEXT, fontFamily: F, border: `1px solid ${BORDER}` }}>
+                                {r.biDon}
+                              </td>
+                            </>
+                          ) : (
+                            <>
+                              {/* Quan hệ pháp luật */}
+                              <td style={{ ...TD_STYLE, fontSize: 12, padding: "10px 12px", verticalAlign: "top", color: TEXT, fontFamily: F, border: `1px solid ${BORDER}` }}>
+                                {r.qhpl || "Tranh chấp hợp đồng vay tài sản"}
+                              </td>
+
+                              {/* Nguyên đơn */}
+                              <td style={{ ...TD_STYLE, fontSize: 12, padding: "10px 12px", verticalAlign: "top", color: TEXT, fontFamily: F, border: `1px solid ${BORDER}` }}>
+                                {r.nguyenDon}
+                              </td>
+
+                              {/* Bị đơn */}
+                              <td style={{ ...TD_STYLE, fontSize: 12, padding: "10px 12px", verticalAlign: "top", color: TEXT, fontFamily: F, border: `1px solid ${BORDER}` }}>
+                                {r.biDon}
+                              </td>
+                            </>
+                          )}
+
+                          {/* Kháng nghị */}
+                          <td style={{ ...TD_STYLE, fontSize: 12, padding: "10px 12px", verticalAlign: "top", color: TEXT, fontFamily: F, border: `1px solid ${BORDER}` }}>
+                            <div style={{ fontWeight: 600, color: "#1e40af" }}>
+                              {r.khangNghi || (r.soKhangNghi ? `QĐKN số ${r.soKhangNghi} ngày ${r.ngayKhangNghi || "23/03/2026"}` : "QĐKN số 28 ngày 23/03/2026")}
                             </div>
                           </td>
-                          <td style={{ ...TD_STYLE, fontSize: 12, padding: "12px", verticalAlign: "top" }}>
-                            <div style={{ fontFamily: F, fontSize: 12 }}>
-                              <span style={{ color: MUTED, fontWeight: 600 }}>Chủ tọa:</span>{" "}
-                              <span style={{ color: "#92400e", fontWeight: 700 }}>{r.chuToa || editChuToa || "Nguyễn Biên Thùy"}</span>
-                            </div>
-                            <div style={{ fontFamily: F, fontSize: 11, color: TEXT, marginTop: 3 }}>
-                              <span style={{ color: MUTED, fontWeight: 600 }}>HĐXX:</span>{" "}
-                              <span style={{ fontWeight: 600 }}>{r.hdxx || editHDXX || "Hội đồng 5 thẩm phán"}</span>
-                            </div>
-                            <div style={{ fontFamily: F, fontSize: 11, color: "#4b5563", marginTop: 2, lineHeight: 1.3 }}>
-                              <span style={{ color: MUTED }}>Thành viên:</span> {r.thanhVien || editMembers || "Lê Thị Thu Hiển, Phạm Thị Bích Ngọc"}
-                            </div>
-                          </td>
-                          <td style={{ ...TD_STYLE, fontSize: 12, padding: "12px", verticalAlign: "top" }}>
-                            <Badge color="#065f46" bg="#d1fae5">
-                              {r.trangThai}
-                            </Badge>
-                            <div style={{ fontFamily: F, color: MUTED, marginTop: 4, fontSize: 11 }}>{r.sub}</div>
-                            {r.extra && <div style={{ fontFamily: F, color: RED, fontSize: 11, marginTop: 2 }}>{r.extra}</div>}
-                          </td>
-                          <td
-                            style={{
-                              ...TD_STYLE,
-                              fontSize: 12,
-                              padding: "12px",
-                              textAlign: "center",
-                              verticalAlign: "top",
-                            }}
-                          >
-                            <button style={{ background: "none", border: "none", cursor: "pointer", color: MUTED, padding: 2 }}>
-                              <MoreVertical size={16} />
-                            </button>
+
+                          {/* Thẩm phán Chủ tọa phiên tòa */}
+                          <td style={{ ...TD_STYLE, fontSize: 12, padding: "10px 12px", verticalAlign: "top", color: TEXT, fontFamily: F, border: `1px solid ${BORDER}` }}>
+                            <div style={{ fontWeight: 600, color: TEXT }}>{r.chuToa || editChuToa || "Nguyễn Biên Thùy"}</div>
                           </td>
                         </tr>
                       ))}
@@ -4546,14 +4531,17 @@ export default function PhanCongHDXXView({
         onBack={() => setDetail(null)}
         isChoKyDuyet={detailMode === "ky-duyet"}
         onKyDuyet={handleKyDuyet}
+        userRole={userRole}
+        setUserRole={setUserRole}
+        allRows={rowsData}
       />
     );
 
   const filteredByRole = rowsData.filter(r => {
-    if (userRole === "vu-1" || userRole === "hinh-su") return r.donViGui.includes("I (") || r.donViGui.includes("Hình sự") || r.loaiAn === "Hình sự";
-    if (userRole === "vu-2" || userRole === "dan-su") return r.donViGui.includes("II (") || r.donViGui.includes("Dân sự") || r.loaiAn === "Dân sự";
-    if (userRole === "vu-3") return r.donViGui.includes("III (") || r.donViGui.includes("Kinh doanh") || r.donViGui.includes("Lao động") || r.loaiAn === "Kinh doanh thương mại";
-    if (userRole === "vu-4" || userRole === "hanh-chinh") return r.donViGui.includes("IV (") || r.donViGui.includes("Hành chính") || r.loaiAn === "Hành chính";
+    if (userRole === "vu-1" || userRole === "hinh-su") return r.donViGui.includes("kiểm tra I (") || r.donViGui.includes("Hình sự") || r.loaiAn === "Hình sự";
+    if (userRole === "vu-2" || userRole === "dan-su") return r.donViGui.includes("kiểm tra II (") || r.donViGui.includes("Dân sự") || r.loaiAn === "Dân sự";
+    if (userRole === "vu-3") return r.donViGui.includes("kiểm tra III (") || r.donViGui.includes("Kinh doanh") || r.donViGui.includes("Lao động") || r.loaiAn === "Kinh doanh thương mại";
+    if (userRole === "vu-4" || userRole === "hanh-chinh") return r.donViGui.includes("kiểm tra IV (") || r.donViGui.includes("Hành chính") || r.loaiAn === "Hành chính";
     return true;
   });
 
@@ -4631,7 +4619,7 @@ export default function PhanCongHDXXView({
                   </td>
                   <td style={TD} onClick={e => e.stopPropagation()}>
                     <div style={{ fontWeight: 600, color: TEXT, fontFamily: F }}>{r.donViGui}</div>
-                    <div style={{ fontSize: 11, color: MUTED, fontFamily: F, marginTop: 2 }}>Trình Phó Chánh án phê duyệt</div>
+                    {/* <div style={{ fontSize: 11, color: MUTED, fontFamily: F, marginTop: 2 }}>Trình Phó Chánh án phê duyệt</div> */}
                   </td>
                   <td style={TD} onClick={e => e.stopPropagation()}>
                     <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>

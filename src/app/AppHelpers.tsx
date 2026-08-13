@@ -68,6 +68,15 @@ export function getSoBALabel(raw?: string | null, loaiAn?: string, capXetXu?: st
 
   return `Số ${docCode}${capCode}:`;
 }
+
+export function getThoiHieuText(row?: any, idx?: number): string {
+  if (row?.thoiHieu) return row.thoiHieu;
+  if (row?.loaiAn === "Hình sự" || (typeof idx === "number" && idx % 2 === 0)) {
+    return "Không xác định được";
+  }
+  return "Còn 15 ngày";
+}
+
 export function TaoToTrinhModal({
   onClose,
   onSave,

@@ -713,6 +713,16 @@ export default function QuanLyVuAnView({
   const [collapsedGroups, setCollapsedGroups] = useState<Record<string, boolean>>({});
   const [showHoSo, setShowHoSo] = useState<any>(false);
   const [showKetQua, setShowKetQua] = useState<{ row: VuAnRow; type: string; numberStr: string } | null>(null);
+  const [showTaoThongBaoTinhTheRow, setShowTaoThongBaoTinhTheRow] = useState<any>(null);
+  const [previewThongBaoTinhTheRow, setPreviewThongBaoTinhTheRow] = useState<any>(null);
+
+  const getThongBaoTinhThe = (row: VuAnRow) => {
+    return {
+      soThongBao: `${125 + ((row.stt || 1) % 10)}/2026/TB-TANDTC-V1`,
+      ngayThongBao: "14/08/2026",
+      daKy: true,
+    };
+  };
 
   const toggleGroupCollapse = (groupId: string) => {
     setCollapsedGroups((prev) => ({ ...prev, [groupId]: !prev[groupId] }));
@@ -982,10 +992,45 @@ export default function QuanLyVuAnView({
                                 </div>
                               </div>
                               {/* Badges */}
-                              <div style={{ display: "flex", gap: 4, flexWrap: "wrap", marginTop: 2 }}>
+                              <div style={{ display: "flex", gap: 4, flexWrap: "wrap", marginTop: 2, alignItems: "center" }}>
                                 {row.anLoai === "chi-dao" && <Badge color="#92400e" bg="#fef3c7">Án chỉ đạo</Badge>}
                                 {row.anLoai === "quoc-hoi" && <Badge color="#3730a3" bg="#e0e7ff">Án Quốc hội</Badge>}
                                 {row.anLoai === "tu-hinh" && <Badge color="#991b1b" bg="#fee2e2">Án tử hình</Badge>}
+                                {row.anLoai === "quoc-hoi" && (
+                                  <button
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      setPreviewThongBaoTinhTheRow(row);
+                                    }}
+                                    style={{
+                                      marginTop: 4,
+                                      display: "inline-flex",
+                                      alignItems: "center",
+                                      gap: 4,
+                                      padding: "2px 7px",
+                                      background: "#e0e7ff",
+                                      color: "#3730a3",
+                                      border: "1px solid #c7d2fe",
+                                      borderRadius: 4,
+                                      cursor: "pointer",
+                                      fontSize: 10.5,
+                                      fontWeight: 600,
+                                      fontFamily: F,
+                                      whiteSpace: "nowrap",
+                                      lineHeight: 1.3,
+                                      maxWidth: "100%",
+                                      overflow: "hidden",
+                                      textOverflow: "ellipsis",
+                                    }}
+                                    title="Nhấn để mở popup xem biểu mẫu Thông báo tình thế (đã ký)"
+                                  >
+                                    <span>📄 TB tình thế:</span>
+                                    <span style={{ color: "#1d4ed8", fontWeight: 700, textDecoration: "underline" }}>
+                                      Số {getThongBaoTinhThe(row).soThongBao} ({getThongBaoTinhThe(row).ngayThongBao})
+                                    </span>
+                                    <Badge color="#065f46" bg="#d1fae5" style={{ fontSize: 9, padding: "1px 4px", flexShrink: 0 }}>✓ Đã ký</Badge>
+                                  </button>
+                                )}
                               </div>
                             </td>
 
@@ -1130,6 +1175,41 @@ export default function QuanLyVuAnView({
                               </span>
                             </div>
                           )}
+                          {row.anLoai === "quoc-hoi" && (
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setPreviewThongBaoTinhTheRow(row);
+                              }}
+                              style={{
+                                marginTop: 4,
+                                display: "inline-flex",
+                                alignItems: "center",
+                                gap: 4,
+                                padding: "2px 7px",
+                                background: "#e0e7ff",
+                                color: "#3730a3",
+                                border: "1px solid #c7d2fe",
+                                borderRadius: 4,
+                                cursor: "pointer",
+                                fontSize: 10.5,
+                                fontWeight: 600,
+                                fontFamily: F,
+                                whiteSpace: "nowrap",
+                                lineHeight: 1.3,
+                                maxWidth: "100%",
+                                overflow: "hidden",
+                                textOverflow: "ellipsis",
+                              }}
+                              title="Nhấn để mở popup xem biểu mẫu Thông báo tình thế (đã ký)"
+                            >
+                              <span>📄 TB tình thế:</span>
+                              <span style={{ color: "#1d4ed8", fontWeight: 700, textDecoration: "underline" }}>
+                                Số {getThongBaoTinhThe(row).soThongBao} ({getThongBaoTinhThe(row).ngayThongBao})
+                              </span>
+                              <Badge color="#065f46" bg="#d1fae5" style={{ fontSize: 9, padding: "1px 4px", flexShrink: 0 }}>✓ Đã ký</Badge>
+                            </button>
+                          )}
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
@@ -1255,21 +1335,93 @@ export default function QuanLyVuAnView({
           />
         )
       }
+      {
+        showTaoThongBaoTinhTheRow && (
+          <TaoThongBaoTinhTheModal
+            row={showTaoThongBaoTinhTheRow}
+            onClose={() => setShowTaoThongBaoTinhTheRow(null)}
+          />
+        )
+      }
+      {
+        previewThongBaoTinhTheRow && (
+          <XemBieuMauThongBaoTinhTheModal
+            row={previewThongBaoTinhTheRow}
+            detail={previewThongBaoTinhTheRow}
+            onClose={() => setPreviewThongBaoTinhTheRow(null)}
+            soThongBao={getThongBaoTinhThe(previewThongBaoTinhTheRow).soThongBao}
+            ngayThongBao={getThongBaoTinhThe(previewThongBaoTinhTheRow).ngayThongBao}
+            coQuanNhan="Văn phòng Quốc hội - Ban Dân nguyện"
+            nguoiKy="Nguyễn Thị Bình - Vụ trưởng"
+            noiDung="Hiện nay, Thẩm tra viên được phân công đã rút toàn bộ hồ sơ vụ án từ Tòa án cấp dưới và đang tiến hành nghiên cứu, đối chiếu đánh giá chứng cứ. Tòa án nhân dân tối cao đã có văn bản thông báo tính thế tới Quý Cơ quan theo quy định."
+          />
+        )
+      }
     </div >
   );
 }
 
 // ── Sub-components for ChiTietVuAn ──────────────────────────────────────────
 
-function ThongTinChungVuAnCard({ detail }: { detail?: VuAnDetailData }) {
+function ThongTinChungVuAnCard({ detail, onShowTaoThongBaoTinhThe, onShowPreviewThongBaoTinhThe }: { detail?: VuAnDetailData; onShowTaoThongBaoTinhThe?: (d: any) => void; onShowPreviewThongBaoTinhThe?: (d: any) => void }) {
+  const detailTags: string[] = (detail as any)?.tags || [];
+  const isAnQuocHoi = detail?.anLoai === "quoc-hoi" || detailTags.includes("an-quoc-hoi") || detailTags.includes("Án quốc hội") || (detail as any)?.anDacThu === "an-quoc-hoi" || (detail as any)?.anDacThu === "Án quốc hội";
   return (
     <div style={{ background: "#fff", borderRadius: 8, border: `1px solid ${BORDER}`, marginBottom: 16, overflow: "hidden" }}>
       <div style={{ padding: "11px 16px", borderBottom: `1px solid ${BORDER}` }}>
         <span style={{ fontSize: 13, fontWeight: 700, color: TEXT, fontFamily: F }}>THÔNG TIN CHUNG CỦA VỤ ÁN</span>
       </div>
-      <div style={{ display: "flex", gap: 8, padding: "10px 16px 0" }}>
+      <div style={{ display: "flex", gap: 8, padding: "10px 16px 0", alignItems: "center", flexWrap: "wrap" }}>
         <Badge color="#854d0e" bg="#fefce8">⭐ Án chỉ đạo</Badge>
         <Badge color="#6b21a8" bg="#f3e8ff">🏛️ ÁN QH</Badge>
+        {isAnQuocHoi && (
+          <div style={{ display: "flex", alignItems: "center", gap: 8, marginLeft: "auto", flexWrap: "wrap" }}>
+            <button
+              onClick={() => onShowPreviewThongBaoTinhThe?.(detail)}
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 5,
+                padding: "4px 10px",
+                background: "#e0e7ff",
+                color: "#3730a3",
+                border: "1px solid #c7d2fe",
+                borderRadius: 4,
+                cursor: "pointer",
+                fontSize: 11,
+                fontWeight: 600,
+                fontFamily: F,
+              }}
+              title="Xem biểu mẫu Thông báo tình thế (đã ký)"
+            >
+              <span>Biểu mẫu TB tình thế:</span>
+              <span style={{ color: "#1d4ed8", fontWeight: 700, textDecoration: "underline" }}>
+                (Số 125/2026/TB-TANDTC – Ngày 14/08/2026)
+              </span>
+              <Badge color="#065f46" bg="#d1fae5" style={{ fontSize: 9, padding: "1px 5px" }}>✓ Đã ký</Badge>
+            </button>
+            <button
+              onClick={() => onShowTaoThongBaoTinhThe?.(detail)}
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 4,
+                padding: "4px 12px",
+                background: "#3730a3",
+                color: "#fff",
+                border: "none",
+                borderRadius: 4,
+                cursor: "pointer",
+                fontSize: 11,
+                fontWeight: 700,
+                fontFamily: F,
+              }}
+              title="Tạo thông báo tình thế mới"
+            >
+              + Tạo mới
+            </button>
+          </div>
+        )}
       </div>
       <table style={{ width: "100%", borderCollapse: "collapse", tableLayout: "fixed", marginTop: 10 }}>
         <colgroup>
@@ -1337,7 +1489,7 @@ function ThongTinChungVuAnCard({ detail }: { detail?: VuAnDetailData }) {
   );
 }
 
-function TabDanhSachDon({ detail }: { detail: VuAnDetailData }) {
+function TabDanhSachDon({ detail, onShowTaoThongBaoTinhThe, onShowPreviewThongBaoTinhThe }: { detail: VuAnDetailData; onShowTaoThongBaoTinhThe?: (d: any) => void; onShowPreviewThongBaoTinhThe?: (d: any) => void }) {
   const rawList = detail?.danhSachDon || [];
   const detailTags: string[] = (detail as any)?.tags || [];
   const isDetailAnQuocHoi = detailTags.includes("an-quoc-hoi") || detailTags.includes("Án quốc hội") || (detail as any)?.anDacThu === "an-quoc-hoi" || (detail as any)?.anDacThu === "Án quốc hội";
@@ -1366,11 +1518,20 @@ function TabDanhSachDon({ detail }: { detail: VuAnDetailData }) {
 
   return (
     <div style={{ padding: 20 }}>
-      <ThongTinChungVuAnCard detail={detail} />
+      <ThongTinChungVuAnCard detail={detail} onShowTaoThongBaoTinhThe={onShowTaoThongBaoTinhThe} onShowPreviewThongBaoTinhThe={onShowPreviewThongBaoTinhThe} />
       <div style={{ background: "#fff", borderRadius: 8, border: `1px solid ${BORDER}`, overflow: "hidden" }}>
         <div style={{ display: "flex", alignItems: "center", padding: "12px 16px", borderBottom: `1px solid ${BORDER}` }}>
           <h3 style={{ fontSize: 14, fontWeight: 700, color: TEXT, fontFamily: F, margin: 0 }}>Danh sách đơn</h3>
           <div style={{ flex: 1 }} />
+          {/* {isDetailAnQuocHoi && (
+            <button
+              onClick={() => onShowTaoThongBaoTinhThe?.(detail)}
+              style={{ marginRight: 8, display: "flex", alignItems: "center", gap: 6, padding: "5px 12px", background: "#3730a3", color: "#fff", border: "none", borderRadius: 4, cursor: "pointer", fontSize: 12, fontWeight: 700, fontFamily: F }}
+              title="Tạo thông báo tính thế cho vụ án Quốc hội"
+            >
+              + Tạo thông báo tình thế
+            </button>
+          )} */}
           <button style={{ display: "flex", alignItems: "center", gap: 6, padding: "5px 12px", background: "#fff", color: "#374151", border: `1px solid ${BORDER}`, borderRadius: 4, cursor: "pointer", fontSize: 12, fontFamily: F }}>
             Tách vụ kiện
           </button>
@@ -3079,11 +3240,12 @@ function ThuHoiConfirmDialog({ onClose, onConfirm }: { onClose: () => void; onCo
   );
 }
 
-function TabToTrinh({ detail, userRole }: { detail?: VuAnDetailData; userRole?: UserRoleType }) {
+function TabToTrinh({ detail, userRole, onShowTaoThongBaoTinhThe }: { detail?: VuAnDetailData; userRole?: UserRoleType; onShowTaoThongBaoTinhThe?: (d: any) => void }) {
   const [showTaoTT, setShowTaoTT] = useState(false);
   const [showTrinhKy, setShowTrinhKy] = useState(false);
   const [showHoSo, setShowHoSo] = useState(false);
   const [showTaoDuThao, setShowTaoDuThao] = useState(false);
+  const [showTaoThongBaoTinhThe, setShowTaoThongBaoTinhThe] = useState(false);
   const [thuHoiIdx, setThuHoiIdx] = useState<number | null>(null);
   const [showTaoVanBanDropdown, setShowTaoVanBanDropdown] = useState(false);
   const [previewDoc, setPreviewDoc] = useState<string | null>(null);
@@ -3326,6 +3488,26 @@ function TabToTrinh({ detail, userRole }: { detail?: VuAnDetailData; userRole?: 
         toa: detail.toaXetXu,
       } : undefined} onClose={() => setShowHoSo(false)} />}
       {showTaoDuThao && <TaoDuThaoModal onClose={() => setShowTaoDuThao(false)} detail={detail} onSave={handleSaveDuThao} />}
+      {showTaoThongBaoTinhThe && (
+        <TaoThongBaoTinhTheModal
+          onClose={() => setShowTaoThongBaoTinhThe(false)}
+          detail={detail}
+          onSave={(data) => {
+            const newRow = {
+              stt: 1,
+              loai: "du-thao",
+              vanBan: "Thông báo tính thế tình hình giải quyết vụ án (Án Quốc hội)",
+              don: formattedDonStr,
+              ngayTao: data?.ngayThongBao || "14/08/2026",
+              nguoiKy: data?.nguoiKy || "Nguyễn Thị Bình",
+              trangThai: "Chờ ký số",
+              daDinhKemHoSo: true,
+              soHoSo: 2
+            };
+            setVanBanList(prev => [newRow, ...prev.map((r, i) => ({ ...r, stt: i + 2 }))]);
+          }}
+        />
+      )}
       {thuHoiIdx !== null && (
         <ThuHoiConfirmDialog
           onClose={() => setThuHoiIdx(null)}
@@ -3396,6 +3578,7 @@ function TabToTrinh({ detail, userRole }: { detail?: VuAnDetailData; userRole?: 
                     cursor: "pointer",
                     fontFamily: F,
                     transition: "background 0.2s",
+                    borderBottom: `1px solid ${BORDER}`,
                     textAlign: "left"
                   }}
                   onMouseEnter={(e) => (e.currentTarget.style.background = "#f1f5f9")}
@@ -3403,9 +3586,17 @@ function TabToTrinh({ detail, userRole }: { detail?: VuAnDetailData; userRole?: 
                 >
                   Tạo dự thảo kết quả giải quyết
                 </div>
+
               </div>
             )}
           </div>
+          {/* <button
+            onClick={() => setShowTaoThongBaoTinhThe(true)}
+            style={{ display: "flex", alignItems: "center", gap: 6, padding: "6px 14px", background: "#3730a3", color: "#fff", border: "none", borderRadius: 4, cursor: "pointer", fontSize: 12, fontWeight: 700, fontFamily: F }}
+            title="Tạo thông báo tình thế cho vụ án Quốc hội"
+          >
+            + Tạo thông báo tình thế
+          </button> */}
           <button onClick={() => setShowHoSo(true)} style={{ display: "flex", alignItems: "center", gap: 6, padding: "6px 14px", background: "#fff", color: RED, border: `1px solid ${RED}`, borderRadius: 4, cursor: "pointer", fontSize: 12, fontWeight: 700, fontFamily: F }}>
             <Archive size={13} /> Hồ sơ tờ trình
           </button>
@@ -4397,6 +4588,351 @@ function TabHoSoLuuTru({ detail }: { detail?: VuAnDetailData }) {
   );
 }
 
+// ── Modal xem & tạo Thông báo tính thế cho Án Quốc hội ───────────────────────
+export function XemBieuMauThongBaoTinhTheModal({
+  onClose,
+  detail,
+  soThongBao,
+  ngayThongBao,
+  coQuanNhan,
+  nguoiKy,
+  noiDung,
+}: {
+  onClose: () => void;
+  detail?: any;
+  soThongBao: string;
+  ngayThongBao: string;
+  coQuanNhan: string;
+  nguoiKy: string;
+  noiDung: string;
+}) {
+  const [zoom, setZoom] = useState(100);
+  const [fontSize, setFontSize] = useState("13.5pt");
+  const [fontFamily, setFontFamily] = useState("Times New Roman");
+
+  const today = new Date();
+  const todayStr = ngayThongBao || `ngày ${today.getDate()} tháng ${today.getMonth() + 1} năm ${today.getFullYear()}`;
+
+  const execCmd = (cmd: string, arg?: string) => {
+    document.execCommand(cmd, false, arg);
+  };
+
+  const tbBtnSt: React.CSSProperties = {
+    padding: "4px 8px", background: "#fff", border: `1px solid ${BORDER}`, borderRadius: 4, cursor: "pointer", fontSize: 12, fontFamily: F, color: TEXT, display: "inline-flex", alignItems: "center", gap: 4,
+  };
+  const selectSt: React.CSSProperties = {
+    padding: "4px 6px", border: `1px solid ${BORDER}`, borderRadius: 4, fontSize: 12, fontFamily: F, background: "#fff", cursor: "pointer",
+  };
+  const sepSt: React.CSSProperties = {
+    width: 1, height: 18, background: BORDER, margin: "0 2px",
+  };
+
+  return (
+    <div style={{ position: "fixed", inset: 0, background: "#f1f5f9", zIndex: 3600, display: "flex", flexDirection: "column", width: "100vw", height: "100vh", overflow: "hidden", fontFamily: F }}>
+      {/* Header ribbon Word style */}
+      <div style={{ background: "#3730a3", color: "#fff", padding: "10px 24px", display: "flex", alignItems: "center", justifyContent: "space-between", flexShrink: 0, boxShadow: "0 2px 8px rgba(0,0,0,0.15)" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          <button onClick={onClose} style={{ display: "flex", alignItems: "center", gap: 6, padding: "5px 14px", background: "rgba(255,255,255,0.15)", color: "#fff", border: "1px solid rgba(255,255,255,0.3)", borderRadius: 4, cursor: "pointer", fontSize: 12, fontWeight: 600, fontFamily: F }}>
+            ← Quay lại
+          </button>
+          <FileText size={20} color="#fff" />
+          <div>
+            <div style={{ fontWeight: 700, fontSize: 15, fontFamily: F, display: "flex", alignItems: "center", gap: 8 }}>
+              <span>Thông báo tính thế tình hình giải quyết vụ án (Án Quốc hội).docx</span>
+              <span style={{ fontSize: 11, background: "rgba(255,255,255,0.2)", padding: "2px 8px", borderRadius: 10, fontWeight: 500 }}>
+                Chế độ chỉnh sửa Word trực tiếp
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <button onClick={() => alert("Đã lưu nội dung Thông báo tính thế Word thành công!")} style={{ padding: "7px 20px", background: "#15803d", color: "#fff", border: "none", borderRadius: 4, cursor: "pointer", fontSize: 13, fontWeight: 700, fontFamily: F }}>
+            💾 Lưu thay đổi
+          </button>
+          <button onClick={onClose} style={{ background: "none", border: "none", cursor: "pointer", color: "#fff", padding: 4 }}>
+            <X size={22} />
+          </button>
+        </div>
+      </div>
+
+      {/* Toolbar */}
+      <div style={{ background: "#fff", borderBottom: `1px solid ${BORDER}`, padding: "7px 16px", display: "flex", alignItems: "center", gap: 6, flexShrink: 0, flexWrap: "wrap", fontSize: 12, fontFamily: F }}>
+        <button onClick={() => execCmd("undo")} style={tbBtnSt} title="Hoàn tác">↩ Hoàn tác</button>
+        <button onClick={() => execCmd("redo")} style={tbBtnSt} title="Làm lại">↪ Làm lại</button>
+        <div style={sepSt} />
+        <select onChange={e => { setFontFamily(e.target.value); execCmd("fontName", e.target.value); }} value={fontFamily} style={selectSt}>
+          <option value="Times New Roman">Times New Roman</option>
+          <option value="Arial">Arial</option>
+        </select>
+        <select onChange={e => { setFontSize(e.target.value); execCmd("fontSize", "3"); }} value={fontSize} style={selectSt}>
+          <option value="12pt">12 pt</option>
+          <option value="13pt">13 pt</option>
+          <option value="13.5pt">13.5 pt</option>
+          <option value="14pt">14 pt</option>
+        </select>
+        <div style={sepSt} />
+        <button onClick={() => execCmd("bold")} style={tbBtnSt}><b>B</b></button>
+        <button onClick={() => execCmd("italic")} style={tbBtnSt}><i>I</i></button>
+        <button onClick={() => execCmd("underline")} style={tbBtnSt}><u>U</u></button>
+        <div style={sepSt} />
+        <button onClick={() => execCmd("justifyLeft")} style={tbBtnSt}>⬅</button>
+        <button onClick={() => execCmd("justifyCenter")} style={tbBtnSt}>↔</button>
+        <button onClick={() => execCmd("justifyRight")} style={tbBtnSt}>➡</button>
+        <button onClick={() => execCmd("justifyFull")} style={tbBtnSt}>☰</button>
+        <div style={sepSt} />
+        <button onClick={() => window.print()} style={tbBtnSt}><Printer size={13} /> In</button>
+        <button onClick={() => alert("Đang tải file Word (.docx) về máy...")} style={{ ...tbBtnSt, background: "#f0fdf4", color: "#166534", borderColor: "#bbf7d0", fontWeight: 600 }}>
+          <Download size={13} /> Tải file Word
+        </button>
+        <div style={{ display: "flex", alignItems: "center", gap: 6, marginLeft: "auto", fontSize: 12, color: MUTED }}>
+          <span>Thu phóng:</span>
+          <button onClick={() => setZoom(z => Math.max(60, z - 10))} style={tbBtnSt}>-</button>
+          <span style={{ fontWeight: 600, color: TEXT, minWidth: 36, textAlign: "center" }}>{zoom}%</span>
+          <button onClick={() => setZoom(z => Math.min(150, z + 10))} style={tbBtnSt}>+</button>
+        </div>
+      </div>
+
+      {/* A4 Canvas */}
+      <div style={{ flex: 1, overflow: "auto", padding: "30px 20px 60px 20px", display: "flex", justifyContent: "center", background: "#cbd5e1" }}>
+        <div
+          contentEditable
+          suppressContentEditableWarning
+          style={{
+            width: 794, minHeight: 1123, background: "#fff", boxShadow: "0 6px 30px rgba(0,0,0,0.22)",
+            padding: "54px 64px", boxSizing: "border-box", transform: `scale(${zoom / 100})`, transformOrigin: "top center",
+            fontFamily: fontFamily, color: "#000", lineHeight: 1.6, fontSize: fontSize, outline: "none", cursor: "text",
+          }}
+        >
+          <table style={{ width: "100%", borderCollapse: "collapse", marginBottom: 20, fontFamily: fontFamily }}>
+            <tbody>
+              <tr>
+                <td style={{ width: "45%", textAlign: "center", verticalAlign: "top" }}>
+                  <div style={{ fontWeight: "bold", fontSize: "12pt" }}>TÒA ÁN NHÂN DÂN TỐI CAO</div>
+                  <div style={{ fontWeight: "bold", fontSize: "12pt" }}>VỤ GIÁM ĐỐC, KIỂM TRA I</div>
+                  <div style={{ width: 90, height: 1, background: "#000", margin: "4px auto" }} />
+                  <div style={{ fontSize: "12pt", marginTop: 4 }}>
+                    Số: <b>{soThongBao || "125/2026/TB-TANDTC-V1"}</b>
+                  </div>
+                </td>
+                <td style={{ width: "55%", textAlign: "center", verticalAlign: "top" }}>
+                  <div style={{ fontWeight: "bold", fontSize: "12pt" }}>CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</div>
+                  <div style={{ fontWeight: "bold", fontSize: "12.5pt", textDecoration: "underline" }}>Độc lập – Tự do – Hạnh phúc</div>
+                  <div style={{ fontSize: "12pt", fontStyle: "italic", marginTop: 4 }}>
+                    Hà Nội, {todayStr}
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div style={{ textAlign: "center", margin: "24px 0 14px" }}>
+            <div style={{ fontSize: "15pt", fontWeight: "bold", textTransform: "uppercase" }}>
+              THÔNG BÁO TÍNH THẾ
+            </div>
+            <div style={{ fontSize: "13pt", fontWeight: "bold", marginTop: 4 }}>
+              Về tình hình, diễn biến giải quyết vụ án (Án Quốc hội theo dõi/chuyển đơn)
+            </div>
+            <div style={{ fontSize: "12pt", fontStyle: "italic", marginTop: 2, color: "#374151" }}>
+              (Theo Công văn chuyển đơn số 524/VPQH của {coQuanNhan || "Văn phòng Quốc hội"})
+            </div>
+          </div>
+
+          <div style={{ textAlign: "center", fontSize: "13pt", fontWeight: "bold", marginBottom: 20 }}>
+            Kính gửi: {coQuanNhan || "Văn phòng Quốc hội - Ban Dân nguyện Quốc hội"}
+          </div>
+
+          <div style={{ textAlign: "justify", lineHeight: 1.65 }}>
+            <p style={{ margin: "4px 0", textIndent: "1cm" }}>
+              Tòa án nhân dân tối cao nhận được Công văn của quý Cơ quan về việc chuyển đơn đề nghị xem xét theo thủ tục giám đốc thẩm/tái thẩm đối với vụ án <b>{detail?.tenVuAn || detail?.soBA || "Nguyễn Văn Minh – Tội cướp tài sản"}</b>.
+            </p>
+            <p style={{ fontWeight: "bold", margin: "14px 0 4px" }}>I. ĐÓNG GÓP TÌNH THẾ VÀ DIỄN BIẾN HIỆN TẠI CỦA VỤ ÁN:</p>
+            <p style={{ margin: "4px 0", textIndent: "1cm" }}>
+              {noiDung || "Hiện nay, Thẩm tra viên được phân công đã rút toàn bộ hồ sơ vụ án từ Tòa án cấp dưới và đang tiến hành nghiên cứu, đối chiếu đánh giá chứng cứ. Tòa án nhân dân tối cao đã yêu cầu Viện kiểm sát nhân dân tối cao phối hợp cung cấp các hồ sơ liên quan để xem xét căn cứ kháng nghị theo quy định pháp luật tố tụng."}
+            </p>
+            <p style={{ fontWeight: "bold", margin: "14px 0 4px" }}>II. DỰ KIẾN HƯỚNG XỬ LÝ TIẾP THEO:</p>
+            <p style={{ margin: "4px 0", textIndent: "1cm" }}>
+              Sau khi hoàn thành báo cáo thẩm tra tổng hợp, Vụ Giám đốc kiểm tra I sẽ lập Tờ trình báo cáo Lãnh đạo Vụ và trình Phó Chánh án Tòa án nhân dân tối cao xem xét quyết định theo thẩm quyền. Tòa án nhân dân tối cao sẽ có văn bản thông báo chính thức kết quả giải quyết tới Quý Cơ quan ngay khi có quyết định.
+            </p>
+            <p style={{ fontStyle: "italic", margin: "14px 0 24px" }}>
+              Tòa án nhân dân tối cao trân trọng thông báo tính thế diễn biến giải quyết vụ án để Quý Cơ quan được biết và phối hợp./.
+            </p>
+          </div>
+
+          <table style={{ width: "100%", borderCollapse: "collapse", marginTop: 24, fontFamily: fontFamily }}>
+            <tbody>
+              <tr>
+                <td style={{ width: "45%", textAlign: "left", verticalAlign: "top", fontSize: "11pt" }}>
+                  <div style={{ fontWeight: "bold", textDecoration: "underline" }}>Nơi nhận:</div>
+                  <div>- Như kính gửi;</div>
+                  <div>- Đồng chí Chánh án TANDTC (để b/c);</div>
+                  <div>- Thẩm phán phụ trách vụ án;</div>
+                  <div>- Lưu: VT, Vụ GĐKT I.</div>
+                </td>
+                <td style={{ width: "55%", textAlign: "center", verticalAlign: "top", fontSize: "12pt" }}>
+                  <div style={{ fontWeight: "bold" }}>TL. CHÁNH ÁN TÒA ÁN NHÂN DÂN TỐI CAO</div>
+                  <div style={{ fontWeight: "bold" }}>VỤ TRƯỞNG VỤ GIÁM ĐỐC, KIỂM TRA I</div>
+                  <div style={{ height: 75, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                    <div style={{ border: "2px dashed #166534", color: "#166534", padding: "4px 12px", borderRadius: 4, fontSize: "10pt", fontWeight: "bold" }}>
+                      ✓ ĐÃ KÝ SỐ CHIẾU THEO TÍNH THẾ
+                    </div>
+                  </div>
+                  <div style={{ fontWeight: "bold" }}>{nguoiKy || "Nguyễn Thị Bình"}</div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export function TaoThongBaoTinhTheModal({
+  onClose,
+  row,
+  detail,
+  onSave,
+}: {
+  onClose: () => void;
+  row?: VuAnRow;
+  detail?: VuAnDetailData;
+  onSave?: (data: any) => void;
+}) {
+  const [ngayThongBao, setNgayThongBao] = useState("14/08/2026");
+  const [soThongBao, setSoThongBao] = useState("125/2026/TB-TANDTC-V1");
+  const [daLaySo, setDaLaySo] = useState(true);
+  const [coQuanNhan, setCoQuanNhan] = useState("Văn phòng Quốc hội");
+  const [nguoiKy, setNguoiKy] = useState("Nguyễn Thị Bình - Vụ trưởng");
+  const [noiDung, setNoiDung] = useState(
+    "Hiện nay, Thẩm tra viên được phân công đã rút toàn bộ hồ sơ vụ án từ Tòa án cấp dưới và đang tiến hành nghiên cứu, đối chiếu đánh giá chứng cứ. Tòa án nhân dân tối cao đang khẩn trương tập hợp tình hình để trình Chánh án TANDTC xem xét xử lý."
+  );
+  const [showBieuMau, setShowBieuMau] = useState(false);
+  const [showTrinhKy, setShowTrinhKy] = useState(false);
+
+  const handleToggleLaySo = () => {
+    if (!daLaySo) {
+      const num = Math.floor(Math.random() * 900 + 100);
+      const generated = `${num}/2026/TB-TANDTC-V1`;
+      setSoThongBao(generated);
+      setDaLaySo(true);
+    } else {
+      setSoThongBao("");
+      setDaLaySo(false);
+    }
+  };
+
+  const handleSave = () => {
+    if (onSave) {
+      onSave({
+        soThongBao,
+        ngayThongBao,
+        coQuanNhan,
+        nguoiKy,
+        noiDung,
+      });
+    }
+    alert("Đã lưu Thông báo tính thế thành công!");
+    onClose();
+  };
+
+  const maVuAn = row?.soThuLy || detail?.maVuAn || "VA26-00321";
+  const tenVuAn = detail?.tenVuAn || row?.biCao || "Vụ án Nguyễn Văn Minh – Tội cướp tài sản";
+  const soBA = row?.soBA || detail?.soNgayBanAn || "124/2025/HSPT";
+
+  return (
+    <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)", zIndex: 3400, display: "flex", alignItems: "flex-start", justifyContent: "center", overflowY: "auto", padding: "24px 16px", fontFamily: F }}>
+      {showTrinhKy && <TrinhKyModal onClose={() => setShowTrinhKy(false)} />}
+      {showBieuMau && (
+        <XemBieuMauThongBaoTinhTheModal
+          onClose={() => setShowBieuMau(false)}
+          detail={detail || row}
+          soThongBao={soThongBao}
+          ngayThongBao={ngayThongBao}
+          coQuanNhan={coQuanNhan}
+          nguoiKy={nguoiKy}
+          noiDung={noiDung}
+        />
+      )}
+
+      <div style={{ background: "#fff", borderRadius: 8, width: "100%", maxWidth: 780, boxShadow: "0 10px 40px rgba(0,0,0,0.25)", marginBottom: 24, overflow: "hidden" }}>
+        {/* Header */}
+        <div style={{ display: "flex", alignItems: "center", padding: "14px 20px", borderBottom: "1px solid #e5e7eb", background: "#e0e7ff" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, flex: 1 }}>
+            <span style={{ fontSize: 18, color: "#3730a3" }}>🏛️</span>
+            <span style={{ fontSize: 16, fontWeight: 700, color: "#3730a3", fontFamily: F }}>
+              Tạo Thông báo tình thế (Án Quốc hội)
+            </span>
+          </div>
+          <button onClick={onClose} style={{ background: "none", border: "none", cursor: "pointer", color: "#6b7280", padding: 4, display: "flex", alignItems: "center" }}>
+            <X size={18} />
+          </button>
+        </div>
+
+        {/* Body */}
+        <div style={{ padding: "16px 20px 20px", display: "flex", flexDirection: "column", gap: 16, maxHeight: "82vh", overflowY: "auto" }}>
+          {/* Info Card */}
+          <div style={{ background: "#f8fafc", border: "1px solid #c7d2fe", borderRadius: 6, padding: "12px 16px" }}>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, fontSize: 12, fontFamily: F }}>
+              <div><span style={{ color: MUTED }}>Thuộc vụ án: </span><b style={{ color: "#3730a3" }}>{maVuAn} - {tenVuAn}</b></div>
+              <div><span style={{ color: MUTED }}>Số BA/QĐ: </span><b>{soBA}</b></div>
+              <div><span style={{ color: MUTED }}>Đơn vị gửi công văn QH: </span><b style={{ color: "#1e40af" }}>Văn phòng Quốc hội / Ban Dân nguyện</b></div>
+              <div><span style={{ color: MUTED }}>Phân loại: </span><Badge color="#3730a3" bg="#e0e7ff">Án Quốc hội</Badge></div>
+            </div>
+          </div>
+
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
+            <div>
+              <label style={{ fontSize: 12, color: TEXT, fontWeight: 600, display: "block", marginBottom: 4 }}>Số thông báo</label>
+              <input type="text" value={soThongBao} onChange={e => setSoThongBao(e.target.value)} style={{ width: "100%", padding: "7px 10px", fontSize: 12, border: `1px solid ${BORDER}`, borderRadius: 4, boxSizing: "border-box" }} />
+            </div>
+            <div>
+              <label style={{ fontSize: 12, color: TEXT, fontWeight: 600, display: "block", marginBottom: 4 }}>Ngày lập thông báo</label>
+              <input type="text" value={ngayThongBao} onChange={e => setNgayThongBao(e.target.value)} style={{ width: "100%", padding: "7px 10px", fontSize: 12, border: `1px solid ${BORDER}`, borderRadius: 4, boxSizing: "border-box" }} />
+            </div>
+          </div>
+
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
+            <div>
+              <label style={{ fontSize: 12, color: TEXT, fontWeight: 600, display: "block", marginBottom: 4 }}>Cơ quan Quốc hội nhận thông báo</label>
+              <select value={coQuanNhan} onChange={e => setCoQuanNhan(e.target.value)} style={{ width: "100%", padding: "7px 10px", fontSize: 12, border: `1px solid ${BORDER}`, borderRadius: 4, background: "#fff" }}>
+                <option value="Văn phòng Quốc hội">Văn phòng Quốc hội</option>
+                <option value="Ban Dân nguyện - Quốc hội">Ban Dân nguyện - Quốc hội</option>
+                <option value="Ủy ban Tư pháp của Quốc hội">Ủy ban Tư pháp của Quốc hội</option>
+                <option value="Đoàn Đại biểu Quốc hội">Đoàn Đại biểu Quốc hội</option>
+              </select>
+            </div>
+            <div>
+              <label style={{ fontSize: 12, color: TEXT, fontWeight: 600, display: "block", marginBottom: 4 }}>Người ký thông báo</label>
+              <select value={nguoiKy} onChange={e => setNguoiKy(e.target.value)} style={{ width: "100%", padding: "7px 10px", fontSize: 12, border: `1px solid ${BORDER}`, borderRadius: 4, background: "#fff" }}>
+                <option value="Nguyễn Thị Bình - Vụ trưởng">Nguyễn Thị Bình - Vụ trưởng</option>
+                <option value="Nguyễn Văn Quảng - Phó Chánh án TANDTC">Nguyễn Văn Quảng - Phó Chánh án TANDTC</option>
+                <option value="Lý Thái Phúc - Thẩm tra viên">Lý Thái Phúc - Thẩm tra viên</option>
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <label style={{ fontSize: 12, color: TEXT, fontWeight: 600, display: "block", marginBottom: 4 }}>Nội dung thông báo tính thế / Diễn biến hiện tại</label>
+            <textarea value={noiDung} onChange={e => setNoiDung(e.target.value)} rows={5} style={{ width: "100%", padding: "8px 10px", fontSize: 12, border: `1px solid ${BORDER}`, borderRadius: 4, resize: "vertical", boxSizing: "border-box", fontFamily: F, lineHeight: 1.5 }} />
+          </div>
+        </div>
+
+        {/* Footer */}
+        <div style={{ display: "flex", justifyContent: "center", gap: 10, padding: "14px 20px", borderTop: `1px solid ${BORDER}`, background: "#fff" }}>
+          <button type="button" onClick={onClose} style={{ padding: "7px 20px", background: "#fff", color: TEXT, border: `1px solid ${BORDER}`, borderRadius: 4, cursor: "pointer", fontSize: 12, fontFamily: F }}>Đóng</button>
+          <button type="button" onClick={handleSave} style={{ padding: "7px 24px", background: "#3730a3", color: "#fff", border: "none", borderRadius: 4, cursor: "pointer", fontSize: 12, fontWeight: 700, fontFamily: F }}>Lưu</button>
+          <button type="button" onClick={handleToggleLaySo} style={{ padding: "7px 18px", background: daLaySo ? "#e0e7ff" : "#fff", color: daLaySo ? "#3730a3" : TEXT, border: `1px solid ${daLaySo ? "#c7d2fe" : BORDER}`, borderRadius: 4, cursor: "pointer", fontSize: 12, fontFamily: F }}>
+            {daLaySo ? "Hủy số" : "Lấy số"}
+          </button>
+          <button type="button" onClick={() => setShowTrinhKy(true)} style={{ padding: "7px 24px", background: RED, color: "#fff", border: "none", borderRadius: 4, cursor: "pointer", fontSize: 12, fontWeight: 700, fontFamily: F }}>Trình ký</button>
+          <button type="button" onClick={() => setShowBieuMau(true)} style={{ padding: "7px 20px", background: "#fff", color: TEXT, border: `1px solid ${BORDER}`, borderRadius: 4, cursor: "pointer", fontSize: 12, fontFamily: F }}>Xem biểu mẫu</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ── Chi tiết vụ án View Component ───────────────────────────────────────────
 export function ChiTietVuAnView({
   vuAnId,
@@ -4438,6 +4974,9 @@ export function ChiTietVuAnView({
     isKhieuNai: safeModuleLabel === "Quản lý khiếu nại" || safeEntityWord === "Khiếu nại" || (typeof safeVuAnId === "string" && safeVuAnId.startsWith("KN")),
   };
 
+  const [showTaoThongBaoTinhTheDetail, setShowTaoThongBaoTinhTheDetail] = useState<any>(null);
+  const [showPreviewThongBaoTinhTheDetail, setShowPreviewThongBaoTinhTheDetail] = useState<any>(null);
+
   const tabs: Array<{ id: ChiTietTab; label: string; count?: number }> = [
     { id: "thong-tin", label: "Thông tin chung" },
     { id: "danh-sach-don", label: "Danh sách đơn", count: detail?.danhSachDon?.length || 3 },
@@ -4465,6 +5004,54 @@ export function ChiTietVuAnView({
           <span style={{ fontSize: 12, color: MUTED, fontFamily: F }}>Tên {(safeEntityWord || "Vụ án").toLowerCase()}:</span>
           <span style={{ fontSize: 13, fontWeight: 700, color: "#1e40af", fontFamily: F }}>{detail.tenVuAn}</span>
           <Badge color="#065f46" bg="#d1fae5">Đang giải quyết</Badge>
+          {(detail.loaiAn === "quoc-hoi" || (detail as any)?.tags?.includes("an-quoc-hoi") || (detail as any)?.tags?.includes("Án quốc hội") || (detail as any)?.anDacThu === "an-quoc-hoi") && (
+            <div style={{ display: "inline-flex", alignItems: "center", gap: 6, marginLeft: 8, flexWrap: "wrap" }}>
+              <button
+                onClick={() => setShowPreviewThongBaoTinhTheDetail(detail)}
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 4,
+                  padding: "4px 10px",
+                  background: "#e0e7ff",
+                  color: "#3730a3",
+                  border: "1px solid #c7d2fe",
+                  borderRadius: 4,
+                  cursor: "pointer",
+                  fontSize: 11,
+                  fontWeight: 600,
+                  fontFamily: F,
+                }}
+                title="Xem biểu mẫu Thông báo tình thế (đã ký)"
+              >
+                <span>📄 Biểu mẫu TB tình thế:</span>
+                <span style={{ color: "#1d4ed8", fontWeight: 700, textDecoration: "underline" }}>
+                  Số 125/2026/TB-TANDTC (14/08/2026)
+                </span>
+                <Badge color="#065f46" bg="#d1fae5" style={{ fontSize: 9, padding: "1px 5px" }}>✓ Đã ký</Badge>
+              </button>
+              <button
+                onClick={() => setShowTaoThongBaoTinhTheDetail(detail)}
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 4,
+                  padding: "4px 10px",
+                  background: "#3730a3",
+                  color: "#fff",
+                  border: "none",
+                  borderRadius: 4,
+                  cursor: "pointer",
+                  fontSize: 11,
+                  fontWeight: 700,
+                  fontFamily: F,
+                }}
+                title="Tạo mới hoặc cập nhật Thông báo tính thế"
+              >
+                + Tạo mới
+              </button>
+            </div>
+          )}
         </div>
       </div>
 
@@ -4493,14 +5080,32 @@ export function ChiTietVuAnView({
 
       <div style={{ flex: 1, overflowY: "auto" }}>
         {activeTab === "thong-tin" && <TabThongTin detail={detail} userRole={userRole} />}
-        {activeTab === "danh-sach-don" && <TabDanhSachDon detail={detail} />}
+        {activeTab === "danh-sach-don" && <TabDanhSachDon detail={detail} onShowTaoThongBaoTinhThe={(d) => setShowTaoThongBaoTinhTheDetail(d)} onShowPreviewThongBaoTinhThe={(d) => setShowPreviewThongBaoTinhTheDetail(d)} />}
         {activeTab === "phan-cong" && <TabPhanCong detail={detail} />}
         {activeTab === "muon-tra-ho-so" && <TabMuonTraHoSo detail={detail} />}
-        {activeTab === "to-trinh" && <TabToTrinh detail={detail} userRole={userRole} />}
+        {activeTab === "to-trinh" && <TabToTrinh detail={detail} userRole={userRole} onShowTaoThongBaoTinhThe={(d) => setShowTaoThongBaoTinhTheDetail(d)} />}
         {activeTab === "giai-quyet-vb" && <TabGiaiQuyetVB detail={detail} userRole={userRole} />}
         {activeTab === "tai-lieu" && <TabTaiLieu detail={detail} />}
         {activeTab === "ho-so-luu-tru" && <TabHoSoLuuTru detail={detail} />}
       </div>
+
+      {showTaoThongBaoTinhTheDetail && (
+        <TaoThongBaoTinhTheModal
+          detail={showTaoThongBaoTinhTheDetail}
+          onClose={() => setShowTaoThongBaoTinhTheDetail(null)}
+        />
+      )}
+      {showPreviewThongBaoTinhTheDetail && (
+        <XemBieuMauThongBaoTinhTheModal
+          detail={showPreviewThongBaoTinhTheDetail}
+          onClose={() => setShowPreviewThongBaoTinhTheDetail(null)}
+          soThongBao="125/2026/TB-TANDTC-V1"
+          ngayThongBao="14/08/2026"
+          coQuanNhan="Văn phòng Quốc hội - Ban Dân nguyện"
+          nguoiKy="Nguyễn Thị Bình - Vụ trưởng"
+          noiDung="Hiện nay, Thẩm tra viên được phân công đã rút toàn bộ hồ sơ vụ án từ Tòa án cấp dưới và đang tiến hành nghiên cứu, đối chiếu đánh giá chứng cứ. Tòa án nhân dân tối cao đã có văn bản thông báo tính thế tới Quý Cơ quan theo quy định."
+        />
+      )}
     </div>
   );
 }
