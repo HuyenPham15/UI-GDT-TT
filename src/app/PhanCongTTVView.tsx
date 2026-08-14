@@ -444,16 +444,46 @@ export function PhanCongTTVView() {
 
   const handleSelectAll = (e: React.ChangeEvent<HTMLInputElement>, list: CaseRow[]) => {
     if (e.target.checked) {
-      setSelectedIds(list.map((r) => r.id));
+      const ids = list.map((r) => r.id);
+      setSelectedIds(ids);
+      if (activeTab === "chua-phan-cong" && phanCongMode === "chi-dinh") {
+        setChuaPCRows((prevRows) =>
+          prevRows.map((r) => {
+            if (ids.includes(r.id)) {
+              return {
+                ...r,
+                ttv: r.ttv === "-" ? DANH_SACH_TTV[0] : r.ttv,
+                lanhDao: r.lanhDao === "-" ? DANH_SACH_LANH_DAO[0] : r.lanhDao,
+              };
+            }
+            return r;
+          })
+        );
+      }
     } else {
       setSelectedIds([]);
     }
   };
 
   const handleToggleRow = (id: number) => {
-    setSelectedIds((prev) =>
-      prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
-    );
+    setSelectedIds((prev) => {
+      const next = prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id];
+      if (activeTab === "chua-phan-cong" && phanCongMode === "chi-dinh" && next.includes(id)) {
+        setChuaPCRows((prevRows) =>
+          prevRows.map((r) => {
+            if (r.id === id) {
+              return {
+                ...r,
+                ttv: r.ttv === "-" ? DANH_SACH_TTV[0] : r.ttv,
+                lanhDao: r.lanhDao === "-" ? DANH_SACH_LANH_DAO[0] : r.lanhDao,
+              };
+            }
+            return r;
+          })
+        );
+      }
+      return next;
+    });
   };
 
   const handleExecutePhanCong = () => {
@@ -489,7 +519,29 @@ export function PhanCongTTVView() {
       alert(`Đã phân công ngẫu nhiên thành công ${assignedRows.length} vụ án cho Thẩm tra viên!`);
       setActiveTab("da-phan-cong");
     } else {
-      setShowAssignModal(true);
+      const assignedRows: CaseRow[] = [];
+      const remainingRows: CaseRow[] = [];
+
+      chuaPCRows.forEach((r) => {
+        if (selectedIds.includes(r.id)) {
+          assignedRows.push({
+            ...r,
+            giaiDoanPC: "GĐ Giải quyết đơn",
+            ngayPCTTV: "26/06/2026",
+            ttv: r.ttv === "-" ? DANH_SACH_TTV[0] : r.ttv,
+            ngayPCLD: "26/06/2026",
+            lanhDao: r.lanhDao === "-" ? DANH_SACH_LANH_DAO[0] : r.lanhDao,
+          });
+        } else {
+          remainingRows.push(r);
+        }
+      });
+
+      setChuaPCRows(remainingRows);
+      setDaPCRows((prev) => [...assignedRows, ...prev]);
+      setSelectedIds([]);
+      alert(`Đã phân công chỉ định thành công ${assignedRows.length} vụ án!`);
+      setActiveTab("da-phan-cong");
     }
   };
 
@@ -541,6 +593,28 @@ export function PhanCongTTVView() {
           if (isXX) {
             return { ...row, lanhDao_XX: val };
           }
+          return { ...row, lanhDao: val };
+        }
+        return row;
+      })
+    );
+  };
+
+  const handleChangeChuaPCTTV = (id: number, val: string) => {
+    setChuaPCRows((prev) =>
+      prev.map((row) => {
+        if (row.id === id) {
+          return { ...row, ttv: val };
+        }
+        return row;
+      })
+    );
+  };
+
+  const handleChangeChuaPCLĐ = (id: number, val: string) => {
+    setChuaPCRows((prev) =>
+      prev.map((row) => {
+        if (row.id === id) {
           return { ...row, lanhDao: val };
         }
         return row;
@@ -1112,6 +1186,15 @@ export function PhanCongTTVView() {
                                     >
                                       {DANH_SACH_TTV.map(t => <option key={t} value={t}>{t}</option>)}
                                     </select>
+                                  ) : activeTab === "chua-phan-cong" && phanCongMode === "chi-dinh" && isSelected ? (
+                                    <select
+                                      value={r.ttv === "-" ? DANH_SACH_TTV[0] : r.ttv}
+                                      onChange={(e) => handleChangeChuaPCTTV(r.id, e.target.value)}
+                                      style={{ ...inputStyle, padding: "2px 4px 2px 2px", fontSize: 10.5, marginTop: 2, height: 26, width: "100%" }}
+                                      title={r.ttv}
+                                    >
+                                      {DANH_SACH_TTV.map(t => <option key={t} value={t}>{t}</option>)}
+                                    </select>
                                   ) : (
                                     <div style={{ fontSize: 11, fontWeight: r.ttv !== "-" ? 600 : 400, color: r.ttv !== "-" ? TEXT : MUTED, marginTop: 2 }}>
                                       {r.ttv !== "-" ? r.ttv : <span style={{ color: "#d97706", fontStyle: "italic", fontSize: 11 }}>Chưa phân công</span>}
@@ -1150,6 +1233,15 @@ export function PhanCongTTVView() {
                                     <select
                                       value={r.lanhDao}
                                       onChange={(e) => handleChangeLĐ(r.id, e.target.value, false)}
+                                      style={{ ...inputStyle, padding: "2px 4px 2px 2px", fontSize: 10.5, marginTop: 2, height: 26, width: "100%" }}
+                                      title={r.lanhDao}
+                                    >
+                                      {DANH_SACH_LANH_DAO.map(l => <option key={l} value={l}>{l.split(" - ")[0]}</option>)}
+                                    </select>
+                                  ) : activeTab === "chua-phan-cong" && phanCongMode === "chi-dinh" && isSelected ? (
+                                    <select
+                                      value={r.lanhDao === "-" ? DANH_SACH_LANH_DAO[0] : r.lanhDao}
+                                      onChange={(e) => handleChangeChuaPCLĐ(r.id, e.target.value)}
                                       style={{ ...inputStyle, padding: "2px 4px 2px 2px", fontSize: 10.5, marginTop: 2, height: 26, width: "100%" }}
                                       title={r.lanhDao}
                                     >

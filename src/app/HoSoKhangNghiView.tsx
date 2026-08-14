@@ -7,7 +7,7 @@ import {
 import { F, RED, BORDER, TEXT, MUTED, BG, TH_STYLE, TD_STYLE, Badge, type UserRoleType } from "./shared";
 import { SearchFilterPanel } from "./SearchFilterPanel";
 import { TaiLieuHoSoView } from "./TaiLieuHoSoView";
-import { formatSoBA, getSoBALabel, getThoiHieuText } from "./AppHelpers";
+import { formatSoBA, getSoBALabel, getThoiHieuText, getSTInfo } from "./AppHelpers";
 
 // ── Modal Trả hồ sơ ───────────────────────────────────────────────────────────
 function ModalTraHoSo({ onClose, onConfirm }: { onClose: () => void; onConfirm: (lyDo: string) => void }) {
@@ -2140,14 +2140,21 @@ export function HoSoKhangNghiView({ userRole, onTaoCongVan }: { userRole?: UserR
                   {/* <div style={{ fontSize: 11, color: TEXT, fontFamily: F, marginTop: 2 }}><span style={{ color: MUTED }}>Thẩm quyền xét xử: </span>{(row as any).thamquyenxx}</div> */}
                 </td>
                 <td style={{ ...TD_STYLE, fontFamily: F, fontSize: 12 }}>
-                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                    <div style={{ color: "#262628ff", fontWeight: 600 }}>
-                      <span style={{ color: MUTED, fontWeight: 400 }}>{getSoBALabel(row.soBA, row.loaiAn)} </span>
-                      {formatSoBA(row.soBA, row.loaiAn)}
-                    </div>
-                  </div>
-                  <div style={{ fontSize: 11, color: TEXT, fontFamily: F, marginTop: 2 }}><span style={{ color: MUTED }}>Ngày bản án: </span>{row.ngayBA}</div>
-                  <div style={{ fontSize: 11, color: TEXT, fontFamily: F, marginTop: 2 }}><span style={{ color: MUTED }}>Tòa ra bản án: </span>{(row as any).toaRaBanAn}</div>
+                  {(() => {
+                    const { soST, ngayST, toaST, prefixST } = getSTInfo(row);
+                    return (
+                      <>
+                        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                          <div style={{ color: "#262628ff", fontWeight: 600 }}>
+                            <span style={{ color: MUTED, fontWeight: 400 }}>{prefixST}: </span>
+                            {formatSoBA(soST, row.loaiAn)}
+                          </div>
+                        </div>
+                        <div style={{ fontSize: 11, color: TEXT, fontFamily: F, marginTop: 2 }}><span style={{ color: MUTED }}>Ngày: </span>{ngayST}</div>
+                        <div style={{ fontSize: 11, color: TEXT, fontFamily: F, marginTop: 2 }}><span style={{ color: MUTED }}>Tòa ra: </span>{toaST}</div>
+                      </>
+                    );
+                  })()}
                   <div style={{ fontSize: 11, color: TEXT, fontFamily: F, marginTop: 2, display: "flex", alignItems: "center", gap: 4 }}>
                     <span style={{ color: MUTED }}>Thời hiệu: </span>
                     <span

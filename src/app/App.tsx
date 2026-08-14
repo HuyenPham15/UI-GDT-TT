@@ -12,7 +12,7 @@ import {
 } from "./data";
 import ThemHoSoScreen from "@/imports/ThemHồSơKnChiTiết";
 import { F, RED, BORDER, TEXT, MUTED, BG, TH_STYLE, TD_STYLE, Badge, StatusBadge, VuAnBtn, Tag, CapXetXu, TaiKhoanPhanQuyenBar, type UserRoleType } from "./shared";
-import { formatSoBA } from "./AppHelpers";
+import { formatSoBA, getSTInfo } from "./AppHelpers";
 import { SectionCard, InfoGrid, TabThongTin } from "./TabThongTin";
 import { HoSoToTrinhModal, TrinhKyModal } from "./TrinhKyModal";
 import { TaoDuThaoModal } from "./TaoDuThaoModal";
@@ -269,11 +269,7 @@ function CellBA({ c, userRole, tab }: { c: DonCase; userRole?: UserRoleType; tab
   const shortCode = c.loaiAn === "Hình sự" ? "HS" : c.loaiAn === "Dân sự" ? "DS" : c.loaiAn === "Hành chính" ? "HC" : "KDTM";
 
   // Sơ thẩm
-  const soST = c.soBASoTham || (c.soBA?.includes("ST") ? c.soBA : `12/2025/${shortCode}-ST`);
-  const ngayST = c.ngayBASoTham || (c.soBA?.includes("ST") ? c.ngayBA : "15/08/2025");
-  const toaST = c.toaSoTham || (c.toa && !c.toa.includes("cấp cao") && !c.toa.includes("tối cao") ? c.toa : "TAND tỉnh Bắc Ninh");
-  const isQD_ST = soST.toUpperCase().includes("QĐ") || soST.toUpperCase().includes("QD");
-  const prefixST = isQD_ST ? "Số QDST" : "Số BAST";
+  const { soST, ngayST, toaST, isQD_ST, prefixST } = getSTInfo(c);
 
   // Phúc thẩm - Bản án bị đề nghị GĐT/TT
   const soPT = c.soBAPhucTham || (c.soBA?.includes("PT") ? c.soBA : c.id % 2 === 0 ? "58/2025/HSPT-QĐ" : `45/2023/${shortCode}-PT`);

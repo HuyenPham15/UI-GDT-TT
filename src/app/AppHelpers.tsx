@@ -31,7 +31,8 @@ export function formatSoBA(raw?: string | null, loaiAn?: string): string {
   if (raw.includes("/") && (
     raw.includes("HS") || raw.includes("DS") || raw.includes("HC") ||
     raw.includes("KDTM") || raw.includes("HNGĐ") || raw.includes("LĐ") ||
-    raw.includes("SHTT") || raw.includes("PS") || raw.includes("QĐ")
+    raw.includes("SHTT") || raw.includes("PS") || raw.includes("QĐ") ||
+    raw.toUpperCase().includes("QD")
   )) {
     return raw;
   }
@@ -54,7 +55,23 @@ export function formatSoBA(raw?: string | null, loaiAn?: string): string {
   const num = digits ? digits[0] : (raw.replace(/\D/g, '') || "12");
   const cap = raw.includes("PT") || raw.includes("Phúc thẩm") ? "PT" : "ST";
 
+  const isQD = raw.toUpperCase().includes("QĐ") || raw.toUpperCase().includes("QD");
+  if (isQD) {
+    return `${num}/2026/QĐ-${cap}`;
+  }
+
   return `${num}/2026/${code}-${cap}`;
+}
+
+export function getSTInfo(c: any) {
+  if (!c) return { soST: "", ngayST: "", toaST: "", isQD_ST: false, prefixST: "Số BAST" };
+  const shortCode = c.loaiAn === "Hình sự" ? "HS" : c.loaiAn === "Dân sự" ? "DS" : c.loaiAn === "Hành chính" ? "HC" : "KDTM";
+  const soST = c.soBASoTham || (c.soBA?.includes("ST") ? c.soBA : `12/2025/${shortCode}-ST`);
+  const ngayST = c.ngayBASoTham || (c.soBA?.includes("ST") ? c.ngayBA : "15/08/2025");
+  const toaST = c.toaSoTham || (c.toa && !c.toa.includes("cấp cao") && !c.toa.includes("tối cao") ? c.toa : "TAND tỉnh Bắc Ninh");
+  const isQD_ST = soST.toUpperCase().includes("QĐ") || soST.toUpperCase().includes("QD");
+  const prefixST = isQD_ST ? "Số QDST" : "Số BAST";
+  return { soST, ngayST, toaST, isQD_ST, prefixST };
 }
 
 export function getSoBALabel(raw?: string | null, loaiAn?: string, capXetXu?: string): string {
