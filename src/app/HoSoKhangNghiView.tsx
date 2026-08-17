@@ -2199,8 +2199,8 @@ export function HoSoKhangNghiView({ userRole, onTaoCongVan }: { userRole?: UserR
                   {activeSubTab === "di" ? (
                     <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
                       <div><b style={{ fontFamily: F, color: MUTED }}>Đơn vị nhận:</b> {(row as any).donViNhan}</div>
-                      <div><b style={{ fontFamily: F, color: MUTED }}>Số văn thư đi:</b> VT-2026/DI-{(row as any).soKhangNghi?.replace(/\D/g, "") || row.id}</div>
-                      <div><b style={{ fontFamily: F, color: MUTED }}>Ngày phát hành:</b> {(row as any).ngayChuyen || "08/08/2026"}</div>
+                      {/* <div><b style={{ fontFamily: F, color: MUTED }}>Số văn thư đi:</b> VT-2026/DI-{(row as any).soKhangNghi?.replace(/\D/g, "") || row.id}</div> */}
+                      {/* <div><b style={{ fontFamily: F, color: MUTED }}>Ngày phát hành:</b> {(row as any).ngayChuyen || "08/08/2026"}</div> */}
                       <div><b style={{ fontFamily: F, color: MUTED }}>Người phát hành:</b> Cán bộ Văn thư</div>
                     </div>
                   ) : (
@@ -2208,7 +2208,7 @@ export function HoSoKhangNghiView({ userRole, onTaoCongVan }: { userRole?: UserR
                       <div><b style={{ fontFamily: F, color: MUTED }}>Đơn vị gửi:</b> {(row as any).donViGui}</div>
                       <div><b style={{ fontFamily: F, color: MUTED }}>Người nhận:</b> {(row as any).nguoiNhan} ({(row as any).ngayNhan})</div>
                       <div><b style={{ fontFamily: F, color: MUTED }}>Số văn thư đến:</b> VT-2026/DEN-{(row as any).soKhangNghi?.replace(/\D/g, "") || row.id}</div>
-                      <div><b style={{ fontFamily: F, color: MUTED }}>Ngày tiếp nhận:</b> {row.ngayNhan || "07/08/2026"}</div>
+                      {/* <div><b style={{ fontFamily: F, color: MUTED }}>Ngày tiếp nhận:</b> {row.ngayNhan || "07/08/2026"}</div> */}
                     </div>
                   )}
                 </td>

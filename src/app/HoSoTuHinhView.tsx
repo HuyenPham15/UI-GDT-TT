@@ -105,50 +105,81 @@ function HSTrangThaiChip({ status }: { status: string }) {
 }
 
 function HSTrangThaiGiaiQuyetCell({ row }: { row: any }) {
-  const ttGQ = row.trangThaiGiaiQuyet || "Đang giải quyết đơn";
-  const trinhChung = row.trinhStatus || "Chưa trình";
-  const kqgqChung = row.kqgqStatus || "Chưa có kết quả";
   const hoSo = row.hoSoStatus || "Chưa lưu hồ sơ";
-  const cvXacMinhChung = row.cvXacMinhStatus || "Chưa có CV xác minh";
-
-  const getTtStyle = (val: string) => {
-    if (val.includes("Đã giải quyết") || val.includes("Đã xét xử")) return { color: "#065f46", bg: "#d1fae5" };
-    if (val.includes("Đang xét xử")) return { color: "#1e40af", bg: "#dbeafe" };
-    return { color: "#92400e", bg: "#fef3c7" };
-  };
-
-  const ttSt = getTtStyle(ttGQ);
+  const biAnTuHinhList = (row.biAnList || []).filter((b: any) => b.laBiAnTuHinh !== false);
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 5, fontSize: 11, fontFamily: F, lineHeight: 1.6, textAlign: "left" }}>
       <div>
-        <span style={{ color: MUTED }}>Trạng thái GQ: </span>
-        <span style={{ display: "inline-block", padding: "2px 8px", borderRadius: 4, fontWeight: 700, fontSize: 11, background: ttSt.bg, color: ttSt.color }}>
-          {ttGQ}
-        </span>
-      </div>
-      <div>
         <span style={{ color: MUTED }}>Hồ sơ lưu trữ: </span>
         <span style={{ color: hoSo === "Đã lưu hồ sơ" ? "#166534" : MUTED, fontWeight: hoSo === "Đã lưu hồ sơ" ? 600 : 400 }}>{hoSo}</span>
       </div>
-      {trinhChung !== "Chưa trình" && (
-        <div>
-          <span style={{ color: MUTED }}>Tờ trình chung: </span>
-          <span style={{ color: TEXT, fontWeight: 600 }}>{trinhChung}</span>
-        </div>
-      )}
-      {kqgqChung !== "Chưa có kết quả" && (
-        <div>
-          <span style={{ color: MUTED }}>KQGQ chung: </span>
-          <span style={{ color: "#15803d", fontWeight: 700 }}>{kqgqChung}</span>
-        </div>
-      )}
-      {cvXacMinhChung !== "Chưa có CV xác minh" && (
-        <div>
-          <span style={{ color: MUTED }}>CV xác minh: </span>
-          <span style={{ color: TEXT }}>{cvXacMinhChung}</span>
-        </div>
-      )}
+      {biAnTuHinhList.map((biAn: any, bIdx: number) => {
+        const trinh = biAn.trinhStatus || row.trinhStatus || "Chưa trình";
+        const rawKqgq = biAn.kqgqStatus || row.kqgqStatus || "Chưa có kết quả";
+        const rawVksKqgq = biAn.vksKqgqStatus || row.vksKqgqStatus || "Chưa có kết quả";
+        const cvXacMinh = biAn.cvXacMinhStatus || row.cvXacMinhStatus || "Chưa có CV xác minh";
+
+        let kqgqCA = "Chưa có kết quả";
+        if (rawKqgq.includes("CA")) kqgqCA = rawKqgq;
+        else if (rawVksKqgq.includes("CA")) kqgqCA = rawVksKqgq;
+
+        let kqgqVKS = "Chưa có kết quả";
+        if (rawKqgq.includes("VKS")) kqgqVKS = rawKqgq;
+        else if (rawVksKqgq.includes("VKS")) kqgqVKS = rawVksKqgq;
+
+        return (
+          <div
+            key={bIdx}
+            style={{
+              marginTop: 4,
+              padding: "5px 8px",
+              fontSize: 11,
+              lineHeight: 1.5,
+              background: "#f9fafb",
+              borderRadius: 4,
+              borderBottom: bIdx < biAnTuHinhList.length - 1 ? "1px dashed #e5e7eb" : "none",
+            }}
+          >
+            <div style={{ fontWeight: 700, color: TEXT, marginBottom: 3 }}>{biAn.ten}</div>
+            <div>
+              <span style={{ color: MUTED }}>Trình: </span>
+              <span style={{ color: TEXT, fontWeight: trinh === "Chưa trình" ? 400 : 600 }}>{trinh}</span>
+            </div>
+            {kqgqCA === "Chưa có kết quả" && kqgqVKS === "Chưa có kết quả" ? (
+              <div>
+                <span style={{ color: MUTED }}>KQGQ: </span>
+                <span style={{ color: MUTED }}>Chưa có kết quả</span>
+              </div>
+            ) : (
+              <>
+                <div>
+                  <span style={{ color: MUTED }}>KQGQ Chánh án: </span>
+                  <span style={{
+                    color: kqgqCA !== "Chưa có kết quả" ? (kqgqCA.includes("QĐKKN") ? "#166534" : "#991b1b") : MUTED,
+                    fontWeight: kqgqCA !== "Chưa có kết quả" ? 700 : 400
+                  }}>
+                    {kqgqCA}
+                  </span>
+                </div>
+                <div>
+                  <span style={{ color: MUTED }}>KQGQ VKS: </span>
+                  <span style={{
+                    color: kqgqVKS !== "Chưa có kết quả" ? (kqgqVKS.includes("QĐKKN") ? "#166534" : "#991b1b") : MUTED,
+                    fontWeight: kqgqVKS !== "Chưa có kết quả" ? 700 : 400
+                  }}>
+                    {kqgqVKS}
+                  </span>
+                </div>
+              </>
+            )}
+            <div>
+              <span style={{ color: MUTED }}>CV xác minh: </span>
+              <span style={{ color: cvXacMinh === "Chưa có CV xác minh" ? MUTED : TEXT }}>{cvXacMinh}</span>
+            </div>
+          </div>
+        );
+      })}
     </div>
   );
 }
@@ -2701,9 +2732,9 @@ const HO_SO_TU_HINH_TABLE_ROWS = [
     ngayBA: "12/02/2024",
     toaBA: "Tòa án nhân dân cấp cao tại Hà Nội",
     biAnList: [
-      { ten: "Chu Văn An", toiDanh: "Giết người", laBiAnTuHinh: true, trinhStatus: "Chưa trình", kqgqStatus: "Chưa có kết quả", cvXacMinhStatus: "Chưa có CV xác minh" },
+      { ten: "Chu Văn An", toiDanh: "Giết người", laBiAnTuHinh: true, trinhStatus: "Chưa trình", kqgqStatus: "Chưa có kết quả", cvXacMinhStatus: "Chưa có CV xác minh", soDonKeuOan: 2, soDonAnGiam: 0, soDonThiHanhAnSom: 0, trangThai: "Đang giải quyết đơn", quaTrinh: "Theo quy trình -> Hồ sơ tử hình" },
       { ten: "Lê Thị C", toiDanh: "Đồng phạm (20 năm tù)", laBiAnTuHinh: false },
-      { ten: "Trần Văn B", toiDanh: "Cướp tài sản", laBiAnTuHinh: true, trinhStatus: "Chưa trình", kqgqStatus: "Chưa có kết quả", cvXacMinhStatus: "Chưa có CV xác minh" },
+      { ten: "Trần Văn B", toiDanh: "Cướp tài sản", laBiAnTuHinh: true, trinhStatus: "Chưa trình", kqgqStatus: "Chưa có kết quả", cvXacMinhStatus: "Chưa có CV xác minh", soDonKeuOan: 0, soDonAnGiam: 1, soDonThiHanhAnSom: 0, trangThai: "Đang giải quyết đơn", quaTrinh: "Hồ sơ tử hình" },
     ],
     ttv: "Nguyễn Thị Thùy Liên",
     tp: "Phạm Thị Bích Ngọc",
@@ -2723,7 +2754,7 @@ const HO_SO_TU_HINH_TABLE_ROWS = [
     ngayBA: "12/02/2024",
     toaBA: "Tòa án nhân dân cấp cao tại Hà Nội",
     biAnList: [
-      { ten: "Chu Văn An", toiDanh: "Giết người", laBiAnTuHinh: true, trinhStatus: "Trình Phó Vụ trưởng (Tờ trình tử hình ngày 12/03/2026)", kqgqStatus: "QĐKKN số 12/2024 – 15/03/2024 (CA)", cvXacMinhStatus: "Đã có KQ xác minh" },
+      { ten: "Chu Văn An", toiDanh: "Giết người", laBiAnTuHinh: true, trinhStatus: "Trình Phó Vụ trưởng (Tờ trình tử hình ngày 12/03/2026)", kqgqStatus: "QĐKKN số 12/2024 – 15/03/2024 (CA)", cvXacMinhStatus: "Đã có KQ xác minh", soDonKeuOan: 1, soDonAnGiam: 1, soDonThiHanhAnSom: 0, trangThai: "Đã giải quyết đơn", quaTrinh: "Hồ sơ tử hình" },
     ],
     ttv: "Nguyễn Thị Thùy Liên",
     tp: "Phạm Thị Bích Ngọc",
@@ -2744,7 +2775,7 @@ const HO_SO_TU_HINH_TABLE_ROWS = [
     ngayBA: "18/04/2024",
     toaBA: "Tòa án nhân dân tỉnh Đồng Nai",
     biAnList: [
-      { ten: "Trần Văn Đức", toiDanh: "Mua bán trái phép chất ma túy", laBiAnTuHinh: true, hinhPhatGDT: "Tử hình", trinhStatus: "Trình Thẩm phán (Tờ trình tử hình ngày 10/04/2026)", kqgqStatus: "QĐKN số 55/2024 – 18/04/2024 (VKS)", cvXacMinhStatus: "Đang xác minh số 88 – 05/04/2026" },
+      { ten: "Trần Văn Đức", toiDanh: "Mua bán trái phép chất ma túy", laBiAnTuHinh: true, hinhPhatGDT: "Tử hình", trinhStatus: "Trình Thẩm phán (Tờ trình tử hình ngày 10/04/2026)", kqgqStatus: "QĐKKN số 50/2024 – 15/04/2024 (CA)", vksKqgqStatus: "QĐKN số 55/2024 – 18/04/2024 (VKS)", cvXacMinhStatus: "Đang xác minh số 88 – 05/04/2026", soDonKeuOan: 0, soDonAnGiam: 0, soDonThiHanhAnSom: 1, trangThai: "Đang giải quyết đơn", quaTrinh: "Theo quy trình -> Hồ sơ tử hình" },
     ],
     ttv: "Nguyễn Thị Thùy Liên",
     tp: "Phạm Thị Bích Ngọc",
@@ -2765,7 +2796,7 @@ const HO_SO_TU_HINH_TABLE_ROWS = [
     ngayBA: "30/06/2023",
     toaBA: "Tòa án nhân dân cấp cao tại TP.HCM",
     biAnList: [
-      { ten: "Võ Thị Hà", toiDanh: "Giết người", laBiAnTuHinh: true, hinhPhatGDT: "Chung thân", trinhStatus: "Trình Phó Chánh án (Tờ trình tử hình ngày 25/06/2023)", kqgqStatus: "QĐKN số 77/2023 – 30/06/2023 (CA)", cvXacMinhStatus: "Đã có KQ xác minh" },
+      { ten: "Võ Thị Hà", toiDanh: "Giết người", laBiAnTuHinh: true, hinhPhatGDT: "Chung thân", trinhStatus: "Trình Phó Chánh án (Tờ trình tử hình ngày 25/06/2023)", kqgqStatus: "QĐKN số 77/2023 – 30/06/2023 (CA)", vksKqgqStatus: "QĐKKN số 80/2023 – 02/07/2023 (VKS)", cvXacMinhStatus: "Đã có KQ xác minh", soDonKeuOan: 3, soDonAnGiam: 0, soDonThiHanhAnSom: 0, trangThai: "Đã giải quyết đơn", quaTrinh: "Hồ sơ tử hình" },
       { ten: "Nguyễn Minh Tuấn", toiDanh: "Đồng phạm (20 năm tù)", laBiAnTuHinh: false, hinhPhatGDT: "20 năm tù" },
     ],
     ttv: "Nguyễn Thị Thùy Liên",
@@ -2787,7 +2818,7 @@ const HO_SO_TU_HINH_TABLE_ROWS = [
     ngayBA: "14/09/2024",
     toaBA: "Tòa án nhân dân tỉnh Nghệ An",
     biAnList: [
-      { ten: "Phan Văn Khánh", toiDanh: "Cướp tài sản", laBiAnTuHinh: true, hinhPhatGDT: "Tử hình", trinhStatus: "Trình Chủ tịch nước (Tờ trình tử hình ngày 14/09/2024)", kqgqStatus: "QĐKKN số 103/2024 – 14/09/2024 (CA)", cvXacMinhStatus: "Đã có KQ xác minh" },
+      { ten: "Phan Văn Khánh", toiDanh: "Cướp tài sản", laBiAnTuHinh: true, hinhPhatGDT: "Tử hình", trinhStatus: "Trình Chủ tịch nước (Tờ trình tử hình ngày 14/09/2024)", kqgqStatus: "QĐKKN số 103/2024 – 14/09/2024 (CA)", cvXacMinhStatus: "Đã có KQ xác minh", soDonKeuOan: 0, soDonAnGiam: 1, soDonThiHanhAnSom: 0, trangThai: "Đã giải quyết HSTH", quaTrinh: "Hồ sơ tử hình -> Trình CTN" },
     ],
     ttv: "Nguyễn Thị Thùy Liên",
     tp: "Phạm Thị Bích Ngọc",
@@ -2865,6 +2896,129 @@ const DON_XIN_AN_GIAM_ROWS = [
   },
 ];
 
+function ModalThemHoSoTuHinh({ onClose }: { onClose: () => void }) {
+  const [soBA, setSoBA] = useState("");
+  const [ngayBA, setNgayBA] = useState("");
+  const [toaBA, setToaBA] = useState("");
+  const [traCuuXong, setTraCuuXong] = useState(false);
+  const [biAnList, setBiAnList] = useState<any[]>([]);
+
+  const handleTraCuu = () => {
+    if (soBA.trim() !== "") {
+      setTraCuuXong(true);
+      setNgayBA("05/06/2026");
+      setToaBA("Tòa án nhân dân tối cao");
+      setBiAnList([
+        { id: 1, ten: "Chu Văn An", toiDanh: "Giết người", hinhPhat: "Tử hình" }
+      ]);
+    }
+  };
+
+  const handleThemBiAn = () => {
+    setBiAnList(p => [...p, { id: Date.now(), ten: "", toiDanh: "", hinhPhat: "" }]);
+  };
+
+  const updateBiAn = (id: number, field: string, val: string) => {
+    setBiAnList(p => p.map(b => b.id === id ? { ...b, [field]: val } : b));
+  };
+
+  const inp: React.CSSProperties = { padding: "8px 10px", fontSize: 12, border: `1px solid ${BORDER}`, borderRadius: 4, fontFamily: F, outline: "none", width: "100%", boxSizing: "border-box", background: "#fff" };
+  const lbl: React.CSSProperties = { fontSize: 11, color: MUTED, fontFamily: F, display: "block", marginBottom: 3, fontWeight: 600 };
+  const thStyle: React.CSSProperties = { ...TH_STYLE, padding: "9px", fontSize: 11, background: "#f9fafb", color: "#4b5563" };
+
+  return (
+    <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.45)", zIndex: 1100, display: "flex", alignItems: "flex-start", justifyContent: "center", overflowY: "auto", padding: "24px 16px" }}>
+      <div style={{ background: "#fff", borderRadius: 8, width: "100%", maxWidth: 700, boxShadow: "0 20px 60px rgba(0,0,0,0.2)", marginBottom: 24, overflow: "hidden", fontFamily: F }}>
+        {/* Header */}
+        <div style={{ display: "flex", alignItems: "center", padding: "14px 20px", background: "#fff", borderBottom: `1px solid ${BORDER}` }}>
+          <span style={{ fontSize: 15, fontWeight: 700, color: RED, flex: 1 }}>Thêm hồ sơ tử hình</span>
+          <button onClick={onClose} style={{ background: "none", border: "none", cursor: "pointer" }}><X size={18} color={MUTED} /></button>
+        </div>
+
+        <div style={{ padding: "20px" }}>
+          <div style={{ display: "flex", gap: 12, marginBottom: 16 }}>
+            <div style={{ flex: 1.2, display: "flex", flexDirection: "column" }}>
+              <label style={lbl}>Số bản án</label>
+              <div style={{ display: "flex", gap: 8 }}>
+                <input value={soBA} onChange={e => setSoBA(e.target.value)} placeholder="Nhập số bản án..." style={{ ...inp, flex: 1 }} />
+                <button onClick={handleTraCuu} style={{ padding: "0 12px", background: "#f3f4f6", color: TEXT, border: `1px solid ${BORDER}`, borderRadius: 4, cursor: "pointer", fontSize: 12, fontWeight: 600, fontFamily: F, display: "flex", alignItems: "center", gap: 6 }}>
+                  <Search size={14} /> Tra cứu
+                </button>
+              </div>
+            </div>
+            <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
+              <label style={lbl}>Ngày bản án</label>
+              <div style={{ position: "relative", display: "flex", alignItems: "center" }}>
+                <input value={ngayBA} onChange={e => setNgayBA(e.target.value)} placeholder="dd/mm/yyyy" style={{ ...inp, paddingRight: 28 }} />
+                <span style={{ position: "absolute", right: 8, color: MUTED, pointerEvents: "none", fontSize: 13 }}>📅</span>
+              </div>
+            </div>
+            <div style={{ flex: 1.2, display: "flex", flexDirection: "column" }}>
+              <label style={lbl}>Tòa xét xử</label>
+              <input value={toaBA} onChange={e => setToaBA(e.target.value)} placeholder="Nhập tòa xét xử..." style={inp} />
+            </div>
+          </div>
+
+          {/* Danh sách bị án */}
+          <div style={{ marginBottom: 16 }}>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 6 }}>
+              <label style={lbl}>Danh sách bị án / Tội danh / Hình phạt</label>
+              <button onClick={handleThemBiAn} style={{ background: "none", border: "none", color: RED, cursor: "pointer", fontSize: 12, fontWeight: 600, fontFamily: F }}>+ Thêm bị án</button>
+            </div>
+
+            {biAnList.length > 0 ? (
+              <div style={{ border: `1px solid ${BORDER}`, borderRadius: 6, overflow: "hidden" }}>
+                <table style={{ width: "100%", borderCollapse: "collapse", tableLayout: "fixed" }}>
+                  <thead>
+                    <tr style={{ background: "#f9fafb", borderBottom: `1px solid ${BORDER}` }}>
+                      <th style={thStyle}>Họ tên bị án</th>
+                      <th style={thStyle}>Tội danh</th>
+                      <th style={thStyle}>Hình phạt</th>
+                      <th style={{ ...thStyle, width: 45, textAlign: "center" }}>Xóa</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {biAnList.map((b, idx) => (
+                      <tr key={b.id} style={{ borderBottom: idx < biAnList.length - 1 ? `1px solid ${BORDER}` : "none" }}>
+                        <td style={{ padding: 6, borderRight: `1px solid ${BORDER}` }}><input value={b.ten} onChange={e => updateBiAn(b.id, "ten", e.target.value)} placeholder="Họ tên" style={inp} /></td>
+                        <td style={{ padding: 6, borderRight: `1px solid ${BORDER}` }}><input value={b.toiDanh} onChange={e => updateBiAn(b.id, "toiDanh", e.target.value)} placeholder="Tội danh" style={inp} /></td>
+                        <td style={{ padding: 6, borderRight: `1px solid ${BORDER}` }}><input value={b.hinhPhat} onChange={e => updateBiAn(b.id, "hinhPhat", e.target.value)} placeholder="Hình phạt" style={inp} /></td>
+                        <td style={{ padding: 6, textAlign: "center" }}>
+                          <button onClick={() => setBiAnList(p => p.filter(x => x.id !== b.id))} style={{ background: "none", border: "none", cursor: "pointer", color: RED }}>✕</button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            ) : (
+              <div style={{ padding: "20px", textAlign: "center", border: `1px dashed ${BORDER}`, borderRadius: 6, color: MUTED, fontSize: 12 }}>
+                Chưa có thông tin bị án. Vui lòng tra cứu hoặc thêm thủ công.
+              </div>
+            )}
+          </div>
+
+          {/* Trạng thái */}
+          <div style={{ marginBottom: 16 }}>
+            <label style={lbl}>Trạng thái bản án</label>
+            <select style={inp}>
+              <option value="">Chọn trạng thái</option>
+              <option>Đã có hiệu lực</option>
+              <option>Chưa có hiệu lực</option>
+            </select>
+          </div>
+
+          {/* Footer */}
+          <div style={{ display: "flex", gap: 10, justifyContent: "flex-end", borderTop: `1px solid ${BORDER}`, paddingTop: 14 }}>
+            <button onClick={onClose} style={{ padding: "7px 24px", background: "#fff", color: TEXT, border: `1px solid ${BORDER}`, borderRadius: 4, cursor: "pointer", fontSize: 12, fontFamily: F }}>Hủy</button>
+            <button style={{ padding: "7px 28px", background: RED, color: "#fff", border: "none", borderRadius: 4, cursor: "pointer", fontSize: 12, fontWeight: 700, fontFamily: F }}>Lưu</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function HoSoTuHinhView({
   initialTab = "ho-so-tu-hinh",
   userRole,
@@ -2877,6 +3031,7 @@ export default function HoSoTuHinhView({
   const [activeTab, setActiveTab] = useState<TuHinhTabId>(initialTab);
   const [detail, setDetail] = useState<string | null>(null);
   const [filterExpanded, setFilterExpanded] = useState(true);
+  const [showThemHoSo, setShowThemHoSo] = useState(false);
 
   const [nguoiDungDon, setNguoiDungDon] = useState("");
   const [soBanAn, setSoBanAn] = useState("");
@@ -2966,6 +3121,7 @@ export default function HoSoTuHinhView({
 
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "100%", overflow: "hidden", background: "#fff" }}>
+      {showThemHoSo && <ModalThemHoSoTuHinh onClose={() => setShowThemHoSo(false)} />}
       {/* Breadcrumb */}
       <div style={{ padding: "10px 20px", borderBottom: `1px solid ${BORDER}`, background: "#fff", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
         <span style={{ fontSize: 12, fontFamily: F, color: MUTED }}>
@@ -3027,7 +3183,10 @@ export default function HoSoTuHinhView({
           </div>
         </div>
       </div>
-      <div style={{ display: "flex", justifyContent: "flex-end", padding: "8px 20px 4px", background: "#fff", flexShrink: 0 }}>
+      <div style={{ display: "flex", justifyContent: "flex-end", padding: "8px 20px 4px", background: "#fff", flexShrink: 0, gap: 8 }}>
+        {activeTab === "ho-so-tu-hinh" && (
+          <button onClick={() => setShowThemHoSo(true)} style={{ padding: "6px 14px", background: RED, color: "#fff", border: "none", borderRadius: 4, cursor: "pointer", fontSize: 12, fontFamily: F, fontWeight: 700 }}>+ Thêm hồ sơ tử hình</button>
+        )}
         <button style={{ background: "#fff", border: `1px solid ${BORDER}`, borderRadius: 4, padding: "5px 8px", cursor: "pointer", display: "flex", alignItems: "center" }} title="Tải lại danh sách"><RefreshCw size={13} color={MUTED} /></button>
       </div>
       <div style={{ flex: 1, overflow: "auto", padding: "0 20px 12px" }}>
@@ -3121,11 +3280,11 @@ export default function HoSoTuHinhView({
               <table style={{ width: "100%", borderCollapse: "collapse", minWidth: 1200 }}>
                 <colgroup>
                   <col style={{ width: 50 }} />
-                  <col style={{ width: "20%" }} />
                   <col style={{ width: "16%" }} />
-                  <col style={{ width: "18%" }} />
-                  <col style={{ width: "24%" }} />
                   <col style={{ width: "14%" }} />
+                  <col style={{ width: "14%" }} />
+                  <col style={{ width: "20%" }} />
+                  <col style={{ width: "28%" }} />
                   <col style={{ width: 7 }} />
                 </colgroup>
                 <thead>
@@ -3135,7 +3294,6 @@ export default function HoSoTuHinhView({
                     <th style={TH_COL}>THÔNG TIN BA/QĐ</th>
                     <th style={TH_COL}>PHÂN CÔNG</th>
                     <th style={TH_COL}>BỊ ÁN & TỘI DANH</th>
-
                     <th style={TH_COL}>TRẠNG THÁI GIẢI QUYẾT</th>
                     <th style={{ ...TH_COL, textAlign: "center" }}>THAO TÁC</th>
                   </tr>
@@ -3189,66 +3347,133 @@ export default function HoSoTuHinhView({
                           <div><span style={{ color: MUTED }}>LĐ: </span><span>{row.ld}</span></div>
                         </div>
                       </td>
+                      {/* Cột: BỊ ÁN & TỘI DANH */}
                       <td style={TD_COL}>
-                        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-                          {row.biAnList
+                        <div style={{ display: "flex", flexDirection: "column", gap: 0, fontSize: 11 }}>
+                          {(row.biAnList || [])
+                            .filter((biAn: any) => biAn.laBiAnTuHinh !== false)
+                            .map((biAn: any, bIdx: number, arr: any[]) => (
+                              <div
+                                key={bIdx}
+                                style={{
+                                  paddingBottom: bIdx < arr.length - 1 ? 8 : 0,
+                                  marginBottom: bIdx < arr.length - 1 ? 8 : 0,
+                                  borderBottom: bIdx < arr.length - 1 ? "1px dashed #e5e7eb" : "none",
+                                }}
+                              >
+                                <div>
+                                  <span style={{ fontWeight: 700, color: TEXT }}>{biAn.ten}</span>
+                                  <span style={{ color: MUTED }}> – </span>
+                                  <span style={{ color: RED, fontWeight: 500 }}>{biAn.toiDanh}</span>
+                                </div>
+                                {biAn.hinhPhatGDT && (
+                                  <div style={{ marginTop: 3, display: "flex", alignItems: "center", gap: 4 }}>
+                                    <span style={{ color: MUTED }}>Hình phạt sau GĐT: </span>
+                                    <span
+                                      style={{
+                                        color: biAn.hinhPhatGDT === "Tử hình" ? "#dc2626" : "#2563eb",
+                                        fontWeight: 700,
+                                        background: biAn.hinhPhatGDT === "Tử hình" ? "#fef2f2" : "#eff6ff",
+                                        padding: "1px 6px",
+                                        borderRadius: 4,
+                                      }}
+                                    >
+                                      {biAn.hinhPhatGDT}
+                                    </span>
+                                  </div>
+                                )}
+                                <div style={{ marginTop: 4, display: "flex", flexDirection: "column", gap: 2 }}>
+                                  {biAn.soDonKeuOan > 0 && <div><span style={{ color: MUTED }}>Đơn kêu oan: </span><span style={{ fontWeight: 600, color: "#991b1b" }}>{biAn.soDonKeuOan}</span></div>}
+                                  {biAn.soDonAnGiam > 0 && <div><span style={{ color: MUTED }}>Đơn ân giảm: </span><span style={{ fontWeight: 600, color: "#1d4ed8" }}>{biAn.soDonAnGiam}</span></div>}
+                                  {biAn.soDonThiHanhAnSom > 0 && <div><span style={{ color: MUTED }}>Thi hành án sớm: </span><span style={{ fontWeight: 600, color: "#047857" }}>{biAn.soDonThiHanhAnSom}</span></div>}
+                                </div>
+                              </div>
+                            ))}
+                        </div>
+                      </td>
+                      {/* Cột: TRẠNG THÁI GIẢI QUYẾT */}
+                      <td style={TD_COL}>
+                        <div style={{ display: "flex", flexDirection: "column", gap: 0, fontSize: 11 }}>
+                          {/* Hồ sơ lưu trữ - chung cho cả bộ hồ sơ */}
+                          <div style={{ marginBottom: 8 }}>
+                            <span style={{ color: MUTED }}>Hồ sơ lưu trữ: </span>
+                            <span style={{ color: (row.hoSoStatus || "") === "Đã lưu hồ sơ" ? "#166534" : MUTED, fontWeight: (row.hoSoStatus || "") === "Đã lưu hồ sơ" ? 600 : 400 }}>{row.hoSoStatus || "Chưa lưu hồ sơ"}</span>
+                          </div>
+                          {/* Trạng thái theo từng bị án */}
+                          {(row.biAnList || [])
                             .filter((biAn: any) => biAn.laBiAnTuHinh !== false)
                             .map((biAn: any, bIdx: number, arr: any[]) => {
                               const trinh = biAn.trinhStatus || row.trinhStatus || "Chưa trình";
-                              const kqgq = biAn.kqgqStatus || row.kqgqStatus || "Chưa có kết quả";
+                              const rawKqgq = biAn.kqgqStatus || row.kqgqStatus || "Chưa có kết quả";
+                              const rawVksKqgq = biAn.vksKqgqStatus || row.vksKqgqStatus || "Chưa có kết quả";
                               const cvXacMinh = biAn.cvXacMinhStatus || row.cvXacMinhStatus || "Chưa có CV xác minh";
+
+                              let kqgqCA = "Chưa có kết quả";
+                              if (rawKqgq.includes("CA")) kqgqCA = rawKqgq;
+                              else if (rawVksKqgq.includes("CA")) kqgqCA = rawVksKqgq;
+
+                              let kqgqVKS = "Chưa có kết quả";
+                              if (rawKqgq.includes("VKS")) kqgqVKS = rawKqgq;
+                              else if (rawVksKqgq.includes("VKS")) kqgqVKS = rawVksKqgq;
 
                               return (
                                 <div
                                   key={bIdx}
                                   style={{
-                                    paddingBottom: bIdx < arr.length - 1 ? 10 : 0,
+                                    padding: "4px 8px",
+                                    background: "#f9fafb",
+                                    borderRadius: 4,
+                                    lineHeight: 1.5,
+                                    marginBottom: bIdx < arr.length - 1 ? 6 : 0,
                                     borderBottom: bIdx < arr.length - 1 ? "1px dashed #e5e7eb" : "none",
                                   }}
                                 >
+                                  <div style={{ fontWeight: 700, color: TEXT, marginBottom: 2 }}>{biAn.ten}</div>
                                   <div>
-                                    <span style={{ fontWeight: 700, color: TEXT }}>{biAn.ten}</span>
-                                    <span style={{ color: MUTED }}> – </span>
-                                    <span style={{ color: RED, fontWeight: 500 }}>{biAn.toiDanh}</span>
+                                    <span style={{ color: MUTED }}>Trình: </span>
+                                    <span style={{ color: TEXT, fontWeight: trinh === "Chưa trình" ? 400 : 600 }}>{trinh}</span>
                                   </div>
-                                  {biAn.hinhPhatGDT && (
-                                    <div style={{ fontSize: 11, marginTop: 3, display: "flex", alignItems: "center", gap: 4 }}>
-                                      <span style={{ color: MUTED }}>Hình phạt sau GĐT: </span>
-                                      <span
-                                        style={{
-                                          color: biAn.hinhPhatGDT === "Tử hình" ? "#dc2626" : "#2563eb",
-                                          fontWeight: 700,
-                                          background: biAn.hinhPhatGDT === "Tử hình" ? "#fef2f2" : "#eff6ff",
-                                          padding: "1px 6px",
-                                          borderRadius: 4,
-                                        }}
-                                      >
-                                        {biAn.hinhPhatGDT}
-                                      </span>
-                                    </div>
-                                  )}
-                                  {/* Trạng thái riêng của từng bị án */}
-                                  <div style={{ marginTop: 4, padding: "5px 8px", fontSize: 11, lineHeight: 1.5 }}>
-                                    <div>
-                                      <span style={{ color: MUTED }}>Trình: </span>
-                                      <span style={{ color: TEXT, fontWeight: trinh === "Chưa trình" ? 400 : 600 }}>{trinh}</span>
-                                    </div>
+                                  {kqgqCA === "Chưa có kết quả" && kqgqVKS === "Chưa có kết quả" ? (
                                     <div>
                                       <span style={{ color: MUTED }}>KQGQ: </span>
-                                      <span style={{ color: kqgq === "Chưa có kết quả" ? MUTED : "#15803d", fontWeight: kqgq === "Chưa có kết quả" ? 400 : 700 }}>{kqgq}</span>
+                                      <span style={{ color: MUTED }}>Chưa có kết quả</span>
                                     </div>
-                                    <div>
-                                      <span style={{ color: MUTED }}>CV xác minh: </span>
-                                      <span style={{ color: cvXacMinh === "Chưa có CV xác minh" ? MUTED : TEXT }}>{cvXacMinh}</span>
-                                    </div>
+                                  ) : (
+                                    <>
+                                      {row.kqgq === "Trả lời đơn" && (
+                                        <div>
+                                          <span style={{ color: MUTED }}>KQGQ Đơn: </span>
+                                          <span style={{ color: TEXT, fontWeight: 600 }}>Trả lời đơn</span>
+                                        </div>
+                                      )}
+                                      <div>
+                                        <span style={{ color: MUTED }}>KQGQ Chánh án: </span>
+                                        <span style={{
+                                          color: kqgqCA !== "Chưa có kết quả" ? (kqgqCA.includes("QĐKKN") ? "#166534" : "#991b1b") : MUTED,
+                                          fontWeight: kqgqCA !== "Chưa có kết quả" ? 700 : 400
+                                        }}>
+                                          {kqgqCA}
+                                        </span>
+                                      </div>
+                                      <div>
+                                        <span style={{ color: MUTED }}>KQGQ VKS: </span>
+                                        <span style={{
+                                          color: kqgqVKS !== "Chưa có kết quả" ? (kqgqVKS.includes("QĐKKN") ? "#166534" : "#991b1b") : MUTED,
+                                          fontWeight: kqgqVKS !== "Chưa có kết quả" ? 700 : 400
+                                        }}>
+                                          {kqgqVKS}
+                                        </span>
+                                      </div>
+                                    </>
+                                  )}
+                                  <div>
+                                    <span style={{ color: MUTED }}>CV xác minh: </span>
+                                    <span style={{ color: cvXacMinh === "Chưa có CV xác minh" ? MUTED : TEXT }}>{cvXacMinh}</span>
                                   </div>
                                 </div>
                               );
                             })}
                         </div>
-                      </td>
-                      <td style={TD_COL}>
-                        <HSTrangThaiGiaiQuyetCell row={row} />
                       </td>
                       <td style={{ ...TD_COL, textAlign: "center", whiteSpace: "nowrap" }}>
                         <button onClick={() => setDetail("hs-1")} style={{ background: "none", border: "none", cursor: "pointer", padding: 3 }} title="Xem chi tiết hồ sơ tử hình"><Eye size={15} color="#059669" /></button>

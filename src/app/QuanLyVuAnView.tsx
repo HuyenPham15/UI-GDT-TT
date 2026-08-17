@@ -126,12 +126,14 @@ export function QuickViewDanhSachDonModal({
             background: "#f8fafc",
           }}
         >
-          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            <FileText size={18} color="#800000" />
-            <span style={{ fontSize: 16, fontWeight: 700, color: "#111827", fontFamily: F }}>
-              Danh sách đơn – {group.tenVuAn || group.maSo}
-            </span>
-            <Badge color="#1e40af" bg="#dbeafe">{donList.length} đơn</Badge>
+          <div style={{ display: "flex", alignItems: "baseline", gap: 10 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+              <FileText size={18} color="#800000" />
+              <span style={{ fontSize: 16, fontWeight: 700, color: "#111827", fontFamily: F }}>
+                Danh sách đơn – {group.tenVuAn || group.maSo}
+              </span>
+            </div>
+            <span style={{ fontSize: 13, color: MUTED, fontFamily: F, fontWeight: 600 }}>(Tổng đơn của vụ: {donList.length})</span>
           </div>
           <button
             onClick={onClose}
@@ -691,6 +693,18 @@ export function renderCellTrangThaiDon(
         </span>
         {kqComponent}
       </div>
+
+      {/* 3. Hồ sơ kháng nghị */}
+      {/* <div style={{ display: "flex", alignItems: "center", gap: 5, flexWrap: "wrap", borderTop: `1px dashed #e5e7eb`, paddingTop: 4 }}>
+        <span style={{ fontSize: 11, fontWeight: 700, color: "#1e293b", fontFamily: F }}>
+          HS kháng nghị:
+        </span>
+        {row.maHSKN ? (
+          <a href="#" style={{ fontSize: 11, color: "#1d4ed8", textDecoration: "underline", fontWeight: 600, fontFamily: F }}>{row.maHSKN}</a>
+        ) : (
+          <Badge color="#9a3412" bg="#ffedd5">Chưa ghép</Badge>
+        )}
+      </div> */}
     </div>
   );
 }
@@ -715,6 +729,7 @@ export default function QuanLyVuAnView({
   const [showKetQua, setShowKetQua] = useState<{ row: VuAnRow; type: string; numberStr: string } | null>(null);
   const [showTaoThongBaoTinhTheRow, setShowTaoThongBaoTinhTheRow] = useState<any>(null);
   const [previewThongBaoTinhTheRow, setPreviewThongBaoTinhTheRow] = useState<any>(null);
+  const [showGhepHSKN, setShowGhepHSKN] = useState<VuAnRow | null>(null);
 
   const getThongBaoTinhThe = (row: VuAnRow) => {
     return {
@@ -795,6 +810,10 @@ export default function QuanLyVuAnView({
 
       {/* Action bar */}
       <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "8px 20px", background: "#fff", borderBottom: `1px solid ${BORDER}`, flexShrink: 0 }}>
+        {/* <span style={{ fontSize: 14, fontWeight: 700, color: TEXT, fontFamily: F }}>Danh sách vụ án</span> */}
+        <span style={{ fontSize: 13, color: MUTED, fontFamily: F, fontWeight: 600 }}>
+          Tổng: {filteredGroups.length} vụ / {filteredGroups.reduce((acc, g) => acc + g.rows.length, 0)} đơn
+        </span>
         <div style={{ flex: 1 }} />
         <button style={{ display: "flex", alignItems: "center", gap: 6, padding: "6px 14px", background: RED, color: "#fff", border: "none", borderRadius: 4, cursor: "pointer", fontSize: 12, fontWeight: 600, fontFamily: F }}>
           + Thêm mới
@@ -1088,20 +1107,19 @@ export default function QuanLyVuAnView({
                                 </>
                               )
                             }
-                            {/* Cột 6: Thao tác */}
-                            {
-                              isFirst && (
-                                <td rowSpan={totalRows} style={{ ...TD_STYLE, textAlign: "center", padding: "5px 8px", background: "#ffffff", verticalAlign: "middle" }}>
-                                  <button
-                                    onClick={() => onSelectVuAn(group.id)}
-                                    style={{ background: "none", border: "none", cursor: "pointer", padding: 3, borderRadius: 4 }}
-                                    title="Xem chi tiết"
-                                  >
-                                    <Eye size={14} color="#6b7280" />
-                                  </button>
-                                </td>
-                              )
-                            }
+                            {/* Cột 6: Thao tác (không dùng rowSpan để thao tác trên từng đơn) */}
+                            <td style={{ ...TD_STYLE, textAlign: "center", padding: "5px 8px", background: "#ffffff", verticalAlign: "middle" }}>
+                              <div style={{ display: "flex", flexDirection: "column", gap: 6, alignItems: "center" }}>
+                                <button
+                                  onClick={() => onSelectVuAn(group.id)}
+                                  style={{ background: "none", border: "none", cursor: "pointer", padding: 3, borderRadius: 4, display: "flex", alignItems: "center", justifyContent: "center" }}
+                                  title="Xem chi tiết"
+                                >
+                                  <Eye size={16} color="#4b5563" />
+                                </button>
+
+                              </div>
+                            </td>
                           </tr>
                         );
                       })}
@@ -1281,13 +1299,16 @@ export default function QuanLyVuAnView({
                         </div>
                       </td>
                       <td style={{ ...TD_STYLE, textAlign: "center" }}>
-                        <button
-                          onClick={() => onSelectVuAn(group.id)}
-                          style={{ background: "none", border: "none", cursor: "pointer", padding: 4, borderRadius: 4, fontSize: 18, color: MUTED, lineHeight: 1 }}
-                          title="Tùy chọn"
-                        >
-                          ⋮
-                        </button>
+                        <div style={{ display: "flex", flexDirection: "column", gap: 6, alignItems: "center" }}>
+                          <button
+                            onClick={() => onSelectVuAn(group.id)}
+                            style={{ background: "none", border: "none", cursor: "pointer", padding: 3, borderRadius: 4, display: "flex", alignItems: "center", justifyContent: "center" }}
+                            title="Xem chi tiết"
+                          >
+                            <Eye size={16} color="#4b5563" />
+                          </button>
+
+                        </div>
                       </td>
                     </tr>
                   );
@@ -1357,9 +1378,11 @@ export default function QuanLyVuAnView({
           />
         )
       }
+
     </div >
   );
 }
+
 
 // ── Sub-components for ChiTietVuAn ──────────────────────────────────────────
 
@@ -1495,8 +1518,8 @@ function TabDanhSachDon({ detail, onShowTaoThongBaoTinhThe, onShowPreviewThongBa
   const isDetailAnQuocHoi = detailTags.includes("an-quoc-hoi") || detailTags.includes("Án quốc hội") || (detail as any)?.anDacThu === "an-quoc-hoi" || (detail as any)?.anDacThu === "Án quốc hội";
 
   const danhSachDon = (rawList.length > 0 ? rawList : [
-    { stt: 1, maDon: "CV-99210", thongTinGQ: "Thụ lý mới", soThuLy: "CV-2026/0088", ngayThuLy: "10/06/2026", ngayNhan: "10/06/2026", nguoiDung: "Văn phòng Quốc hội", phanLoai: "Công văn", loaiDon: "DON_CHINH", noiDung: "Công văn chuyển đơn của Đoàn Đại biểu Quốc hội về việc đề nghị xem xét kháng nghị GĐT.", isAnQuocHoi: true },
-    { stt: 2, maDon: "KN-88421", thongTinGQ: "Đã thụ lý", soThuLy: "KN-2026/00142", ngayThuLy: "15/05/2026", ngayNhan: "15/05/2026", nguoiDung: "Nguyễn Thị Lan", phanLoai: "Đơn khiếu nại tố tụng", loaiDon: "DON_CHINH", noiDung: "Đơn đề nghị xem xét giám đốc thẩm đối với bản án sơ thẩm." }
+    { stt: 1, maDon: "CV-99210", thongTinGQ: "Thụ lý mới", soThuLy: "CV-2026/0088", ngayThuLy: "10/06/2026", ngayNhan: "10/06/2026", nguoiDung: "Văn phòng Quốc hội", phanLoai: "Công văn", loaiDon: "DON_CHINH", noiDung: "Công văn chuyển đơn của Đoàn Đại biểu Quốc hội về việc đề nghị xem xét kháng nghị GĐT.", isAnQuocHoi: true, maHSKN: "HSKN-56/2026/HS-PT" },
+    { stt: 2, maDon: "KN-88421", thongTinGQ: "Đã thụ lý", soThuLy: "KN-2026/00142", ngayThuLy: "15/05/2026", ngayNhan: "15/05/2026", nguoiDung: "Nguyễn Thị Lan", phanLoai: "Đơn khiếu nại tố tụng", loaiDon: "DON_CHINH", noiDung: "Đơn đề nghị xem xét giám đốc thẩm đối với bản án sơ thẩm.", maHSKN: null }
   ]).map((d, idx) => {
     const isAnQuocHoi = isDetailAnQuocHoi || (d as any).isAnQuocHoi || (d as any).phanLoai?.includes("Quốc hội") || idx === 0;
     const isKhieuNai = Boolean(
@@ -1521,7 +1544,10 @@ function TabDanhSachDon({ detail, onShowTaoThongBaoTinhThe, onShowPreviewThongBa
       <ThongTinChungVuAnCard detail={detail} onShowTaoThongBaoTinhThe={onShowTaoThongBaoTinhThe} onShowPreviewThongBaoTinhThe={onShowPreviewThongBaoTinhThe} />
       <div style={{ background: "#fff", borderRadius: 8, border: `1px solid ${BORDER}`, overflow: "hidden" }}>
         <div style={{ display: "flex", alignItems: "center", padding: "12px 16px", borderBottom: `1px solid ${BORDER}` }}>
-          <h3 style={{ fontSize: 14, fontWeight: 700, color: TEXT, fontFamily: F, margin: 0 }}>Danh sách đơn</h3>
+          <div style={{ display: "flex", alignItems: "baseline", gap: 8 }}>
+            <h3 style={{ fontSize: 14, fontWeight: 700, color: TEXT, fontFamily: F, margin: 0 }}>Danh sách đơn</h3>
+            <span style={{ fontSize: 12, color: MUTED, fontFamily: F, fontWeight: 600 }}>(Tổng đơn của vụ: {danhSachDon.length})</span>
+          </div>
           <div style={{ flex: 1 }} />
           {/* {isDetailAnQuocHoi && (
             <button
@@ -1568,6 +1594,7 @@ function TabDanhSachDon({ detail, onShowTaoThongBaoTinhThe, onShowPreviewThongBa
                     <span style={{ fontSize: 12, fontWeight: 600, color: d.thongTinGQ === "Thụ lý mới" ? "#065f46" : MUTED, fontFamily: F }}>{d.thongTinGQ}</span>
                     {d.soThuLy && <span style={{ fontSize: 11, color: TEXT, fontFamily: F }}>Số: {d.soThuLy}</span>}
                     {d.ngayThuLy && <span style={{ fontSize: 11, color: MUTED, fontFamily: F }}>{d.ngayThuLy}</span>}
+
                   </div>
                 </td>
                 <td style={{ ...TD_STYLE, fontSize: 12, color: TEXT }}>{d.ngayNhan}</td>
@@ -1583,7 +1610,10 @@ function TabDanhSachDon({ detail, onShowTaoThongBaoTinhThe, onShowPreviewThongBa
                 </td>
                 <td style={{ ...TD_STYLE, fontSize: 11, color: MUTED, lineHeight: 1.5 }}>{d.noiDung}</td>
                 <td style={{ ...TD_STYLE, textAlign: "center" }}>
-                  <button style={{ background: "none", border: "none", cursor: "pointer", padding: 4 }} title="Xem"><Eye size={14} color={MUTED} /></button>
+                  <div style={{ display: "flex", flexDirection: "column", gap: 6, alignItems: "center" }}>
+                    <button style={{ background: "none", border: "none", cursor: "pointer", padding: 4 }} title="Xem chi tiết đơn"><Eye size={16} color="#4b5563" /></button>
+
+                  </div>
                 </td>
               </tr>
             ))}
@@ -2619,9 +2649,14 @@ function ModalChonDonCanXuLy({
 
         {/* List Header Info */}
         <div style={{ padding: "12px 20px 8px", display: "flex", alignItems: "center", justifyContent: "space-between", flexShrink: 0 }}>
-          <span style={{ fontSize: 13, fontWeight: 700, color: "#111827", fontFamily: F }}>
-            Danh sách đơn
-          </span>
+          <div style={{ display: "flex", alignItems: "baseline", gap: 8 }}>
+            <span style={{ fontSize: 13, fontWeight: 700, color: "#111827", fontFamily: F }}>
+              Danh sách đơn
+            </span>
+            <span style={{ fontSize: 12, color: MUTED, fontFamily: F, fontWeight: 600 }}>
+              (Tổng đơn của vụ: {sampleDonList.length})
+            </span>
+          </div>
           <span style={{ fontSize: 12, fontWeight: 700, color: "#800000", fontFamily: F }}>
             Đã chọn: {selectedIds.length} đơn
           </span>

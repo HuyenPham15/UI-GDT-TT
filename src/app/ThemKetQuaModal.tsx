@@ -309,6 +309,7 @@ export function ThemKetQuaModal({ onClose, detail }: { onClose: () => void; deta
   };
 
   const handleSave = () => {
+
     alert("Đã lưu kết quả giải quyết văn bản đề nghị thành công!");
     onClose();
   };

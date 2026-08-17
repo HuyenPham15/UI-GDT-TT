@@ -52,6 +52,14 @@ export const DANH_SACH_THAM_PHAN_FILTER = [
   "Hoàng Ngọc Chiêu",
 ];
 
+export const DANH_SACH_VU_FILTER = [
+  "Vụ Giám đốc, kiểm tra I",
+  "Vụ Giám đốc, kiểm tra II",
+  "Vụ Giám đốc, kiểm tra III",
+  "Vụ Giám đốc, kiểm tra IV"
+
+];
+
 export interface VuAnFilterValues {
   loaiAn: string;
   toaRaBA: string;
@@ -97,6 +105,9 @@ export interface VuAnFilterValues {
   // Loại công văn & thông báo
   loaiCongVan: string;
   thongBao: string;
+
+  // Thuộc vụ
+  thuocVu: string;
 }
 
 export const INITIAL_FILTER_VALUES: VuAnFilterValues = {
@@ -140,6 +151,7 @@ export const INITIAL_FILTER_VALUES: VuAnFilterValues = {
   // apDungAnLe: "",
   loaiCongVan: "",
   thongBao: "",
+  thuocVu: "",
 };
 
 export const FILTER_LABELS: Record<keyof VuAnFilterValues, string> = {
@@ -183,6 +195,7 @@ export const FILTER_LABELS: Record<keyof VuAnFilterValues, string> = {
   // apDungAnLe: "Áp dụng án lệ",
   loaiCongVan: "Loại công văn",
   thongBao: "Thông báo",
+  thuocVu: "Thuộc vụ",
 };
 
 export function VuAnSearchFilterPanel({
@@ -384,8 +397,7 @@ export function VuAnSearchFilterPanel({
               </div>
             );
           })()}
-
-          {/* 6. Số thụ lý */}
+          {/* 7. Thẩm phán */}
           <div>
             <label style={labelStyle}>Thẩm phán</label>
             <select value={filters.thamPhan} onChange={(e) => handleChange("thamPhan", e.target.value)} style={selectStyle}>
@@ -396,7 +408,20 @@ export function VuAnSearchFilterPanel({
             </select>
           </div>
 
-          {/* 7. Lãnh đạo phụ trách */}
+
+          {/* 6. Thuộc vụ */}
+          <div>
+            <label style={labelStyle}>Thuộc vụ</label>
+            <select value={filters.thuocVu} onChange={(e) => handleChange("thuocVu", e.target.value)} style={selectStyle}>
+              <option value="">– Tất cả –</option>
+              {DANH_SACH_VU_FILTER.map((vu) => (
+                <option key={vu} value={vu}>{vu}</option>
+              ))}
+            </select>
+          </div>
+
+
+          {/* 8. Lãnh đạo phụ trách */}
           <div>
             <label style={labelStyle}>Lãnh đạo phụ trách</label>
             <select value={filters.lanhDaoVu} onChange={(e) => handleChange("lanhDaoVu", e.target.value)} style={selectStyle}>

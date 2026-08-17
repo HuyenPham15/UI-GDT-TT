@@ -1465,6 +1465,7 @@ export function TabThongTin({ detail, userRole }: { detail?: VuAnDetailData; use
       </div>
 
 
+
       {/* ── THÔNG TIN NGƯỜI LIÊN QUAN ── */}
       <div style={{ background: "#fff", borderRadius: 8, border: `1px solid ${BORDER}`, marginBottom: 16, overflow: "hidden" }}>
         <div style={{ padding: "11px 16px", borderBottom: `1px solid ${BORDER}` }}>

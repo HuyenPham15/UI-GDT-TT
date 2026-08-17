@@ -1457,7 +1457,7 @@ function TabToTrinhXX({ row: _row }: { row: VuXetXuRow }) {
         <div style={{ display: "flex", alignItems: "center", padding: "12px 16px", borderBottom: `1px solid ${BORDER}`, gap: 8 }}>
           <span style={{ fontSize: 14, fontWeight: 700, color: TEXT, fontFamily: F, flex: 1 }}>Danh sách văn bản</span>
           <button onClick={() => setShowTrinhKy(true)} style={{ padding: "6px 14px", background: "#fff", color: TEXT, border: `1px solid ${BORDER}`, borderRadius: 4, cursor: "pointer", fontSize: 12, fontFamily: F }}>Trình ký</button>
-          
+
           {/* Dropdown + Tạo văn bản */}
           <div style={{ position: "relative" }}>
             <button
@@ -7257,8 +7257,8 @@ export default function QuanLyVuXetXuView({
                         <span style={{ fontSize: 10, color: TEXT, fontFamily: F, display: "block", fontStyle: "italic" }}>Người KN: {row.nguoiKhangNghi || "—"}</span>
                       </div>
                       <div style={{ paddingBottom: 4, borderTop: `1px dashed ${BORDER}` }}>
-                        <span style={{ fontSize: 11, color: "#2563eb", fontFamily: F, fontWeight: 600, display: "block" }}>Số TL: {row.soThuLy}</span>
-                        <span style={{ fontSize: 10, color: MUTED, fontFamily: F }}>Ngày TL: {row.ngayThuLy}</span>
+                        <span style={{ fontSize: 10, color: MUTED, fontFamily: F }}>Số TLXX: {row.soThuLy}</span>
+                        <span style={{ fontSize: 10, color: MUTED, fontFamily: F }}> - Ngày TLXX: {row.ngayThuLy}</span>
                       </div>
 
                     </div>

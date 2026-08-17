@@ -25,6 +25,7 @@ export interface VuAnRow {
   thamPhan?: string;
   extraTags?: string[];
   dcd?: string;
+  maHSKN?: string;
 }
 
 export interface VuAnGroup {
@@ -105,6 +106,7 @@ export const VU_AN_LIST: VuAnGroup[] = [
         nkn: "Đặng Thị Dương", biCao: "Hoàng Ngọc Hoa", ndd: "Lập Thái Phúc", dcd: "Hải Hậu, Nam Định",
         ttv: "Lý Thái Phúc", lanhDao: "Nguyễn Văn A", thamPhan: "Nguyễn Biên Thuỳ",
         kqgq: "chua-phan-cong", trangThaiHoSo: "chua-co", kqGiaiQuyet: "chua-co", trangThaiToTrinh: "chua-co", soToTrinh: 0,
+        maHSKN: "HSKN-56/2026/HS-PT",
       },
       {
         stt: 2, lan: "Lần 2: Số đơn 1 (1 đơn TLM)",

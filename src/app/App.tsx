@@ -12,7 +12,7 @@ import {
 } from "./data";
 import ThemHoSoScreen from "@/imports/ThemHồSơKnChiTiết";
 import { F, RED, BORDER, TEXT, MUTED, BG, TH_STYLE, TD_STYLE, Badge, StatusBadge, VuAnBtn, Tag, CapXetXu, TaiKhoanPhanQuyenBar, type UserRoleType } from "./shared";
-import { formatSoBA, getSTInfo } from "./AppHelpers";
+import { formatSoBA, getSTInfo, getSoBALabel } from "./AppHelpers";
 import { SectionCard, InfoGrid, TabThongTin } from "./TabThongTin";
 import { HoSoToTrinhModal, TrinhKyModal } from "./TrinhKyModal";
 import { TaoDuThaoModal } from "./TaoDuThaoModal";
