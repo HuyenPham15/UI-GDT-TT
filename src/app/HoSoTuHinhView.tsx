@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Search, RefreshCw, Eye, ChevronDown, FileText, Users, X, Send, Calendar, Trash2, Layers } from "lucide-react";
+import { Search, RefreshCw, Eye, ChevronDown, FileText, Users, X, Send, Calendar, Trash2, Layers, AlertTriangle } from "lucide-react";
 import { F, RED, BORDER, TEXT, MUTED, BG, TH_STYLE, TD_STYLE, Badge, TaiKhoanPhanQuyenBar, type UserRoleType } from "./shared";
 import { HoSoToTrinhModal, TrinhKyModal } from "./TrinhKyModal";
 import { TaoDuThaoModal } from "./TaoDuThaoModal";
@@ -2901,6 +2901,7 @@ function ModalThemHoSoTuHinh({ onClose }: { onClose: () => void }) {
   const [ngayBA, setNgayBA] = useState("");
   const [toaBA, setToaBA] = useState("");
   const [traCuuXong, setTraCuuXong] = useState(false);
+  const [banAnList, setBanAnList] = useState<any[]>([]);
   const [biAnList, setBiAnList] = useState<any[]>([]);
 
   const handleTraCuu = () => {
@@ -2908,14 +2909,17 @@ function ModalThemHoSoTuHinh({ onClose }: { onClose: () => void }) {
       setTraCuuXong(true);
       setNgayBA("05/06/2026");
       setToaBA("Tòa án nhân dân tối cao");
+      setBanAnList([
+        { id: 1, soBA: "123/2026/HSST", ngayBA: "05/06/2026", toaBA: "Tòa án nhân dân tối cao" }
+      ]);
       setBiAnList([
-        { id: 1, ten: "Chu Văn An", toiDanh: "Giết người", hinhPhat: "Tử hình" }
+        { id: 1, ten: "Chu Văn An", ngaySinh: "12/04/1990", gioiTinh: "Nam", toiDanh: "Giết người", hinhPhat: "Tử hình" }
       ]);
     }
   };
 
   const handleThemBiAn = () => {
-    setBiAnList(p => [...p, { id: Date.now(), ten: "", toiDanh: "", hinhPhat: "" }]);
+    setBiAnList(p => [...p, { id: Date.now(), ten: "", ngaySinh: "", gioiTinh: "", toiDanh: "", hinhPhat: "" }]);
   };
 
   const updateBiAn = (id: number, field: string, val: string) => {
@@ -2928,7 +2932,7 @@ function ModalThemHoSoTuHinh({ onClose }: { onClose: () => void }) {
 
   return (
     <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.45)", zIndex: 1100, display: "flex", alignItems: "flex-start", justifyContent: "center", overflowY: "auto", padding: "24px 16px" }}>
-      <div style={{ background: "#fff", borderRadius: 8, width: "100%", maxWidth: 700, boxShadow: "0 20px 60px rgba(0,0,0,0.2)", marginBottom: 24, overflow: "hidden", fontFamily: F }}>
+      <div style={{ background: "#fff", borderRadius: 8, width: "100%", maxWidth: 1100, boxShadow: "0 20px 60px rgba(0,0,0,0.2)", marginBottom: 24, overflow: "hidden", fontFamily: F }}>
         {/* Header */}
         <div style={{ display: "flex", alignItems: "center", padding: "14px 20px", background: "#fff", borderBottom: `1px solid ${BORDER}` }}>
           <span style={{ fontSize: 15, fontWeight: 700, color: RED, flex: 1 }}>Thêm hồ sơ tử hình</span>
@@ -2941,9 +2945,7 @@ function ModalThemHoSoTuHinh({ onClose }: { onClose: () => void }) {
               <label style={lbl}>Số bản án</label>
               <div style={{ display: "flex", gap: 8 }}>
                 <input value={soBA} onChange={e => setSoBA(e.target.value)} placeholder="Nhập số bản án..." style={{ ...inp, flex: 1 }} />
-                <button onClick={handleTraCuu} style={{ padding: "0 12px", background: "#f3f4f6", color: TEXT, border: `1px solid ${BORDER}`, borderRadius: 4, cursor: "pointer", fontSize: 12, fontWeight: 600, fontFamily: F, display: "flex", alignItems: "center", gap: 6 }}>
-                  <Search size={14} /> Tra cứu
-                </button>
+
               </div>
             </div>
             <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
@@ -2957,34 +2959,46 @@ function ModalThemHoSoTuHinh({ onClose }: { onClose: () => void }) {
               <label style={lbl}>Tòa xét xử</label>
               <input value={toaBA} onChange={e => setToaBA(e.target.value)} placeholder="Nhập tòa xét xử..." style={inp} />
             </div>
+            <button onClick={handleTraCuu} style={{ padding: "6px 12px", background: RED, color: "#fff", border: `1px solid ${BORDER}`, borderRadius: 4, cursor: "pointer", fontSize: 12, fontWeight: 600, fontFamily: F, display: "flex", alignItems: "center", gap: 6 }}>
+              <Search size={14} />
+            </button>
           </div>
 
-          {/* Danh sách bị án */}
+          {/* Danh sách bản án */}
           <div style={{ marginBottom: 16 }}>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 6 }}>
-              <label style={lbl}>Danh sách bị án / Tội danh / Hình phạt</label>
-              <button onClick={handleThemBiAn} style={{ background: "none", border: "none", color: RED, cursor: "pointer", fontSize: 12, fontWeight: 600, fontFamily: F }}>+ Thêm bị án</button>
+              <label style={lbl}>Danh sách bản án</label>
             </div>
 
-            {biAnList.length > 0 ? (
+            {banAnList.length > 0 ? (
               <div style={{ border: `1px solid ${BORDER}`, borderRadius: 6, overflow: "hidden" }}>
                 <table style={{ width: "100%", borderCollapse: "collapse", tableLayout: "fixed" }}>
                   <thead>
                     <tr style={{ background: "#f9fafb", borderBottom: `1px solid ${BORDER}` }}>
-                      <th style={thStyle}>Họ tên bị án</th>
-                      <th style={thStyle}>Tội danh</th>
-                      <th style={thStyle}>Hình phạt</th>
-                      <th style={{ ...thStyle, width: 45, textAlign: "center" }}>Xóa</th>
+                      <th style={{ ...thStyle, width: 40, textAlign: "center" }}>STT</th>
+                      <th style={thStyle}>Số bản án</th>
+                      <th style={thStyle}>Ngày bản án</th>
+                      <th style={thStyle}>Tòa xét xử</th>
+                      <th style={{ ...thStyle, width: 70, textAlign: "center" }}>Thao tác</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {biAnList.map((b, idx) => (
-                      <tr key={b.id} style={{ borderBottom: idx < biAnList.length - 1 ? `1px solid ${BORDER}` : "none" }}>
-                        <td style={{ padding: 6, borderRight: `1px solid ${BORDER}` }}><input value={b.ten} onChange={e => updateBiAn(b.id, "ten", e.target.value)} placeholder="Họ tên" style={inp} /></td>
-                        <td style={{ padding: 6, borderRight: `1px solid ${BORDER}` }}><input value={b.toiDanh} onChange={e => updateBiAn(b.id, "toiDanh", e.target.value)} placeholder="Tội danh" style={inp} /></td>
-                        <td style={{ padding: 6, borderRight: `1px solid ${BORDER}` }}><input value={b.hinhPhat} onChange={e => updateBiAn(b.id, "hinhPhat", e.target.value)} placeholder="Hình phạt" style={inp} /></td>
-                        <td style={{ padding: 6, textAlign: "center" }}>
-                          <button onClick={() => setBiAnList(p => p.filter(x => x.id !== b.id))} style={{ background: "none", border: "none", cursor: "pointer", color: RED }}>✕</button>
+                    {banAnList.map((b, idx) => (
+                      <tr key={b.id} style={{ borderBottom: idx < banAnList.length - 1 ? `1px solid ${BORDER}` : "none", verticalAlign: "top" }}>
+                        <td style={{ padding: "8px 6px", borderRight: `1px solid ${BORDER}`, textAlign: "center", color: MUTED, fontSize: 12 }}>{idx + 1}</td>
+                        <td style={{ padding: "8px 10px", borderRight: `1px solid ${BORDER}`, fontSize: 12, color: TEXT }}>
+                          <strong>{b.soBA || "-"}</strong>
+                        </td>
+                        <td style={{ padding: "8px 10px", borderRight: `1px solid ${BORDER}`, fontSize: 12, color: TEXT }}>
+                          {b.ngayBA || "-"}
+                        </td>
+                        <td style={{ padding: "8px 10px", borderRight: `1px solid ${BORDER}`, fontSize: 12, color: TEXT }}>
+                          {b.toaBA || "-"}
+                        </td>
+                        <td style={{ padding: "10px 6px", textAlign: "center" }}>
+                          <button onClick={() => setBanAnList(p => p.filter(x => x.id !== b.id))} style={{ background: "none", border: "none", cursor: "pointer", color: RED }} title="Xóa">
+                            <X size={15} />
+                          </button>
                         </td>
                       </tr>
                     ))}
@@ -2993,20 +3007,86 @@ function ModalThemHoSoTuHinh({ onClose }: { onClose: () => void }) {
               </div>
             ) : (
               <div style={{ padding: "20px", textAlign: "center", border: `1px dashed ${BORDER}`, borderRadius: 6, color: MUTED, fontSize: 12 }}>
+                Chưa có thông tin bản án. Vui lòng tra cứu hoặc nhập số bản án để tìm kiếm.
+              </div>
+            )}
+          </div>
+
+          {/* Danh sách bị án */}
+          <div style={{ marginBottom: 16 }}>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 6 }}>
+              <label style={{ ...lbl, fontSize: 12, color: "#991b1b", textTransform: "uppercase" }}>Bảng danh sách bị cáo</label>
+              <button onClick={handleThemBiAn} style={{ background: "none", border: "none", color: RED, cursor: "pointer", fontSize: 12, fontWeight: 600, fontFamily: F }}>+ Thêm bị án</button>
+            </div>
+
+            {biAnList.length > 0 ? (
+              <div style={{ border: `1px solid ${BORDER}`, borderRadius: 6, overflow: "hidden" }}>
+                <table style={{ width: "100%", borderCollapse: "collapse", tableLayout: "fixed" }}>
+                  <thead>
+                    <tr style={{ background: "#f9fafb", borderBottom: `1px solid ${BORDER}` }}>
+                      <th style={{ ...thStyle, width: 40, textAlign: "center" }}>STT</th>
+                      <th style={thStyle}>HỌ VÀ TÊN</th>
+                      <th style={thStyle}>NGÀY SINH</th>
+                      <th style={thStyle}>GIỚI TÍNH</th>
+                      <th style={thStyle}>TỘI DANH</th>
+                      <th style={thStyle}>HÌNH PHẠT</th>
+                      <th style={{ ...thStyle, width: 70, textAlign: "center" }}>THAO TÁC</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {biAnList.map((b, idx) => (
+                      <tr key={b.id} style={{ background: "#fef2f2", borderBottom: idx < biAnList.length - 1 ? `1px solid ${BORDER}` : "none", borderLeft: `2px solid #dc2626` }}>
+                        <td style={{ padding: "12px 6px", borderRight: `1px solid ${BORDER}`, textAlign: "center", color: "#dc2626", fontWeight: 700, fontSize: 12 }}>{String(idx + 1).padStart(2, '0')}</td>
+                        <td style={{ padding: "12px 10px", borderRight: `1px solid ${BORDER}`, fontSize: 12, color: "#dc2626", fontWeight: 700 }}>
+                          <div style={{ display: "flex", alignItems: "center", gap: 6 }}><AlertTriangle size={13} color="#dc2626" /> {b.ten || "-"}</div>
+                        </td>
+                        <td style={{ padding: "12px 10px", borderRight: `1px solid ${BORDER}`, fontSize: 12, color: TEXT }}>
+                          {b.ngaySinh || "-"}
+                        </td>
+                        <td style={{ padding: "12px 10px", borderRight: `1px solid ${BORDER}`, fontSize: 12, color: TEXT }}>
+                          {b.gioiTinh || "-"}
+                        </td>
+                        <td style={{ padding: "12px 10px", borderRight: `1px solid ${BORDER}`, fontSize: 12, color: "#dc2626", fontWeight: 700 }}>
+                          {b.toiDanh || "-"}
+                        </td>
+                        <td style={{ padding: "12px 10px", borderRight: `1px solid ${BORDER}`, fontSize: 12 }}>
+                          {b.hinhPhat ? (
+                            <div style={{ display: "inline-flex", alignItems: "center", gap: 6, background: "#dc2626", color: "#fff", padding: "4px 10px", borderRadius: 20, fontWeight: 600 }}>
+                              <div style={{ width: 10, height: 10, borderRadius: "50%", border: "1px solid #fff" }} />
+                              {b.hinhPhat}
+                            </div>
+                          ) : "-"}
+                        </td>
+                        <td style={{ padding: "12px 6px", textAlign: "center" }}>
+                          <button onClick={() => { }} style={{ background: "none", border: "none", cursor: "pointer", color: "#0284c7", display: "inline-flex", alignItems: "center", gap: 4 }} title="Xem chi tiết">
+                            <Eye size={14} /> <span style={{ fontSize: 11, fontWeight: 600 }}>Xem</span>
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "10px 16px", borderTop: `1px solid ${BORDER}`, background: "#fff", fontSize: 12, color: MUTED, fontFamily: F }}>
+                  <span>Hiển thị 1-1 trong tổng số 1 bản ghi</span>
+                  <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                    <button style={{ padding: "4px 8px", border: `1px solid ${BORDER}`, borderRadius: 4, background: "#f9fafb", cursor: "not-allowed", fontSize: 12, color: "#9ca3af" }} disabled>‹</button>
+                    <button style={{ width: 26, height: 26, borderRadius: 4, background: "#991b1b", color: "#fff", border: "none", cursor: "pointer", fontSize: 12, fontWeight: 600 }}>1</button>
+                    <button style={{ padding: "4px 8px", border: `1px solid ${BORDER}`, borderRadius: 4, background: "#f9fafb", cursor: "pointer", fontSize: 12, color: "#374151" }}>›</button>
+                    <select style={{ padding: "3px 8px", border: `1px solid ${BORDER}`, borderRadius: 4, fontFamily: F, fontSize: 12, background: "#fff", cursor: "pointer", marginLeft: 8 }}>
+                      <option>10 / trang</option>
+                    </select>
+                    <span style={{ marginLeft: 8 }}>Đến <input value={1} readOnly style={{ width: 30, padding: "3px", textAlign: "center", border: `1px solid ${BORDER}`, borderRadius: 4, fontSize: 12 }} /> Trang</span>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div style={{ padding: "20px", textAlign: "center", border: `1px dashed ${BORDER}`, borderRadius: 6, color: MUTED, fontSize: 12 }}>
                 Chưa có thông tin bị án. Vui lòng tra cứu hoặc thêm thủ công.
               </div>
             )}
           </div>
 
-          {/* Trạng thái */}
-          <div style={{ marginBottom: 16 }}>
-            <label style={lbl}>Trạng thái bản án</label>
-            <select style={inp}>
-              <option value="">Chọn trạng thái</option>
-              <option>Đã có hiệu lực</option>
-              <option>Chưa có hiệu lực</option>
-            </select>
-          </div>
+
 
           {/* Footer */}
           <div style={{ display: "flex", gap: 10, justifyContent: "flex-end", borderTop: `1px solid ${BORDER}`, paddingTop: 14 }}>
@@ -3337,7 +3417,11 @@ export default function HoSoTuHinhView({
                           <div><span style={{ color: MUTED }}>Ngày BA/QĐ: </span><span>{row.ngayBA}</span></div>
                           <div><span style={{ color: MUTED }}>Tại: </span><span>{row.toaBA}</span></div>
                         </div>
-
+                        {/* Hồ sơ lưu trữ - chung cho cả bộ hồ sơ */}
+                        <div style={{ marginBottom: 8 }}>
+                          <span style={{ color: MUTED }}>Hồ sơ lưu trữ: </span>
+                          <span style={{ color: (row.hoSoStatus || "") === "Đã lưu hồ sơ" ? "#166534" : MUTED, fontWeight: (row.hoSoStatus || "") === "Đã lưu hồ sơ" ? 600 : 400 }}>{row.hoSoStatus || "Chưa lưu hồ sơ"}</span>
+                        </div>
                       </td>
 
                       <td style={TD_COL}>
@@ -3394,11 +3478,7 @@ export default function HoSoTuHinhView({
                       {/* Cột: TRẠNG THÁI GIẢI QUYẾT */}
                       <td style={TD_COL}>
                         <div style={{ display: "flex", flexDirection: "column", gap: 0, fontSize: 11 }}>
-                          {/* Hồ sơ lưu trữ - chung cho cả bộ hồ sơ */}
-                          <div style={{ marginBottom: 8 }}>
-                            <span style={{ color: MUTED }}>Hồ sơ lưu trữ: </span>
-                            <span style={{ color: (row.hoSoStatus || "") === "Đã lưu hồ sơ" ? "#166534" : MUTED, fontWeight: (row.hoSoStatus || "") === "Đã lưu hồ sơ" ? 600 : 400 }}>{row.hoSoStatus || "Chưa lưu hồ sơ"}</span>
-                          </div>
+
                           {/* Trạng thái theo từng bị án */}
                           {(row.biAnList || [])
                             .filter((biAn: any) => biAn.laBiAnTuHinh !== false)
