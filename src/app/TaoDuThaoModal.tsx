@@ -506,24 +506,39 @@ export function TaoDuThaoModal({
 
   // Section 3: Nơi nhận table
   const [noiNhanList, setNoiNhanList] = useState([
-    { id: 1, noiNhan: "Khác", noiNhanChiTiet: "Như kính gửi", ghiChu: "–" },
-    { id: 2, noiNhan: "Tòa án nhân dân", noiNhanChiTiet: "Đ/c Chánh án TANDTC", ghiChu: "để báo cáo" },
+    {
+      id: 1,
+      noiNhan: "Khác",
+      noiNhanChiTiet: "Như kính gửi",
+      hinhThucNhan: "Bản giấy",
+      ghiChu: "–",
+    },
+    {
+      id: 2,
+      noiNhan: "Tòa án nhân dân",
+      noiNhanChiTiet: "Đ/c Chánh án TANDTC",
+      hinhThucNhan: "Trực tiếp",
+      ghiChu: "để báo cáo",
+    },
   ]);
 
   const [isAddingNoiNhan, setIsAddingNoiNhan] = useState(false);
   const [newNoiNhan, setNewNoiNhan] = useState("Khác");
   const [newChiTiet, setNewChiTiet] = useState("");
+  const [newHinhThucNhan, setNewHinhThucNhan] = useState("Bản giấy");
   const [newGhiChu, setNewGhiChu] = useState("");
 
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editNoiNhan, setEditNoiNhan] = useState("");
   const [editChiTiet, setEditChiTiet] = useState("");
+  const [editHinhThucNhan, setEditHinhThucNhan] = useState("");
   const [editGhiChu, setEditGhiChu] = useState("");
 
-  const handleStartEdit = (r: { id: number; noiNhan: string; noiNhanChiTiet: string; ghiChu: string }) => {
+  const handleStartEdit = (r: { id: number; noiNhan: string; noiNhanChiTiet: string; hinhThucNhan?: string; ghiChu: string }) => {
     setEditingId(r.id);
     setEditNoiNhan(r.noiNhan);
     setEditChiTiet(r.noiNhanChiTiet);
+    setEditHinhThucNhan(r.hinhThucNhan || "Bản giấy");
     setEditGhiChu(r.ghiChu);
   };
 
@@ -1199,12 +1214,16 @@ export function TaoDuThaoModal({
                     <th style={{ padding: "8px 10px", width: 50, textAlign: "center", fontWeight: 600, color: "#374151", borderRight: "1px solid #e5e7eb" }}>
                       STT
                     </th>
+                    <th style={{ padding: "8px 12px", width: 140, textAlign: "left", fontWeight: 600, color: "#374151", borderRight: "1px solid #e5e7eb" }}>
+                      HÌNH THỨC NHẬN
+                    </th>
                     <th style={{ padding: "8px 12px", width: 160, textAlign: "left", fontWeight: 600, color: "#374151", borderRight: "1px solid #e5e7eb" }}>
                       NƠI NHẬN
                     </th>
                     <th style={{ padding: "8px 12px", textAlign: "left", fontWeight: 600, color: "#374151", borderRight: "1px solid #e5e7eb" }}>
                       NƠI NHẬN CHI TIẾT
                     </th>
+
                     <th style={{ padding: "8px 12px", width: 140, textAlign: "left", fontWeight: 600, color: "#374151", borderRight: "1px solid #e5e7eb" }}>
                       GHI CHÚ
                     </th>
@@ -1219,6 +1238,20 @@ export function TaoDuThaoModal({
                       <tr key={item.id} style={{ background: "#eff6ff", borderBottom: "1px solid #e5e7eb" }}>
                         <td style={{ padding: "8px 10px", textAlign: "center", borderRight: "1px solid #e5e7eb" }}>
                           {idx + 1}
+                        </td>
+                        <td style={{ padding: "6px 8px", borderRight: "1px solid #e5e7eb" }}>
+                          <select value={editHinhThucNhan} onChange={e => setEditHinhThucNhan(e.target.value)} style={{ ...inSt, padding: "4px 8px" }}>
+                            <option value="">Chọn</option>
+                            <option>Trực tiếp</option>
+                            <option>Bản giấy</option>
+                            <option>Tiếp công dân</option>
+                            <option>Bưu điện</option>
+                            <option>Niêm yết công khai</option>
+                            <option>Thông báo trên các phương tiện thông tin đại chúng</option>
+                            <option>VNeID</option>
+                            <option>Cổng thông tin điện tử</option>
+                            <option>Cổng dịch vụ tư pháp</option>
+                          </select>
                         </td>
                         <td style={{ padding: "6px 8px", borderRight: "1px solid #e5e7eb" }}>
                           <select
@@ -1240,6 +1273,7 @@ export function TaoDuThaoModal({
                             placeholder="Nhập nơi nhận chi tiết"
                           />
                         </td>
+
                         <td style={{ padding: "6px 8px", borderRight: "1px solid #e5e7eb" }}>
                           <input
                             value={editGhiChu}

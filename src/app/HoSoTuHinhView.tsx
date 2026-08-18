@@ -1151,7 +1151,7 @@ function HSTHTabToTrinh() {
   );
 }
 
-type QDNoiNhanRow = { id: number; noiNhan: string; chiTiet: string; ghiChu: string; editing: boolean };
+type QDNoiNhanRow = { id: number; noiNhan: string; chiTiet: string; hinhThucNhan: string; ghiChu: string; editing: boolean };
 
 function QDNoiNhanTable({ rows, setRows }: { rows: QDNoiNhanRow[]; setRows: React.Dispatch<React.SetStateAction<QDNoiNhanRow[]>> }) {
   const inp: React.CSSProperties = { padding: "5px 8px", fontSize: 11, border: `1px solid ${BORDER}`, borderRadius: 3, fontFamily: F, outline: "none", width: "100%", boxSizing: "border-box", background: "#fff" };
@@ -1159,14 +1159,14 @@ function QDNoiNhanTable({ rows, setRows }: { rows: QDNoiNhanRow[]; setRows: Reac
     <div style={{ marginTop: 14 }}>
       <div style={{ display: "flex", alignItems: "center", marginBottom: 6 }}>
         <span style={{ fontSize: 12, fontWeight: 600, color: TEXT, fontFamily: F, flex: 1 }}>Nơi nhận</span>
-        <button onClick={() => setRows(p => [...p, { id: Date.now(), noiNhan: "", chiTiet: "", ghiChu: "", editing: true }])} style={{ padding: "5px 12px", background: RED, color: "#fff", border: "none", borderRadius: 4, cursor: "pointer", fontSize: 11, fontWeight: 600, fontFamily: F }}>Thêm nơi nhận</button>
+        <button onClick={() => setRows(p => [...p, { id: Date.now(), noiNhan: "", chiTiet: "", hinhThucNhan: "", ghiChu: "", editing: true }])} style={{ padding: "5px 12px", background: RED, color: "#fff", border: "none", borderRadius: 4, cursor: "pointer", fontSize: 11, fontWeight: 600, fontFamily: F }}>Thêm nơi nhận</button>
       </div>
       <table style={{ width: "100%", borderCollapse: "collapse", tableLayout: "fixed", border: `1px solid ${BORDER}` }}>
         <colgroup>
-          <col style={{ width: 40 }} /><col style={{ width: "22%" }} /><col style={{ width: "22%" }} /><col style={{ width: "30%" }} /><col style={{ width: 100 }} />
+          <col style={{ width: 40 }} /><col style={{ width: "20%" }} /><col style={{ width: "20%" }} /><col style={{ width: "20%" }} /><col style={{ width: "20%" }} /><col style={{ width: 100 }} />
         </colgroup>
         <thead>
-          <tr>{["STT", "NƠI NHẬN", "NƠI NHẬN CHI TIẾT", "GHI CHÚ", "THAO TÁC"].map(h => <th key={h} style={{ ...TH_STYLE, borderRight: `1px solid ${BORDER}`, padding: "7px 10px" }}>{h}</th>)}</tr>
+          <tr>{["STT", "NƠI NHẬN", "NƠI NHẬN CHI TIẾT", "HÌNH THỨC NHẬN", "GHI CHÚ", "THAO TÁC"].map(h => <th key={h} style={{ ...TH_STYLE, borderRight: `1px solid ${BORDER}`, padding: "7px 10px" }}>{h}</th>)}</tr>
         </thead>
         <tbody>
           {rows.map((r, idx) => (
@@ -1187,6 +1187,20 @@ function QDNoiNhanTable({ rows, setRows }: { rows: QDNoiNhanRow[]; setRows: Reac
                     </select>
                   </td>
                   <td style={{ ...TD_STYLE, borderRight: `1px solid ${BORDER}`, padding: "6px 8px" }}>
+                    <select value={r.hinhThucNhan} onChange={e => setRows(p => p.map(x => x.id === r.id ? { ...x, hinhThucNhan: e.target.value } : x))} style={inp}>
+                      <option value="">Chọn</option>
+                      <option>Trực tiếp</option>
+                      <option>Bản giấy</option>
+                      <option>Tiếp công dân</option>
+                      <option>Bưu điện</option>
+                      <option>Niêm yết công khai</option>
+                      <option>Thông báo trên các phương tiện thông tin đại chúng</option>
+                      <option>VNeID</option>
+                      <option>Cổng thông tin điện tử</option>
+                      <option>Cổng dịch vụ tư pháp</option>
+                    </select>
+                  </td>
+                  <td style={{ ...TD_STYLE, borderRight: `1px solid ${BORDER}`, padding: "6px 8px" }}>
                     <input value={r.ghiChu} onChange={e => setRows(p => p.map(x => x.id === r.id ? { ...x, ghiChu: e.target.value } : x))} placeholder="Nội dung ghi chú" style={inp} />
                   </td>
                   <td style={{ ...TD_STYLE, textAlign: "center" }}>
@@ -1198,6 +1212,7 @@ function QDNoiNhanTable({ rows, setRows }: { rows: QDNoiNhanRow[]; setRows: Reac
                 <>
                   <td style={{ ...TD_STYLE, fontSize: 11, borderRight: `1px solid ${BORDER}` }}>{r.noiNhan}</td>
                   <td style={{ ...TD_STYLE, fontSize: 11, borderRight: `1px solid ${BORDER}` }}>{r.chiTiet}</td>
+                  <td style={{ ...TD_STYLE, fontSize: 11, borderRight: `1px solid ${BORDER}` }}>{r.hinhThucNhan}</td>
                   <td style={{ ...TD_STYLE, fontSize: 11, borderRight: `1px solid ${BORDER}` }}>{r.ghiChu}</td>
                   <td style={{ ...TD_STYLE, textAlign: "center" }}>
                     <button onClick={() => setRows(p => p.map(x => x.id === r.id ? { ...x, editing: true } : x))} style={{ fontSize: 11, color: "#2563eb", background: "none", border: "none", cursor: "pointer", fontFamily: F, marginRight: 6 }}>Sửa</button>

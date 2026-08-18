@@ -2,11 +2,12 @@ import React, { useState } from "react";
 import {
   Search, Eye, ChevronDown, RotateCcw, X, Save,
   FileText, CheckCircle2, Send, FileSpreadsheet, FolderCheck, Edit3,
-  ListChecks,
+  ListChecks, Plus
 } from "lucide-react";
 import { F, RED, BORDER, TEXT, MUTED, BG, TH_STYLE, TD_STYLE, Badge, type UserRoleType } from "./shared";
 import { SearchFilterPanel } from "./SearchFilterPanel";
 import { TaiLieuHoSoView } from "./TaiLieuHoSoView";
+import { ThemMoiHoSoKhangNghiView } from "./ThemMoiHoSoKhangNghiView";
 import { formatSoBA, getSoBALabel, getThoiHieuText, getSTInfo } from "./AppHelpers";
 
 // ── Modal Trả hồ sơ ───────────────────────────────────────────────────────────
@@ -134,6 +135,23 @@ function ModalTrinhKy({ record, onClose }: { record?: any; onClose: () => void }
                 <option value="Thấp">Thấp</option>
               </select>
               <ChevronDown size={18} color="#64748b" style={{ position: "absolute", right: 14, top: 13, pointerEvents: "none" }} />
+            </div>
+          </div>
+
+          <div>
+            <label style={{ fontSize: 13, color: "#64748b", fontFamily: F, display: "block", marginBottom: 8, fontWeight: 500 }}>
+              Nơi nhận (Áp dụng cho các biểu mẫu ngoài Tờ trình)
+            </label>
+            <div style={{ position: "relative" }}>
+              <input
+                placeholder="Nhập nơi nhận văn bản..."
+                style={{
+                  width: "100%", padding: "11px 14px", fontSize: 14,
+                  border: "1px solid #cbd5e1", borderRadius: 6,
+                  fontFamily: F, color: "#0f172a", background: "#fff",
+                  boxSizing: "border-box", outline: "none"
+                }}
+              />
             </div>
           </div>
 
@@ -1475,6 +1493,7 @@ export function HoSoKhangNghiView({ userRole, onTaoCongVan }: { userRole?: UserR
   const [showSuaSoBAModal, setShowSuaSoBAModal] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState<any>(null);
   const [selectedItems, setSelectedItems] = useState<number[]>([]);
+  const [viewMode, setViewMode] = useState<"list" | "tao-moi">("list");
 
   const handleOpenSuaSoBA = (rowTarget: any) => {
     setSelectedRecord(rowTarget);
@@ -1944,6 +1963,10 @@ export function HoSoKhangNghiView({ userRole, onTaoCongVan }: { userRole?: UserR
     background: "#fff", cursor: "pointer", fontSize: 12, fontFamily: F,
   };
 
+  if (viewMode === "tao-moi") {
+    return <ThemMoiHoSoKhangNghiView onBack={() => setViewMode("list")} />;
+  }
+
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "100%", background: "#fff", flex: 1, overflow: "auto", fontFamily: F }}>
       {/* Breadcrumb */}
@@ -2019,6 +2042,8 @@ export function HoSoKhangNghiView({ userRole, onTaoCongVan }: { userRole?: UserR
         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
           {activeSubTab === "di" && (
             <>
+
+
               <button
                 onClick={() => setShowChonHoSoModal(true)}
                 style={{
@@ -2059,6 +2084,17 @@ export function HoSoKhangNghiView({ userRole, onTaoCongVan }: { userRole?: UserR
 
           {activeSubTab === "den" && (
             <>
+              <button
+                onClick={() => setViewMode("tao-moi")}
+                style={{
+                  display: "flex", alignItems: "center", gap: 6,
+                  padding: "7px 16px", background: "#0284c7", color: "#fff",
+                  border: "none", borderRadius: 4, cursor: "pointer",
+                  fontSize: 12, fontWeight: 700, fontFamily: F,
+                  boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+                }}>
+                <Plus size={14} /> Thêm mới HSKN
+              </button>
               <button
                 onClick={() => handleOpenNhanHoSo()}
                 style={{

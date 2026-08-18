@@ -1824,10 +1824,10 @@ function TaoPhieuModal({ onClose }: { onClose: () => void }) {
   const [soPhieu, setSoPhieu] = useState("");
   const [daLaySo, setDaLaySo] = useState(false);
   const [noiNhanRows, setNoiNhanRows] = useState([
-    { id: 1, noiNhan: "Viện kiểm sát", chiTiet: "VKSNDTC", ghiChu: "Kèm hồ sơ vụ án", editing: false },
+    { id: 1, noiNhan: "Viện kiểm sát", chiTiet: "VKSNDTC", hinhThucNhan: "Bản giấy", ghiChu: "Kèm hồ sơ vụ án", editing: false },
   ]);
   const [addingRow, setAddingRow] = useState(false);
-  const [newRow, setNewRow] = useState({ noiNhan: "", chiTiet: "", ghiChu: "" });
+  const [newRow, setNewRow] = useState({ noiNhan: "", chiTiet: "", hinhThucNhan: "", ghiChu: "" });
 
   const handleToggleLaySo = () => {
     if (!daLaySo) {
@@ -1970,14 +1970,15 @@ function TaoPhieuModal({ onClose }: { onClose: () => void }) {
                 <colgroup>
                   <col style={{ width: 40 }} />
                   <col style={{ width: "20%" }} />
-                  <col style={{ width: "25%" }} />
-                  <col style={{ width: "28%" }} />
+                  <col style={{ width: "20%" }} />
+                  <col style={{ width: "20%" }} />
                   <col style={{ width: "15%" }} />
+                  <col style={{ width: "10%" }} />
                   <col style={{ width: 100 }} />
                 </colgroup>
                 <thead>
                   <tr>
-                    {["STT", "NƠI NHẬN", "NƠI NHẬN CHI TIẾT", "GHI CHÚ", "NGƯỜI THAO TÁC", "THAO TÁC"].map(h => (
+                    {["STT", "HÌNH THỨC NHẬN", "NƠI NHẬN", "NƠI NHẬN CHI TIẾT", "GHI CHÚ", "NGƯỜI THAO TÁC", "THAO TÁC"].map(h => (
                       <th key={h} style={TH_STYLE}>{h}</th>
                     ))}
                   </tr>
@@ -1986,6 +1987,8 @@ function TaoPhieuModal({ onClose }: { onClose: () => void }) {
                   {noiNhanRows.map((r, idx) => (
                     <tr key={r.id} style={{ background: idx % 2 === 0 ? "#fff" : "#fafafa" }}>
                       <td style={{ ...TD_STYLE, textAlign: "center", color: MUTED, fontSize: 12 }}>{idx + 1}</td>
+                      <td style={{ ...TD_STYLE, fontSize: 12, color: TEXT }}>{r.hinhThucNhan}</td>
+
                       <td style={{ ...TD_STYLE, fontSize: 12, color: TEXT }}>{r.noiNhan}</td>
                       <td style={{ ...TD_STYLE, fontSize: 12, color: TEXT }}>{r.chiTiet}</td>
                       <td style={{ ...TD_STYLE, fontSize: 12, color: TEXT }}>{r.ghiChu}</td>
@@ -2014,6 +2017,20 @@ function TaoPhieuModal({ onClose }: { onClose: () => void }) {
                           <option value="">Chọn</option>
                           <option>VKSNDTC</option>
                           <option>VKSND cấp cao</option>
+                        </select>
+                      </td>
+                      <td style={TD_STYLE}>
+                        <select value={newRow.hinhThucNhan} onChange={e => setNewRow(p => ({ ...p, hinhThucNhan: e.target.value }))} style={{ ...selSt, fontSize: 11 }}>
+                          <option value="">Chọn</option>
+                          <option>Trực tiếp</option>
+                          <option>Bản giấy</option>
+                          <option>Tiếp công dân</option>
+                          <option>Bưu điện</option>
+                          <option>Niêm yết công khai</option>
+                          <option>Thông báo trên các phương tiện thông tin đại chúng</option>
+                          <option>VNeID</option>
+                          <option>Cổng thông tin điện tử</option>
+                          <option>Cổng dịch vụ tư pháp</option>
                         </select>
                       </td>
                       <td style={TD_STYLE}>
@@ -4799,10 +4816,20 @@ export function XemBieuMauThongBaoTinhTheModal({
               <tr>
                 <td style={{ width: "45%", textAlign: "left", verticalAlign: "top", fontSize: "11pt" }}>
                   <div style={{ fontWeight: "bold", textDecoration: "underline" }}>Nơi nhận:</div>
-                  <div>- Như kính gửi;</div>
-                  <div>- Đồng chí Chánh án TANDTC (để b/c);</div>
-                  <div>- Thẩm phán phụ trách vụ án;</div>
-                  <div>- Lưu: VT, Vụ GĐKT I.</div>
+                  {noiNhanRows.length > 0 ? (
+                    <>
+                      {noiNhanRows.map(r => (
+                        <div key={r.id}>- {r.chiTiet || r.noiNhan} {r.hinhThucNhan ? `(nhận ${r.hinhThucNhan.toLowerCase()})` : ""};</div>
+                      ))}
+                    </>
+                  ) : (
+                    <>
+                      <div>- Như kính gửi (nhận bản giấy);</div>
+                      <div>- Đồng chí Chánh án TANDTC (để b/c, nhận trực tiếp);</div>
+                      <div>- Thẩm phán phụ trách vụ án (nhận cổng TTĐT);</div>
+                      <div>- Lưu: VT, Vụ GĐKT I.</div>
+                    </>
+                  )}
                 </td>
                 <td style={{ width: "55%", textAlign: "center", verticalAlign: "top", fontSize: "12pt" }}>
                   <div style={{ fontWeight: "bold" }}>TL. CHÁNH ÁN TÒA ÁN NHÂN DÂN TỐI CAO</div>

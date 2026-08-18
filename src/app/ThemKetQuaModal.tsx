@@ -235,24 +235,27 @@ export function ThemKetQuaModal({ onClose, detail }: { onClose: () => void; deta
 
   // Section 3: Nơi nhận table
   const [noiNhanList, setNoiNhanList] = useState([
-    { id: 1, noiNhan: "Khác", noiNhanChiTiet: "Như kính gửi", ghiChu: "–" },
-    { id: 2, noiNhan: "Tòa án nhân dân", noiNhanChiTiet: "Đ/c Chánh án TANDTC", ghiChu: "để báo cáo" },
+    { id: 1, noiNhan: "Khác", noiNhanChiTiet: "Như kính gửi", hinhThucNhan: "Bản giấy", ghiChu: "–" },
+    { id: 2, noiNhan: "Tòa án nhân dân", noiNhanChiTiet: "Đ/c Chánh án TANDTC", hinhThucNhan: "Trực tiếp", ghiChu: "để báo cáo" },
   ]);
 
   const [isAddingNoiNhan, setIsAddingNoiNhan] = useState(false);
   const [newNoiNhan, setNewNoiNhan] = useState("Khác");
   const [newChiTiet, setNewChiTiet] = useState("");
+  const [newHinhThucNhan, setNewHinhThucNhan] = useState("Bản giấy");
   const [newGhiChu, setNewGhiChu] = useState("");
 
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editNoiNhan, setEditNoiNhan] = useState("");
   const [editChiTiet, setEditChiTiet] = useState("");
+  const [editHinhThucNhan, setEditHinhThucNhan] = useState("");
   const [editGhiChu, setEditGhiChu] = useState("");
 
-  const handleStartEdit = (r: { id: number; noiNhan: string; noiNhanChiTiet: string; ghiChu: string }) => {
+  const handleStartEdit = (r: { id: number; noiNhan: string; noiNhanChiTiet: string; hinhThucNhan?: string; ghiChu: string }) => {
     setEditingId(r.id);
     setEditNoiNhan(r.noiNhan);
     setEditChiTiet(r.noiNhanChiTiet);
+    setEditHinhThucNhan(r.hinhThucNhan || "Bản giấy");
     setEditGhiChu(r.ghiChu);
   };
 
@@ -264,7 +267,7 @@ export function ThemKetQuaModal({ onClose, detail }: { onClose: () => void; deta
     setNoiNhanList(prev =>
       prev.map(item =>
         item.id === id
-          ? { ...item, noiNhan: editNoiNhan, noiNhanChiTiet: editChiTiet.trim(), ghiChu: editGhiChu.trim() || "–" }
+          ? { ...item, noiNhan: editNoiNhan, noiNhanChiTiet: editChiTiet.trim(), hinhThucNhan: editHinhThucNhan, ghiChu: editGhiChu.trim() || "–" }
           : item
       )
     );
@@ -282,11 +285,13 @@ export function ThemKetQuaModal({ onClose, detail }: { onClose: () => void; deta
         id: Date.now(),
         noiNhan: newNoiNhan,
         noiNhanChiTiet: newChiTiet.trim(),
+        hinhThucNhan: newHinhThucNhan,
         ghiChu: newGhiChu.trim() || "–",
       },
     ]);
     setIsAddingNoiNhan(false);
     setNewChiTiet("");
+    setNewHinhThucNhan("Bản giấy");
     setNewGhiChu("");
   };
 
@@ -817,6 +822,8 @@ export function ThemKetQuaModal({ onClose, detail }: { onClose: () => void; deta
                     <thead>
                       <tr style={{ background: "#f8fafc", borderBottom: `1px solid ${BORDER}` }}>
                         <th style={{ ...TH_STYLE, width: 45, textAlign: "center" }}>STT</th>
+                        <th style={{ ...TH_STYLE }}>Hình thức nhận</th>
+
                         <th style={{ ...TH_STYLE, width: 160 }}>Nơi nhận</th>
                         <th style={{ ...TH_STYLE, width: 220 }}>Nơi nhận chi tiết</th>
                         <th style={{ ...TH_STYLE }}>Ghi chú</th>
@@ -827,6 +834,24 @@ export function ThemKetQuaModal({ onClose, detail }: { onClose: () => void; deta
                       {noiNhanList.map((r, idx) => (
                         <tr key={r.id} style={{ borderBottom: `1px solid ${BORDER}`, background: idx % 2 === 0 ? "#fff" : "#fafafa" }}>
                           <td style={{ ...TD_STYLE, textAlign: "center", color: MUTED }}>{idx + 1}</td>
+                          <td style={TD_STYLE}>
+                            {editingId === r.id ? (
+                              <select value={editHinhThucNhan} onChange={e => setEditHinhThucNhan(e.target.value)} style={{ ...inSt, padding: "4px 8px" }}>
+                                <option value="">Chọn</option>
+                                <option>Trực tiếp</option>
+                                <option>Bản giấy</option>
+                                <option>Tiếp công dân</option>
+                                <option>Bưu điện</option>
+                                <option>Niêm yết công khai</option>
+                                <option>Thông báo trên các phương tiện thông tin đại chúng</option>
+                                <option>VNeID</option>
+                                <option>Cổng thông tin điện tử</option>
+                                <option>Cổng dịch vụ tư pháp</option>
+                              </select>
+                            ) : (
+                              r.hinhThucNhan
+                            )}
+                          </td>
                           <td style={TD_STYLE}>
                             {editingId === r.id ? (
                               <select
@@ -855,6 +880,7 @@ export function ThemKetQuaModal({ onClose, detail }: { onClose: () => void; deta
                               r.noiNhanChiTiet
                             )}
                           </td>
+
                           <td style={TD_STYLE}>
                             {editingId === r.id ? (
                               <input
@@ -931,6 +957,20 @@ export function ThemKetQuaModal({ onClose, detail }: { onClose: () => void; deta
                               onChange={e => setNewChiTiet(e.target.value)}
                               style={{ ...inSt, padding: "4px 8px" }}
                             />
+                          </td>
+                          <td style={TD_STYLE}>
+                            <select value={newHinhThucNhan} onChange={e => setNewHinhThucNhan(e.target.value)} style={{ ...inSt, padding: "4px 8px" }}>
+                              <option value="">Chọn</option>
+                              <option>Trực tiếp</option>
+                              <option>Bản giấy</option>
+                              <option>Tiếp công dân</option>
+                              <option>Bưu điện</option>
+                              <option>Niêm yết công khai</option>
+                              <option>Thông báo trên các phương tiện thông tin đại chúng</option>
+                              <option>VNeID</option>
+                              <option>Cổng thông tin điện tử</option>
+                              <option>Cổng dịch vụ tư pháp</option>
+                            </select>
                           </td>
                           <td style={TD_STYLE}>
                             <input
@@ -1139,12 +1179,12 @@ export function ThemQuyetDinhHoanModal({
   const [lyDo, setLyDo] = useState("Chờ kết quả xét xử theo thủ tục giám đốc thẩm đối với bản án hình sự phúc thẩm.");
 
   const [nnRows, setNnRows] = useState([
-    { id: 1, noiNhan: "Viện kiểm sát", chiTiet: "VKSND Tối cao", ghiChu: "để kiểm sát" },
-    { id: 2, noiNhan: "Cơ quan THA", chiTiet: "Cơ quan THA hình sự Công an tỉnh Hải Phòng", ghiChu: "để thi hành" },
-    { id: 3, noiNhan: "Trại tạm giam", chiTiet: "Trại tạm giam Công an tỉnh Hải Phòng", ghiChu: "để thực hiện" },
+    { id: 1, noiNhan: "Viện kiểm sát", chiTiet: "VKSND Tối cao", hinhThucNhan: "Bản giấy", ghiChu: "để kiểm sát" },
+    { id: 2, noiNhan: "Cơ quan THA", chiTiet: "Cơ quan THA hình sự Công an tỉnh Hải Phòng", hinhThucNhan: "Bản giấy", ghiChu: "để thi hành" },
+    { id: 3, noiNhan: "Trại tạm giam", chiTiet: "Trại tạm giam Công an tỉnh Hải Phòng", hinhThucNhan: "Bản giấy", ghiChu: "để thực hiện" },
   ]);
   const [addingRow, setAddingRow] = useState(false);
-  const [newRow, setNewRow] = useState({ noiNhan: "", chiTiet: "", ghiChu: "" });
+  const [newRow, setNewRow] = useState({ noiNhan: "", chiTiet: "", hinhThucNhan: "Bản giấy", ghiChu: "" });
 
   const inSt: React.CSSProperties = { padding: "8px 10px", fontSize: 12, border: `1px solid ${BORDER}`, borderRadius: 4, fontFamily: F, outline: "none", width: "100%", background: "#fff", boxSizing: "border-box" };
   const lblSt: React.CSSProperties = { fontSize: 12, color: TEXT, fontWeight: 600, fontFamily: F, display: "block", marginBottom: 5 };
@@ -1254,6 +1294,7 @@ export function ThemQuyetDinhHoanModal({
                   <th style={{ ...TH_STYLE, width: 40, textAlign: "center" }}>STT</th>
                   <th style={{ ...TH_STYLE, width: 140 }}>Nơi nhận</th>
                   <th style={{ ...TH_STYLE }}>Nơi nhận chi tiết</th>
+                  <th style={{ ...TH_STYLE, width: 140 }}>Hình thức nhận</th>
                   <th style={{ ...TH_STYLE, width: 140 }}>Ghi chú</th>
                   <th style={{ ...TH_STYLE, width: 70, textAlign: "center" }}>Thao tác</th>
                 </tr>
@@ -1264,12 +1305,38 @@ export function ThemQuyetDinhHoanModal({
                     <td style={{ ...TD_STYLE, textAlign: "center", color: MUTED }}>{i + 1}</td>
                     <td style={TD_STYLE}>{r.noiNhan}</td>
                     <td style={TD_STYLE}>{r.chiTiet}</td>
+                    <td style={TD_STYLE}>{r.hinhThucNhan}</td>
                     <td style={TD_STYLE}>{r.ghiChu}</td>
                     <td style={{ ...TD_STYLE, textAlign: "center" }}>
                       <button onClick={() => setNnRows(p => p.filter(x => x.id !== r.id))} style={{ background: "none", border: "none", cursor: "pointer", color: "#ef4444", fontSize: 11 }}>Xóa</button>
                     </td>
                   </tr>
                 ))}
+                {addingRow && (
+                  <tr style={{ background: "#f0fdf4", borderBottom: `1px solid ${BORDER}` }}>
+                    <td style={{ ...TD_STYLE, textAlign: "center", color: MUTED }}>+</td>
+                    <td style={TD_STYLE}><input value={newRow.noiNhan} onChange={e => setNewRow(p => ({ ...p, noiNhan: e.target.value }))} style={inSt} /></td>
+                    <td style={TD_STYLE}><input value={newRow.chiTiet} onChange={e => setNewRow(p => ({ ...p, chiTiet: e.target.value }))} style={inSt} /></td>
+                    <td style={TD_STYLE}>
+                      <select value={newRow.hinhThucNhan} onChange={e => setNewRow(p => ({ ...p, hinhThucNhan: e.target.value }))} style={inSt}>
+                        <option value="Trực tiếp">Trực tiếp</option>
+                        <option value="Bản giấy">Bản giấy</option>
+                        <option value="Tiếp công dân">Tiếp công dân</option>
+                        <option value="Bưu điện">Bưu điện</option>
+                        <option value="Niêm yết công khai">Niêm yết công khai</option>
+                        <option value="Thông báo trên các phương tiện thông tin đại chúng">Thông báo trên các phương tiện thông tin đại chúng</option>
+                        <option value="VNeID">VNeID</option>
+                        <option value="Cổng thông tin điện tử">Cổng thông tin điện tử</option>
+                        <option value="Cổng dịch vụ tư pháp">Cổng dịch vụ tư pháp</option>
+                      </select>
+                    </td>
+                    <td style={TD_STYLE}><input value={newRow.ghiChu} onChange={e => setNewRow(p => ({ ...p, ghiChu: e.target.value }))} style={inSt} /></td>
+                    <td style={{ ...TD_STYLE, textAlign: "center" }}>
+                      <button onClick={() => { if (newRow.noiNhan) { setNnRows(p => [...p, { id: Date.now(), ...newRow }]); setNewRow({ noiNhan: "", chiTiet: "", hinhThucNhan: "Bản giấy", ghiChu: "" }); setAddingRow(false); } }} style={{ color: "#16a34a", background: "none", border: "none", cursor: "pointer", fontWeight: 700, fontSize: 11, marginRight: 8 }}>Lưu</button>
+                      <button onClick={() => setAddingRow(false)} style={{ color: MUTED, background: "none", border: "none", cursor: "pointer", fontSize: 11 }}>Hủy</button>
+                    </td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>

@@ -6475,39 +6475,41 @@ function ThemVuXetXuModal({ userRole = "hinh-su", onClose }: { userRole?: string
 
         {/* Status bar Lịch xét xử & HĐXX & Cấp số */}
         {(hasSelectedLich || isCapSo || hasSelectedHDXX) && (
-          <div style={{ padding: "8px 20px", background: "#f8fafc", borderBottom: `1px solid ${BORDER}`, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexShrink: 0, fontSize: 12, fontFamily: F }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
-              {hasSelectedHDXX && (
-                <span style={{ display: "inline-flex", alignItems: "center", gap: 5, fontWeight: 700, color: "#166534", background: "#dcfce7", padding: "2px 8px", borderRadius: 4, border: "1px solid #86efac", fontSize: 11 }}>
-                  🏛️ HĐXX: {displayRows[0]?.hdxxTen || "Chưa xác định"} ({(displayRows[0]?.hdxxThanhVien || []).length} TV)
-                </span>
-              )}
-              {hasSelectedHDXX && (hasSelectedLich || isCapSo) && <span style={{ color: MUTED }}>•</span>}
-              {hasSelectedLich && (
-                <span style={{ display: "inline-flex", alignItems: "center", gap: 5, fontWeight: 700, color: "#1e40af", background: "#dbeafe", padding: "2px 8px", borderRadius: 4, border: "1px solid #bfdbfe", fontSize: 11 }}>
-                  📅 Lịch xét xử: {lichXXInfo.thu} – {lichXXInfo.ngayXX}
-                </span>
-              )}
-              {hasSelectedLich && <span style={{ color: MUTED }}>•</span>}
-              {hasSelectedLich && <span><b>Phòng:</b> {lichXXInfo.phongXX}</span>}
-              {hasSelectedLich && <span style={{ color: MUTED }}>•</span>}
-              {hasSelectedLich && <span style={{ color: "#475569" }}><b>Thời gian:</b> {lichXXInfo.gioXX}</span>}
-              {isCapSo && (
-                <>
-                  {hasSelectedLich && <span style={{ color: MUTED }}>•</span>}
-                  <span style={{ display: "inline-flex", alignItems: "center", gap: 5, fontWeight: 700, color: "#166534", background: "#dcfce7", padding: "2px 8px", borderRadius: 4, border: "1px solid #86efac", fontSize: 11 }}>
-                    📄 Đã cấp số văn bản: {soVanBan}/2026/Vụ GĐKT
-                  </span>
-                </>
-              )}
-            </div>
+          <div style={{ padding: "8px 20px", background: "#f8fafc", borderBottom: `1px solid ${BORDER}`, display: "flex", flexDirection: "column", gap: 8, flexShrink: 0, fontSize: 12, fontFamily: F }}>
             {hasSelectedHDXX && (
-              <button
-                onClick={() => setShowChonHDXXModal(true)}
-                style={{ background: "none", border: "none", cursor: "pointer", fontSize: 11, color: "#2563eb", fontFamily: F, fontWeight: 600, textDecoration: "underline", padding: 0 }}
-              >
-                Sửa HĐXX ✎
-              </button>
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                <span style={{ display: "inline-flex", alignItems: "center", gap: 5, fontWeight: 700, padding: "2px 8px", fontSize: 11 }}>
+                  {displayRows[0]?.hdxxTen || "Chưa xác định"} {displayRows[0]?.hdxxThanhVien?.length ? `: ${displayRows[0].hdxxThanhVien.join(", ")}` : ""}
+                </span>
+                <button
+                  onClick={() => setShowChonHDXXModal(true)}
+                  style={{ background: "none", border: "none", cursor: "pointer", fontSize: 11, color: "#2563eb", fontFamily: F, fontWeight: 600, textDecoration: "underline", padding: 0 }}
+                >
+                  Sửa HĐXX ✎
+                </button>
+              </div>
+            )}
+            
+            {(hasSelectedLich || isCapSo) && (
+              <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
+                {hasSelectedLich && (
+                  <span style={{ display: "inline-flex", alignItems: "center", gap: 5, fontWeight: 700, color: "#1e40af", background: "#dbeafe", padding: "2px 8px", borderRadius: 4, border: "1px solid #bfdbfe", fontSize: 11 }}>
+                    📅 Lịch xét xử: {lichXXInfo.thu} – {lichXXInfo.ngayXX}
+                  </span>
+                )}
+                {hasSelectedLich && <span style={{ color: MUTED }}>•</span>}
+                {hasSelectedLich && <span><b>Phòng:</b> {lichXXInfo.phongXX}</span>}
+                {hasSelectedLich && <span style={{ color: MUTED }}>•</span>}
+                {hasSelectedLich && <span style={{ color: "#475569" }}><b>Thời gian:</b> {lichXXInfo.gioXX}</span>}
+                {isCapSo && (
+                  <>
+                    {hasSelectedLich && <span style={{ color: MUTED }}>•</span>}
+                    <span style={{ display: "inline-flex", alignItems: "center", gap: 5, fontWeight: 700, color: "#166534", background: "#dcfce7", padding: "2px 8px", borderRadius: 4, border: "1px solid #86efac", fontSize: 11 }}>
+                      📄 Đã cấp số văn bản: {soVanBan}/2026/Vụ GĐKT
+                    </span>
+                  </>
+                )}
+              </div>
             )}
           </div>
         )}
@@ -6518,17 +6520,17 @@ function ThemVuXetXuModal({ userRole = "hinh-su", onClose }: { userRole?: string
             <thead>
               <tr>
                 {userRole === "hinh-su" || userRole === "vu-1"
-                  ? ["STT", "Thông tin bản án/ Tòa án xét xử", "Người khiếu nại", "Bị cáo", "Kháng nghị", "Thẩm phán chủ tọa phiên tòa", "Thẩm phán Hội đồng xét xử", "Thao tác"].map(h => (<th key={h} style={TH}>{h}</th>))
+                  ? ["STT", "Thông tin bản án/ Tòa án xét xử", "Người khiếu nại", "Bị cáo", "Kháng nghị", "Thẩm phán chủ tọa phiên tòa", "Thao tác"].map(h => (<th key={h} style={TH}>{h}</th>))
                   : userRole === "dan-su" || userRole === "vu-2" || userRole === "vu-3"
-                    ? ["STT", "Thông tin bản án/ Tòa án xét xử", "Quan hệ pháp luật", "Nguyên đơn", "Bị đơn", "Kháng nghị", "Thẩm phán chủ tọa phiên tòa", "Thẩm phán Hội đồng xét xử", "Thao tác"].map(h => (<th key={h} style={TH}>{h}</th>))
-                    : ["STT", "Thông tin bản án/ Tòa án xét xử", "Quan hệ pháp luật", "Người khởi kiện", "Người bị kiện", "Kháng nghị", "Thẩm phán chủ tọa phiên tòa", "Thẩm phán Hội đồng xét xử", "Thao tác"].map(h => (<th key={h} style={TH}>{h}</th>))
+                    ? ["STT", "Thông tin bản án/ Tòa án xét xử", "Quan hệ pháp luật", "Nguyên đơn", "Bị đơn", "Kháng nghị", "Thẩm phán chủ tọa phiên tòa", "Thao tác"].map(h => (<th key={h} style={TH}>{h}</th>))
+                    : ["STT", "Thông tin bản án/ Tòa án xét xử", "Quan hệ pháp luật", "Người khởi kiện", "Người bị kiện", "Kháng nghị", "Thẩm phán chủ tọa phiên tòa", "Thao tác"].map(h => (<th key={h} style={TH}>{h}</th>))
                 }
               </tr>
             </thead>
             <tbody>
               {displayRows.length === 0 && (
                 <tr>
-                  <td colSpan={(userRole === "hinh-su" || userRole === "vu-1") ? 8 : 9} style={{ padding: 32, textAlign: "center" as const, color: MUTED, fontSize: 12, fontFamily: F }}>
+                  <td colSpan={(userRole === "hinh-su" || userRole === "vu-1") ? 7 : 8} style={{ padding: 32, textAlign: "center" as const, color: MUTED, fontSize: 12, fontFamily: F }}>
                     Không có vụ án nào trong danh sách
                   </td>
                 </tr>
@@ -6595,26 +6597,6 @@ function ThemVuXetXuModal({ userRole = "hinh-su", onClose }: { userRole?: string
                         <div style={{ fontSize: 10, color: MUTED, lineHeight: 1.3 }}>
                           {r.chuToaChucVu}
                         </div>
-                      </div>
-                    </td>
-
-                    {/* Thẩm phán Hội đồng xét xử (Chỉ hiển thị thông tin) */}
-                    <td style={TD}>
-                      <div style={{ fontSize: 11, fontFamily: F, lineHeight: 1.6, minWidth: 180 }}>
-                        {(!r.hdxxThanhVien || r.hdxxThanhVien.length === 0) ? (
-                          <div style={{ fontSize: 11, color: MUTED, fontStyle: "italic" }}>
-                            Chưa chọn thành viên
-                          </div>
-                        ) : (
-                          <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
-                            {(r.hdxxThanhVien || []).map((tv, idx) => (
-                              <div key={idx} style={{ fontSize: 11, color: TEXT, display: "flex", alignItems: "center", gap: 4 }}>
-                                <span style={{ color: MUTED, fontSize: 10 }}>•</span>
-                                <span>{tv}</span>
-                              </div>
-                            ))}
-                          </div>
-                        )}
                       </div>
                     </td>
 

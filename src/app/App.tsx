@@ -1717,10 +1717,10 @@ function TaoPhieuModal({ onClose }: { onClose: () => void }) {
   const [soPhieu, setSoPhieu] = useState("");
   const [daLaySo, setDaLaySo] = useState(false);
   const [noiNhanRows, setNoiNhanRows] = useState([
-    { id: 1, noiNhan: "Viện kiểm sát", chiTiet: "VKSNDTC", ghiChu: "Kèm hồ sơ vụ án", editing: false },
+    { id: 1, noiNhan: "Viện kiểm sát", chiTiet: "VKSNDTC", hinhThucNhan: "Bản giấy", ghiChu: "Kèm hồ sơ vụ án", editing: false },
   ]);
   const [addingRow, setAddingRow] = useState(false);
-  const [newRow, setNewRow] = useState({ noiNhan: "", chiTiet: "", ghiChu: "" });
+  const [newRow, setNewRow] = useState({ noiNhan: "", chiTiet: "", hinhThucNhan: "", ghiChu: "" });
 
   const handleToggleLaySo = () => {
     if (!daLaySo) {
@@ -1869,14 +1869,15 @@ function TaoPhieuModal({ onClose }: { onClose: () => void }) {
             <table style={{ width: "100%", borderCollapse: "collapse", tableLayout: "fixed" }}>
               <colgroup>
                 <col style={{ width: 40 }} />
-                <col style={{ width: "22%" }} />
-                <col style={{ width: "28%" }} />
-                <col style={{ width: "32%" }} />
+                <col style={{ width: "20%" }} />
+                <col style={{ width: "20%" }} />
+                <col style={{ width: "20%" }} />
+                <col style={{ width: "20%" }} />
                 <col style={{ width: 110 }} />
               </colgroup>
               <thead>
                 <tr>
-                  {["STT", "NƠI NHẬN", "NƠI NHẬN CHI TIẾT", "GHI CHÚ", "THAO TÁC"].map(h => (
+                  {["STT", "HÌNH THỨC NHẬN", "NƠI NHẬN", "NƠI NHẬN CHI TIẾT", "GHI CHÚ", "THAO TÁC"].map(h => (
                     <th key={h} style={TH_STYLE}>{h}</th>
                   ))}
                 </tr>
@@ -1885,6 +1886,7 @@ function TaoPhieuModal({ onClose }: { onClose: () => void }) {
                 {noiNhanRows.map((r, idx) => (
                   <tr key={r.id} style={{ background: idx % 2 === 0 ? "#fff" : "#fafafa" }}>
                     <td style={{ ...TD_STYLE, textAlign: "center", color: MUTED, fontSize: 12 }}>{r.id}</td>
+                    <td style={{ ...TD_STYLE, fontSize: 12, color: TEXT }}>{r.hinhThucNhan}</td>
                     <td style={{ ...TD_STYLE, fontSize: 12, color: TEXT }}>{r.noiNhan}</td>
                     <td style={{ ...TD_STYLE, fontSize: 12, color: TEXT }}>{r.chiTiet}</td>
                     <td style={{ ...TD_STYLE, fontSize: 12, color: TEXT }}>{r.ghiChu}</td>
@@ -1921,6 +1923,20 @@ function TaoPhieuModal({ onClose }: { onClose: () => void }) {
                       </select>
                     </td>
                     <td style={TD_STYLE}>
+                      <select value={newRow.hinhThucNhan} onChange={e => setNewRow(p => ({ ...p, hinhThucNhan: e.target.value }))} style={{ ...selSt, fontSize: 11 }}>
+                        <option value="">Chọn</option>
+                        <option>Trực tiếp</option>
+                        <option>Bản giấy</option>
+                        <option>Tiếp công dân</option>
+                        <option>Bưu điện</option>
+                        <option>Niêm yết công khai</option>
+                        <option>Thông báo trên các phương tiện thông tin đại chúng</option>
+                        <option>VNeID</option>
+                        <option>Cổng thông tin điện tử</option>
+                        <option>Cổng dịch vụ tư pháp</option>
+                      </select>
+                    </td>
+                    <td style={TD_STYLE}>
                       <input value={newRow.ghiChu} onChange={e => setNewRow(p => ({ ...p, ghiChu: e.target.value }))} placeholder="Nhập ghi chú" style={{ ...inSt, fontSize: 11 }} />
                     </td>
                     <td style={{ ...TD_STYLE, textAlign: "center" }}>
@@ -1929,13 +1945,13 @@ function TaoPhieuModal({ onClose }: { onClose: () => void }) {
                           onClick={() => {
                             if (newRow.noiNhan) {
                               setNoiNhanRows(p => [...p, { id: Date.now(), ...newRow, editing: false }]);
-                              setNewRow({ noiNhan: "", chiTiet: "", ghiChu: "" });
+                              setNewRow({ noiNhan: "", chiTiet: "", hinhThucNhan: "", ghiChu: "" });
                               setAddingRow(false);
                             }
                           }}
                           style={{ background: "none", border: "none", cursor: "pointer", fontSize: 11, color: "#0f766e", fontFamily: F, fontWeight: 600 }}>Lưu</button>
                         <button
-                          onClick={() => { setAddingRow(false); setNewRow({ noiNhan: "", chiTiet: "", ghiChu: "" }); }}
+                          onClick={() => { setAddingRow(false); setNewRow({ noiNhan: "", chiTiet: "", hinhThucNhan: "", ghiChu: "" }); }}
                           style={{ background: "none", border: "none", cursor: "pointer", fontSize: 11, color: MUTED, fontFamily: F }}>Hủy</button>
                       </div>
                     </td>
