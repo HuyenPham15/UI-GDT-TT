@@ -364,10 +364,6 @@ function CellVuAn({ c, tab, onThemHoSo }: { c: DonCase; tab?: TabId; onThemHoSo?
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
       <div style={{ textAlign: "left" }}>
-        {/* <span style={{ fontSize: 11, color: TEXT, fontFamily: F, lineHeight: 1.4, display: "block", marginBottom: 2 }}>
-          Tên vụ án: {c.tenVuAn || `Vụ án ${c.nguoiKhieuNai || "Đặng Thị Dương"} – Tội cố ý gây thương tích`}
-        </span> */}
-
         {isChoYKienOrTraLai ? (
           <div style={{
             marginTop: 3, padding: "6px 8px",
@@ -392,7 +388,7 @@ function CellVuAn({ c, tab, onThemHoSo }: { c: DonCase; tab?: TabId; onThemHoSo?
               </span>
             ) : (
               <span style={{ fontSize: 11, color: TEXT, fontFamily: F, display: "block" }}>
-                Thẩm phán{showDuKien ? " (Dự kiến)" : ""}: <strong>{thamPhanText} ({capThamPhanText})</strong>
+                Thẩm phán{showDuKien ? " (Dự kiến)" : ""}: <strong>{showDuKien ? "" : `${thamPhanText} (${capThamPhanText})`}</strong>
               </span>
             )}
           </div>
@@ -407,15 +403,6 @@ function CellVuAn({ c, tab, onThemHoSo }: { c: DonCase; tab?: TabId; onThemHoSo?
                   LĐV: {ldvAssignedName === "Chưa phân công" ? <span style={{ color: "#ef4444", fontWeight: 500 }}>Chưa phân công</span> : ldvAssignedName}
                 </span>
               </>
-            )}
-            {isChoYKienTab ? (
-              <span style={{ fontSize: 11, color: TEXT, fontFamily: F, display: "block" }}>
-                TP: {tpText}
-              </span>
-            ) : (
-              <span style={{ fontSize: 11, color: TEXT, fontFamily: F, display: "block" }}>
-                Thẩm phán{showDuKien ? " (Dự kiến)" : ""}: {thamPhanText} ({capThamPhanText})
-              </span>
             )}
           </div>
         )}

@@ -1361,14 +1361,13 @@ export function TabThongTin({ detail, userRole }: { detail?: VuAnDetailData; use
         </div>
         <table style={{ width: "100%", borderCollapse: "collapse", tableLayout: "fixed" }}>
           <colgroup>
-            <col style={{ width: 45 }} />
-            <col style={{ width: "30%" }} />
-            <col style={{ width: "42%" }} />
+            <col style={{ width: 25 }} />
+            <col style={{ width: "55%" }} />
             <col style={{ width: "26%" }} />
           </colgroup>
           <thead>
             <tr>
-              {["STT", "VỤ ÁN", "THÔNG TIN BẢN ÁN/QUYẾT ĐỊNH", "THẨM PHÁN XÉT XỬ"].map(h => (
+              {["STT", "THÔNG TIN BẢN ÁN/QUYẾT ĐỊNH", "THẨM PHÁN XÉT XỬ"].map(h => (
                 <th key={h} style={TH_STYLE}>{h}</th>
               ))}
             </tr>
@@ -1392,7 +1391,7 @@ export function TabThongTin({ detail, userRole }: { detail?: VuAnDetailData; use
               return (
                 <tr key={r.stt} style={{ background: idx % 2 === 0 ? "#fff" : "#fafafa" }}>
                   <td style={{ ...TD_STYLE, textAlign: "center", color: MUTED, fontSize: 12, fontWeight: 500 }}>{r.stt}</td>
-                  <td style={{ ...TD_STYLE, fontSize: 11.5, color: "#2563eb", fontWeight: 600, lineHeight: 1.5 }}>{r.vuAn}</td>
+
                   <td style={{ ...TD_STYLE, fontSize: 11, color: TEXT, lineHeight: 1.6 }}>
                     <div>
                       <b>{labelSo}</b> <span style={{ fontWeight: 600 }}>{r.soBA}</span>
