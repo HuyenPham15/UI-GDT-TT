@@ -58,6 +58,7 @@ interface CaseRow {
   ttv_XX?: string;
   ngayPCLD_XX?: string;
   lanhDao_XX?: string;
+  loaiDon?: "Dự kiến" | "Chính thức";
 }
 
 const INITIAL_CHUA_PHAN_CONG: CaseRow[] = [
@@ -78,6 +79,7 @@ const INITIAL_CHUA_PHAN_CONG: CaseRow[] = [
     ttv: "-",
     ngayPCLD: "-",
     lanhDao: "-",
+    loaiDon: "Dự kiến",
   },
   {
     id: 2,
@@ -132,6 +134,7 @@ const INITIAL_CHUA_PHAN_CONG: CaseRow[] = [
     ttv: "-",
     ngayPCLD: "-",
     lanhDao: "-",
+    loaiDon: "Dự kiến",
   },
   {
     id: 5,
@@ -1114,6 +1117,11 @@ export function PhanCongTTVView() {
                         <td style={TD_CUSTOM}>
                           {r.soThuLy !== "-" ? (
                             <div>
+                              <div style={{ marginBottom: 4 }}>
+                                <span style={{ padding: "2px 6px", background: r.loaiDon === "Dự kiến" ? "#fef3c7" : "#dcfce3", color: r.loaiDon === "Dự kiến" ? "#b45309" : "#166534", borderRadius: 4, fontSize: 10, fontWeight: 700, fontFamily: F }}>
+                                  {r.loaiDon || "Chính thức"}
+                                </span>
+                              </div>
                               <div><b>Số:</b> {r.soThuLy}</div>
                               <div style={{ color: MUTED, marginTop: 2, fontSize: 11 }}><b>Ngày TL:</b> {r.ngayThuLy}</div>
                             </div>

@@ -1868,18 +1868,12 @@ function TaoPhieuModal({ onClose }: { onClose: () => void }) {
             <div style={{ background: "#f8fafc", border: `1px solid ${BORDER}`, borderRadius: 6, padding: "12px 16px", marginBottom: 18 }}>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "8px 24px" }}>
                 <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
-                  <span style={{ fontSize: 11, fontFamily: F }}><span style={{ color: MUTED }}>Mã vụ án: </span><b>VA26-00321</b></span>
-                  <span style={{ fontSize: 11, fontFamily: F }}><span style={{ color: MUTED }}>Tên vụ án: </span>Vụ án Phan Văn Thành – bức cung</span>
-                  <span style={{ fontSize: 11, fontFamily: F }}><span style={{ color: MUTED }}>Tên bị can đầu vụ: </span>Phan Văn Thành</span>
-                  <span style={{ fontSize: 11, fontFamily: F }}><span style={{ color: MUTED }}>Tội danh chính: </span>Bức cung</span>
-                </div>
-                <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
                   <span style={{ fontSize: 11, fontFamily: F, color: "#0f766e" }}><span style={{ color: MUTED }}>Số BA/QĐ: </span><b>050526_CTH02</b></span>
                   <span style={{ fontSize: 11, fontFamily: F, color: "#0f766e" }}><span style={{ color: MUTED }}>Ngày ra BA/QĐ: </span>05/05/2026</span>
                   <span style={{ fontSize: 11, fontFamily: F, color: "#0f766e" }}><span style={{ color: MUTED }}>Tòa xét xử: </span>Tòa án nhân dân tỉnh Hải Phòng</span>
                 </div>
                 <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
-                  <span style={{ fontSize: 11, fontFamily: F, color: "#0f766e" }}><span style={{ color: MUTED }}>Giai đoạn: </span>Giám đốc thẩm, tái thẩm</span>
+                  <span style={{ fontSize: 11, fontFamily: F, color: "#0f766e" }}><span style={{ color: MUTED }}>Thủ tục giải quyết: </span>Giám đốc thẩm, tái thẩm</span>
                   <span style={{ fontSize: 11, fontFamily: F, color: "#0f766e" }}><span style={{ color: MUTED }}>Tòa án giải quyết: </span>Tòa án nhân dân tối cao</span>
                   <span style={{ fontSize: 11, fontFamily: F }}><span style={{ color: MUTED }}>Trạng thái: </span><span style={{ color: "#0f766e", fontWeight: 600 }}>Chưa có kết quả giải quyết đơn</span></span>
                 </div>
@@ -1910,25 +1904,24 @@ function TaoPhieuModal({ onClose }: { onClose: () => void }) {
                 <span style={{ color: RED, fontSize: 14 }}>⊟</span>
                 <span style={{ fontSize: 13, fontWeight: 700, color: TEXT, fontFamily: F }}>Thông tin quyết định</span>
               </div>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: "10px 14px", marginBottom: 10 }}>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1.2fr 1fr", gap: "10px 14px", marginBottom: 10 }}>
                 <div>
                   {lbl("Ngày lập phiếu", true)}
                   <input placeholder="Chọn ngày quyết định" style={inSt} />
                 </div>
                 <div>
-                  {lbl("Số phiếu")}
-                  <input value={soPhieu} onChange={e => setSoPhieu(e.target.value)} placeholder="Nhập số quyết định" style={inSt} />
+                  {lbl(loaiPhieu !== "Công văn XM, BS" && loaiPhieu !== "Công văn khác" ? "Số phiếu / Số bút lục" : "Số phiếu")}
+                  <div style={{ display: "flex", gap: 8 }}>
+                    <input value={soPhieu} onChange={e => setSoPhieu(e.target.value)} placeholder="Nhập số phiếu" style={{ ...inSt, flex: 1 }} />
+                    {loaiPhieu !== "Công văn XM, BS" && loaiPhieu !== "Công văn khác" && (
+                      <input placeholder="Nhập số bút lục" style={{ ...inSt, flex: 1 }} />
+                    )}
+                  </div>
                 </div>
                 <div>
                   {lbl("Người ký ban hành", true)}
                   <select style={selSt}><option value="">Chọn người ký</option><option>Nguyễn Văn A</option></select>
                 </div>
-                {loaiPhieu !== "Công văn XM, BS" && loaiPhieu !== "Công văn khác" && (
-                  <div>
-                    {lbl("Số bút lục")}
-                    <input placeholder="Nhập số bút lục" style={inSt} />
-                  </div>
-                )}
               </div>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: "10px 14px", marginBottom: 10 }}>
                 <div>
@@ -1939,14 +1932,7 @@ function TaoPhieuModal({ onClose }: { onClose: () => void }) {
                   {lbl("Tên đơn vị")}
                   <input placeholder="Nhập tên đơn vị" style={inSt} />
                 </div>
-                <div>
-                  {lbl("Cán bộ", true)}
-                  <select style={selSt}><option value="">Chọn cán bộ</option><option>Lý Thái Phúc</option></select>
-                </div>
-                <div>
-                  {lbl("Tên cán bộ", true)}
-                  <input placeholder="Nhập tên cán bộ" style={inSt} />
-                </div>
+
               </div>
               <div>
                 {lbl(loaiPhieu === "Công văn xác minh" ? "Nội dung" : "Ghi chú")}
@@ -1971,14 +1957,13 @@ function TaoPhieuModal({ onClose }: { onClose: () => void }) {
                   <col style={{ width: 40 }} />
                   <col style={{ width: "20%" }} />
                   <col style={{ width: "20%" }} />
-                  <col style={{ width: "20%" }} />
                   <col style={{ width: "15%" }} />
                   <col style={{ width: "10%" }} />
                   <col style={{ width: 100 }} />
                 </colgroup>
                 <thead>
                   <tr>
-                    {["STT", "HÌNH THỨC NHẬN", "NƠI NHẬN", "NƠI NHẬN CHI TIẾT", "GHI CHÚ", "NGƯỜI THAO TÁC", "THAO TÁC"].map(h => (
+                    {["STT", "NƠI NHẬN", "NƠI NHẬN CHI TIẾT", "GHI CHÚ", "NGƯỜI THAO TÁC", "THAO TÁC"].map(h => (
                       <th key={h} style={TH_STYLE}>{h}</th>
                     ))}
                   </tr>
@@ -1987,7 +1972,6 @@ function TaoPhieuModal({ onClose }: { onClose: () => void }) {
                   {noiNhanRows.map((r, idx) => (
                     <tr key={r.id} style={{ background: idx % 2 === 0 ? "#fff" : "#fafafa" }}>
                       <td style={{ ...TD_STYLE, textAlign: "center", color: MUTED, fontSize: 12 }}>{idx + 1}</td>
-                      <td style={{ ...TD_STYLE, fontSize: 12, color: TEXT }}>{r.hinhThucNhan}</td>
 
                       <td style={{ ...TD_STYLE, fontSize: 12, color: TEXT }}>{r.noiNhan}</td>
                       <td style={{ ...TD_STYLE, fontSize: 12, color: TEXT }}>{r.chiTiet}</td>
@@ -2019,20 +2003,7 @@ function TaoPhieuModal({ onClose }: { onClose: () => void }) {
                           <option>VKSND cấp cao</option>
                         </select>
                       </td>
-                      <td style={TD_STYLE}>
-                        <select value={newRow.hinhThucNhan} onChange={e => setNewRow(p => ({ ...p, hinhThucNhan: e.target.value }))} style={{ ...selSt, fontSize: 11 }}>
-                          <option value="">Chọn</option>
-                          <option>Trực tiếp</option>
-                          <option>Bản giấy</option>
-                          <option>Tiếp công dân</option>
-                          <option>Bưu điện</option>
-                          <option>Niêm yết công khai</option>
-                          <option>Thông báo trên các phương tiện thông tin đại chúng</option>
-                          <option>VNeID</option>
-                          <option>Cổng thông tin điện tử</option>
-                          <option>Cổng dịch vụ tư pháp</option>
-                        </select>
-                      </td>
+
                       <td style={TD_STYLE}>
                         <input value={newRow.ghiChu} onChange={e => setNewRow(p => ({ ...p, ghiChu: e.target.value }))} placeholder="Nhập ghi chú" style={{ ...inSt, fontSize: 11 }} />
                       </td>
@@ -2095,49 +2066,56 @@ function TabMuonTraHoSo({ detail }: { detail: VuAnDetailData }) {
         </div>
         <table style={{ width: "100%", borderCollapse: "collapse", tableLayout: "fixed" }}>
           <colgroup>
-            <col style={{ width: 40 }} /><col style={{ width: "9%" }} /><col style={{ width: "7%" }} />
-            <col style={{ width: "7%" }} /><col style={{ width: "9%" }} /><col style={{ width: "8%" }} />
-            <col style={{ width: "13%" }} /><col style={{ width: "16%" }} /><col style={{ width: "14%" }} />
-            <col style={{ width: "8%" }} /><col style={{ width: 56 }} />
+            <col style={{ width: 40 }} />
+            <col style={{ width: "14%" }} />
+            <col style={{ width: "22%" }} />
+            <col style={{ width: "15%" }} />
+            <col style={{ width: "15%" }} />
+            <col style={{ width: "12%" }} />
+            <col style={{ width: "22%" }} />
+            <col style={{ width: 70 }} />
           </colgroup>
           <thead>
             <tr>
-              {["STT", "Loại phiếu", "Số phiếu", "Số bút lục", "Ngày ghi trên phiếu", "Ngày tạo", "Cán bộ", "Đơn vị giữ/chuyển hồ sơ", "Người ký duyệt", "Ghi chú", "Thao tác"].map((h) => (
+              {["STT", "Loại phiếu", "Thông tin phiếu", "Đơn vị giữ/chuyển hồ sơ", "Người ký", "Ghi chú", "Người thao tác", "Thao tác"].map((h) => (
                 <th key={h} style={TH_STYLE}>{h}</th>
               ))}
             </tr>
           </thead>
           <tbody>
             {muonTraHoSo.length === 0 && (
-              <tr><td colSpan={11} style={{ ...TD_STYLE, textAlign: "center", color: MUTED, padding: 32 }}>Không có dữ liệu</td></tr>
+              <tr><td colSpan={8} style={{ ...TD_STYLE, textAlign: "center", color: MUTED, padding: 32 }}>Không có dữ liệu</td></tr>
             )}
             {muonTraHoSo.map((r, idx) => (
               <tr key={r.stt} style={{ background: idx % 2 === 0 ? "#fff" : "#fafafa" }}>
                 <td style={{ ...TD_STYLE, textAlign: "center", color: MUTED, fontSize: 12 }}>{r.stt}</td>
-                <td style={{ ...TD_STYLE, fontSize: 12, color: TEXT }}>{r.loaiPhieu}</td>
-                <td style={{ ...TD_STYLE, fontSize: 12, color: MUTED, textAlign: "center" }}>{r.soPhieu}</td>
-                <td style={{ ...TD_STYLE, fontSize: 12, color: MUTED, textAlign: "center" }}>{r.soBuLuc}</td>
-                <td style={{ ...TD_STYLE, fontSize: 12, color: MUTED, textAlign: "center" }}>{r.ngayGhiPhieu}</td>
-                <td style={{ ...TD_STYLE, fontSize: 12, color: TEXT, textAlign: "center" }}>{r.ngayTao}</td>
+                <td style={{ ...TD_STYLE, fontSize: 12, color: TEXT, fontWeight: 500 }}>{r.loaiPhieu}</td>
+                <td style={{ ...TD_STYLE, fontSize: 12, color: TEXT }}>
+                  <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
+                    {r.soPhieu && r.soPhieu !== "-" && <span><span style={{ color: MUTED }}>Số phiếu:</span> <span style={{ fontWeight: 600 }}>{r.soPhieu}</span></span>}
+                    {r.soBuLuc && r.soBuLuc !== "-" && <span><span style={{ color: MUTED }}>Số bút lục:</span> <span style={{ fontWeight: 500 }}>{r.soBuLuc}</span></span>}
+                    {r.ngayTao && r.ngayTao !== "-" && <span><span style={{ color: MUTED }}>Ngày tạo:</span> {r.ngayTao}</span>}
+                  </div>
+                </td>
                 <td style={TD_STYLE}>
                   <div style={{ display: "flex", flexDirection: "column", gap: 1 }}>
-                    <span style={{ fontSize: 12, color: TEXT, fontFamily: F }}>{r.canBo}</span>
+                    <span style={{ fontSize: 12, color: TEXT, fontFamily: F, fontWeight: 500 }}>{r.canBo}</span>
                     <span style={{ fontSize: 11, color: MUTED, fontFamily: F }}>{r.chucVu}</span>
                   </div>
                 </td>
                 <td style={{ ...TD_STYLE, fontSize: 11, color: TEXT }}>{r.donVi}</td>
                 <td style={{ ...TD_STYLE, textAlign: "center" }}>
                   <div style={{ display: "flex", flexDirection: "column", gap: 4, alignItems: "center" }}>
-                    <span style={{ fontSize: 11, color: TEXT, fontFamily: F }}>{r.nguoiKyDuyet}</span>
-                    <Badge color="#92400e" bg="#fef3c7">{r.trangThaiKy}</Badge>
+                    <span style={{ fontSize: 11, color: TEXT, fontFamily: F, fontWeight: 500 }}>{r.nguoiKyDuyet}</span>
+                    {r.trangThaiKy && r.trangThaiKy !== "-" && <Badge color="#92400e" bg="#fef3c7">{r.trangThaiKy}</Badge>}
                   </div>
                 </td>
                 <td style={{ ...TD_STYLE, fontSize: 12, color: TEXT }}>{r.ghiChu}</td>
                 <td style={{ ...TD_STYLE, textAlign: "center" }}>
-                  <div style={{ display: "flex", gap: 2, justifyContent: "center" }}>
-                    <button style={{ background: "none", border: "none", cursor: "pointer", padding: 2 }} title="Sửa"><Eye size={13} color={MUTED} /></button>
-                    <button style={{ background: "none", border: "none", cursor: "pointer", padding: 2 }} title="In"><Printer size={13} color={MUTED} /></button>
-                    <button style={{ background: "none", border: "none", cursor: "pointer", padding: 2 }} title="Xóa"><X size={13} color="#ef4444" /></button>
+                  <div style={{ display: "flex", gap: 8, justifyContent: "center" }}>
+                    <button style={{ background: "none", border: "none", cursor: "pointer", padding: 2 }} title="Sửa"><Eye size={14} color={MUTED} /></button>
+                    <button style={{ background: "none", border: "none", cursor: "pointer", padding: 2 }} title="In"><Printer size={14} color={MUTED} /></button>
+                    <button style={{ background: "none", border: "none", cursor: "pointer", padding: 2 }} title="Xóa"><X size={14} color="#ef4444" /></button>
                   </div>
                 </td>
               </tr>

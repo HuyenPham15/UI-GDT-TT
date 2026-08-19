@@ -12,50 +12,53 @@ interface FieldDef {
   options?: string[];
 }
 
-type RowCell = FieldDef | "diaChi" | "anDacThu" | "thoiHieu" | "trangThai" | null;
+type RowCell = FieldDef | "diaChi" | "anDacThu" | "thoiHieu" | "trangThai" | "trangThaiRadio" | null;
 
 const SEARCH_ROWS: RowCell[][] = [
   [
-    { label: "Người gửi đơn", type: "input", placeholder: "Người gửi đơn" },
-    { label: "Số BA/QĐ", type: "input", placeholder: "Số BA/QĐ" },
+    { label: "Người gửi đơn", type: "input" },
+    { label: "Số BA/QĐ", type: "input" },
     { label: "Ngày BA/QĐ", type: "date" },
-    { label: "Tòa ra BA/QĐ", type: "select", placeholder: "--- Chọn ---" },
   ],
   [
-    { label: "Thời gian nhận đơn", type: "dateRange" },
-    { label: "Thẩm phán", type: "select", placeholder: "--- Tất cả ---" },
+    { label: "Tòa ra BA/QĐ", type: "select", placeholder: "--- Chọn ---" },
+    { label: "Nhận đơn từ", type: "date" },
+    { label: "Đến ngày", type: "date" },
+  ],
+  [
     "diaChi",
-    { label: "Chi tiết", type: "input", placeholder: "Chi tiết" },
+    { label: "Chi tiết", type: "input" },
+    { label: "Thẩm phán", type: "select", placeholder: "--- Tất cả ---" },
   ],
   [
     { label: "Phân loại đơn", type: "select", placeholder: "--- Tất cả ---", options: ["Đơn khiếu nại sau khi đã giải quyết", "Đơn đề nghị GĐT/TT", "Công văn kiến nghị GĐT/TT", "Đơn khiếu nại quyết định"] },
-    { label: "Số CMND", type: "input", placeholder: "Số CMND / CCCD" },
-    { label: "Mã đơn", type: "input", placeholder: "Mã đơn" },
+    { label: "Số CMND", type: "input" },
+    { label: "Mã đơn", type: "input" },
+  ],
+  [
+    { label: "Ngày chuyển từ", type: "date" },
+    { label: "Đến ngày", type: "date" },
     { label: "Hình thức đơn", type: "select", placeholder: "--- Tất cả ---" },
   ],
   [
-    { label: "Thời gian chuyển", type: "dateRange" },
-    { label: "Thời gian thụ lý", type: "dateRange" },
-    { label: "Số thụ lý", type: "input", placeholder: "Số thụ lý" },
+    { label: "Ngày thụ lý từ", type: "date" },
+    { label: "Đến ngày", type: "date" },
+    { label: "Số thụ lý", type: "input" },
+  ],
+  [
     { label: "Thụ lý đơn", type: "select", placeholder: "--Tất cả--" },
-  ],
-  [
-    { label: "Số CV chuyển", type: "input", placeholder: "Số CV chuyển" },
+    { label: "Số CV chuyển", type: "input" },
     { label: "Ngày CV chuyển", type: "date" },
+  ],
+  [
     { label: "Cán bộ giải quyết đơn", type: "select", placeholder: "--- Tất cả ---" },
-    { label: "Loại án", type: "select", placeholder: "--- Tất cả ---", options: [...LOAI_AN_OPTIONS] },
-  ],
-  [
+    { label: "Loại án", type: "select", options: [...LOAI_AN_OPTIONS] },
     { label: "Giao THS", type: "select", placeholder: "--Tất cả--" },
-    "trangThai",
-    "anDacThu",
-    { label: "Nơi chuyển", type: "select", placeholder: "--Tất cả--" },
   ],
   [
-    "thoiHieu",
+    "trangThaiRadio",
     null,
-    null,
-    null,
+    { label: "Nơi chuyển", type: "select", placeholder: "--Tất cả--" },
   ],
 ];
 
@@ -121,8 +124,9 @@ export function SearchFilterPanel({
   }, [userRole]);
 
   const inputStyle: React.CSSProperties = {
-    width: "100%",
-    padding: "6px 10px",
+    flex: 1,
+    minWidth: 0,
+    padding: "5px 10px",
     fontSize: 12,
     border: `1px solid ${BORDER}`,
     borderRadius: 4,
@@ -136,18 +140,24 @@ export function SearchFilterPanel({
     ...inputStyle,
     appearance: "none",
     cursor: "pointer",
-    color: MUTED,
+    color: TEXT,
   };
   const labelStyle: React.CSSProperties = {
-    fontSize: 11,
-    color: MUTED,
+    fontSize: 12,
+    color: TEXT,
     fontFamily: F,
-    marginBottom: 4,
-    display: "block",
+    width: 130,
+    flexShrink: 0,
+  };
+  const fieldContainerStyle: React.CSSProperties = {
+    display: "flex",
+    alignItems: "center",
+    gap: 12,
+    minWidth: 0,
   };
 
   const renderField = ({ label, type, placeholder, options }: FieldDef) => (
-    <div style={{ display: "flex", flexDirection: "column", minWidth: 0 }}>
+    <div style={fieldContainerStyle}>
       <span style={labelStyle}>{label}</span>
 
       {type === "select" ? (
@@ -157,7 +167,7 @@ export function SearchFilterPanel({
           value={label === "Loại án" ? selectedLoaiAn : undefined}
           onChange={label === "Loại án" ? (e) => setSelectedLoaiAn(e.target.value) : undefined}
         >
-          <option value="">{placeholder ?? "--- Tất cả ---"}</option>
+          {placeholder && <option value="">{placeholder}</option>}
           {(() => {
             if (label === "Loại án") {
               let finalOptions: string[] = [];
@@ -187,21 +197,21 @@ export function SearchFilterPanel({
           })()}
         </select>
       ) : type === "dateRange" ? (
-        <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+        <div style={{ display: "flex", gap: 8, alignItems: "center", flex: 1, minWidth: 0 }}>
           <input
             type="date"
-            style={{ ...inputStyle, flex: 1 }}
+            style={inputStyle}
           />
           <span style={{ fontSize: 11, color: MUTED, fontFamily: F }}>đến</span>
           <input
             type="date"
-            style={{ ...inputStyle, flex: 1 }}
+            style={inputStyle}
           />
         </div>
       ) : (
         <input
           type={type === "date" ? "date" : "text"}
-          placeholder={placeholder ?? label}
+          placeholder={placeholder}
           style={inputStyle}
         />
       )}
@@ -209,13 +219,13 @@ export function SearchFilterPanel({
   );
 
   const diaChiGui = (
-    <div style={{ display: "flex", flexDirection: "column", minWidth: 0 }}>
+    <div style={fieldContainerStyle}>
       <span style={labelStyle}>Địa chỉ gửi</span>
-      <div style={{ display: "flex", gap: 8 }}>
-        <select style={{ ...selectStyle, flex: 1 }} defaultValue="">
+      <div style={{ display: "flex", gap: 8, flex: 1, minWidth: 0 }}>
+        <select style={selectStyle} defaultValue="">
           <option value="">--- Tỉnh/Thành ---</option>
         </select>
-        <select style={{ ...selectStyle, flex: 1 }} defaultValue="">
+        <select style={selectStyle} defaultValue="">
           <option value="">--- Quận/Huyện ---</option>
         </select>
       </div>
@@ -223,15 +233,15 @@ export function SearchFilterPanel({
   );
 
   const targetRows = isHoSoKhangNghi ? SEARCH_ROWS_KHANG_NGHI : SEARCH_ROWS;
-  const visibleRows = expanded ? targetRows : targetRows.slice(0, isHoSoKhangNghi ? 1 : 2);
+  const visibleRows = expanded ? targetRows : targetRows.slice(0, isHoSoKhangNghi ? 1 : 3);
 
   return (
-    <div style={{ background: "#fff", borderBottom: `1px solid ${BORDER}`, padding: "14px 20px" }}>
+    <div style={{ background: "#f8fafc", borderBottom: `1px solid ${BORDER}`, padding: "14px 20px" }}>
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "repeat(4, 1fr)",
-          gap: "10px 16px",
+          gridTemplateColumns: isHoSoKhangNghi ? "repeat(4, 1fr)" : "repeat(3, 1fr)",
+          gap: "10px 24px",
           marginBottom: 12,
         }}
       >
@@ -242,7 +252,7 @@ export function SearchFilterPanel({
             if (cell === "diaChi") return <React.Fragment key={key}>{diaChiGui}</React.Fragment>;
             if (cell === "trangThai") {
               return (
-                <div key={key} style={{ display: "flex", flexDirection: "column", minWidth: 0 }}>
+                <div key={key} style={fieldContainerStyle}>
                   <span style={labelStyle}>Trạng thái</span>
                   <select style={selectStyle} defaultValue="">
                     <option value="">-- Tất cả --</option>
@@ -253,10 +263,31 @@ export function SearchFilterPanel({
                 </div>
               );
             }
+            if (cell === "trangThaiRadio") {
+              return (
+                <div key={key} style={fieldContainerStyle}>
+                  <span style={labelStyle}>Trạng thái</span>
+                  <div style={{ display: "flex", gap: 12, flex: 1, alignItems: "center", fontSize: 12, fontFamily: F, color: TEXT }}>
+                    <label style={{ display: "flex", alignItems: "center", gap: 4, cursor: "pointer" }}>
+                      <input type="radio" name="trangThai" defaultChecked />
+                      Chưa nhận
+                    </label>
+                    <label style={{ display: "flex", alignItems: "center", gap: 4, cursor: "pointer" }}>
+                      <input type="radio" name="trangThai" />
+                      Đã nhận
+                    </label>
+                    <label style={{ display: "flex", alignItems: "center", gap: 4, cursor: "pointer" }}>
+                      <input type="radio" name="trangThai" />
+                      Trả lại
+                    </label>
+                  </div>
+                </div>
+              );
+            }
             if (cell === "anDacThu") {
               const options = getAnDacThuOptions(userRole, selectedLoaiAn);
               return (
-                <div key={key} style={{ display: "flex", flexDirection: "column", minWidth: 0 }}>
+                <div key={key} style={fieldContainerStyle}>
                   <span style={labelStyle}>Thuộc án</span>
                   <select style={selectStyle} defaultValue="">
                     <option value="">-- Tất cả --</option>
@@ -270,7 +301,7 @@ export function SearchFilterPanel({
             if (cell === "thoiHieu") {
               const options = getThoiHieuOptions(userRole, selectedLoaiAn);
               return (
-                <div key={key} style={{ display: "flex", flexDirection: "column", minWidth: 0 }}>
+                <div key={key} style={fieldContainerStyle}>
                   <span style={labelStyle}>Thời hiệu</span>
                   <select style={selectStyle} defaultValue="">
                     <option value="">-- Tất cả --</option>
@@ -356,3 +387,4 @@ export function SearchFilterPanel({
     </div>
   );
 }
+

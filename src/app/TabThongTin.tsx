@@ -145,7 +145,7 @@ export const MOCK_DATA_BY_LOAI_AN: Record<LoaiAn, TabThongTinMockData> = {
       nhom1: {
         title: "* Bị cáo",
         required: true,
-        rows: [{ stt: 1, hoTen: "Đặng Thị Dương", ngaySinh: "1995", cccd: "036302091038", toiDanh: "Cố ý gây thương tích (Khoản 2 Điều 134 BLHS)", diaChi: "Số nhà 7, Xã Trường Sơn, Tỉnh Bắc Ninh" }],
+        rows: [{ stt: 1, hoTen: "Đặng Thị Dương", ngaySinh: "1995", cccd: "036302091038", toiDanh: "Cố ý gây thương tích (Khoản 2 Điều 134 BLHS)", hinhPhat: "03 năm tù", diaChi: "Số nhà 7, Xã Trường Sơn, Tỉnh Bắc Ninh" }],
       },
       nhom2: {
         title: "* Bị hại",
@@ -634,6 +634,7 @@ export type NguoiLienQuanRow = {
   diaViPhapLy?: string;
   toiDanhMucAn?: string;
   toiDanh?: string;
+  hinhPhat?: string;
 };
 
 export interface QuaTrinhGiaiQuyetRow {
@@ -650,56 +651,44 @@ export interface QuaTrinhGiaiQuyetRow {
 function NguoiLienQuanTable({ rows, noMarginBottom = false, showToiDanh = false, showDiaVi = true, defaultDiaVi }: { rows: NguoiLienQuanRow[]; noMarginBottom?: boolean; showToiDanh?: boolean; showDiaVi?: boolean; defaultDiaVi?: string }) {
   const headers = showToiDanh
     ? (showDiaVi
-      ? ["STT", "Họ và tên/Tổ chức", "Ngày sinh", "CCCD", "Địa chỉ", "Địa vị pháp lý", "Thông tin tội danh, Mức án", "Người thao tác", "Thao tác"]
-      : ["STT", "Họ và tên/Tổ chức", "Ngày sinh", "CCCD", "Địa chỉ", "Thông tin tội danh, Mức án", "Người thao tác", "Thao tác"])
+      ? ["STT", "Thông tin chung", "Địa vị pháp lý", "Thông tin tội danh, Mức án", "Người thao tác", "Thao tác"]
+      : ["STT", "Thông tin chung", "Thông tin tội danh, Mức án", "Người thao tác", "Thao tác"])
     : (showDiaVi
-      ? ["STT", "Họ và tên/Tổ chức", "Ngày sinh", "CCCD", "Địa chỉ", "Địa vị pháp lý", "Người thao tác", "Thao tác"]
-      : ["STT", "Họ và tên/Tổ chức", "Ngày sinh", "CCCD", "Địa chỉ", "Người thao tác", "Thao tác"]);
+      ? ["STT", "Thông tin chung", "Địa vị pháp lý", "Người thao tác", "Thao tác"]
+      : ["STT", "Thông tin chung", "Người thao tác", "Thao tác"]);
 
   return (
     <table style={{ width: "100%", borderCollapse: "collapse", tableLayout: "fixed", marginBottom: noMarginBottom ? 0 : 16 }}>
       {showToiDanh && showDiaVi ? (
         <colgroup>
           <col style={{ width: 40 }} />
-          <col style={{ width: "16%" }} />
-          <col style={{ width: "9%" }} />
-          <col style={{ width: "11%" }} />
-          <col style={{ width: "20%" }} />
-          <col style={{ width: "11%" }} />
-          <col style={{ width: "18%" }} />
-          <col style={{ width: "10%" }} />
+          <col style={{ width: "45%" }} />
+          <col style={{ width: "13%" }} />
+          <col style={{ width: "22%" }} />
+          <col style={{ width: "15%" }} />
           <col style={{ width: 60 }} />
         </colgroup>
       ) : showToiDanh && !showDiaVi ? (
         <colgroup>
           <col style={{ width: 40 }} />
-          <col style={{ width: "18%" }} />
-          <col style={{ width: "10%" }} />
-          <col style={{ width: "12%" }} />
-          <col style={{ width: "25%" }} />
-          <col style={{ width: "20%" }} />
-          <col style={{ width: "10%" }} />
+          <col style={{ width: "55%" }} />
+          <col style={{ width: "30%" }} />
+          <col style={{ width: "15%" }} />
           <col style={{ width: 60 }} />
         </colgroup>
       ) : !showToiDanh && showDiaVi ? (
         <colgroup>
           <col style={{ width: 40 }} />
-          <col style={{ width: "18%" }} />
-          <col style={{ width: "10%" }} />
-          <col style={{ width: "12%" }} />
-          <col style={{ width: "26%" }} />
-          <col style={{ width: "14%" }} />
-          <col style={{ width: "12%" }} />
+          <col style={{ width: "60%" }} />
+          <col style={{ width: "20%" }} />
+          <col style={{ width: "20%" }} />
           <col style={{ width: 60 }} />
         </colgroup>
       ) : (
         <colgroup>
           <col style={{ width: 40 }} />
+          <col style={{ width: "80%" }} />
           <col style={{ width: "20%" }} />
-          <col style={{ width: "11%" }} />
-          <col style={{ width: "13%" }} />
-          <col style={{ width: "36%" }} />
-          <col style={{ width: "13%" }} />
           <col style={{ width: 60 }} />
         </colgroup>
       )}
@@ -721,18 +710,24 @@ function NguoiLienQuanTable({ rows, noMarginBottom = false, showToiDanh = false,
           rows.map((r, idx) => (
             <tr key={r.stt} style={{ background: idx % 2 === 0 ? "#fff" : "#fafafa" }}>
               <td style={{ ...TD_STYLE, textAlign: "center", color: MUTED, fontSize: 12 }}>{r.stt}</td>
-              <td style={{ ...TD_STYLE, fontSize: 12, color: TEXT, fontWeight: 500 }}>
-                {r.hoTen}
-                {((defaultDiaVi === "Bị cáo" || showToiDanh) && idx === 0) ? " (đầu vụ)" : ""}
+              <td style={{ ...TD_STYLE, fontSize: 12, color: TEXT }}>
+                <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
+                  <span style={{ fontWeight: 600 }}>{r.hoTen}{((defaultDiaVi === "Bị cáo" || showToiDanh) && idx === 0) ? " (đầu vụ)" : ""}</span>
+                  {r.ngaySinh && r.ngaySinh !== "-" && <span><span style={{ color: MUTED }}>Ngày sinh:</span> {r.ngaySinh}</span>}
+                  {r.cccd && r.cccd !== "-" && <span><span style={{ color: MUTED }}>CCCD/MSDN:</span> {r.cccd}</span>}
+                  {r.diaChi && r.diaChi !== "-" && <span><span style={{ color: MUTED }}>Địa chỉ:</span> {r.diaChi}</span>}
+                </div>
               </td>
-              <td style={{ ...TD_STYLE, fontSize: 12, color: TEXT, textAlign: "center" }}>{r.ngaySinh}</td>
-              <td style={{ ...TD_STYLE, fontSize: 12, color: TEXT, textAlign: "center" }}>{r.cccd || "-"}</td>
-              <td style={{ ...TD_STYLE, fontSize: 12, color: TEXT }}>{r.diaChi}</td>
               {showDiaVi && (
                 <td style={{ ...TD_STYLE, fontSize: 12, color: TEXT, textAlign: "center" }}>{r.diaViPhapLy || defaultDiaVi || (showToiDanh ? "Bị cáo" : "Đương sự")}</td>
               )}
               {showToiDanh && (
-                <td style={{ ...TD_STYLE, fontSize: 12, color: TEXT }}>{r.toiDanhMucAn || r.toiDanh || "-"}</td>
+                <td style={{ ...TD_STYLE, fontSize: 12, color: TEXT }}>
+                  <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
+                    <span style={{ fontWeight: 500 }}>{r.toiDanhMucAn || r.toiDanh || "-"}</span>
+                    {r.hinhPhat && r.hinhPhat !== "-" && <span><span style={{ color: MUTED }}>Hình phạt:</span> <span style={{ color: RED, fontWeight: 600 }}>{r.hinhPhat}</span></span>}
+                  </div>
+                </td>
               )}
               <td style={{ ...TD_STYLE, fontSize: 12, color: TEXT, textAlign: "center" }}>{r.nguoiThaoTac || (idx % 2 === 0 ? "Nguyễn Thị Hương" : "Vũ Đức Thiện")}</td>
               <td style={{ ...TD_STYLE, textAlign: "center" }}>
@@ -805,6 +800,7 @@ function SlideDrawerAddBiCao({ open, onClose, onSave }: { open: boolean; onClose
   const [cccd, setCccd] = useState("");
   const [diaChi, setDiaChi] = useState("");
   const [toiDanh, setToiDanh] = useState("");
+  const [hinhPhat, setHinhPhat] = useState("");
 
   if (!open) return null;
 
@@ -815,7 +811,8 @@ function SlideDrawerAddBiCao({ open, onClose, onSave }: { open: boolean; onClose
       cccd: cccd || "036090123456",
       diaChi: diaChi || "Bắc Ninh",
       diaViPhapLy: "Bị cáo",
-      toiDanhMucAn: toiDanh || "Tội cố ý gây thương tích"
+      toiDanhMucAn: toiDanh || "Tội cố ý gây thương tích",
+      hinhPhat: hinhPhat || "3 năm tù"
     });
     onClose();
   };
@@ -1141,7 +1138,7 @@ function SlideDrawerAddBiCao({ open, onClose, onSave }: { open: boolean; onClose
             </div>
             <div style={{ marginBottom: 16 }}>
               <label style={labelStyle}>Hình phạt tổng hợp</label>
-              <input placeholder="Nhập hình phạt tổng hợp" style={inputStyle} />
+              <input value={hinhPhat} onChange={e => setHinhPhat(e.target.value)} placeholder="Nhập hình phạt tổng hợp" style={inputStyle} />
             </div>
           </div>
 
